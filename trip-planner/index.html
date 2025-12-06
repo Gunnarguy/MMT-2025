@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍁</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tere & Mikaela's Epic Girls Trip to New England - Lobsters, Leaves, and Love!" />
+    <meta name="theme-color" content="#d35400" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>🍁 Tere & Mikaela's Epic Girls Trip | New England 2025</title>
+  </head>
+  <body>
+    <div id="root">
+      <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: 'Inter', sans-serif; color: #555; gap: 1rem;">
+        <div style="font-size: 4rem; animation: bounce 1s infinite;">🍁</div>
+        <div style="font-size: 1.2rem;">Loading your adventure...</div>
+      </div>
+    </div>
+    <style>
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+      }
+    </style>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        const root = document.getElementById('root');
+        root.innerHTML = `
+          <div style="padding: 20px; color: red; font-family: monospace; word-break: break-all;">
+            <h3>Something went wrong:</h3>
+            <p><strong>Error:</strong> ${message}</p>
+            <p><strong>Source:</strong> ${source}:${lineno}:${colno}</p>
+            <p><strong>Stack:</strong> ${error ? error.stack : 'No stack trace'}</p>
+          </div>
+        `;
+        return false;
+      };
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

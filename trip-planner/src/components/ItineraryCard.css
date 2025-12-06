@@ -1,0 +1,633 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ITINERARY CARD STYLES
+   Day card component with expandable details
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE CARD STYLES
+   ─────────────────────────────────────────────────────────────────────────────── */
+.itinerary-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 1px solid var(--mmt-sand-200);
+  border-left: 4px solid var(--mmt-primary);
+  border-radius: 0.75rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+}
+
+.itinerary-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.itinerary-card:focus {
+  outline: 2px solid var(--mmt-primary);
+  outline-offset: 2px;
+}
+
+.itinerary-card.is-selected {
+  background: linear-gradient(135deg, rgba(211, 84, 0, 0.03), rgba(230, 126, 34, 0.08));
+  box-shadow: 0 4px 16px rgba(211, 84, 0, 0.2);
+  transform: translateX(6px);
+}
+
+/* Day type variants */
+.itinerary-card.drive {
+  border-left-color: #9b59b6;
+}
+
+.itinerary-card.explore {
+  border-left-color: #27ae60;
+}
+
+.itinerary-card.travel {
+  border-left-color: #3498db;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CARD HEADER
+   ─────────────────────────────────────────────────────────────────────────────── */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.day-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--mmt-sand-100);
+  border-radius: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--mmt-ink-600);
+}
+
+.badge-emoji {
+  font-size: 0.9rem;
+}
+
+.day-date {
+  font-size: 0.75rem;
+  color: var(--mmt-ink-400);
+  margin-left: auto;
+}
+
+.expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--mmt-sand-200);
+  border-radius: 0.25rem;
+  background: white;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--mmt-ink-400);
+  transition: all 0.2s ease;
+}
+
+.expand-btn:hover {
+  background: var(--mmt-sand-100);
+  color: var(--mmt-primary);
+}
+
+.expand-btn.is-expanded {
+  background: var(--mmt-primary);
+  color: white;
+  border-color: var(--mmt-primary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ROUTE DISPLAY
+   ─────────────────────────────────────────────────────────────────────────────── */
+.card-route {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.route-from,
+.route-to {
+  font-weight: 600;
+  color: var(--mmt-ink-700);
+}
+
+.route-arrow {
+  color: var(--mmt-primary);
+  font-weight: 700;
+}
+
+.card-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--mmt-ink-600);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DRIVE INFO
+   ─────────────────────────────────────────────────────────────────────────────── */
+.drive-info {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--mmt-ink-500);
+  margin-bottom: 0.5rem;
+}
+
+.drive-icon {
+  font-size: 0.9rem;
+}
+
+.drive-time {
+  font-weight: 600;
+  color: var(--mmt-ink-600);
+}
+
+.drive-notes {
+  color: var(--mmt-ink-400);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DESCRIPTION & BADGES
+   ─────────────────────────────────────────────────────────────────────────────── */
+.card-description {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--mmt-ink-500);
+  line-height: 1.4;
+}
+
+.foliage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.foliage-peak {
+  background: rgba(231, 76, 60, 0.15);
+  color: #c0392b;
+}
+
+.foliage-approaching {
+  background: rgba(243, 156, 18, 0.15);
+  color: #d68910;
+}
+
+.foliage-early {
+  background: rgba(39, 174, 96, 0.15);
+  color: #1e8449;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOM'S NOTE
+   ─────────────────────────────────────────────────────────────────────────────── */
+.mom-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, rgba(211, 84, 0, 0.05), rgba(230, 126, 34, 0.1));
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--mmt-ink-600);
+  font-style: italic;
+}
+
+.note-icon {
+  flex-shrink: 0;
+}
+
+.note-text {
+  flex: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   EXPANDED CONTENT
+   ─────────────────────────────────────────────────────────────────────────────── */
+.card-expanded {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--mmt-sand-200);
+}
+
+.expanded-section {
+  margin-bottom: 1rem;
+}
+
+.expanded-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--mmt-ink-600);
+}
+
+/* Highlights list */
+.highlight-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.8rem;
+  color: var(--mmt-ink-500);
+}
+
+.highlight-list li {
+  margin-bottom: 0.25rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ACTIVITIES (with checkboxes)
+   ─────────────────────────────────────────────────────────────────────────────── */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--mmt-sand-200);
+  border-radius: 0.5rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+  background: var(--mmt-sand-50);
+  border-color: var(--mmt-primary-light);
+}
+
+.activity-item.is-selected {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.08), rgba(39, 174, 96, 0.15));
+  border-color: #27ae60;
+}
+
+.activity-checkbox {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.15rem;
+  accent-color: var(--mmt-primary);
+  cursor: pointer;
+}
+
+.activity-emoji {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.activity-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--mmt-ink-700);
+}
+
+.activity-duration {
+  font-size: 0.7rem;
+  color: var(--mmt-ink-400);
+}
+
+.activity-note {
+  font-size: 0.75rem;
+  color: var(--mmt-ink-500);
+  font-style: italic;
+  margin-top: 0.15rem;
+}
+
+.priority-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.priority-badge.priority-must {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+}
+
+.priority-badge.priority-high {
+  background: rgba(243, 156, 18, 0.15);
+  color: #f39c12;
+}
+
+.priority-badge.priority-medium {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+}
+
+.priority-badge.priority-low {
+  background: var(--mmt-sand-100);
+  color: var(--mmt-ink-400);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DINING LIST
+   ─────────────────────────────────────────────────────────────────────────────── */
+.dining-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dining-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--mmt-sand-50);
+  border-radius: 0.35rem;
+}
+
+.dining-emoji {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.dining-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.dining-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--mmt-ink-700);
+}
+
+.dining-type {
+  font-size: 0.7rem;
+  color: var(--mmt-primary);
+}
+
+.dining-note {
+  font-size: 0.75rem;
+  color: var(--mmt-ink-500);
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LODGING INFO
+   ─────────────────────────────────────────────────────────────────────────────── */
+.lodging-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--mmt-sand-50);
+  border-radius: 0.5rem;
+}
+
+.lodging-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--mmt-ink-700);
+}
+
+.confirmed-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  background: rgba(39, 174, 96, 0.15);
+  color: #27ae60;
+  border-radius: 999px;
+}
+
+.lodging-note {
+  width: 100%;
+  font-size: 0.75rem;
+  color: var(--mmt-ink-500);
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RESPONSIVE
+   ─────────────────────────────────────────────────────────────────────────────── */
+
+/* Tablets */
+@media (max-width: 900px) {
+  .itinerary-card {
+    padding: 0.85rem;
+  }
+  
+  .activity-list {
+    gap: 0.35rem;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 768px) {
+  .itinerary-card {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .itinerary-card:hover {
+    transform: none;
+  }
+  
+  .itinerary-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+  
+  .card-header {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  
+  .day-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .day-date {
+    font-size: 0.7rem;
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+  
+  .expand-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    min-width: 44px; /* Touch target */
+    min-height: 44px;
+  }
+  
+  .card-route {
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    gap: 0.35rem;
+  }
+  
+  .card-title {
+    font-size: 0.85rem;
+    margin-bottom: 0.35rem;
+  }
+  
+  .drive-info {
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+  }
+  
+  .card-description {
+    font-size: 0.8rem;
+  }
+  
+  .foliage-badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+  
+  .mom-note {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  .card-expanded {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 0.75rem;
+  }
+  
+  .highlight-list {
+    font-size: 0.75rem;
+    padding-left: 1rem;
+  }
+  
+  .activity-item {
+    padding: 0.4rem 0.5rem;
+    min-height: 44px;
+  }
+  
+  .activity-checkbox {
+    width: 1.2rem;
+    height: 1.2rem;
+    min-width: 22px;
+    min-height: 22px;
+  }
+  
+  .activity-name {
+    font-size: 0.8rem;
+  }
+  
+  .activity-duration,
+  .activity-note {
+    font-size: 0.65rem;
+  }
+  
+  .priority-badge {
+    width: 1.1rem;
+    height: 1.1rem;
+    font-size: 0.6rem;
+  }
+  
+  .dining-item {
+    padding: 0.4rem;
+  }
+  
+  .dining-name {
+    font-size: 0.8rem;
+  }
+  
+  .dining-type,
+  .dining-note {
+    font-size: 0.65rem;
+  }
+  
+  .lodging-info {
+    padding: 0.4rem 0.6rem;
+    gap: 0.35rem;
+  }
+  
+  .lodging-name {
+    font-size: 0.85rem;
+  }
+  
+  .confirmed-badge {
+    font-size: 0.6rem;
+    padding: 0.12rem 0.3rem;
+  }
+  
+  .lodging-note {
+    font-size: 0.7rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .itinerary-card {
+    padding: 0.6rem;
+  }
+  
+  .card-route {
+    font-size: 0.85rem;
+  }
+  
+  .route-from,
+  .route-to {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .drive-notes {
+    display: none;
+  }
+  
+  .mom-note {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  .activity-item {
+    padding: 0.3rem 0.4rem;
+  }
+  
+  .activity-emoji {
+    font-size: 0.9rem;
+  }
+}
