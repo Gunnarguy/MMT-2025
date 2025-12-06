@@ -38,6 +38,17 @@
   background: var(--mmt-sand-25);
   border-left: 1px solid var(--mmt-sand-200);
   overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--mmt-ink-700);
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sidebar * {
+  font-family: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -97,7 +108,7 @@
 .sidebar-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: clamp(1rem, 2vw, 1.35rem);
 }
 
 .sidebar-section {
