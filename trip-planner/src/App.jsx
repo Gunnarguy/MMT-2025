@@ -1044,8 +1044,13 @@ function App() {
     }
   })
   
-  // Sidebar state
-  const [showSidebar, setShowSidebar] = useState(true)
+  // Sidebar state - default OFF on mobile (< 900px)
+  const [showSidebar, setShowSidebar] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth > 900
+    }
+    return false
+  })
   const [selectedDay, setSelectedDay] = useState(null)
   
   // Persist traveler selection
