@@ -5579,12 +5579,20 @@ footer p {
     font-size: 0.8rem;
   }
   
-  /* Toggle button in portrait */
+  /* Toggle button in portrait - MUST override desktop position */
   .sidebar-toggle-btn {
-    width: 40px !important;
-    height: 40px !important;
-    font-size: 1rem !important;
-    border-radius: 10px !important;
+    position: fixed !important;
+    right: calc(env(safe-area-inset-right, 0px) + 12px) !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px) !important;
+    left: auto !important;
+    top: auto !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    font-size: 1.1rem !important;
+    border-radius: 50% !important;
+    transform: none !important;
   }
 }
 
