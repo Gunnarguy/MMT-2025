@@ -635,8 +635,8 @@ body {
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   position: sticky;
-  top: 1rem;
-  z-index: 100;
+  top: calc(1rem + env(safe-area-inset-top, 0px));
+  z-index: 10;
 }
 
 .tab-btn {
@@ -4778,6 +4778,11 @@ footer p {
   .tab-nav {
     gap: 0.35rem;
     padding: 0.75rem;
+    position: static;
+    top: auto;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
   }
   
   .tab-btn {
@@ -4897,6 +4902,12 @@ footer p {
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
     justify-content: flex-start;
+    position: static;
+    top: auto;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: none;
   }
   
   .tab-nav::-webkit-scrollbar {
