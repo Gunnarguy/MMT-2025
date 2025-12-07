@@ -123,6 +123,9 @@
   border: 1px solid var(--mmt-sand-200);
   border-radius: 0.75rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-height: 360px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .traveler-option {
