@@ -1438,6 +1438,15 @@ function App() {
   return (
     <div className={`app-container ${showSidebar ? 'with-sidebar' : ''}`}>
       
+      {/* Backdrop overlay - click to close sidebar on mobile */}
+      {showSidebar && (
+        <div 
+          className="sidebar-backdrop"
+          onClick={() => setShowSidebar(false)}
+          aria-hidden="true"
+        />
+      )}
+      
       {/* ════════════════════════════════════════════════════════════════════════
           DDG-STYLE SIDEBAR - Mission Control Panel
           ════════════════════════════════════════════════════════════════════════ */}
@@ -1460,8 +1469,9 @@ function App() {
         className="sidebar-toggle-btn"
         onClick={() => setShowSidebar(!showSidebar)}
         title={showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
+        aria-label={showSidebar ? 'Close menu' : 'Open menu'}
       >
-        {showSidebar ? '◀' : '▶'}
+        {showSidebar ? '✕' : '☰'}
       </button>
       
       {/* Main Content Area */}

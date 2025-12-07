@@ -446,6 +446,25 @@ body {
   left: calc(380px + env(safe-area-inset-left, 0));
 }
 
+/* Sidebar Backdrop - click to close on mobile */
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    z-index: 998;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+}
+
 /* Responsive: Hide sidebar on small screens */
 @media (max-width: 900px) {
   .app-container.with-sidebar {
@@ -457,49 +476,48 @@ body {
     left: 0;
     top: 0;
     bottom: 0;
-    width: min(320px, 85vw);
+    width: min(340px, 88vw);
     height: 100%;
+    height: 100dvh;
     padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     background: var(--mmt-sand-25, #fdfcfb);
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   
   .app-container.with-sidebar .sidebar {
     transform: translateX(0);
   }
   
-  /* Overlay backdrop when sidebar is open */
-  .app-container.with-sidebar::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 999;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
-  
-  .app-container:not(.with-sidebar)::before {
-    display: none;
-  }
-  
   .sidebar-toggle-btn {
     position: fixed !important;
-    left: env(safe-area-inset-left, 8px) !important;
-    top: max(env(safe-area-inset-top, 12px), 12px) !important;
+    left: calc(env(safe-area-inset-left, 0px) + 8px) !important;
+    top: calc(env(safe-area-inset-top, 0px) + 8px) !important;
     transform: none !important;
-    width: 44px !important;
-    height: 44px !important;
-    font-size: 1.1rem;
-    border-radius: 12px !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    font-size: 1.25rem;
+    border-radius: 14px !important;
     z-index: 1001 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
   }
   
   .app-container.with-sidebar .sidebar-toggle-btn {
-    left: calc(min(320px, 85vw) + env(safe-area-inset-left, 8px)) !important;
+    left: calc(min(340px, 88vw) + env(safe-area-inset-left, 0px) + 8px) !important;
+  }
+  
+  /* Main content pushes down to make room for toggle */
+  .main-content {
+    padding-top: calc(60px + env(safe-area-inset-top, 0));
   }
 }
 
