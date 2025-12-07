@@ -35,13 +35,13 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--mmt-sand-25);
-  border-left: 1px solid var(--mmt-sand-200);
-  overflow-x: visible;
+  background: var(--mmt-sand-25, #fdfcfb);
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: var(--mmt-ink-700);
+  color: var(--mmt-ink-700, #1f2937);
   line-height: 1.55;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -50,7 +50,7 @@
 .sidebar * {
   font-family: inherit;
   line-height: inherit;
-  color: inherit;
+  box-sizing: border-box;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
