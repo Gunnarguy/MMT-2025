@@ -1053,22 +1053,7 @@ function App() {
   })
   const [selectedDay, setSelectedDay] = useState(null)
 
-  // Auto-close sidebar when moving to narrow / portrait viewports
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 900) {
-        setShowSidebar(false)
-      }
-    }
-
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('orientationchange', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('orientationchange', handleResize)
-    }
-  }, [])
+  // Note: we intentionally keep the sidebar closed on initial load for mobile via the state initializer above.
   
   // Persist traveler selection
   useEffect(() => {
