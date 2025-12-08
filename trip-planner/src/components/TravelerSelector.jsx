@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { mmtTeam } from '../data/planContent';
+import { travelers as mmtTeam } from '../data/tripData';
 import './TravelerSelector.css';
 
 /**

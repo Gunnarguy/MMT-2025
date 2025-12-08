@@ -8,16 +8,7 @@ import { tripData } from './data'
 import Sidebar from './components/Sidebar'
 import TravelerSelector from './components/TravelerSelector'
 import ItineraryCard from './components/ItineraryCard'
-import { 
-  dayItinerary, 
-  travelers as mmtTeam, 
-  scheduleOptions, 
-  exploreCatalog, 
-  dataSources,
-  mmHighlights,
-  researchHighlights,
-  lodging
-} from './data/tripData'
+import { dayItinerary, mmtTeam, scheduleOptions, exploreCatalog, dataSources } from './data/planContent'
 
 // ============================================
 // 🚗 DRIVING DIRECTIONS SERVICE
@@ -1791,7 +1782,7 @@ function App() {
 
           <div className="lodging-grid">
             {[1, 2, 3, 4, 5, 6].map(night => {
-              const nightLodgings = lodging.filter(l => l.night === night)
+              const nightLodgings = tripData.lodging.filter(l => l.night === night)
               const nightInfo = {
                 1: { label: 'Night 1', location: 'Boston, MA', date: 'Sept 20' },
                 2: { label: 'Night 2', location: 'Portland, ME', date: 'Sept 21' },
@@ -2210,7 +2201,7 @@ function App() {
             <div className="card">
               <h3>✨ The Dream</h3>
               <ul>
-                {mmHighlights.map((item) => (
+                {tripData.mmHighlights.map((item) => (
                   <li key={item.title}>
                     <strong>{item.title}:</strong> {item.content}
                   </li>
@@ -2220,7 +2211,7 @@ function App() {
             <div className="card">
               <h3>🔬 The Research</h3>
               <ul>
-                {researchHighlights.map((item) => (
+                {tripData.researchHighlights.map((item) => (
                   <li key={item.title}>
                     <strong>{item.title}:</strong> {item.detail}
                   </li>

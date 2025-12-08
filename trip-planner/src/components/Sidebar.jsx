@@ -8,7 +8,7 @@ import { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './Sidebar.css';
 import TravelerSelector from './TravelerSelector';
-import { mmtTeam, dayItinerary, scheduleOptions as defaultScheduleOptions } from '../data/planContent';
+import { travelers as mmtTeam, dayItinerary, scheduleOptions as defaultScheduleOptions } from '../data/tripData';
 
 /**
  * MMT Mission Control Sidebar

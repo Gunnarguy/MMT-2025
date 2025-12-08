@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import { TripProvider } from './context/TripContext'
 
 try {
   const rootElement = document.getElementById('root');
@@ -9,7 +10,9 @@ try {
   
   createRoot(rootElement).render(
     <StrictMode>
-      <App />
+      <TripProvider>
+        <App />
+      </TripProvider>
     </StrictMode>,
   )
 } catch (e) {
