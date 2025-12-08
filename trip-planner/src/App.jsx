@@ -4,10 +4,8 @@ import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Polyline, CircleMarker, Popup } from 'react-leaflet'
 import { tripData } from './data'
 
-// New modular components (DDG-style architecture)
+// Modular components
 import Sidebar from './components/Sidebar'
-import TravelerSelector from './components/TravelerSelector'
-import ItineraryCard from './components/ItineraryCard'
 import { 
   dayItinerary, 
   travelers as mmtTeam, 
@@ -1539,7 +1537,7 @@ function App() {
 
       {/* Navigation Tabs */}
       <nav className="tab-nav">
-        {['overview', 'explore', 'mytrip', 'lodging', 'foliage', 'lobster', 'towns', 'planning', 'packing'].map((tab) => (
+        {['overview', 'explore', 'mytrip', 'lodging', 'foliage', 'lobster', 'towns', 'food', 'planning', 'packing'].map((tab) => (
           <button
             key={tab}
             className={`tab-btn ${activeTab === tab ? 'active' : ''} ${tab === 'overview' ? 'primary-tab' : ''}`}
@@ -1552,6 +1550,7 @@ function App() {
             {tab === 'foliage' && '🍁 '}
             {tab === 'lobster' && '🦞 '}
             {tab === 'towns' && '⛵ '}
+            {tab === 'food' && '🍽️ '}
             {tab === 'planning' && '📋 '}
             {tab === 'packing' && '🧳 '}
             {tab === 'overview' ? 'Overview' : tab === 'mytrip' ? 'My Trip' : tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -2887,61 +2886,6 @@ function App() {
             </div>
           </section>
         </>
-      )}
-
-      {/* Itinerary Tab */}
-      {activeTab === 'itinerary' && (
-        <section className="timeline">
-          <h2>📅 Day-by-Day Plan</h2>
-          <div className="timeline-container">
-            {itinerary.map((day) => (
-              <div key={day.day} className="timeline-item">
-                <div className="timeline-marker">{day.day}</div>
-                <div className="timeline-content">
-                  <div className="day-header">
-                    <h3>{day.title}</h3>
-                    <span className="location-tag">📍 {day.location}</span>
-                  </div>
-                  <div className="day-details">
-                    {day.driveTime && (
-                      <p className="drive-time">🚗 <strong>Drive:</strong> {day.driveTime}</p>
-                    )}
-                    <p className="description">{day.details}</p>
-                    {day.stops && (
-                      <div className="stops-list">
-                        <h4>Key Stops</h4>
-                        <ul>
-                          {day.stops.map((stop, idx) => (
-                            <li key={idx}><strong>{stop.name}:</strong> {stop.highlight}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {day.activities && (
-                      <div className="activities-list">
-                        <h4>Activities</h4>
-                        <ul>
-                          {day.activities.map((activity, idx) => (
-                            <li key={idx}>{activity}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {day.dining && (
-                      <div className="dining-info"><strong>🍽️ Dining:</strong> {day.dining}</div>
-                    )}
-                    {day.stay && (
-                      <div className="stay-info"><strong>🛏️ Stay:</strong> {day.stay}</div>
-                    )}
-                    {day.note && (
-                      <p className="note"><em>💡 {day.note}</em></p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
       )}
 
       {/* Planning Tab */}
