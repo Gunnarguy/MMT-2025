@@ -1085,6 +1085,19 @@ function App() {
   const currentSelections = useMemo(() => {
     return new Set(travelerSelections[currentTravelerId] || [])
   }, [travelerSelections, currentTravelerId])
+
+  const activeSchedule = useMemo(() => {
+    return scheduleOptions.find((opt) => opt.id === selectedScheduleOption) || scheduleOptions[0]
+  }, [selectedScheduleOption])
+
+  const handleScheduleChange = useCallback((optionId) => {
+    setSelectedScheduleOption(optionId)
+    // Make the experience feel connected: jump to overview and tune explore filters
+    setActiveTab('overview')
+    setSelectedDay(null)
+    const mappedType = optionId === 'coastal' ? 'lobster' : optionId === 'foliage' ? 'scenic-drive' : 'all'
+    setExploreType(mappedType)
+  }, [])
   
   // Toggle activity for current traveler
   const toggleActivityForTraveler = useCallback((activityId, travelerId = currentTravelerId) => {
@@ -1467,7 +1480,7 @@ function App() {
           selectedActivities={currentSelections}
           scheduleOptions={scheduleOptions}
           selectedScheduleOption={selectedScheduleOption}
-          onScheduleOptionChange={setSelectedScheduleOption}
+          onScheduleOptionChange={handleScheduleChange}
           onActivityToggle={toggleActivityForTraveler}
           activeMainTab={activeTab}
         />
@@ -1514,6 +1527,13 @@ function App() {
         <h1>{tripData.title}</h1>
         <h2>{tripData.subtitle}</h2>
         <p className="tagline">{tripData.tagline}</p>
+        {activeSchedule && (
+          <div className="route-pill" title={activeSchedule.vibe}>
+            <span className="pill-emoji">{activeSchedule.emoji}</span>
+            <span className="pill-title">{activeSchedule.title}</span>
+            <span className="pill-miles">{activeSchedule.totalMiles}</span>
+          </div>
+        )}
         
         {/* Travelers showcase */}
         <div className="travelers">

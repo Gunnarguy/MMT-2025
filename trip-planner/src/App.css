@@ -674,6 +674,34 @@ body {
   margin: 0.5rem 0 1.5rem;
 }
 
+.route-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  background: linear-gradient(135deg, #fff8f0, #fff);
+  border: 1px solid #f3d7c1;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(211, 84, 0, 0.12);
+  color: #8b4e1e;
+  font-weight: 600;
+  margin: 0 auto 1.5rem;
+  width: fit-content;
+}
+
+.route-pill .pill-emoji {
+  font-size: 1.2rem;
+}
+
+.route-pill .pill-title {
+  font-size: 0.95rem;
+}
+
+.route-pill .pill-miles {
+  font-size: 0.85rem;
+  color: #a36222;
+}
+
 .intro-text {
   font-size: 1.1rem;
   max-width: 900px;
