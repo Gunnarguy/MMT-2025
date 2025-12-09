@@ -1457,7 +1457,7 @@ function App() {
       )}
       
       {/* ════════════════════════════════════════════════════════════════════════
-          DDG-STYLE SIDEBAR - Mission Control Panel
+          TRIP COMPANION SIDEBAR - Contextual summary panel
           ════════════════════════════════════════════════════════════════════════ */}
       {showSidebar && (
         <Sidebar
@@ -1465,11 +1465,11 @@ function App() {
           onTravelerChange={setCurrentTravelerId}
           tripDays={dayItinerary}
           selectedActivities={currentSelections}
-          onSelectDay={setSelectedDay}
           scheduleOptions={scheduleOptions}
           selectedScheduleOption={selectedScheduleOption}
           onScheduleOptionChange={setSelectedScheduleOption}
           onActivityToggle={toggleActivityForTraveler}
+          activeMainTab={activeTab}
         />
       )}
       
