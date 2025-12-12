@@ -290,7 +290,7 @@ class FoliageService {
   getRecommendations(date) {
     const recommendations = [];
     
-    for (const [region, data] of Object.entries(this.baseData.regions)) {
+    for (const [region] of Object.entries(this.baseData.regions)) {
       const status = this.getFoliageStatus(region, date);
       
       if (status.percentage >= 70) {

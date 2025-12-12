@@ -250,6 +250,12 @@ class NominatimAPI {
     }
     
     try {
+      // In browsers, we cannot set a custom User-Agent header. Nominatim's
+      // usage policy prefers identification; if you control the deployment
+      // environment, set VITE_NOMINATIM_EMAIL in .env to identify requests.
+      // (This is appended as a query param.)
+      const nominatimEmail = import.meta?.env?.VITE_NOMINATIM_EMAIL;
+
       const params = new URLSearchParams({
         q: query,
         format: 'json',
@@ -258,17 +264,17 @@ class NominatimAPI {
         extratags: '1',
         countrycodes
       });
+
+      if (nominatimEmail) {
+        params.append('email', nominatimEmail);
+      }
       
       if (boundingBox) {
         params.append('viewbox', boundingBox.join(','));
         params.append('bounded', '1');
       }
       
-      const response = await fetch(`${this.endpoint}/search?${params}`, {
-        headers: {
-          'User-Agent': 'MMT-2025-Trip-Planner/1.0'
-        }
-      });
+      const response = await fetch(`${this.endpoint}/search?${params}`);
       
       if (!response.ok) throw new Error('Nominatim API error');
       

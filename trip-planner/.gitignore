@@ -12,6 +12,16 @@ dist
 dist-ssr
 *.local
 
+# Local environment files (do not commit)
+.env
+.env.*
+
+# Legacy/experimental app drafts (do not commit)
+src/App-old.jsx
+src/App-redesign.jsx
+src/App-old.css
+src/App-clean.css
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

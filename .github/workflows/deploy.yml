@@ -52,6 +52,11 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
+      # GitHub Pages serves 404.html for unknown routes. For SPAs, we want the
+      # app shell (index.html) to load so client-side routing/state can handle it.
+      - name: SPA fallback (404.html)
+        run: cp dist/index.html dist/404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

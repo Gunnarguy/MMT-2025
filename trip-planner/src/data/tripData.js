@@ -9,11 +9,11 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 export const tripMeta = {
   title: "Tere & Mikaela's Epic Girls Trip",
-  subtitle: "New England & Southern Quebec • Late September 2025",
+  subtitle: "New England & Southern Quebec • Late September 2026",
   tagline: "Lobsters 🦞 • Leaves 🍁",
   summary: "Begin in Boston, surf the Maine coast, crest the White and Green Mountains, cross into cosmopolitan Montreal, and descend through the Adirondacks to Saratoga/Albany— chasing foliage vertically while honoring the original 'girls trip' wish list.",
-  startDate: "2025-09-20",
-  endDate: "2025-09-27",
+  startDate: "2026-09-20",
+  endDate: "2026-09-27",
   totalDays: 8,
   region: "New England & Southern Quebec"
 };

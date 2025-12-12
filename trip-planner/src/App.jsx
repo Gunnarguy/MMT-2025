@@ -3,1192 +3,480 @@ import './App.css'
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Polyline, CircleMarker, Popup } from 'react-leaflet'
 import { tripData } from './data'
-
-// Modular components
-import Sidebar from './components/Sidebar'
+import { searchService } from './services/searchService'
 import { 
   dayItinerary, 
-  travelers as mmtTeam, 
   scheduleOptions, 
   exploreCatalog, 
-  dataSources,
-  mmHighlights,
-  researchHighlights,
   lodging
 } from './data/tripData'
 
 // ============================================
-// 🚗 DRIVING DIRECTIONS SERVICE
-// Uses OSRM (OpenStreetMap Routing Machine) - FREE, no API key needed
+// UTILITY FUNCTIONS
 // ============================================
 
-// Cache for route calculations to avoid repeated API calls
-const routeCache = new Map()
+// NOTE:
+// We used to fetch OSRM routes between points. The current UI renders polylines
+// from tripData.map and markers from activities, so this helper is not currently
+// needed. Keeping the cache + distance utilities for potential future use.
 
-/**
- * Fetches real driving route from OSRM API
- * Returns actual road-following polyline, distance, and duration
- */
-async function fetchDrivingRoute(startCoords, endCoords) {
-  const cacheKey = `${startCoords.join(',')}-${endCoords.join(',')}`
-  
-  // Check cache first
-  if (routeCache.has(cacheKey)) {
-    return routeCache.get(cacheKey)
-  }
-  
-  try {
-    // OSRM expects [lng, lat] not [lat, lng]
-    const start = `${startCoords[1]},${startCoords[0]}`
-    const end = `${endCoords[1]},${endCoords[0]}`
-    
-    const response = await fetch(
-      `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson&steps=true`
-    )
-    
-    if (!response.ok) throw new Error('Route fetch failed')
-    
-    const data = await response.json()
-    
-    if (data.code !== 'Ok' || !data.routes.length) {
-      throw new Error('No route found')
-    }
-    
-    const route = data.routes[0]
-    const result = {
-      // Convert GeoJSON coordinates back to [lat, lng] for Leaflet
-      coordinates: route.geometry.coordinates.map(c => [c[1], c[0]]),
-      distance: route.distance, // in meters
-      duration: route.duration, // in seconds
-      distanceMiles: (route.distance / 1609.344).toFixed(1),
-      durationMinutes: Math.round(route.duration / 60),
-      durationFormatted: formatDuration(route.duration),
-      // Extract turn-by-turn directions
-      steps: route.legs[0].steps.map(step => ({
-        instruction: step.maneuver.type === 'depart' ? 'Start' :
-                     step.maneuver.type === 'arrive' ? 'Arrive at destination' :
-                     `${step.maneuver.modifier || ''} ${step.maneuver.type}`.trim(),
-        name: step.name || 'unnamed road',
-        distance: (step.distance / 1609.344).toFixed(1),
-        duration: Math.round(step.duration / 60),
-        maneuver: step.maneuver.type,
-        modifier: step.maneuver.modifier,
-      })),
-    }
-    
-    // Cache the result
-    routeCache.set(cacheKey, result)
-    return result
-    
-  } catch (error) {
-    console.error('Route calculation error:', error)
-    // Fallback to straight-line estimate
-    const straightDist = calculateDistance(startCoords, endCoords)
-    return {
-      coordinates: [startCoords, endCoords],
-      distance: straightDist * 1609.344,
-      duration: (straightDist / 45) * 3600, // Assume 45mph
-      distanceMiles: straightDist.toFixed(1),
-      durationMinutes: Math.round((straightDist / 45) * 60),
-      durationFormatted: estimateDriveTime(straightDist),
-      steps: [],
-      isFallback: true,
-    }
-  }
-}
-
-/**
- * Fetches routes for an entire day's itinerary
- * Returns array of route segments with full details
- */
-async function fetchDayRoutes(activities) {
-  const coords = activities.filter(a => a.coordinates).map(a => ({
-    coords: a.coordinates,
-    name: a.name,
-  }))
-  
-  if (coords.length < 2) return []
-  
-  const routes = []
-  for (let i = 0; i < coords.length - 1; i++) {
-    const route = await fetchDrivingRoute(coords[i].coords, coords[i + 1].coords)
-    routes.push({
-      from: coords[i].name,
-      to: coords[i + 1].name,
-      ...route,
-    })
-  }
-  
-  return routes
-}
-
-/**
- * Format seconds into human-readable duration
- */
-function formatDuration(seconds) {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.round((seconds % 3600) / 60)
-  
-  if (hours === 0) return `${minutes} min`
-  if (minutes === 0) return `${hours} hr`
-  return `${hours} hr ${minutes} min`
-}
-
-/**
- * Get turn direction emoji for navigation
- */
-function getTurnEmoji(maneuver, modifier) {
-  if (maneuver === 'depart') return '🚗'
-  if (maneuver === 'arrive') return '🏁'
-  if (maneuver === 'turn') {
-    if (modifier?.includes('left')) return '⬅️'
-    if (modifier?.includes('right')) return '➡️'
-    if (modifier?.includes('uturn')) return '↩️'
-  }
-  if (maneuver === 'merge') return '🔀'
-  if (maneuver === 'fork') return '🔱'
-  if (maneuver === 'roundabout') return '🔄'
-  if (maneuver === 'continue') return '⬆️'
-  return '📍'
-}
-
-/**
- * Custom hook for fetching and managing routes
- */
-function useRoutes(activities, dayId) {
-  const [routes, setRoutes] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [totalStats, setTotalStats] = useState({ miles: 0, time: 0, formatted: '' })
-  
-  useEffect(() => {
-    if (!activities || activities.length < 2) {
-      setRoutes([])
-      setTotalStats({ miles: 0, time: 0, formatted: '' })
-      return
-    }
-    
-    const fetchRoutes = async () => {
-      setLoading(true)
-      setError(null)
-      
-      try {
-        const routeData = await fetchDayRoutes(activities)
-        setRoutes(routeData)
-        
-        // Calculate totals
-        const totalMiles = routeData.reduce((sum, r) => sum + parseFloat(r.distanceMiles), 0)
-        const totalSeconds = routeData.reduce((sum, r) => sum + r.duration, 0)
-        
-        setTotalStats({
-          miles: totalMiles.toFixed(1),
-          time: Math.round(totalSeconds / 60),
-          formatted: formatDuration(totalSeconds),
-        })
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-    
-    fetchRoutes()
-  }, [activities, dayId])
-  
-  return { routes, loading, error, totalStats }
-}
-
-// Route styling
-const coreLineOptions = { color: '#d35400', weight: 4, opacity: 0.9 }
-const altLineOptions = { color: '#1abc9c', weight: 3, dashArray: '8 6', opacity: 0.7 }
-
-// Marker styling based on category
-const getMarkerOptions = (category) => {
-  switch (category) {
-    case 'core':
-      return { color: '#d35400', fillColor: '#d35400' }
-    case 'alt':
-      return { color: '#1abc9c', fillColor: '#1abc9c' }
-    default:
-      return { color: '#2c3e50', fillColor: '#2c3e50' }
-  }
-}
-
-// Helper: Calculate distance between two coordinates (Haversine formula)
-function calculateDistance(coord1, coord2) {
-  const R = 3959 // Earth's radius in miles
-  const dLat = (coord2[0] - coord1[0]) * Math.PI / 180
-  const dLon = (coord2[1] - coord1[1]) * Math.PI / 180
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-  return R * c
-}
-
-// Helper: Estimate drive time (rough: 45 mph average with stops)
-function estimateDriveTime(miles) {
-  const hours = miles / 40 // Conservative estimate with scenic stops
-  if (hours < 1) return `${Math.round(hours * 60)} min`
-  return `${hours.toFixed(1)} hrs`
-}
-
-// Activity type icons and colors
-const activityConfig = {
-  lobster: { icon: '🦞', color: '#e74c3c', label: 'Lobster Spot' },
-  town: { icon: '⚓', color: '#1abc9c', label: 'Harbor Town' },
-  foliage: { icon: '🍁', color: '#e67e22', label: 'Foliage Spot' },
+// Activity styling
+const activityTypes = {
+  lobster: { icon: '🦞', color: '#e74c3c', label: 'Lobster' },
+  town: { icon: '⚓', color: '#1abc9c', label: 'Town' },
+  foliage: { icon: '🍁', color: '#e67e22', label: 'Foliage' },
   drive: { icon: '🚗', color: '#9b59b6', label: 'Scenic Drive' },
-  landmark: { icon: '📸', color: '#3498db', label: 'Landmark' },
+  lodging: { icon: '🏨', color: '#3498db', label: 'Lodging' },
+  food: { icon: '🍽️', color: '#f39c12', label: 'Food' },
+  landmark: { icon: '📸', color: '#2ecc71', label: 'Landmark' },
+  hike: { icon: '🥾', color: '#27ae60', label: 'Hike' },
+  cafe: { icon: '☕', color: '#8b4513', label: 'Cafe' },
+
+  // Types returned by searchService (OpenStreetMap / Nominatim)
+  restaurant: { icon: '🍽️', color: '#f39c12', label: 'Restaurant' },
+  bar: { icon: '🍺', color: '#8e44ad', label: 'Bar' },
+  museum: { icon: '🏛️', color: '#34495e', label: 'Museum' },
+  park: { icon: '🌲', color: '#27ae60', label: 'Park' },
+  shopping: { icon: '🛍️', color: '#d35400', label: 'Shopping' },
+  attraction: { icon: '✨', color: '#2ecc71', label: 'Attraction' },
+  viewpoint: { icon: '👀', color: '#2980b9', label: 'Viewpoint' },
+  custom: { icon: '📍', color: '#7f8c8d', label: 'Custom' },
 }
 
 // ============================================
-// 🗺️ DRIVING DIRECTIONS COMPONENT
-// Shows turn-by-turn directions between activities
+// COMPACT COUNTDOWN
 // ============================================
-function DrivingDirections({ routes, loading, error }) {
-  const [expandedRoute, setExpandedRoute] = useState(null)
-  
-  if (loading) {
-    return (
-      <div className="directions-loading">
-        <div className="loading-spinner">🚗</div>
-        <p>Calculating best routes...</p>
-      </div>
-    )
-  }
-  
-  if (error) {
-    return (
-      <div className="directions-error">
-        <p>⚠️ Couldn't load routes: {error}</p>
-      </div>
-    )
-  }
-  
-  if (!routes || routes.length === 0) {
-    return null
-  }
-  
-  // Calculate total trip stats
-  const totalMiles = routes.reduce((sum, r) => sum + parseFloat(r.distanceMiles), 0)
-  const totalMinutes = routes.reduce((sum, r) => sum + r.durationMinutes, 0)
-  
-  return (
-    <div className="driving-directions">
-      <div className="directions-header">
-        <h4>🧭 Turn-by-Turn Directions</h4>
-        <div className="trip-totals">
-          <span className="total-distance">📏 {totalMiles.toFixed(1)} mi total</span>
-          <span className="total-time">⏱️ {formatDuration(totalMinutes * 60)} driving</span>
-        </div>
-      </div>
-      
-      <div className="route-segments">
-        {routes.map((route, idx) => (
-          <div key={idx} className="route-segment">
-            <div 
-              className="segment-header"
-              onClick={() => setExpandedRoute(expandedRoute === idx ? null : idx)}
-            >
-              <div className="segment-info">
-                <span className="segment-number">{idx + 1}</span>
-                <div className="segment-endpoints">
-                  <strong>{route.from}</strong>
-                  <span className="arrow">→</span>
-                  <strong>{route.to}</strong>
-                </div>
-              </div>
-              <div className="segment-stats">
-                <span className="distance">{route.distanceMiles} mi</span>
-                <span className="duration">{route.durationFormatted}</span>
-                <span className={`expand-icon ${expandedRoute === idx ? 'expanded' : ''}`}>
-                  {expandedRoute === idx ? '▼' : '▶'}
-                </span>
-              </div>
-            </div>
-            
-            {expandedRoute === idx && route.steps && route.steps.length > 0 && (
-              <div className="segment-steps">
-                {route.steps.map((step, stepIdx) => (
-                  <div key={stepIdx} className="direction-step">
-                    <span className="step-icon">{getTurnEmoji(step.maneuver, step.modifier)}</span>
-                    <div className="step-details">
-                      <span className="step-instruction">
-                        {step.instruction.charAt(0).toUpperCase() + step.instruction.slice(1)}
-                        {step.name !== 'unnamed road' && ` onto ${step.name}`}
-                      </span>
-                      <span className="step-meta">
-                        {step.distance} mi • {step.duration} min
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {route.isFallback && (
-              <div className="fallback-notice">
-                ℹ️ Estimated (straight-line) - actual roads may vary
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ============================================
-// 🗺️ INTERACTIVE ROUTE MAP COMPONENT  
-// Shows real driving routes on map with popups
-// ============================================
-function RouteMapLayer({ routes, activities }) {
-  // Generate distinct colors for each route segment
-  const routeColors = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#1abc9c', '#e67e22', '#34495e']
-  
-  return (
-    <>
-      {/* Draw actual route polylines */}
-      {routes.map((route, idx) => (
-        route.coordinates && route.coordinates.length > 1 && (
-          <Polyline
-            key={`route-${idx}`}
-            positions={route.coordinates}
-            pathOptions={{
-              color: routeColors[idx % routeColors.length],
-              weight: 4,
-              opacity: 0.8,
-            }}
-          />
-        )
-      ))}
-      
-      {/* Activity markers */}
-      {activities.filter(a => a.coordinates).map((activity, idx) => (
-        <CircleMarker
-          key={activity.id}
-          center={activity.coordinates}
-          radius={12}
-          pathOptions={{
-            color: '#fff',
-            fillColor: activityConfig[activity.type]?.color || '#666',
-            fillOpacity: 1,
-            weight: 3,
-          }}
-        >
-          <Popup>
-            <div className="route-popup">
-              <h4>{activityConfig[activity.type]?.icon} {activity.name}</h4>
-              <p><strong>Stop #{idx + 1}</strong></p>
-              <p>{activity.location}</p>
-              {activity.duration && <p>⏱️ Plan for ~{activity.duration}h here</p>}
-            </div>
-          </Popup>
-        </CircleMarker>
-      ))}
-    </>
-  )
-}
-
-// ============================================
-// 📊 TRIP SUMMARY DASHBOARD COMPONENT
-// Shows total trip stats, costs, and route overview
-// ============================================
-function TripSummaryDashboard({ tripDays, getActivitiesForDay, selectedActivities }) {
-  const [allRoutes, setAllRoutes] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [totals, setTotals] = useState({
-    totalMiles: 0,
-    totalDriveTime: 0,
-    gasGallons: 0,
-    gasCost: 0,
-  })
-  
-  // Current avg gas prices for New England (updated for 2025)
-  const GAS_PRICE_PER_GALLON = 3.65
-  const AVG_MPG = 28 // Average car MPG
-  
-  // Calculate all routes when activities change
-  useEffect(() => {
-    const calculateAllRoutes = async () => {
-      if (selectedActivities.length < 2) {
-        setTotals({ totalMiles: 0, totalDriveTime: 0, gasGallons: 0, gasCost: 0 })
-        setAllRoutes([])
-        return
-      }
-      
-      setLoading(true)
-      
-      try {
-        const routePromises = tripDays.map(async (day) => {
-          const dayActivities = getActivitiesForDay(day.id)
-          if (dayActivities.length < 2) return { day, routes: [], stats: { miles: 0, time: 0 } }
-          
-          const routes = await fetchDayRoutes(dayActivities)
-          const totalMiles = routes.reduce((sum, r) => sum + parseFloat(r.distanceMiles), 0)
-          const totalTime = routes.reduce((sum, r) => sum + r.durationMinutes, 0)
-          
-          return { day, routes, stats: { miles: totalMiles, time: totalTime } }
-        })
-        
-        const results = await Promise.all(routePromises)
-        setAllRoutes(results)
-        
-        // Calculate totals
-        const totalMiles = results.reduce((sum, r) => sum + r.stats.miles, 0)
-        const totalTime = results.reduce((sum, r) => sum + r.stats.time, 0)
-        const gasGallons = totalMiles / AVG_MPG
-        const gasCost = gasGallons * GAS_PRICE_PER_GALLON
-        
-        setTotals({
-          totalMiles: totalMiles.toFixed(1),
-          totalDriveTime: totalTime,
-          gasGallons: gasGallons.toFixed(1),
-          gasCost: gasCost.toFixed(2),
-        })
-        
-      } catch (err) {
-        console.error('Failed to calculate routes:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    
-    calculateAllRoutes()
-  }, [tripDays, selectedActivities, getActivitiesForDay])
-  
-  const assignedActivities = selectedActivities.filter(a => a.dayId)
-  // Ensure duration values are numeric (parseFloat) to avoid string concatenation bugs
-  const totalActivityTime = selectedActivities.reduce((sum, a) => sum + (parseFloat(a.duration) || 0), 0)
-  
-  return (
-    <div className="trip-summary-dashboard">
-      <h3>🚗 Trip Summary & Route Stats</h3>
-      
-      {loading ? (
-        <div className="summary-loading">
-          <div className="loading-car">🚗</div>
-          <p>Calculating all routes from real road data...</p>
-        </div>
-      ) : (
-        <>
-          {/* Main Stats Grid */}
-          <div className="summary-stats-grid">
-            <div className="summary-stat primary">
-              <span className="stat-icon">📏</span>
-              <div className="stat-content">
-                <span className="stat-value">{totals.totalMiles}</span>
-                <span className="stat-label">Total Miles</span>
-              </div>
-            </div>
-            
-            <div className="summary-stat primary">
-              <span className="stat-icon">🚗</span>
-              <div className="stat-content">
-                <span className="stat-value">{formatDuration(totals.totalDriveTime * 60)}</span>
-                <span className="stat-label">Drive Time</span>
-              </div>
-            </div>
-            
-            <div className="summary-stat">
-              <span className="stat-icon">⛽</span>
-              <div className="stat-content">
-                <span className="stat-value">{totals.gasGallons} gal</span>
-                <span className="stat-label">Est. Gas ({AVG_MPG} mpg)</span>
-              </div>
-            </div>
-            
-            <div className="summary-stat highlight">
-              <span className="stat-icon">💵</span>
-              <div className="stat-content">
-                <span className="stat-value">${totals.gasCost}</span>
-                <span className="stat-label">Gas Cost @ ${GAS_PRICE_PER_GALLON}/gal</span>
-              </div>
-            </div>
-            
-            <div className="summary-stat">
-              <span className="stat-icon">⏱️</span>
-              <div className="stat-content">
-                <span className="stat-value">{totalActivityTime.toFixed(1)} hrs</span>
-                <span className="stat-label">Activity Time</span>
-              </div>
-            </div>
-            
-            <div className="summary-stat">
-              <span className="stat-icon">📍</span>
-              <div className="stat-content">
-                <span className="stat-value">{assignedActivities.length}</span>
-                <span className="stat-label">Stops Scheduled</span>
-              </div>
-            </div>
-          </div>
-          
-          {/* Per-Day Breakdown */}
-          {allRoutes.length > 0 && (
-            <div className="per-day-breakdown">
-              <h4>Daily Driving Breakdown</h4>
-              <div className="day-breakdown-grid">
-                {allRoutes.filter(r => r.stats.miles > 0).map(({ day, stats }) => (
-                  <div key={day.id} className="day-breakdown-item">
-                    <span className="day-name">{day.label}</span>
-                    <div className="day-stats-mini">
-                      <span>📏 {stats.miles.toFixed(1)} mi</span>
-                      <span>🚗 {formatDuration(stats.time * 60)}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {/* Tips */}
-          <div className="driving-tips">
-            <h4>💡 Pro Tips</h4>
-            <ul>
-              <li>🅿️ <strong>Portland parking:</strong> Use the Casco Bay Garage ($5/day max on weekends)</li>
-              <li>⛽ <strong>Cheapest gas:</strong> Fill up in New Hampshire (no gas tax!)</li>
-              <li>🍁 <strong>Scenic route:</strong> Take Route 1 along the coast for the best views</li>
-              <li>📱 <strong>Download offline maps:</strong> Cell service is spotty in rural Maine</li>
-            </ul>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
-
-// ============================================
-// 📅 DAY ROUTE CARD COMPONENT
-// Full day itinerary with routes and directions
-// ============================================
-function DayRouteCard({ day, activities, tripDays, onAssign, onRemove, onMove }) {
-  const { routes, loading, error, totalStats } = useRoutes(activities, day.id)
-  const [showDirections, setShowDirections] = useState(false)
-  const [showMap, setShowMap] = useState(false)
-  
-  return (
-    <div className="day-route-card">
-      <div className="day-route-header">
-        <div className="day-info">
-          <h4>{day.label}</h4>
-          <span className="day-location">{day.location}</span>
-        </div>
-        <div className="day-route-stats">
-          {activities.length > 0 && (
-            <>
-              <span className="stat">
-                📍 {activities.length} stop{activities.length !== 1 ? 's' : ''}
-              </span>
-              {loading ? (
-                <span className="stat loading">🔄 Calculating...</span>
-              ) : (
-                <>
-                  <span className="stat">📏 {totalStats.miles} mi</span>
-                  <span className="stat">🚗 {totalStats.formatted}</span>
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-      
-      {activities.length === 0 ? (
-        <div className="day-empty">
-          <p>No activities yet - add from pool or browse tabs</p>
-        </div>
-      ) : (
-        <>
-          {/* Activity timeline with route info */}
-          <div className="day-timeline">
-            {activities.map((activity, idx) => (
-              <div key={activity.id} className="timeline-item">
-                {/* Activity Card */}
-                <div className={`timeline-activity ${activity.type}`}>
-                  <div className="activity-order">
-                    {idx > 0 && (
-                      <button className="reorder-btn" onClick={() => onMove(day.id, idx, idx - 1)}>↑</button>
-                    )}
-                    <span className="order-badge">{idx + 1}</span>
-                    {idx < activities.length - 1 && (
-                      <button className="reorder-btn" onClick={() => onMove(day.id, idx, idx + 1)}>↓</button>
-                    )}
-                  </div>
-                  
-                  <span className="activity-type-icon">{activityConfig[activity.type]?.icon}</span>
-                  
-                  <div className="activity-content">
-                    <strong>{activity.name}</strong>
-                    <span className="activity-loc">{activity.location}</span>
-                    {activity.duration && (
-                      <span className="activity-time">⏱️ ~{activity.duration}h</span>
-                    )}
-                  </div>
-                  
-                  <div className="activity-controls">
-                    <select
-                      value={day.id}
-                      onChange={(e) => onAssign(activity.id, parseInt(e.target.value) || null)}
-                    >
-                      <option value="">Unassign</option>
-                      {tripDays.map(d => (
-                        <option key={d.id} value={d.id}>{d.label}</option>
-                      ))}
-                    </select>
-                    <button className="remove-btn" onClick={() => onRemove(activity.id)}>✕</button>
-                  </div>
-                </div>
-                
-                {/* Route connector to next activity */}
-                {idx < activities.length - 1 && routes[idx] && (
-                  <div className="route-connector">
-                    <div className="route-line"></div>
-                    <div className="route-info">
-                      <span className="route-icon">🚗</span>
-                      <span className="route-distance">{routes[idx].distanceMiles} mi</span>
-                      <span className="route-time">{routes[idx].durationFormatted}</span>
-                      {routes[idx].steps && routes[idx].steps.length > 0 && (
-                        <button 
-                          className="view-directions-btn"
-                          onClick={() => setShowDirections(!showDirections)}
-                        >
-                          {showDirections ? 'Hide' : 'View'} Directions
-                        </button>
-                      )}
-                    </div>
-                    <div className="route-line"></div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          
-          {/* Toggle buttons */}
-          <div className="day-actions">
-            {activities.length >= 2 && (
-              <>
-                <button 
-                  className={`toggle-btn ${showDirections ? 'active' : ''}`}
-                  onClick={() => setShowDirections(!showDirections)}
-                >
-                  🧭 {showDirections ? 'Hide' : 'Show'} Directions
-                </button>
-                <button 
-                  className={`toggle-btn ${showMap ? 'active' : ''}`}
-                  onClick={() => setShowMap(!showMap)}
-                >
-                  🗺️ {showMap ? 'Hide' : 'Show'} Route Map
-                </button>
-              </>
-            )}
-          </div>
-          
-          {/* Expandable directions section */}
-          {showDirections && (
-            <DrivingDirections routes={routes} loading={loading} error={error} />
-          )}
-          
-          {/* Expandable map section */}
-          {showMap && activities.length >= 2 && (
-            <div className="day-route-map">
-              <MapContainer
-                center={activities[0]?.coordinates || [43.5, -71.5]}
-                zoom={9}
-                style={{ height: '300px', width: '100%', borderRadius: '12px' }}
-                scrollWheelZoom={true}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <RouteMapLayer routes={routes} activities={activities} />
-              </MapContainer>
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  )
-}
-
-// Countdown timer component
-function CountdownTimer({ targetDate }) {
-  const calculateTimeLeft = useCallback(() => {
-    const difference = new Date(targetDate) - new Date()
-    if (difference <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, passed: true }
-    
+function CompactCountdown({ targetDate }) {
+  const calc = useCallback(() => {
+    const diff = new Date(targetDate) - new Date()
+    if (diff <= 0) return { days: 0, hours: 0, passed: true }
     return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / (1000 * 60)) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-      passed: false
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      passed: false,
     }
   }, [targetDate])
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
-
-  useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000)
-    return () => clearInterval(timer)
-  }, [calculateTimeLeft])
-
-  if (timeLeft.passed) {
-    return <div className="countdown-passed">🎉 Adventure time! Have an amazing trip! 🎉</div>
-  }
-
-  return (
-    <div className="countdown">
-      <div className="countdown-item">
-        <span className="countdown-number">{timeLeft.days}</span>
-        <span className="countdown-label">days</span>
-      </div>
-      <div className="countdown-item">
-        <span className="countdown-number">{timeLeft.hours}</span>
-        <span className="countdown-label">hours</span>
-      </div>
-      <div className="countdown-item">
-        <span className="countdown-number">{timeLeft.minutes}</span>
-        <span className="countdown-label">mins</span>
-      </div>
-      <div className="countdown-item">
-        <span className="countdown-number">{timeLeft.seconds}</span>
-        <span className="countdown-label">secs</span>
-      </div>
-    </div>
-  )
-}
-
-// Packing checklist component with localStorage persistence
-function PackingChecklist({ checklist }) {
-  const [checked, setChecked] = useState(() => {
-    const saved = localStorage.getItem('mmt-packing-checked')
-    return saved ? JSON.parse(saved) : {}
-  })
-
-  useEffect(() => {
-    localStorage.setItem('mmt-packing-checked', JSON.stringify(checked))
-  }, [checked])
-
-  const toggleItem = (category, item) => {
-    const key = `${category}-${item}`
-    setChecked(prev => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  const getProgress = () => {
-    const allItems = Object.entries(checklist).flatMap(([cat, items]) => 
-      items.map(i => `${cat}-${i.item}`)
-    )
-    const checkedCount = allItems.filter(key => checked[key]).length
-    return Math.round((checkedCount / allItems.length) * 100)
-  }
-
-  return (
-    <div className="packing-section">
-      <div className="packing-progress">
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: `${getProgress()}%` }}></div>
-        </div>
-        <span className="progress-text">{getProgress()}% packed!</span>
-      </div>
-      <div className="packing-grid">
-        {Object.entries(checklist).map(([category, items]) => (
-          <div key={category} className="packing-category">
-            <h4>{category.charAt(0).toUpperCase() + category.slice(1)} {getCategoryEmoji(category)}</h4>
-            <ul>
-              {items.map((item) => {
-                const key = `${category}-${item.item}`
-                return (
-                  <li key={item.item} className={checked[key] ? 'checked' : ''}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={checked[key] || false}
-                        onChange={() => toggleItem(category, item.item)}
-                      />
-                      <span className={item.essential ? 'essential' : ''}>
-                        {item.item}
-                        {item.essential && <span className="essential-badge">!</span>}
-                      </span>
-                    </label>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Helper for category emojis
-function getCategoryEmoji(category) {
-  const emojis = { clothing: '👗', documents: '📄', gear: '🎒', picnic: '🧺' }
-  return emojis[category] || '📦'
-}
-
-// Budget calculator component
-function BudgetCalculator({ estimates }) {
-  const [travelers, setTravelers] = useState(2)
+  const [timeLeft, setTimeLeft] = useState(() => calc())
   
-  const calculateTotal = (type) => {
-    return Object.values(estimates).reduce((sum, cat) => sum + cat[type], 0)
-  }
-
-  const perPerson = (amount) => Math.round(amount / travelers)
-
-  return (
-    <div className="budget-section">
-      <div className="budget-header">
-        <h3>💰 Trip Budget Estimator</h3>
-        <div className="traveler-selector">
-          <label>Travelers: </label>
-          <button onClick={() => setTravelers(Math.max(1, travelers - 1))}>−</button>
-          <span>{travelers}</span>
-          <button onClick={() => setTravelers(travelers + 1)}>+</button>
-        </div>
-      </div>
-      <div className="budget-table">
-        <div className="budget-row header">
-          <span>Category</span>
-          <span>Low Est.</span>
-          <span>High Est.</span>
-          <span>Notes</span>
-        </div>
-        {Object.entries(estimates).map(([category, data]) => (
-          <div key={category} className="budget-row">
-            <span className="category-name">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-            <span className="amount">${data.min}</span>
-            <span className="amount">${data.max}</span>
-            <span className="note">{data.note}</span>
-          </div>
-        ))}
-        <div className="budget-row total">
-          <span>TOTAL (all travelers)</span>
-          <span className="amount">${calculateTotal('min')}</span>
-          <span className="amount">${calculateTotal('max')}</span>
-          <span></span>
-        </div>
-        <div className="budget-row per-person">
-          <span>Per Person</span>
-          <span className="amount">${perPerson(calculateTotal('min'))}</span>
-          <span className="amount">${perPerson(calculateTotal('max'))}</span>
-          <span></span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Weather widget component
-function WeatherWidget({ forecast }) {
-  return (
-    <div className="weather-grid">
-      {forecast.map((loc) => (
-        <div key={loc.location} className="weather-card">
-          <span className="weather-icon">{loc.icon}</span>
-          <h4>{loc.location}</h4>
-          <div className="temps">
-            <span className="high">{loc.high}°F</span>
-            <span className="low">{loc.low}°F</span>
-          </div>
-          <p className="weather-note">{loc.note}</p>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// Reservation tracker component
-function ReservationTracker({ reservations }) {
-  const [booked, setBooked] = useState(() => {
-    const saved = localStorage.getItem('mmt-reservations')
-    return saved ? JSON.parse(saved) : {}
-  })
-
   useEffect(() => {
-    localStorage.setItem('mmt-reservations', JSON.stringify(booked))
-  }, [booked])
-
-  const toggleBooked = (restaurant) => {
-    setBooked(prev => ({ ...prev, [restaurant]: !prev[restaurant] }))
-  }
-
-  return (
-    <div className="reservations-section">
-      <h3>🍽️ Restaurant Reservations</h3>
-      <div className="reservations-grid">
-        {reservations.map((res) => (
-          <div key={res.restaurant} className={`reservation-card ${booked[res.restaurant] ? 'booked' : ''}`}>
-            <div className="res-header">
-              <span className="day-badge">Day {res.day}</span>
-              {res.reservationNeeded && <span className="res-needed">Reservation Needed</span>}
-            </div>
-            <h4>{res.restaurant}</h4>
-            <p className="res-location">📍 {res.location}</p>
-            <p className="res-cuisine">{res.cuisine}</p>
-            <p className="must-try">🌟 Must try: {res.mustTry}</p>
-            {res.website && (
-              <a href={res.website} target="_blank" rel="noopener noreferrer" className="res-link">
-                Book Now →
-              </a>
-            )}
-            <label className="booked-toggle">
-              <input
-                type="checkbox"
-                checked={booked[res.restaurant] || false}
-                onChange={() => toggleBooked(res.restaurant)}
-              />
-              {booked[res.restaurant] ? '✅ Booked!' : 'Mark as booked'}
-            </label>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Photo spots gallery component
-function PhotoSpots({ spots }) {
-  return (
-    <div className="photo-spots">
-      <h3>📸 Instagram-Worthy Spots</h3>
-      <div className="spots-grid">
-        {spots.map((spot) => (
-          <div key={spot.name} className="spot-card">
-            <h4>{spot.name}</h4>
-            <p className="spot-location">📍 {spot.location}</p>
-            <p className="spot-tip">💡 {spot.tip}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Fun facts carousel component
-function FunFacts({ facts }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % facts.length)
-    }, 5000)
+    const timer = setInterval(() => setTimeLeft(calc()), 60000)
     return () => clearInterval(timer)
-  }, [facts.length])
+  }, [calc])
+
+  if (timeLeft.passed) return <span className="countdown-chip live">🎉 Trip time!</span>
+  return (
+    <span className="countdown-chip">
+      ⏳ {timeLeft.days}d {timeLeft.hours}h to go
+    </span>
+  )
+}
+
+// ============================================
+// ACTIVITY CARD (Used everywhere)
+// ============================================
+function ActivityCard({ activity, isAdded, onAdd, onRemove, compact = false }) {
+  const type = activityTypes[activity.type] || activityTypes.custom
+  
+  if (compact) {
+    return (
+      <div className={`activity-mini ${activity.type}`}>
+        <span className="mini-icon">{type.icon}</span>
+        <div className="mini-info">
+          <strong>{activity.name}</strong>
+          <span>{activity.location}</span>
+        </div>
+        <button 
+          className="mini-remove" 
+          onClick={() => onRemove(activity.id)}
+          title="Remove"
+        >×</button>
+      </div>
+    )
+  }
 
   return (
-    <div className="fun-facts">
-      <div className="fact-content">
-        <span className="fact-location">{facts[currentIndex].location}</span>
-        <p className="fact-text">💡 {facts[currentIndex].fact}</p>
+    <div className={`activity-card ${activity.type} ${isAdded ? 'is-added' : ''}`}>
+      <div className="card-header">
+        <span className="type-badge" style={{ background: type.color }}>
+          {type.icon} {type.label}
+        </span>
+        {activity.rating && (
+          <span className="rating">⭐ {activity.rating}</span>
+        )}
       </div>
-      <div className="fact-dots">
-        {facts.map((_, idx) => (
-          <button
-            key={idx}
-            className={`dot ${idx === currentIndex ? 'active' : ''}`}
-            onClick={() => setCurrentIndex(idx)}
-          />
-        ))}
+      
+      <h3>{activity.name}</h3>
+      <p className="location">📍 {activity.location}</p>
+      
+      {activity.description && (
+        <p className="description">{activity.description}</p>
+      )}
+      
+      {activity.details && (
+        <p className="details"><strong>✨</strong> {activity.details}</p>
+      )}
+      
+      {activity.tip && (
+        <p className="tip">💡 {activity.tip}</p>
+      )}
+      
+      <div className="card-footer">
+        {activity.duration && (
+          <span className="duration">⏱️ ~{activity.duration}h</span>
+        )}
+        {activity.price && (
+          <span className="price">{activity.price}</span>
+        )}
+        
+        <button 
+          className={`add-btn ${isAdded ? 'added' : ''}`}
+          onClick={() => isAdded ? onRemove(activity.id) : onAdd(activity)}
+        >
+          {isAdded ? '✓ In Trip' : '+ Add to Trip'}
+        </button>
       </div>
     </div>
   )
 }
 
-// Quick add popup was removed — adding to trip now goes directly to the unscheduled pool
-
-// Main App component
+// ============================================
+// MAIN APP COMPONENT
+// ============================================
 function App() {
   const { 
-    map, logistics, itinerary, alternatives, keyInsights, fieldNotes,
-    travelers, tripDates, weatherForecast, budgetEstimate, packingChecklist,
-    reservations, photoSpots, funFacts, drivingStats, playlist, emergencyContacts,
-    lobsterGuide, harborTowns, foliageTracker, liveStats, lodging
+    title, subtitle,
+    travelers, tripDates, packingChecklist,
+    lobsterGuide, harborTowns, foliageTracker,
+    map, logistics
   } = tripData
 
-  const [activeTab, setActiveTab] = useState('overview')
-  const [exploreQuery, setExploreQuery] = useState('')
-  const [exploreType, setExploreType] = useState('all')
-  const [customQuery, setCustomQuery] = useState('')
-  const [customResults, setCustomResults] = useState([])
-  const [customLoading, setCustomLoading] = useState(false)
-  const [customError, setCustomError] = useState('')
-  const [customSelectedDay, setCustomSelectedDay] = useState('')
-  const exploreTypeOptions = useMemo(() => ([
-    { id: 'all', label: 'All' },
-    { id: 'lobster', label: '🦞 Lobster' },
-    { id: 'town', label: '⚓ Towns' },
-    { id: 'scenic-drive', label: '🚗 Scenic Drives' },
-    { id: 'hike', label: '🥾 Hikes' },
-    { id: 'cafe', label: '☕ Cafes' },
-    { id: 'museum', label: '🖼️ Museums' },
-    { id: 'view', label: '🌄 Views' },
-    { id: 'lodging', label: '🏨 Stays' },
-  ]), [])
-  
-  // ════════════════════════════════════════════════════════════════════════════
-  // MULTI-TRAVELER SYSTEM (DDG-style per-user customization)
-  // ════════════════════════════════════════════════════════════════════════════
-  const [currentTravelerId, setCurrentTravelerId] = useState(() => {
-    const saved = localStorage.getItem('mmtrip-current-traveler')
-    return saved || 'both'
-  })
-  
-  const [selectedScheduleOption, setSelectedScheduleOption] = useState(() => {
-    const saved = localStorage.getItem('mmtrip-schedule-option')
-    return saved || 'classic'
-  })
-  
-  // Per-traveler activity selections (stored separately for each traveler)
-  const [travelerSelections, setTravelerSelections] = useState(() => {
-    const saved = localStorage.getItem('mmtrip-traveler-selections')
-    return saved ? JSON.parse(saved) : {
-      tere: new Set(),
-      mikaela: new Set(),
-      both: new Set()
-    }
-  })
-  
-  // Sidebar state - default OFF on mobile (< 900px)
-  const [showSidebar, setShowSidebar] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth > 900
-    }
-    return false
-  })
-  const [selectedDay, setSelectedDay] = useState(null)
+  // ════════════════════════════════════════════════════════════════
+  // CORE NAVIGATION
+  // Two primary tabs:
+  //  - Mom's Route: the original suggested route (MMTrip.txt)
+  //  - Build & Customize: drag/drop blocks + discovery catalog
+  // ════════════════════════════════════════════════════════════════
+  const [activeTab, setActiveTab] = useState('mom') // 'mom' | 'build'
 
-  // Note: we intentionally keep the sidebar closed on initial load for mobile via the state initializer above.
+  // Build tab sub-sections (kept intentionally lightweight)
+  const [buildSection, setBuildSection] = useState('schedule') // 'schedule' | 'discover' | 'toolkit'
+
+  const [discoverFilter, setDiscoverFilter] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // Discover: "Search any place" (Google-Maps-ish) using OpenStreetMap sources
+  const [placeSearchQuery, setPlaceSearchQuery] = useState('')
+  const [placeSearchRegion, setPlaceSearchRegion] = useState('maine_coast')
+  const [placeSearchResults, setPlaceSearchResults] = useState([])
+  const [placeSearchLoading, setPlaceSearchLoading] = useState(false)
+  const [placeSearchError, setPlaceSearchError] = useState('')
+
+  // Mom route option selector (content comes from scheduleOptions/dayItinerary)
+  const [momRouteOption, setMomRouteOption] = useState('classic')
+
+  const selectedMomOption = useMemo(() => {
+    return scheduleOptions.find(o => o.id === momRouteOption) || scheduleOptions[0]
+  }, [momRouteOption])
   
-  // Persist traveler selection
-  useEffect(() => {
-    localStorage.setItem('mmtrip-current-traveler', currentTravelerId)
-  }, [currentTravelerId])
-  
-  useEffect(() => {
-    localStorage.setItem('mmtrip-schedule-option', selectedScheduleOption)
-  }, [selectedScheduleOption])
-  
-  useEffect(() => {
-    // Convert Sets to arrays for storage
-    const selectionsToSave = {
-      tere: Array.from(travelerSelections.tere || []),
-      mikaela: Array.from(travelerSelections.mikaela || []),
-      both: Array.from(travelerSelections.both || [])
+  // Trip building state
+  const [selectedActivities, setSelectedActivities] = useState(() => {
+    const saved = localStorage.getItem('mmt-activities')
+    return saved ? JSON.parse(saved) : []
+  })
+
+  const seedBuilderFromMomRoute = useCallback(() => {
+    const stopToDayId = {
+      boston: 1,
+      portland: 3,
+      kanc: 4,
+      chelsea: 4,
+      burlington: 6,
+      montreal: 6,
+      'lake-placid': 8,
+      saratoga: 8,
+      albany: 8,
+      stockbridge: 8,
     }
-    localStorage.setItem('mmtrip-traveler-selections', JSON.stringify(selectionsToSave))
-  }, [travelerSelections])
-  
-  // Get current traveler's selections
-  const currentSelections = useMemo(() => {
-    return new Set(travelerSelections[currentTravelerId] || [])
-  }, [travelerSelections, currentTravelerId])
 
-  const activeSchedule = useMemo(() => {
-    return scheduleOptions.find((opt) => opt.id === selectedScheduleOption) || scheduleOptions[0]
-  }, [selectedScheduleOption])
+    // Build blocks from Mom route stops.
+    const routeStops = [...(map?.stops || []), ...(map?.alternativeStops || [])]
+    const nextActivities = routeStops.map((stop) => ({
+      id: `mom-stop-${stop.id}`,
+      type: 'custom',
+      name: stop.name,
+      location: 'Mom route stop',
+      coordinates: stop.coords,
+      description: stop.mmNote,
+      details: stop.researchNote,
+      tip: stop.category === 'alt' ? 'Alternative idea' : undefined,
+      dayId: stopToDayId[stop.id] || null,
+      order: null,
+      duration: 0.5,
+    }))
 
-  const handleScheduleChange = useCallback((optionId) => {
-    setSelectedScheduleOption(optionId)
-    // Make the experience feel connected: jump to overview and tune explore filters
-    setActiveTab('overview')
-    setSelectedDay(null)
-    const mappedType = optionId === 'coastal' ? 'lobster' : optionId === 'foliage' ? 'scenic-drive' : 'all'
-    setExploreType(mappedType)
-  }, [])
-  
-  // Toggle activity for current traveler
-  const toggleActivityForTraveler = useCallback((activityId, travelerId = currentTravelerId) => {
-    setTravelerSelections(prev => {
-      const travelerSet = new Set(prev[travelerId] || [])
-      if (travelerSet.has(activityId)) {
-        travelerSet.delete(activityId)
-      } else {
-        travelerSet.add(activityId)
-      }
-      return {
-        ...prev,
-        [travelerId]: travelerSet
-      }
+    // Normalize ordering within each day.
+    const byDay = new Map()
+    nextActivities.forEach((a) => {
+      if (!a.dayId) return
+      const list = byDay.get(a.dayId) || []
+      list.push(a)
+      byDay.set(a.dayId, list)
     })
-  }, [currentTravelerId])
+    byDay.forEach((list) => {
+      list.forEach((a, idx) => {
+        a.order = idx
+      })
+    })
 
-  // Data source lookup for lightweight citations
-  const sourceLookup = useMemo(() => {
-    const lookup = {}
-    dataSources.forEach(src => { lookup[src.id] = src })
-    return lookup
+    setSelectedActivities((prev) => {
+      if (prev.length > 0) {
+        const ok = window.confirm(
+          "Replace your current Build & Customize activities with Mom's route blocks?\n\n(Press Cancel to keep your current plan.)"
+        )
+        if (!ok) return prev
+      }
+      return nextActivities
+    })
+
+    setActiveTab('build')
+    setBuildSection('schedule')
+  }, [map])
+  
+  // Use the Mom itinerary as the canonical day structure (still fully customizable).
+  const tripDays = useMemo(() => {
+    return dayItinerary.map(d => ({
+      id: d.id,
+      date: d.date,
+      label: `Day ${d.dayNumber}`,
+      location: d.label,
+    }))
   }, [])
 
-  // Filtered discovery catalog for the Explore tab
-  const filteredExplore = useMemo(() => {
-    const q = exploreQuery.toLowerCase()
-    return exploreCatalog.filter(item => {
-      const matchesType = exploreType === 'all' || item.type === exploreType
-      const haystack = `${item.name} ${item.location} ${item.vibe} ${(item.tags || []).join(' ')}`.toLowerCase()
-      const matchesQuery = !q || haystack.includes(q)
-      return matchesType && matchesQuery
-    })
-  }, [exploreQuery, exploreType])
+  // Packing checklist state
+  const [packedItems, setPackedItems] = useState(() => {
+    const saved = localStorage.getItem('mmt-packed')
+    return saved ? JSON.parse(saved) : {}
+  })
 
-  const exploreCenter = useMemo(() => filteredExplore[0]?.coords || [43.5, -71.5], [filteredExplore])
+  // Toolkit: export/import/share state
+  const [toolkitStatus, setToolkitStatus] = useState('')
+  const [toolkitError, setToolkitError] = useState('')
+  const [shareCodeInput, setShareCodeInput] = useState('')
 
-  const exploreStats = useMemo(() => {
-    const counts = filteredExplore.reduce((acc, item) => {
-      acc[item.type] = (acc[item.type] || 0) + 1
-      return acc
-    }, {})
-    return counts
-  }, [filteredExplore])
+  // Persist state
+  useEffect(() => {
+    localStorage.setItem('mmt-activities', JSON.stringify(selectedActivities))
+  }, [selectedActivities])
+  
+  useEffect(() => {
+    localStorage.setItem('mmt-packed', JSON.stringify(packedItems))
+  }, [packedItems])
 
-  // ----------------------------------------------
-  // Nominatim custom place search (add anything)
-  // ----------------------------------------------
-  const debouncedSearchRef = useRef(null)
+  // ════════════════════════════════════════════════════════════════
+  // TOOLKIT: EXPORT / IMPORT
+  // ════════════════════════════════════════════════════════════════
+  const buildExportPayload = useCallback(() => {
+    return {
+      schemaVersion: 1,
+      exportedAt: new Date().toISOString(),
+      app: 'MMT-2025 Trip Planner',
 
-  const searchCustomPlaces = useCallback((query) => {
-    const q = query.trim()
-    if (debouncedSearchRef.current) clearTimeout(debouncedSearchRef.current)
+      // Builder state
+      selectedActivities,
+      packedItems,
 
-    if (!q || q.length < 3) {
-      setCustomResults([])
-      setCustomError(q ? 'Keep typing (min 3 chars)' : '')
-      return
+      // Helpful context
+      momRouteOption,
+      tripDays,
     }
+  }, [selectedActivities, packedItems, momRouteOption, tripDays])
 
-    debouncedSearchRef.current = setTimeout(async () => {
-      setCustomLoading(true)
-      setCustomError('')
-      try {
-        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=8&addressdetails=1`
-        const res = await fetch(url, {
-          headers: {
-            'Accept-Language': 'en',
-            'User-Agent': 'MMT-2025-trip-planner'
-          }
+  const downloadBlob = useCallback((filename, content, mimeType) => {
+    const blob = new Blob([content], { type: mimeType })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  }, [])
+
+  const formatItineraryText = useCallback(() => {
+    const lines = []
+
+    lines.push('MMT Trip Planner — Build & Customize')
+    lines.push(`Exported: ${new Date().toLocaleString()}`)
+    lines.push('')
+
+    const scheduledCount = selectedActivities.filter(a => a.dayId).length
+    lines.push(`Activities: ${selectedActivities.length} total • ${scheduledCount} scheduled • ${selectedActivities.length - scheduledCount} unscheduled`)
+    lines.push('')
+
+    tripDays.forEach((day) => {
+      const acts = selectedActivities
+        .filter(a => a.dayId === day.id)
+        .slice()
+        .sort((a, b) => {
+          const ao = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER
+          const bo = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER
+          if (ao !== bo) return ao - bo
+          return String(a.name || '').localeCompare(String(b.name || ''))
         })
-        if (!res.ok) throw new Error('Search failed')
-        const data = await res.json()
-        setCustomResults(data || [])
-        if ((data || []).length === 0) {
-          setCustomError('No results—try a nearby city or landmark name')
-        }
-      } catch (err) {
-        setCustomError('Unable to search right now. Try again or refine your query.')
-        setCustomResults([])
-      } finally {
-        setCustomLoading(false)
+
+      lines.push(`Day ${day.id} — ${day.location} (${day.date})`)
+      if (acts.length === 0) {
+        lines.push('  (no scheduled activities)')
+      } else {
+        acts.forEach((a, idx) => {
+          const icon = activityTypes[a.type]?.icon || '📍'
+          const coordText = Array.isArray(a.coordinates) ? ` [${a.coordinates[0].toFixed?.(4) ?? a.coordinates[0]}, ${a.coordinates[1].toFixed?.(4) ?? a.coordinates[1]}]` : ''
+          lines.push(`  ${idx + 1}. ${icon} ${a.name}${a.location ? ` — ${a.location}` : ''}${coordText}`)
+          if (a.description) lines.push(`     Notes: ${a.description}`)
+          if (a.details) lines.push(`     Details: ${a.details}`)
+          if (a.tip) lines.push(`     Tip: ${a.tip}`)
+          if (a.website) lines.push(`     Website: ${a.website}`)
+          if (a.phone) lines.push(`     Phone: ${a.phone}`)
+        })
       }
-    }, 400)
+      lines.push('')
+    })
+
+    const unscheduled = selectedActivities
+      .filter(a => !a.dayId)
+      .slice()
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')))
+
+    if (unscheduled.length > 0) {
+      lines.push('Unscheduled')
+      unscheduled.forEach((a) => {
+        const icon = activityTypes[a.type]?.icon || '📍'
+        lines.push(`  - ${icon} ${a.name}${a.location ? ` — ${a.location}` : ''}`)
+      })
+      lines.push('')
+    }
+
+    return lines.join('\n')
+  }, [selectedActivities, tripDays])
+
+  const exportAsJson = useCallback(() => {
+    setToolkitStatus('')
+    setToolkitError('')
+    const payload = buildExportPayload()
+    downloadBlob('mmt-itinerary.json', JSON.stringify(payload, null, 2), 'application/json')
+    setToolkitStatus('Downloaded JSON export.')
+  }, [buildExportPayload, downloadBlob])
+
+  const exportAsText = useCallback(() => {
+    setToolkitStatus('')
+    setToolkitError('')
+    const text = formatItineraryText()
+    downloadBlob('mmt-itinerary.txt', text, 'text/plain')
+    setToolkitStatus('Downloaded text itinerary.')
+  }, [downloadBlob, formatItineraryText])
+
+  const copyShareCode = useCallback(async () => {
+    setToolkitStatus('')
+    setToolkitError('')
+    try {
+      const json = JSON.stringify(buildExportPayload())
+      const encoded = btoa(unescape(encodeURIComponent(json)))
+      await navigator.clipboard.writeText(encoded)
+      setToolkitStatus('Copied share code to clipboard.')
+    } catch (err) {
+      console.error(err)
+      setToolkitError('Could not copy. Your browser may block clipboard access.')
+    }
+  }, [buildExportPayload])
+
+  const applyImportedPayload = useCallback((payload) => {
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('Invalid file format')
+    }
+
+    const nextActivities = Array.isArray(payload.selectedActivities) ? payload.selectedActivities : null
+    const nextPacked = payload.packedItems && typeof payload.packedItems === 'object' ? payload.packedItems : null
+
+    if (!nextActivities) {
+      throw new Error('Missing selectedActivities')
+    }
+
+    // Minimal normalization so older exports don’t crash the UI.
+    const normalized = nextActivities.map((a) => ({
+      id: a.id,
+      type: a.type || 'custom',
+      name: a.name || 'Untitled',
+      location: a.location || '',
+      coordinates: Array.isArray(a.coordinates) ? a.coordinates : null,
+      description: a.description || '',
+      details: a.details || '',
+      tip: a.tip || '',
+      website: a.website || undefined,
+      phone: a.phone || undefined,
+      dayId: a.dayId || null,
+      order: typeof a.order === 'number' ? a.order : null,
+      duration: a.duration || undefined,
+      source: a.source || undefined,
+      sourceId: a.sourceId || undefined,
+    }))
+
+    setSelectedActivities((prev) => {
+      if (prev.length > 0) {
+        const ok = window.confirm(
+          'Importing will replace your current Build & Customize plan. Continue?'
+        )
+        if (!ok) return prev
+      }
+      return normalized
+    })
+
+    if (nextPacked) {
+      setPackedItems(nextPacked)
+    }
+
+    setActiveTab('build')
+    setBuildSection('schedule')
   }, [])
-  
-  // Build all available activities from data sources (for potential future use in smart suggestions)
-  const _allActivities = useMemo(() => {
+
+  const importFromFile = useCallback(async (file) => {
+    setToolkitStatus('')
+    setToolkitError('')
+    try {
+      const text = await file.text()
+      const parsed = JSON.parse(text)
+      applyImportedPayload(parsed)
+      setToolkitStatus('Imported itinerary from JSON file.')
+    } catch (err) {
+      console.error(err)
+      setToolkitError('Import failed. Make sure this is a valid MMT itinerary JSON export.')
+    }
+  }, [applyImportedPayload])
+
+  const importFromShareCode = useCallback(() => {
+    setToolkitStatus('')
+    setToolkitError('')
+    const raw = shareCodeInput.trim()
+    if (!raw) return
+    try {
+      const json = decodeURIComponent(escape(atob(raw)))
+      const parsed = JSON.parse(json)
+      applyImportedPayload(parsed)
+      setToolkitStatus('Imported itinerary from share code.')
+    } catch (err) {
+      console.error(err)
+      setToolkitError('Share code is invalid or corrupted.')
+    }
+  }, [applyImportedPayload, shareCodeInput])
+
+  // ════════════════════════════════════════════════════════════════
+  // BUILD UNIFIED ACTIVITY CATALOG
+  // ════════════════════════════════════════════════════════════════
+  const allActivities = useMemo(() => {
     const activities = []
     
-    // Add lobster spots
+    // Lobster spots
     lobsterGuide.topSpots.forEach((spot, idx) => {
       activities.push({
         id: `lobster-${idx}`,
@@ -1201,13 +489,11 @@ function App() {
         description: spot.whySpecial,
         details: spot.mustOrder,
         tip: spot.proTip,
-        waitTime: spot.waitTime,
-        duration: 1.5, // Estimated hours
-        tags: spot.tags || [],
+        duration: 1.5,
       })
     })
     
-    // Add harbor towns
+    // Harbor towns
     harborTowns.forEach((town, idx) => {
       activities.push({
         id: `town-${idx}`,
@@ -1217,15 +503,13 @@ function App() {
         coordinates: town.coordinates,
         rating: town.rating,
         description: town.vibe,
-        details: town.mustDo.join(', '),
+        details: town.mustDo?.join(', '),
         tip: town.parking,
-        photoSpot: town.bestPhotoSpot,
-        walkability: town.walkability,
-        duration: 2.5, // Estimated hours
+        duration: 2.5,
       })
     })
     
-    // Add foliage drives
+    // Foliage drives
     foliageTracker.bestDrives.forEach((drive, idx) => {
       activities.push({
         id: `drive-${idx}`,
@@ -1236,13 +520,12 @@ function App() {
         rating: drive.rating,
         description: drive.note,
         details: drive.peakView,
-        distance: drive.distance,
-        duration: parseFloat(drive.time) || 2, // Estimated hours
+        duration: parseFloat(drive.time) || 2,
       })
     })
     
-    // Add foliage viewing locations (peak ones)
-    foliageTracker.predictions.filter(p => p.status === 'peak' || p.status === 'approaching').forEach((pred, idx) => {
+    // Foliage viewing spots
+    foliageTracker.predictions.forEach((pred, idx) => {
       activities.push({
         id: `foliage-${idx}`,
         type: 'foliage',
@@ -1250,817 +533,700 @@ function App() {
         location: pred.elevation,
         coordinates: pred.coordinates,
         description: pred.notes,
-        details: pred.bestTreesNow,
-        status: pred.status,
-        peakTime: pred.expectedPeak,
+        details: `Peak: ${pred.expectedPeak}`,
         duration: 2,
       })
+    })
+    
+    // Lodging
+    lodging.forEach(lodge => {
+      activities.push({
+        id: lodge.id,
+        type: 'lodging',
+        name: lodge.name,
+        location: `${lodge.region} - ${lodge.neighborhood}`,
+        coordinates: lodge.coordinates,
+        price: lodge.price,
+        description: lodge.whyStay,
+        details: lodge.amenities?.slice(0, 3).join(', '),
+        tip: lodge.proTip,
+        duration: 'overnight',
+        night: lodge.night,
+      })
+    })
+    
+    // From explore catalog
+    exploreCatalog.forEach(item => {
+      if (!activities.find(a => a.name === item.name)) {
+        activities.push({
+          id: item.id,
+          type: item.type === 'scenic-drive' ? 'drive' : item.type,
+          name: item.name,
+          location: item.location,
+          coordinates: item.coords,
+          description: item.vibe,
+          details: item.mustDo || item.mustTry,
+          duration: item.type === 'hike' ? 3 : 1.5,
+        })
+      }
     })
     
     return activities
   }, [lobsterGuide, harborTowns, foliageTracker])
 
-  // Selected activities for custom itinerary (persisted to localStorage)
-  const [selectedActivities, setSelectedActivities] = useState(() => {
-    const saved = localStorage.getItem('mmtrip-selected-activities')
-    return saved ? JSON.parse(saved) : []
-  })
+  // ════════════════════════════════════════════════════════════════
+  // FILTERED ACTIVITIES FOR DISCOVER VIEW
+  // ════════════════════════════════════════════════════════════════
+  const filteredActivities = useMemo(() => {
+    return allActivities.filter(activity => {
+      const matchesFilter = discoverFilter === 'all' || activity.type === discoverFilter
+      const matchesSearch = !searchQuery || 
+        activity.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        activity.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        activity.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      return matchesFilter && matchesSearch
+    })
+  }, [allActivities, discoverFilter, searchQuery])
 
-  // Trip days configuration
-  const [tripDays, setTripDays] = useState(() => {
-    const saved = localStorage.getItem('mmtrip-days')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, date: '2025-09-20', label: 'Day 1 - Sat', location: 'Boston Arrival', activities: [] },
-      { id: 2, date: '2025-09-21', label: 'Day 2 - Sun', location: 'Maine Coast', activities: [] },
-      { id: 3, date: '2025-09-22', label: 'Day 3 - Mon', location: 'Mid-Coast Maine', activities: [] },
-      { id: 4, date: '2025-09-23', label: 'Day 4 - Tue', location: 'Acadia / Bar Harbor', activities: [] },
-      { id: 5, date: '2025-09-24', label: 'Day 5 - Wed', location: 'White Mountains', activities: [] },
-      { id: 6, date: '2025-09-25', label: 'Day 6 - Thu', location: 'Vermont', activities: [] },
-      { id: 7, date: '2025-09-26', label: 'Day 7 - Fri', location: 'Montreal or Adirondacks', activities: [] },
-      { id: 8, date: '2025-09-27', label: 'Day 8 - Sat', location: 'Departure', activities: [] },
-    ]
-  })
+  // ════════════════════════════════════════════════════════════════
+  // ACTIVITY MANAGEMENT
+  // ════════════════════════════════════════════════════════════════
+  const addActivity = useCallback((activity) => {
+    setSelectedActivities(prev => {
+      if (prev.find(a => a.id === activity.id)) return prev
+      return [...prev, { ...activity, dayId: null, order: null }]
+    })
+  }, [])
 
-  // Save to localStorage when selections change
-  useEffect(() => {
-    localStorage.setItem('mmtrip-selected-activities', JSON.stringify(selectedActivities))
-  }, [selectedActivities])
-
-  useEffect(() => {
-    localStorage.setItem('mmtrip-days', JSON.stringify(tripDays))
-  }, [tripDays])
-
-  // Normalize explore catalog types into existing activity categories
-  const catalogTypeMap = {
-    'scenic-drive': 'drive',
-    view: 'landmark'
-  }
-
-  const getTypeLabel = (type) => {
-    const found = exploreTypeOptions.find(t => t.id === type)
-    return found?.label || type
-  }
-
-  const buildActivityFromCatalog = (item) => ({
-    id: item.id,
-    type: catalogTypeMap[item.type] || item.type,
-    name: item.name,
-    location: item.location,
-    coordinates: item.coords,
-    description: item.vibe,
-    details: item.mustDo || item.mustTry || '',
-    tags: item.tags || [],
-    sourceId: item.sourceId,
-    duration: item.type === 'scenic-drive' ? 2.5 : item.type === 'hike' ? 2 : 1.5,
-  })
-
-  const buildActivityFromNominatim = (place) => {
-    const name = place?.display_name?.split(',')[0]?.trim() || 'Custom place'
-    const id = `custom-${place.place_id}`
-    return {
-      id,
-      type: 'custom',
-      name,
-      location: place.display_name,
-      coordinates: [parseFloat(place.lat), parseFloat(place.lon)],
-      description: place.type || place.category || 'Custom location',
-      details: place.address?.city || place.address?.town || place.address?.state || '',
-      tags: ['custom'],
-      sourceId: 'openstreetmap',
-      duration: 1.5,
+  const runPlaceSearch = useCallback(async () => {
+    const q = placeSearchQuery.trim()
+    if (q.length < 3) {
+      setPlaceSearchError('Type at least 3 characters to search.')
+      setPlaceSearchResults([])
+      return
     }
-  }
 
-  // Add activity to selected list (goes to unscheduled pool)
-  const addActivity = (activity) => {
-    if (!selectedActivities.find(a => a.id === activity.id)) {
-      setSelectedActivities([...selectedActivities, { ...activity, dayId: null }])
-    }
-  }
+    setPlaceSearchLoading(true)
+    setPlaceSearchError('')
 
-  const handleAddExploreItem = (item) => {
-    const activity = buildActivityFromCatalog(item)
-    addActivity(activity)
-  }
+    try {
+      const results = placeSearchRegion === 'anywhere'
+        ? await searchService.searchActivities(q, { limit: 20, source: 'nominatim' })
+        : await searchService.searchInRegion(q, placeSearchRegion, { limit: 20, source: 'all' })
 
-  const handleAddCustomPlace = (place) => {
-    const activity = buildActivityFromNominatim(place)
-    addActivity(activity)
-    if (customSelectedDay) {
-      assignToDay(activity.id, parseInt(customSelectedDay))
-    }
-  }
+      // Ensure plain objects (Activity instances stringify fine too, but we keep it simple).
+      const normalized = (results || []).map((r) => ({
+        id: r.id,
+        type: r.type || 'custom',
+        name: r.name,
+        location: r.location || 'Location',
+        coordinates: r.coordinates || null,
+        description: r.description || '',
+        details: r.address || r.website || '',
+        tip: r.phone || '',
+        website: r.website || undefined,
+        phone: r.phone || undefined,
+        source: r.source,
+        sourceId: r.sourceId,
+      }))
 
-  // Remove activity from selected list
-  const removeActivity = (activityId) => {
-    setSelectedActivities(selectedActivities.filter(a => a.id !== activityId))
-    // Also remove from any day
-    setTripDays(tripDays.map(day => ({
-      ...day,
-      activities: day.activities.filter(id => id !== activityId)
-    })))
-  }
-
-  // Check if activity is selected
-  const isSelected = (activityId) => {
-    return selectedActivities.some(a => a.id === activityId)
-  }
-
-  // Assign activity to a day (append to end)
-  const assignToDay = (activityId, dayId) => assignToDayAt(activityId, dayId, null)
-
-  // Assign activity to a day at a specific index (insert into position)
-  const assignToDayAt = (activityId, dayId, atIndex = null) => {
-    // Remove from previous day if any
-    const newDays = tripDays.map(day => ({
-      ...day,
-      activities: day.activities.filter(id => id !== activityId)
-    }))
-
-    // Add to new day at position (or push to end)
-    if (dayId) {
-      const dayIndex = newDays.findIndex(d => d.id === dayId)
-      if (dayIndex !== -1) {
-        const activities = newDays[dayIndex].activities
-        if (atIndex === null || atIndex >= activities.length) {
-          activities.push(activityId)
-        } else {
-          activities.splice(atIndex, 0, activityId)
-        }
-        newDays[dayIndex].activities = activities
+      setPlaceSearchResults(normalized)
+      if (normalized.length === 0) {
+        setPlaceSearchError('No matches found. Try a different name or broaden the region.')
       }
+    } catch (err) {
+      console.error(err)
+      setPlaceSearchError('Place search failed. Please try again in a moment.')
+      setPlaceSearchResults([])
+    } finally {
+      setPlaceSearchLoading(false)
     }
+  }, [placeSearchQuery, placeSearchRegion])
 
-    setTripDays(newDays)
+  const removeActivity = useCallback((activityId) => {
+    setSelectedActivities(prev => prev.filter(a => a.id !== activityId))
+  }, [])
 
-    // Update the activity's dayId (null for unscheduled)
-    setSelectedActivities(selectedActivities.map(a =>
-      a.id === activityId ? { ...a, dayId } : a
-    ))
-  }
+  const assignToDay = useCallback((activityId, dayId) => {
+    setSelectedActivities(prev => {
+      const nextOrderForDay = (targetDayId) => {
+        if (!targetDayId) return null
+        const maxOrder = prev
+          .filter(a => a.dayId === targetDayId)
+          .reduce((m, a) => Math.max(m, typeof a.order === 'number' ? a.order : -1), -1)
+        return maxOrder + 1
+      }
 
-  // Move activity within a day (reorder)
-  const moveActivityInDay = (dayId, fromIndex, toIndex) => {
-    const newDays = [...tripDays]
-    const dayIndex = newDays.findIndex(d => d.id === dayId)
-    if (dayIndex !== -1) {
-      const activities = [...newDays[dayIndex].activities]
-      const [moved] = activities.splice(fromIndex, 1)
-      activities.splice(toIndex, 0, moved)
-      newDays[dayIndex].activities = activities
-      setTripDays(newDays)
-    }
-  }
+      return prev.map(a => {
+        if (a.id !== activityId) return a
+        // Unschedule
+        if (!dayId) return { ...a, dayId: null, order: null }
+        // Schedule (append to end by default)
+        return { ...a, dayId, order: nextOrderForDay(dayId) }
+      })
+    })
+  }, [])
 
-  // Calculate stats for selected activities
-  const tripStats = useMemo(() => {
-    const selected = selectedActivities
-    const lobsterCount = selected.filter(a => a.type === 'lobster').length
-    const townCount = selected.filter(a => a.type === 'town').length
-    const driveCount = selected.filter(a => a.type === 'drive').length
-    const foliageCount = selected.filter(a => a.type === 'foliage').length
-    const totalDuration = selected.reduce((sum, a) => sum + (a.duration || 0), 0)
-    const assigned = selected.filter(a => a.dayId).length
-    
-    // Calculate total distance if we have coordinates
-    let totalMiles = 0
-    const coordsList = selected.filter(a => a.coordinates).map(a => a.coordinates)
-    for (let i = 1; i < coordsList.length; i++) {
-      totalMiles += calculateDistance(coordsList[i-1], coordsList[i])
-    }
-    
-    return {
-      total: selected.length,
-      lobsterCount,
-      townCount,
-      driveCount,
-      foliageCount,
-      totalDuration,
-      totalMiles: Math.round(totalMiles),
-      assigned,
-      unassigned: selected.length - assigned,
-    }
+  const isActivitySelected = useCallback((activityId) => {
+    return selectedActivities.some(a => a.id === activityId)
   }, [selectedActivities])
 
-  // Get activities for a specific day
-  const getActivitiesForDay = (dayId) => {
-    const day = tripDays.find(d => d.id === dayId)
-    if (!day) return []
-    return day.activities.map(actId => selectedActivities.find(a => a.id === actId)).filter(Boolean)
-  }
+  const getActivitiesForDay = useCallback((dayId) => {
+    return selectedActivities
+      .filter(a => a.dayId === dayId)
+      .slice()
+      .sort((a, b) => {
+        const ao = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER
+        const bo = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER
+        if (ao !== bo) return ao - bo
+        return String(a.name || '').localeCompare(String(b.name || ''))
+      })
+  }, [selectedActivities])
 
-  // Clear all selections
-  const clearAllSelections = () => {
-    if (window.confirm('Clear all selections? This cannot be undone.')) {
-      setSelectedActivities([])
-      setTripDays(tripDays.map(day => ({ ...day, activities: [] })))
+  // Assign + reorder in a single atomic update (supports drops from Discover).
+  const ensureAssignedToDay = useCallback((payload, dayId, targetIndex = null) => {
+    setSelectedActivities(prev => {
+      const next = prev.map(a => ({ ...a }))
+
+      const getSortedDayActivities = (targetDayId) => {
+        return next
+          .filter(a => a.dayId === targetDayId)
+          .slice()
+          .sort((a, b) => {
+            const ao = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER
+            const bo = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER
+            if (ao !== bo) return ao - bo
+            return String(a.name || '').localeCompare(String(b.name || ''))
+          })
+      }
+
+      const normalizeDayOrders = (targetDayId) => {
+        const list = getSortedDayActivities(targetDayId)
+        const orderById = new Map(list.map((a, idx) => [a.id, idx]))
+        for (let i = 0; i < next.length; i++) {
+          if (next[i].dayId !== targetDayId) continue
+          const o = orderById.get(next[i].id)
+          next[i].order = typeof o === 'number' ? o : null
+        }
+      }
+
+      const activityId = payload?.id || payload?.activity?.id
+      if (!activityId) return prev
+
+      // If this is a Discover drag, insert it into the trip first.
+      if (!next.some(a => a.id === activityId) && payload?.activity) {
+        next.push({ ...payload.activity, dayId: null, order: null })
+      }
+
+      const existingIdx = next.findIndex(a => a.id === activityId)
+      if (existingIdx === -1) return prev
+
+      const fromDayId = next[existingIdx].dayId || payload?.fromDayId || null
+
+      // Move into target day.
+      next[existingIdx].dayId = dayId
+
+      // Default insert position: end of day.
+      const dayList = getSortedDayActivities(dayId)
+      const ids = dayList.map(a => a.id)
+      const existingInDayIdx = ids.indexOf(activityId)
+      if (existingInDayIdx !== -1) ids.splice(existingInDayIdx, 1)
+
+      const desiredIndex = typeof targetIndex === 'number' ? targetIndex : ids.length
+      const clampedIndex = Math.max(0, Math.min(desiredIndex, ids.length))
+      ids.splice(clampedIndex, 0, activityId)
+
+      // Apply ordering for target day.
+      const nextOrderById = new Map(ids.map((id, idx) => [id, idx]))
+      for (let i = 0; i < next.length; i++) {
+        if (next[i].dayId !== dayId) continue
+        const newOrder = nextOrderById.get(next[i].id)
+        next[i].order = typeof newOrder === 'number' ? newOrder : null
+      }
+
+      // Clean up ordering in the origin day (if any).
+      if (fromDayId && fromDayId !== dayId) {
+        normalizeDayOrders(fromDayId)
+      }
+
+      return next
+    })
+  }, [])
+
+  // ════════════════════════════════════════════════════════════════
+  // DRAG & DROP (HTML5 DnD)
+  // Allows dragging activity blocks between days and reordering within a day.
+  // ════════════════════════════════════════════════════════════════
+  const dragPayloadRef = useRef(null)
+
+  const onDragStartActivity = useCallback((e, activity) => {
+    const payload = { kind: 'selected', id: activity.id, fromDayId: activity.dayId || null }
+    dragPayloadRef.current = payload
+    try {
+      e.dataTransfer.setData('application/json', JSON.stringify(payload))
+      e.dataTransfer.setData('text/plain', activity.id)
+    } catch {
+      // Ignore; we'll still use dragPayloadRef.
     }
+    e.dataTransfer.effectAllowed = 'move'
+  }, [])
+
+  const onDragStartCatalogActivity = useCallback((e, activity) => {
+    const payload = {
+      kind: 'catalog',
+      id: activity.id,
+      fromDayId: null,
+      activity: {
+        ...activity,
+        // Ensure scheduling fields exist when we add it.
+        dayId: null,
+        order: null,
+      },
+    }
+    dragPayloadRef.current = payload
+    try {
+      e.dataTransfer.setData('application/json', JSON.stringify(payload))
+      e.dataTransfer.setData('text/plain', activity.id)
+    } catch {
+      // Ignore; we'll still use dragPayloadRef.
+    }
+    e.dataTransfer.effectAllowed = 'copyMove'
+  }, [])
+
+  const readDragPayload = useCallback((e) => {
+    if (dragPayloadRef.current) return dragPayloadRef.current
+    try {
+      const raw = e.dataTransfer.getData('application/json')
+      if (raw) return JSON.parse(raw)
+    } catch {
+      // ignore
+    }
+    const id = e.dataTransfer.getData('text/plain')
+    if (id) return { id, fromDayId: null }
+    return null
+  }, [])
+
+  const scheduledRouteCoords = useMemo(() => {
+    const coords = []
+
+    // Walk days in order, then activities in order.
+    tripDays.forEach((day) => {
+      const dayActs = selectedActivities
+        .filter(a => a.dayId === day.id && Array.isArray(a.coordinates) && a.coordinates.length === 2)
+        .slice()
+        .sort((a, b) => {
+          const ao = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER
+          const bo = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER
+          if (ao !== bo) return ao - bo
+          return String(a.name || '').localeCompare(String(b.name || ''))
+        })
+
+      dayActs.forEach(a => coords.push(a.coordinates))
+    })
+
+    return coords
+  }, [selectedActivities, tripDays])
+
+  const unscheduledActivities = useMemo(() => {
+    return selectedActivities.filter(a => !a.dayId)
+  }, [selectedActivities])
+
+  // ════════════════════════════════════════════════════════════════
+  // TRIP STATS
+  // ════════════════════════════════════════════════════════════════
+  const tripStats = useMemo(() => {
+    const total = selectedActivities.length
+    const scheduled = selectedActivities.filter(a => a.dayId).length
+    const byType = {}
+    selectedActivities.forEach(a => {
+      byType[a.type] = (byType[a.type] || 0) + 1
+    })
+    return { total, scheduled, unscheduled: total - scheduled, byType }
+  }, [selectedActivities])
+
+  // ════════════════════════════════════════════════════════════════
+  // PACKING PROGRESS
+  // ════════════════════════════════════════════════════════════════
+  const packingProgress = useMemo(() => {
+    const allItems = Object.values(packingChecklist).flat()
+    const checked = Object.values(packedItems).filter(Boolean).length
+    return Math.round((checked / allItems.length) * 100)
+  }, [packingChecklist, packedItems])
+
+  const togglePackedItem = (category, item) => {
+    const key = `${category}-${item}`
+    setPackedItems(prev => ({ ...prev, [key]: !prev[key] }))
   }
 
+  // ════════════════════════════════════════════════════════════════
+  // RENDER
+  // ════════════════════════════════════════════════════════════════
   return (
-    <div className={`app-container ${showSidebar ? 'with-sidebar' : ''}`}>
-      
-      {/* Backdrop overlay - click to close sidebar on mobile */}
-      {showSidebar && (
-        <div 
-          className="sidebar-backdrop"
-          onClick={() => setShowSidebar(false)}
-          aria-hidden="true"
-        />
-      )}
-      
-      {/* ════════════════════════════════════════════════════════════════════════
-          TRIP COMPANION SIDEBAR - Contextual summary panel
-          ════════════════════════════════════════════════════════════════════════ */}
-      {showSidebar && (
-        <Sidebar
-          currentTravelerId={currentTravelerId}
-          onTravelerChange={setCurrentTravelerId}
-          tripDays={dayItinerary}
-          selectedActivities={currentSelections}
-          scheduleOptions={scheduleOptions}
-          selectedScheduleOption={selectedScheduleOption}
-          onScheduleOptionChange={handleScheduleChange}
-          onActivityToggle={toggleActivityForTraveler}
-          activeMainTab={activeTab}
-        />
-      )}
-      
-      {/* Sidebar Toggle Button */}
-      <button 
-        className="sidebar-toggle-btn"
-        onClick={() => setShowSidebar(!showSidebar)}
-        title={showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
-        aria-label={showSidebar ? 'Close menu' : 'Open menu'}
-      >
-        {showSidebar ? '✕' : '☰'}
-      </button>
-      
-      {/* Main Content Area */}
-      <div className="main-content">
-
-
-      {/* Floating Trip Summary (shows when not on My Trip tab and has items) */}
-      {activeTab !== 'mytrip' && selectedActivities.length > 0 && (
-        <div className="floating-trip-summary">
-          <button className="floating-summary-toggle" onClick={() => setActiveTab('mytrip')}>
-            <span className="summary-badge">{selectedActivities.length}</span>
-            <span className="summary-label">My Trip</span>
-            <span className="summary-expand">→</span>
-          </button>
-          <div className="floating-summary-preview">
-            {selectedActivities.slice(0, 3).map(a => (
-              <span key={a.id} className="preview-dot" title={a.name}>
-                {a.type === 'lobster' ? '🦞' : a.type === 'town' ? '⚓' : a.type === 'lodging' ? '🏨' : '🍁'}
+    <div className="app-clean">
+      {/* ═══════════════════════════════════════════════════════════
+          HEADER - Compact, informative, not overwhelming
+          ═══════════════════════════════════════════════════════════ */}
+      <header className="header-clean">
+        <div className="header-left">
+          <h1>🍁 MMT Trip Planner</h1>
+          <span className="header-subtitle">{subtitle || title}</span>
+        </div>
+        <div className="header-right">
+          <CompactCountdown targetDate={tripDates.start} />
+          <div className="header-travelers">
+            {travelers.map(t => (
+              <span key={t.name} className="traveler-avatar" title={t.name}>
+                {t.emoji}
               </span>
             ))}
-            {selectedActivities.length > 3 && (
-              <span className="more-count">+{selectedActivities.length - 3}</span>
-            )}
           </div>
         </div>
-      )}
+      </header>
 
-      {/* Hero Section with Countdown */}
-      <header className="hero">
-        <p className="eyebrow">A journey crafted with love</p>
-        <h1>{tripData.title}</h1>
-        <h2>{tripData.subtitle}</h2>
-        <p className="tagline">{tripData.tagline}</p>
-        {activeSchedule && (
-          <div className="route-pill" title={activeSchedule.vibe}>
-            <span className="pill-emoji">{activeSchedule.emoji}</span>
-            <span className="pill-title">{activeSchedule.title}</span>
-            <span className="pill-miles">{activeSchedule.totalMiles}</span>
+      {/* ═══════════════════════════════════════════════════════════
+          MAIN NAVIGATION - Just 3 clear options
+          ═══════════════════════════════════════════════════════════ */}
+      <nav className="nav-clean">
+        <button 
+          className={`nav-btn ${activeTab === 'mom' ? 'active' : ''}`}
+          onClick={() => setActiveTab('mom')}
+        >
+          <span className="nav-icon">🗺️</span>
+          <span className="nav-label">Mom's Route</span>
+        </button>
+        
+        <button 
+          className={`nav-btn ${activeTab === 'build' ? 'active' : ''}`}
+          onClick={() => setActiveTab('build')}
+        >
+          <span className="nav-icon">🧩</span>
+          <span className="nav-label">Build & Customize</span>
+          {tripStats.total > 0 && (
+            <span className="nav-badge">{tripStats.total}</span>
+          )}
+        </button>
+      </nav>
+
+      {/* ═══════════════════════════════════════════════════════════
+          MAIN CONTENT AREA
+          ═══════════════════════════════════════════════════════════ */}
+      <main className="main-clean">
+
+        {/* ─────────────────────────────────────────────────────────
+            MOM'S ROUTE TAB
+            Anchored to MMTrip.txt + dayItinerary + tripData.map
+            ───────────────────────────────────────────────────────── */}
+        {activeTab === 'mom' && (
+          <div className="mom-view">
+            <div className="mom-hero">
+              <div>
+                <h2>Mom’s Suggested Route (Snapshot)</h2>
+                <p className="muted">
+                  This is the preserved, read-only snapshot from <strong>MMTrip.txt</strong>: Boston → Portland → Chelsea (Sally’s) → Montreal → optional Adirondacks → Saratoga/Albany.
+                  The <strong>Build & Customize</strong> tab is your sandbox for a brand-new itinerary.
+                </p>
+                <div style={{ marginTop: '0.75rem' }}>
+                  <button className="cta-btn" onClick={seedBuilderFromMomRoute}>
+                    ➜ Copy this route into Build & Customize
+                  </button>
+                </div>
+              </div>
+              <div className="mom-options">
+                {scheduleOptions.map(opt => (
+                  <button
+                    key={opt.id}
+                    className={`pill ${momRouteOption === opt.id ? 'active' : ''}`}
+                    onClick={() => setMomRouteOption(opt.id)}
+                    title={opt.vibe}
+                  >
+                    {opt.emoji} {opt.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {selectedMomOption && (
+              <section className="info-section" style={{ marginTop: '-0.5rem' }}>
+                <div className="section-header compact">
+                  <h3>{selectedMomOption.emoji} {selectedMomOption.title}</h3>
+                  <div className="small-note">{selectedMomOption.totalMiles}</div>
+                </div>
+                <p className="muted" style={{ marginTop: 0 }}>{selectedMomOption.vibe}</p>
+                {selectedMomOption.highlights?.length > 0 && (
+                  <ul className="highlights">
+                    {selectedMomOption.highlights.map((h, idx) => (
+                      <li key={idx}>{h}</li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
+
+            {/* Route map + stop notes (restores “a TON of info” from the old map section) */}
+            {map?.routeCoordinates?.length > 1 && (
+              <section className="mom-map">
+                <div className="section-header compact">
+                  <h3>🗺️ Route Map</h3>
+                  <div className="small-note">Tap a stop for Mom note + research note.</div>
+                </div>
+                <div className="trip-map">
+                  <MapContainer
+                    center={map.center || [44.2, -72.2]}
+                    zoom={map.zoom || 6}
+                    style={{ height: '420px', width: '100%', borderRadius: '12px' }}
+                    scrollWheelZoom={true}
+                  >
+                    <TileLayer
+                      attribution='&copy; OpenStreetMap'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <Polyline
+                      positions={map.routeCoordinates}
+                      pathOptions={{ color: '#2c3e50', weight: 4, opacity: 0.85 }}
+                    />
+                    {map.alternativeCoordinates?.length > 1 && (
+                      <Polyline
+                        positions={map.alternativeCoordinates}
+                        pathOptions={{ color: '#7f8c8d', weight: 3, opacity: 0.6, dashArray: '8 8' }}
+                      />
+                    )}
+                    {(map.stops || []).map(stop => (
+                      <CircleMarker
+                        key={stop.id}
+                        center={stop.coords}
+                        radius={8}
+                        pathOptions={{
+                          color: stop.category === 'departure' ? '#8e44ad' : '#1abc9c',
+                          fillColor: stop.category === 'departure' ? '#8e44ad' : '#1abc9c',
+                          fillOpacity: 0.9,
+                          weight: 2,
+                        }}
+                      >
+                        <Popup>
+                          <strong>{stop.name}</strong>
+                          <br />
+                          <em>Mom note:</em> {stop.mmNote}
+                          <br />
+                          <em>Research note:</em> {stop.researchNote}
+                        </Popup>
+                      </CircleMarker>
+                    ))}
+                    {(map.alternativeStops || []).map(stop => (
+                      <CircleMarker
+                        key={stop.id}
+                        center={stop.coords}
+                        radius={7}
+                        pathOptions={{
+                          color: '#7f8c8d',
+                          fillColor: '#7f8c8d',
+                          fillOpacity: 0.75,
+                          weight: 2,
+                        }}
+                      >
+                        <Popup>
+                          <strong>{stop.name}</strong>
+                          <br />
+                          <em>Alt idea:</em> {stop.mmNote}
+                          <br />
+                          <em>Research note:</em> {stop.researchNote}
+                        </Popup>
+                      </CircleMarker>
+                    ))}
+                  </MapContainer>
+                </div>
+              </section>
+            )}
+
+            {/* Day-by-day (Mom's structure) */}
+            <section className="mom-days">
+              <h3>📅 Day-by-day outline</h3>
+              <div className="days-list">
+                {dayItinerary.map(day => (
+                  <div key={day.id} className="day-card">
+                    <div className="day-header">
+                      <div className="day-info">
+                        <span className="day-label">Day {day.dayNumber}</span>
+                        <span className="day-date">{day.date}</span>
+                      </div>
+                      <span className="day-location">{day.label}</span>
+                    </div>
+                    <div className="day-activities">
+                      <div className="day-empty" style={{ justifyContent: 'flex-start' }}>
+                        <span>
+                          <strong>{day.emoji}</strong> {day.description}
+                        </span>
+                      </div>
+                      {day.momNote && (
+                        <div className="mom-note">
+                          <strong>Mom note:</strong> {day.momNote}
+                        </div>
+                      )}
+                      {day.foliage && (
+                        <div className="foliage-chip">🍁 {day.foliage}</div>
+                      )}
+                      {day.highlights?.length > 0 && (
+                        <ul className="highlights">
+                          {day.highlights.map((h, idx) => (
+                            <li key={idx}>{h}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Quick logistics (keeps the extra “why” info without turning into 10 tabs) */}
+            {Array.isArray(logistics) && logistics.length > 0 && (
+              <section className="mom-logistics">
+                <h3>🧠 Why this route works</h3>
+                <div className="info-cards">
+                  {logistics.map((item, idx) => (
+                    <div key={idx} className="info-card">
+                      <div className="info-title">{item.icon} {item.title}</div>
+                      <div className="info-body">{item.content}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
         
-        {/* Travelers showcase */}
-        <div className="travelers">
-          {travelers.map((t) => (
-            <div key={t.name} className="traveler">
-              <span className="traveler-emoji">{t.emoji}</span>
-              <span className="traveler-name">{t.name}</span>
-              <span className="traveler-role">{t.role}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Countdown Timer */}
-        <div className="countdown-wrapper">
-          <p className="countdown-label">Adventure begins in...</p>
-          <CountdownTimer targetDate={tripDates.start} />
-        </div>
-
-        <p className="intro-text">{tripData.summary}</p>
-      </header>
-
-      {/* Navigation Tabs */}
-      <nav className="tab-nav">
-        {['overview', 'explore', 'mytrip', 'lodging', 'foliage', 'lobster', 'towns', 'food', 'planning', 'packing'].map((tab) => (
-          <button
-            key={tab}
-            className={`tab-btn ${activeTab === tab ? 'active' : ''} ${tab === 'overview' ? 'primary-tab' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab === 'overview' && '🗺️ '}
-            {tab === 'explore' && '🔎 '}
-            {tab === 'mytrip' && '✨ '}
-            {tab === 'lodging' && '🏨 '}
-            {tab === 'foliage' && '🍁 '}
-            {tab === 'lobster' && '🦞 '}
-            {tab === 'towns' && '⛵ '}
-            {tab === 'food' && '🍽️ '}
-            {tab === 'planning' && '📋 '}
-            {tab === 'packing' && '🧳 '}
-            {tab === 'overview' ? 'Overview' : tab === 'mytrip' ? 'My Trip' : tab.charAt(0).toUpperCase() + tab.slice(1)}
-            {tab === 'mytrip' && selectedActivities.length > 0 && (
-              <span className="tab-badge">{selectedActivities.length}</span>
-            )}
-          </button>
-        ))}
-      </nav>
-
-      {/* Fun Facts Banner */}
-      <FunFacts facts={funFacts} />
-
-      {/* 🔎 EXPLORE TAB - Discovery search with citations */}
-      {activeTab === 'explore' && (
-        <section className="explore-section">
-          <div className="section-heading">
-            <p className="eyebrow">🔎 Explore & Discover</p>
-            <h2>Hidden gems, lobster shrines, and foliage routes</h2>
-            <p>Search by vibe, type, or location. Add to My Trip to curate your own board.</p>
-          </div>
-
-          <div className="explore-controls">
-            <input
-              type="text"
-              value={exploreQuery}
-              onChange={(e) => setExploreQuery(e.target.value)}
-              placeholder="Search lobster, harbor towns, Montreal cafes, drives..."
-              className="explore-search"
-            />
-            <div className="explore-filters">
-              {exploreTypeOptions.map((opt) => (
-                <button
-                  key={opt.id}
-                  className={`filter-chip ${exploreType === opt.id ? 'is-active' : ''}`}
-                  onClick={() => setExploreType(opt.id)}
-                >
-                  {opt.label}
-                </button>
-              ))}
-              {(exploreQuery || exploreType !== 'all') && (
-                <button
-                  className="filter-chip reset-chip"
-                  onClick={() => { setExploreQuery(''); setExploreType('all'); }}
-                >
-                  Reset
-                </button>
-              )}
-            </div>
-            <div className="explore-meta">
-              <span className="meta-pill">{filteredExplore.length} results</span>
-              <div className="meta-breakdown">
-                {Object.entries(exploreStats).slice(0,4).map(([type,count]) => (
-                  <span key={type} className="meta-chip" onClick={() => setExploreType(type)}>
-                    {getTypeLabel(type)}: {count}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Add-anything search (Nominatim) */}
-            <div className="custom-search">
-              <div className="custom-header">
-                <div>
-                  <p className="eyebrow">Add anything</p>
-                  <h4>Search the map and drop it into your trip</h4>
-                </div>
-                <label className="assign-select">
-                  <span>Default day</span>
-                  <select value={customSelectedDay} onChange={(e) => setCustomSelectedDay(e.target.value)}>
-                    <option value="">Unscheduled</option>
-                    {tripDays.map(d => (
-                      <option key={d.id} value={d.id}>Day {d.id}</option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="custom-input-row">
-                <input
-                  type="text"
-                  value={customQuery}
-                  onChange={(e) => { setCustomQuery(e.target.value); searchCustomPlaces(e.target.value) }}
-                  placeholder="Try: Acadia National Park, Portsmouth coffee, Burlington hotel, address, etc."
-                  className="explore-search"
-                />
-                {customLoading && <span className="loading-dot">⏳</span>}
-              </div>
-              {customError && <p className="custom-error">{customError}</p>}
-              <div className="custom-results">
-                {customResults.map((place) => (
-                  <div key={place.place_id} className="custom-card">
-                    <div>
-                      <p className="eyebrow">{place.type || place.category}</p>
-                      <h5>{place.display_name.split(',')[0]}</h5>
-                      <p className="custom-location">{place.display_name}</p>
-                    </div>
-                    <div className="custom-actions">
-                      <button className="add-btn" onClick={() => handleAddCustomPlace(place)}>Add to My Trip</button>
-                    </div>
-                  </div>
-                ))}
-                {!customLoading && customResults.length === 0 && customQuery.length >= 3 && !customError && (
-                  <div className="empty-state">No matches yet—try adding a city/state or landmark name.</div>
+        {/* ─────────────────────────────────────────────────────────
+            BUILD & CUSTOMIZE TAB
+            (Schedule builder + Discover catalog + Toolkit)
+            ───────────────────────────────────────────────────────── */}
+        {activeTab === 'build' && (
+          <div className="trip-view">
+            <div className="subnav-clean">
+              <button
+                className={`subnav-btn ${buildSection === 'schedule' ? 'active' : ''}`}
+                onClick={() => setBuildSection('schedule')}
+              >
+                📅 Schedule
+              </button>
+              <button
+                className={`subnav-btn ${buildSection === 'discover' ? 'active' : ''}`}
+                onClick={() => setBuildSection('discover')}
+              >
+                🔍 Discover
+              </button>
+              <button
+                className={`subnav-btn ${buildSection === 'toolkit' ? 'active' : ''}`}
+                onClick={() => setBuildSection('toolkit')}
+              >
+                🧳 Toolkit
+                {packingProgress > 0 && packingProgress < 100 && (
+                  <span className="subnav-badge">{packingProgress}%</span>
                 )}
-              </div>
-            </div>
-          </div>
-
-          <div className="explore-grid">
-            {filteredExplore.map((item) => {
-              const source = sourceLookup[item.sourceId]
-              const added = isSelected(item.id)
-              const scheduledDay = selectedActivities.find(a => a.id === item.id)?.dayId || null
-              return (
-                <div key={item.id} className="explore-card">
-                  <div className="explore-card-header">
-                    <div>
-                      <p className="eyebrow">{item.location}</p>
-                      <h3>{item.name}</h3>
-                      <p className="explore-vibe">{item.vibe}</p>
-                    </div>
-                    <span className="type-pill">{getTypeLabel(item.type)}</span>
-                  </div>
-                  {(item.mustDo || item.mustTry) && (
-                    <p className="explore-must">⭐ {item.mustDo || item.mustTry}</p>
-                  )}
-                  <div className="tag-row">
-                    {(item.tags || []).map((tag) => (
-                      <span key={tag} className="tag-chip">{tag}</span>
-                    ))}
-                  </div>
-                  <div className="explore-card-footer">
-                    <div className="footer-left">
-                      {source && (
-                        <a className="source-badge" href={source.url} target="_blank" rel="noreferrer">
-                          🔗 {source.name}
-                        </a>
-                      )}
-                      {added && (
-                        <label className="assign-select">
-                          <span>Day</span>
-                          <select
-                            value={scheduledDay || ''}
-                            onChange={(e) => assignToDay(item.id, e.target.value ? parseInt(e.target.value) : null)}
-                          >
-                            <option value="">Unscheduled</option>
-                            {tripDays.map(d => (
-                              <option key={d.id} value={d.id}>Day {d.id}</option>
-                            ))}
-                          </select>
-                        </label>
-                      )}
-                    </div>
-                    <div className="footer-actions">
-                      {added ? (
-                        <button className="add-btn is-added" onClick={() => setActiveTab('mytrip')}>
-                          View My Trip
-                        </button>
-                      ) : (
-                        <button
-                          className="add-btn"
-                          onClick={() => handleAddExploreItem(item)}
-                        >
-                          Add to My Trip
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-            {filteredExplore.length === 0 && (
-              <div className="empty-state">No matches yet. Try a broader vibe, switch type, or reset filters.</div>
-            )}
-          </div>
-
-          {/* Map preview for discovery results */}
-          <div className="explore-map">
-            <MapContainer
-              center={exploreCenter}
-              zoom={6}
-              scrollWheelZoom={false}
-              className="leaflet-map explore-leaflet"
-            >
-              <TileLayer
-                attribution="&copy; OpenStreetMap contributors"
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              {filteredExplore.map(item => (
-                item.coords ? (
-                  <CircleMarker
-                    key={item.id}
-                    center={item.coords}
-                    radius={10}
-                    pathOptions={{
-                      color: '#d35400',
-                      fillColor: '#d35400',
-                      fillOpacity: 0.85
-                    }}
-                  >
-                    <Popup>
-                      <div className="map-popup">
-                        <h4>{item.name}</h4>
-                        <p>{item.location}</p>
-                        <p>{item.vibe}</p>
-                      </div>
-                    </Popup>
-                  </CircleMarker>
-                ) : null
-              ))}
-            </MapContainer>
-            <div className="map-note">Pan/zoom to preview filtered picks; add any to My Trip above.</div>
-          </div>
-
-          <div className="sources-panel">
-            <h4>Sources & Inspirations</h4>
-            <p className="section-subtitle">Quick cites so you know where each idea came from.</p>
-            <div className="sources-list">
-              {dataSources.map((src) => (
-                <a key={src.id} className="source-chip" href={src.url} target="_blank" rel="noreferrer">
-                  {src.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 🏨 LODGING TAB - Where to Sleep */}
-      {activeTab === 'lodging' && (
-        <section className="lodging-section">
-          <div className="section-heading">
-            <p className="eyebrow">🏨 Where to Stay</p>
-            <h2>Lodging Options by Night</h2>
-            <p>Curated hotels, B&Bs, and Airbnbs for each stop on your journey</p>
-          </div>
-
-          <div className="lodging-grid">
-            {[1, 2, 3, 4, 5, 6].map(night => {
-              const nightLodgings = lodging.filter(l => l.night === night)
-              const nightInfo = {
-                1: { label: 'Night 1', location: 'Boston, MA', date: 'Sept 20' },
-                2: { label: 'Night 2', location: 'Portland, ME', date: 'Sept 21' },
-                3: { label: 'Night 3', location: 'Vermont (Chelsea or Burlington)', date: 'Sept 22' },
-                4: { label: 'Night 4', location: 'Montreal, QC', date: 'Sept 23' },
-                5: { label: 'Night 5', location: 'Montreal, QC', date: 'Sept 24' },
-                6: { label: 'Night 6', location: 'Saratoga Springs or Lake Placid', date: 'Sept 25' },
-              }[night]
-
-              return (
-                <div key={night} className="lodging-night-group">
-                  <div className="night-header">
-                    <h3>{nightInfo.label}</h3>
-                    <span className="night-location">{nightInfo.location}</span>
-                    <span className="night-date">{nightInfo.date}</span>
-                  </div>
-                  <div className="lodging-options">
-                    {nightLodgings.map(lodge => {
-                      const selected = isSelected(lodge.id)
-                      return (
-                        <div key={lodge.id} className={`lodging-card ${lodge.type === 'Private Home' ? 'special' : ''} ${selected ? 'selected' : ''}`}>
-                          {selected && <div className="selected-badge">✓ Booked!</div>}
-                          <div className="lodging-header">
-                            <div className="lodging-name-price">
-                              <h4>{lodge.name}</h4>
-                              <span className={`price-badge ${lodge.price}`}>{lodge.price}</span>
-                            </div>
-                            <span className="lodging-type">{lodge.type}</span>
-                          </div>
-                          <p className="lodging-neighborhood">📍 {lodge.neighborhood}</p>
-                          <p className="lodging-why">{lodge.whyStay}</p>
-                          <div className="lodging-amenities">
-                            {lodge.amenities.slice(0, 4).map((amenity, i) => (
-                              <span key={i} className="amenity-chip">{amenity}</span>
-                            ))}
-                          </div>
-                          <div className="lodging-meta">
-                            <span className="walkability">🚶 {lodge.walkability}</span>
-                            <span className="price-range">{lodge.priceRange}</span>
-                          </div>
-                          {lodge.proTip && (
-                            <p className="lodging-tip">💡 <strong>Pro tip:</strong> {lodge.proTip}</p>
-                          )}
-                          {lodge.bookingTip && (
-                            <p className="lodging-booking">📝 <em>{lodge.bookingTip}</em></p>
-                          )}
-                          <div className="card-actions">
-                            <a 
-                              href={`https://www.google.com/maps?q=${lodge.coordinates[0]},${lodge.coordinates[1]}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="directions-btn"
-                            >
-                              📍 View on Map
-                            </a>
-                            <button 
-                              className={`add-to-trip-btn ${selected ? 'added' : ''}`}
-                              onClick={() => selected ? removeActivity(lodge.id) : addActivity({
-                                id: lodge.id,
-                                type: 'lodging',
-                                name: lodge.name,
-                                location: `${lodge.region} - ${lodge.neighborhood}`,
-                                coordinates: lodge.coordinates,
-                                price: lodge.price,
-                                priceRange: lodge.priceRange,
-                                description: lodge.whyStay,
-                                details: lodge.amenities.join(', '),
-                                night: lodge.night,
-                                lodgingType: lodge.type,
-                                duration: 'overnight',
-                              })}
-                            >
-                              {selected ? '✓ Added' : '+ Add'}
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="lodging-summary-card">
-            <h3>🗓️ Quick Summary: Where to Book</h3>
-            <div className="booking-checklist">
-              <div className="booking-item">
-                <span className="night-badge">N1</span>
-                <strong>Boston:</strong> The Godfrey (luxury) or Revolution Hotel (budget-chic)
-              </div>
-              <div className="booking-item">
-                <span className="night-badge">N2</span>
-                <strong>Portland:</strong> Press Hotel (top pick) or Harbor Hotel (waterfront)
-              </div>
-              <div className="booking-item">
-                <span className="night-badge">N3</span>
-                <strong>Vermont:</strong> Sally's (if available!) or Hotel Vermont in Burlington
-              </div>
-              <div className="booking-item">
-                <span className="night-badge">N4-5</span>
-                <strong>Montreal (2 nights):</strong> Le Petit Hotel (romantic) or Plateau Airbnb (local)
-              </div>
-              <div className="booking-item">
-                <span className="night-badge">N6</span>
-                <strong>Final Night:</strong> The Adelphi in Saratoga or Mirror Lake Inn in Lake Placid
-              </div>
-            </div>
-            <p className="booking-note">💡 Book Portland and Montreal ASAP—fall foliage season = high demand!</p>
-          </div>
-        </section>
-      )}
-
-      {/* ✨ MY TRIP TAB - Custom Itinerary Builder */}
-      {activeTab === 'mytrip' && (
-        <>
-          <section className="my-trip-builder">
-            <div className="section-heading">
-              <p className="eyebrow">✨ Your Custom Adventure</p>
-              <h2>Build Your Perfect Trip</h2>
-              <p>Add activities from the tabs, then drag them into your day-by-day schedule</p>
+              </button>
             </div>
 
-            {/* Trip Stats Summary */}
+            {/* Quick Stats Bar */}
             <div className="trip-stats-bar">
-              <div className="stat-chip">
-                <span className="stat-icon">📍</span>
-                <span>{tripStats.total} activities selected</span>
+              <div className="stat">
+                <strong>{tripStats.total}</strong> activities
               </div>
-              <div className="stat-chip">
-                <span className="stat-icon">🦞</span>
-                <span>{tripStats.lobsterCount} lobster spots</span>
+              <div className="stat">
+                <strong>{tripStats.scheduled}</strong> scheduled
               </div>
-              <div className="stat-chip">
-                <span className="stat-icon">⚓</span>
-                <span>{tripStats.townCount} harbor towns</span>
-              </div>
-              <div className="stat-chip">
-                <span className="stat-icon">🍁</span>
-                <span>{tripStats.foliageCount + tripStats.driveCount} foliage/drives</span>
-              </div>
-              <div className="stat-chip">
-                <span className="stat-icon">⏱️</span>
-                <span>~{Math.round(tripStats.totalDuration)} hrs of activities</span>
-              </div>
-              {tripStats.unassigned > 0 && (
-                <div className="stat-chip warning">
-                  <span className="stat-icon">⚠️</span>
-                  <span>{tripStats.unassigned} unscheduled</span>
-                </div>
+              {tripStats.byType.lobster > 0 && (
+                <div className="stat">🦞 {tripStats.byType.lobster}</div>
               )}
-              {selectedActivities.length > 0 && (
-                <button className="clear-btn" onClick={clearAllSelections}>
-                  🗑️ Clear All
-                </button>
+              {tripStats.byType.town > 0 && (
+                <div className="stat">⚓ {tripStats.byType.town}</div>
               )}
+              {tripStats.byType.lodging > 0 && (
+                <div className="stat">🏨 {tripStats.byType.lodging}</div>
+              )}
+              <button 
+                className="discover-cta"
+                onClick={() => setBuildSection('discover')}
+              >
+                + Add More
+              </button>
             </div>
 
-            {selectedActivities.length === 0 ? (
-              <div className="empty-trip-state">
+            {buildSection === 'schedule' && selectedActivities.length === 0 ? (
+              /* Empty State */
+              <div className="empty-trip">
                 <div className="empty-icon">🗺️</div>
-                <h3>Start Building Your Adventure!</h3>
-                <p>Browse the tabs above and click "+ Add" on activities that interest you.</p>
-                <div className="quick-start-tips">
-                  <div className="tip">🦞 <strong>Lobster:</strong> Pick your must-try seafood spots</div>
-                  <div className="tip">⚓ <strong>Towns:</strong> Choose charming harbor villages</div>
-                  <div className="tip">🍁 <strong>Foliage:</strong> Find peak fall colors</div>
-                  <div className="tip">🏨 <strong>Lodging:</strong> Book your stays</div>
-                </div>
+                <h2>Start Planning Your Adventure</h2>
+                <p>Browse lobster spots, harbor towns, foliage drives, and more to build your perfect trip.</p>
+                <button 
+                  className="cta-btn"
+                  onClick={() => setBuildSection('discover')}
+                >
+                  🔍 Discover Activities
+                </button>
               </div>
-            ) : (
-              <div className="trip-builder-layout">
-                {/* Unassigned Activities Pool */}
-                <div className="unassigned-pool">
-                  <h3>📦 Unscheduled ({selectedActivities.filter(a => !a.dayId).length})</h3>
-                  <p className="pool-hint">Drag to a day below, or use the dropdown</p>
-                  <div className="activity-pool">
-                    {selectedActivities.filter(a => !a.dayId).map(activity => (
-                      <div 
-                        key={activity.id} 
-                        className={`pool-activity ${activity.type}`}
-                        draggable
-                        onDragStart={(e) => {
-                          e.dataTransfer.setData('activityId', activity.id)
-                          e.dataTransfer.setData('fromDay', '')
-                          e.dataTransfer.setData('fromIndex', '-1')
-                          e.target.classList.add('dragging')
-                        }}
-                        onDragEnd={(e) => e.target.classList.remove('dragging')}
-                      >
-                        <span className="activity-icon">{activityConfig[activity.type]?.icon}</span>
-                        <div className="activity-info">
-                          <strong>{activity.name}</strong>
-                          <span className="activity-location">{activity.location}</span>
-                        </div>
-                        <div className="activity-actions">
+            ) : buildSection === 'schedule' ? (
+              <div className="trip-builder">
+                {/* Unscheduled Pool */}
+                {unscheduledActivities.length > 0 && (
+                  <div className="unscheduled-section">
+                    <h3>📦 To Schedule ({unscheduledActivities.length})</h3>
+                    <p className="hint">Drag blocks onto a day (or use the dropdown).</p>
+                    <div className="unscheduled-list">
+                      {unscheduledActivities.map(activity => (
+                        <div
+                          key={activity.id}
+                          className={`unscheduled-item ${activity.type}`}
+                          draggable
+                          onDragStart={(e) => onDragStartActivity(e, activity)}
+                        >
+                          <span className="item-icon">
+                            {activityTypes[activity.type]?.icon || '📍'}
+                          </span>
+                          <div className="item-info">
+                            <strong>{activity.name}</strong>
+                            <span>{activity.location}</span>
+                          </div>
                           <select 
-                            onChange={(e) => assignToDay(activity.id, parseInt(e.target.value) || null)}
-                            value=""
                             className="day-select"
+                            value=""
+                            onChange={(e) => assignToDay(activity.id, parseInt(e.target.value))}
                           >
-                            <option value="">→ Day...</option>
+                            <option value="">Add to day...</option>
                             {tripDays.map(day => (
-                              <option key={day.id} value={day.id}>Day {day.id}</option>
+                              <option key={day.id} value={day.id}>
+                                {day.label} - {day.location}
+                              </option>
                             ))}
                           </select>
                           <button 
-                            className="remove-btn" 
+                            className="remove-btn"
                             onClick={() => removeActivity(activity.id)}
-                            title="Remove from trip"
-                          >
-                            ✕
-                          </button>
+                          >×</button>
                         </div>
-                      </div>
-                    ))}
-                    {selectedActivities.filter(a => !a.dayId).length === 0 && (
-                      <p className="all-assigned">✅ All activities are scheduled!</p>
-                    )}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Day-by-Day Schedule */}
-                <div className="day-schedule">
-                  <h3>📅 Day-by-Day Schedule</h3>
-                  <p className="schedule-subtitle">Drag activities between days to organize</p>
-                  <div className="days-grid">
+                <div className="schedule-section">
+                  <h3>📅 Your Schedule</h3>
+                  <div className="days-list">
                     {tripDays.map(day => {
                       const dayActivities = getActivitiesForDay(day.id)
                       return (
-                        <div 
-                          key={day.id} 
-                          className="day-drop-zone"
-                          onDragOver={(e) => {
-                            e.preventDefault()
-                            e.currentTarget.classList.add('drag-over')
-                          }}
-                          onDragLeave={(e) => e.currentTarget.classList.remove('drag-over')}
+                        <div
+                          key={day.id}
+                          className="day-card"
+                          onDragOver={(e) => e.preventDefault()}
                           onDrop={(e) => {
                             e.preventDefault()
-                            e.currentTarget.classList.remove('drag-over')
-                            const activityId = e.dataTransfer.getData('activityId')
-                            if (activityId) {
-                              assignToDay(activityId, day.id)
-                            }
+                            const payload = readDragPayload(e)
+                            if (!payload?.id && !payload?.activity?.id) return
+                            ensureAssignedToDay(payload, day.id)
                           }}
                         >
                           <div className="day-header">
-                            <div className="day-title">
-                              <span className="day-num">Day {day.id}</span>
+                            <div className="day-info">
+                              <span className="day-label">{day.label}</span>
                               <span className="day-date">{day.date}</span>
                             </div>
                             <span className="day-location">{day.location}</span>
@@ -2068,69 +1234,84 @@ function App() {
                           
                           <div className="day-activities">
                             {dayActivities.length === 0 ? (
-                              <div className="empty-day">
-                                <span>Drop activities here</span>
+                              <div className="day-empty">
+                                <span>No activities yet</span>
+                                <button 
+                                  className="quick-add"
+                                  onClick={() => setBuildSection('discover')}
+                                >
+                                  + Add
+                                </button>
                               </div>
                             ) : (
-                              dayActivities.map((activity, idx) => (
-                                <div 
-                                  key={activity.id} 
-                                  className={`day-activity ${activity.type}`}
-                                  draggable
-                                  onDragStart={(e) => {
-                                    e.dataTransfer.setData('activityId', activity.id)
-                                    e.dataTransfer.setData('fromDay', String(day.id))
-                                    e.dataTransfer.setData('fromIndex', String(idx))
-                                    e.target.classList.add('dragging')
-                                  }}
-                                  onDragEnd={(e) => e.target.classList.remove('dragging')}
+                              <>
+                                {/* Drop zone at top (reorder within the day) */}
+                                <div
+                                  className="drop-zone"
                                   onDragOver={(e) => e.preventDefault()}
                                   onDrop={(e) => {
                                     e.preventDefault()
-                                    const activityId = e.dataTransfer.getData('activityId')
-                                    const fromDay = parseInt(e.dataTransfer.getData('fromDay')) || null
-                                    const fromIndex = parseInt(e.dataTransfer.getData('fromIndex'))
-                                    // If moving within same day, reorder
-                                    if (fromDay === day.id) {
-                                      moveActivityInDay(day.id, fromIndex, idx)
-                                    } else {
-                                      // Insert into this index
-                                      assignToDayAt(activityId, day.id, idx)
-                                    }
+                                    const payload = readDragPayload(e)
+                                    if (!payload?.id && !payload?.activity?.id) return
+                                    ensureAssignedToDay(payload, day.id, 0)
                                   }}
-                                >
-                                  <span className="activity-icon">{activityConfig[activity.type]?.icon}</span>
-                                  <div className="activity-details">
-                                    <strong>{activity.name}</strong>
-                                    <span>{activity.location}</span>
-                                  </div>
-                                  <div className="activity-controls">
-                                    <select 
-                                      onChange={(e) => {
-                                        const newDay = parseInt(e.target.value)
-                                        if (newDay === 0) {
-                                          assignToDay(activity.id, null)
-                                        } else {
-                                          assignToDay(activity.id, newDay)
-                                        }
+                                />
+                                {dayActivities.map((activity, idx) => (
+                                  <div key={activity.id}>
+                                    <div
+                                      className={`scheduled-activity ${activity.type}`}
+                                      draggable
+                                      onDragStart={(e) => onDragStartActivity(e, activity)}
+                                    >
+                                      <span className="activity-order">{idx + 1}</span>
+                                      <span className="activity-icon">
+                                        {activityTypes[activity.type]?.icon || '📍'}
+                                      </span>
+                                      <div className="activity-info">
+                                        <strong>{activity.name}</strong>
+                                        <span>{activity.location}</span>
+                                      </div>
+                                      <div className="activity-actions">
+                                        <select
+                                          className="move-select"
+                                          value={day.id}
+                                          onChange={(e) => {
+                                            const val = e.target.value
+                                            if (val === 'remove') {
+                                              assignToDay(activity.id, null)
+                                            } else {
+                                              assignToDay(activity.id, parseInt(val))
+                                            }
+                                          }}
+                                        >
+                                          {tripDays.map(d => (
+                                            <option key={d.id} value={d.id}>
+                                              {d.label}
+                                            </option>
+                                          ))}
+                                          <option value="remove">Unschedule</option>
+                                        </select>
+                                        <button 
+                                          className="remove-btn"
+                                          onClick={() => removeActivity(activity.id)}
+                                        >×</button>
+                                      </div>
+                                    </div>
+
+                                    {/* Drop zone after each block */}
+                                    <div
+                                      className="drop-zone"
+                                      onDragOver={(e) => e.preventDefault()}
+                                      onDrop={(e) => {
+                                        e.preventDefault()
+                                        const payload = readDragPayload(e)
+                                        if (!payload?.id && !payload?.activity?.id) return
+                                        ensureAssignedToDay(payload, day.id, idx + 1)
                                       }}
-                                      value={day.id}
-                                      className="move-select"
-                                    >
-                                      <option value="0">Unschedule</option>
-                                      {tripDays.map(d => (
-                                        <option key={d.id} value={d.id}>Day {d.id}</option>
-                                      ))}
-                                    </select>
-                                    <button 
-                                      className="remove-btn"
-                                      onClick={() => removeActivity(activity.id)}
-                                    >
-                                      ✕
-                                    </button>
+                                    />
                                   </div>
-                                </div>
-                              ))
+                                ))}
+                              </>
                             )}
                           </div>
                         </div>
@@ -2138,930 +1319,416 @@ function App() {
                     })}
                   </div>
                 </div>
-              </div>
-            )}
 
-            {/* Trip Summary Dashboard with Real Route Calculations */}
-            {selectedActivities.length >= 2 && (
-              <TripSummaryDashboard 
-                tripDays={tripDays}
-                getActivitiesForDay={getActivitiesForDay}
-                selectedActivities={selectedActivities}
-              />
-            )}
+                {/* Trip Map */}
+                {selectedActivities.filter(a => a.coordinates).length > 0 && (
+                  <div className="trip-map-section">
+                    <h3>🗺️ Your Route</h3>
+                    <div className="trip-map">
+                      <MapContainer
+                        center={[43.5, -71.5]}
+                        zoom={7}
+                        style={{ height: '350px', width: '100%', borderRadius: '12px' }}
+                        scrollWheelZoom={true}
+                      >
+                        <TileLayer
+                          attribution='&copy; OpenStreetMap'
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
 
-            {/* Custom Trip Map */}
-            {selectedActivities.length > 0 && (
-              <div className="tab-map-container">
-                <h3>🗺️ Your Custom Route</h3>
-                <div className="tab-map">
-                  <MapContainer
-                    center={[43.5, -71.5]}
-                    zoom={7}
-                    style={{ height: '400px', width: '100%', borderRadius: '12px' }}
-                    scrollWheelZoom={true}
-                  >
-                    <TileLayer
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    {/* Draw lines between scheduled activities */}
-                    {tripDays.map(day => {
-                      const dayActivities = getActivitiesForDay(day.id)
-                      const coords = dayActivities.filter(a => a.coordinates).map(a => a.coordinates)
-                      if (coords.length > 1) {
-                        return (
+                        {scheduledRouteCoords.length > 1 && (
                           <Polyline
-                            key={day.id}
-                            positions={coords}
-                            pathOptions={{ color: '#3498db', weight: 3, opacity: 0.7, dashArray: '5 5' }}
+                            positions={scheduledRouteCoords}
+                            pathOptions={{ color: '#2c3e50', weight: 4, opacity: 0.75 }}
                           />
-                        )
-                      }
-                      return null
-                    })}
-                    {/* Plot all selected activities */}
-                    {selectedActivities.filter(a => a.coordinates).map((activity) => (
-                      <CircleMarker
-                        key={activity.id}
-                        center={activity.coordinates}
-                        radius={10}
-                        pathOptions={{
-                          color: activityConfig[activity.type]?.color || '#666',
-                          fillColor: activityConfig[activity.type]?.color || '#666',
-                          fillOpacity: activity.dayId ? 0.9 : 0.5,
-                          weight: activity.dayId ? 3 : 1,
-                        }}
-                      >
-                        <Popup>
-                          <div className="map-popup">
-                            <h4>{activityConfig[activity.type]?.icon} {activity.name}</h4>
-                            <p><strong>Type:</strong> {activityConfig[activity.type]?.label}</p>
-                            {activity.dayId && (
-                              <p><strong>Scheduled:</strong> {tripDays.find(d => d.id === activity.dayId)?.label}</p>
-                            )}
-                            <p>{activity.description}</p>
-                          </div>
-                        </Popup>
-                      </CircleMarker>
-                    ))}
-                  </MapContainer>
-                </div>
-                <div className="map-legend">
-                  <span><span className="legend-dot" style={{background: '#e74c3c'}}></span> Lobster</span>
-                  <span><span className="legend-dot" style={{background: '#1abc9c'}}></span> Towns</span>
-                  <span><span className="legend-dot" style={{background: '#e67e22'}}></span> Foliage</span>
-                  <span><span className="legend-dot" style={{background: '#9b59b6'}}></span> Drives</span>
-                  <span style={{marginLeft: 'auto', color: '#666'}}>
-                    Solid = scheduled, Faded = unscheduled
-                  </span>
-                </div>
-              </div>
-            )}
-          </section>
-        </>
-      )}
+                        )}
 
-      {/* Overview Tab */}
-      {activeTab === 'overview' && (
-        <>
-          <section className="dual-grid">
-            <div className="card">
-              <h3>✨ The Dream</h3>
-              <ul>
-                {mmHighlights.map((item) => (
-                  <li key={item.title}>
-                    <strong>{item.title}:</strong> {item.content}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="card">
-              <h3>🔬 The Research</h3>
-              <ul>
-                {researchHighlights.map((item) => (
-                  <li key={item.title}>
-                    <strong>{item.title}:</strong> {item.detail}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-
-          {/* Driving Stats Banner */}
-          <section className="driving-stats">
-            <div className="stat">
-              <span className="stat-number">{drivingStats.totalMiles}</span>
-              <span className="stat-label">Total Miles</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">{drivingStats.totalDriveTime}</span>
-              <span className="stat-label">Drive Time</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">{drivingStats.scenicMiles}</span>
-              <span className="stat-label">Scenic Miles</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">7</span>
-              <span className="stat-label">Days</span>
-            </div>
-          </section>
-
-          {/* Weather Widget */}
-          <section className="weather-section">
-            <div className="section-heading">
-              <p className="eyebrow">What to Expect</p>
-              <h2>🌡️ Weather Along the Route</h2>
-              <p>Late September brings "Indian Summer" warmth to the coast but sweater weather in the mountains!</p>
-            </div>
-            <WeatherWidget forecast={weatherForecast} />
-          </section>
-
-          <section className="map-section">
-            <div className="section-heading">
-              <p className="eyebrow">Route Intelligence</p>
-              <h2>🗺️ Your Adventure Map</h2>
-              <p>
-                Core route: Boston ➜ Portland ➜ Chelsea ➜ Montreal ➜ Saratoga ➜ Albany. 
-                Alternate loop drops into the Berkshires before returning to Boston.
-              </p>
-            </div>
-
-            <div className="map-panel">
-              <div className="map-wrapper">
-                <MapContainer center={map.center} zoom={map.zoom} scrollWheelZoom={false} className="leaflet-map">
-                  <TileLayer
-                    attribution="&copy; OpenStreetMap contributors"
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <Polyline positions={map.routeCoordinates} pathOptions={coreLineOptions} />
-                  <Polyline positions={map.alternativeCoordinates} pathOptions={altLineOptions} />
-
-                  {map.stops.map((stop) => {
-                    const options = getMarkerOptions(stop.category)
-                    return (
-                      <CircleMarker
-                        key={stop.id}
-                        center={stop.coords}
-                        radius={stop.category === 'core' ? 10 : 8}
-                        pathOptions={{
-                          color: options.color,
-                          fillColor: options.fillColor,
-                          fillOpacity: 0.85,
-                          weight: 2,
-                        }}
-                      >
-                        <Popup>
-                          <h3>{stop.name}</h3>
-                          <p><strong>MMTrip:</strong> {stop.mmNote}</p>
-                          <p><strong>Research:</strong> {stop.researchNote}</p>
-                        </Popup>
-                      </CircleMarker>
-                    )
-                  })}
-
-                  {map.alternativeStops.map((stop) => (
-                    <CircleMarker
-                      key={stop.id}
-                      center={stop.coords}
-                      radius={8}
-                      pathOptions={{
-                        color: '#1abc9c',
-                        fillColor: '#1abc9c',
-                        fillOpacity: 0.7,
-                        weight: 2,
-                      }}
-                    >
-                      <Popup>
-                        <h3>{stop.name}</h3>
-                        <p><strong>MMTrip:</strong> {stop.mmNote}</p>
-                        <p><strong>Research:</strong> {stop.researchNote}</p>
-                      </Popup>
-                    </CircleMarker>
-                  ))}
-                </MapContainer>
-              </div>
-
-              <div className="map-sidebar">
-                <div className="legend">
-                  <div><span className="legend-dot core" /> Core route</div>
-                  <div><span className="legend-dot alt" /> Alternate loop</div>
-                  <div><span className="legend-dot departure" /> Departure hub</div>
-                </div>
-                <ul className="map-notes">
-                  {map.stops.slice(0, 4).map((stop) => (
-                    <li key={stop.id}>
-                      <strong>{stop.name}:</strong> {stop.mmNote}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section className="logistics-grid">
-            {logistics.map((item) => (
-              <div key={item.title} className="logistics-card">
-                <div className="icon">{item.icon}</div>
-                <h3>{item.title}</h3>
-                <p>{item.content}</p>
-              </div>
-            ))}
-          </section>
-
-          {/* Photo Spots */}
-          <section className="photo-section">
-            <PhotoSpots spots={photoSpots} />
-          </section>
-        </>
-      )}
-
-      {/* 🦞 LOBSTER TAB - The Ultimate Lobster Guide */}
-      {activeTab === 'lobster' && (
-        <>
-          {/* Live Stats Banner */}
-          <section className="live-stats-banner">
-            <div className="stat-item">
-              <span className="stat-icon">🦞</span>
-              <div className="stat-details">
-                <span className="stat-value">${liveStats.lobsterPrices.dockPrice}/lb</span>
-                <span className="stat-label">Dock Price (Best Deal!)</span>
-              </div>
-            </div>
-            <div className="stat-item">
-              <span className="stat-icon">🍽️</span>
-              <div className="stat-details">
-                <span className="stat-value">${liveStats.lobsterPrices.restaurantAvg}</span>
-                <span className="stat-label">Restaurant Avg</span>
-              </div>
-            </div>
-            <div className="stat-item">
-              <span className="stat-icon">📈</span>
-              <div className="stat-details">
-                <span className="stat-value">{liveStats.lobsterPrices.seasonalNote}</span>
-                <span className="stat-label">Market Trend</span>
-              </div>
-            </div>
-          </section>
-
-          <section className="lobster-guide">
-            <div className="section-heading">
-              <p className="eyebrow">🦞 Mikaela's Mission</p>
-              <h2>The Ultimate Lobster Guide</h2>
-              <p>Ranked by locals, tested by generations. Here's where to find the REALLY good lobster.</p>
-            </div>
-
-            {/* Lobster Spots Map */}
-            <div className="tab-map-container">
-              <h3>🗺️ Lobster Spots Map</h3>
-              <div className="tab-map">
-                <MapContainer
-                  center={[43.5, -70.5]}
-                  zoom={8}
-                  style={{ height: '400px', width: '100%', borderRadius: '12px' }}
-                  scrollWheelZoom={true}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  {lobsterGuide.topSpots.map((spot, idx) => (
-                    <CircleMarker
-                      key={spot.name}
-                      center={spot.coordinates}
-                      radius={idx === 0 ? 12 : 10}
-                      pathOptions={{
-                        color: idx === 0 ? '#FFD700' : '#e74c3c',
-                        fillColor: idx === 0 ? '#FFD700' : '#e74c3c',
-                        fillOpacity: 0.8,
-                        weight: idx === 0 ? 3 : 2,
-                      }}
-                    >
-                      <Popup>
-                        <div className="map-popup">
-                          <h4>🦞 {spot.name}</h4>
-                          <p><strong>📍</strong> {spot.location}</p>
-                          <p><strong>⭐</strong> {spot.rating}/5 • {spot.price}</p>
-                          <p><strong>Must Order:</strong> {spot.mustOrder}</p>
-                          <a 
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.coordinates[0]},${spot.coordinates[1]}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        {selectedActivities.filter(a => a.coordinates).map(activity => (
+                          <CircleMarker
+                            key={activity.id}
+                            center={activity.coordinates}
+                            radius={activity.dayId ? 10 : 6}
+                            pathOptions={{
+                              color: activityTypes[activity.type]?.color || '#666',
+                              fillColor: activityTypes[activity.type]?.color || '#666',
+                              fillOpacity: activity.dayId ? 0.9 : 0.4,
+                              weight: 2,
+                            }}
                           >
-                            Get Directions →
-                          </a>
-                        </div>
-                      </Popup>
-                    </CircleMarker>
-                  ))}
-                </MapContainer>
-              </div>
-              <div className="map-legend">
-                <span><span className="legend-dot" style={{background: '#FFD700'}}></span> #1 Pick</span>
-                <span><span className="legend-dot" style={{background: '#e74c3c'}}></span> Top Lobster Spots</span>
-              </div>
-            </div>
-
-            <div className="lobster-grid">
-              {lobsterGuide.topSpots.map((spot, idx) => {
-                const activityId = `lobster-${idx}`
-                const selected = isSelected(activityId)
-                return (
-                <div key={spot.name} className={`lobster-card ${idx === 0 ? 'top-pick' : ''} ${selected ? 'selected' : ''}`}>
-                  {idx === 0 && <div className="top-pick-badge">👑 #1 Pick</div>}
-                  {selected && <div className="selected-badge">✓ Added</div>}
-                  <div className="lobster-header">
-                    <h3>{spot.name}</h3>
-                    <div className="lobster-meta">
-                      <span className="location">📍 {spot.location}</span>
-                      <span className="price-level">{spot.price}</span>
+                            <Popup>
+                              <strong>{activity.name}</strong><br/>
+                              {activity.location}
+                            </Popup>
+                          </CircleMarker>
+                        ))}
+                      </MapContainer>
                     </div>
                   </div>
-                  
-                  <div className="rating-section">
-                    <div className="stars">
-                      {'⭐'.repeat(Math.floor(spot.rating))}
-                      {spot.rating % 1 >= 0.5 && '✨'}
-                    </div>
-                    <span className="rating-number">{spot.rating}/5</span>
-                  </div>
-
-                  <p className="spot-vibe">{spot.whySpecial}</p>
-
-                  <div className="must-try">
-                    <h4>🍽️ Must Try</h4>
-                    <p className="must-order">{spot.mustOrder}</p>
-                  </div>
-
-                  <div className="pro-tip">
-                    <strong>💡 Pro Tip:</strong> {spot.proTip}
-                  </div>
-
-                  <div className="wait-time">
-                    <strong>⏱️ Wait:</strong> {spot.waitTime}
-                  </div>
-
-                  <div className="card-actions">
-                    <a 
-                      href={`https://www.google.com/maps?q=${spot.coordinates[0]},${spot.coordinates[1]}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="directions-btn"
-                    >
-                      📍 Directions
-                    </a>
-                    <button 
-                      className={`add-to-trip-btn ${selected ? 'added' : ''}`}
-                      onClick={() => selected ? removeActivity(activityId) : addActivity({
-                        id: activityId,
-                        type: 'lobster',
-                        name: spot.name,
-                        location: spot.location,
-                        coordinates: spot.coordinates,
-                        rating: spot.rating,
-                        price: spot.price,
-                        description: spot.whySpecial,
-                        details: spot.mustOrder,
-                        tip: spot.proTip,
-                        duration: 1.5,
-                      })}
-                    >
-                      {selected ? '✓ Added' : '+ Add'}
-                    </button>
-                  </div>
-                </div>
-              )})}
-            </div>
-
-            <div className="lobster-tips-card">
-              <h3>🎓 Lobster 101 - Ordering Like a Local</h3>
-              <div className="tips-grid">
-                <div className="tip-item">
-                  <h4>🦞 Soft vs Hard Shell</h4>
-                  <p><strong>Soft shell (shedders):</strong> Sweeter, more tender, easier to crack. Best in late summer!</p>
-                  <p><strong>Hard shell:</strong> More meat, better for shipping, meatier texture.</p>
-                </div>
-                <div className="tip-item">
-                  <h4>📏 Size Matters</h4>
-                  <p><strong>Chickens (1-1.25 lb):</strong> Sweetest, most tender</p>
-                  <p><strong>Quarters (1.25-1.5 lb):</strong> Perfect balance</p>
-                  <p><strong>Deuces (2+ lb):</strong> Impressive but can be tougher</p>
-                </div>
-                <div className="tip-item">
-                  <h4>🕐 Timing</h4>
-                  <p>Hit lobster shacks at 11:30am or after 2pm to avoid the lunch rush. Weekdays are always better!</p>
-                </div>
-                <div className="tip-item">
-                  <h4>💰 Best Value</h4>
-                  <p>Look for "lobster roll" specials vs. "lazy lobster" (picked meat). Roll = more experience, lazy = more meat per dollar.</p>
-                </div>
+                )}
               </div>
-            </div>
-          </section>
-        </>
-      )}
-
-      {/* 🍂 FOLIAGE TAB - Fall Colors Tracker */}
-      {activeTab === 'foliage' && (
-        <>
-          <section className="foliage-tracker">
-            <div className="section-heading">
-              <p className="eyebrow">🍂 Autumn Magic</p>
-              <h2>Live Fall Foliage Tracker</h2>
-              <p>Peak predictions along your route - chase those colors!</p>
-            </div>
-
-            {/* Foliage Map */}
-            <div className="tab-map-container">
-              <h3>🗺️ Foliage Hotspots & Drives</h3>
-              <div className="tab-map">
-                <MapContainer
-                  center={[44.0, -72.0]}
-                  zoom={7}
-                  style={{ height: '400px', width: '100%', borderRadius: '12px' }}
-                  scrollWheelZoom={true}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            ) : buildSection === 'discover' ? (
+              <div className="discover-view">
+                {/* Search & Filter Bar */}
+                <div className="discover-controls">
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search lobster spots, towns, drives..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  {/* Foliage Prediction Locations */}
-                  {foliageTracker.predictions.map((pred) => (
-                    <CircleMarker
-                      key={pred.location}
-                      center={pred.coordinates}
-                      radius={10}
-                      pathOptions={{
-                        color: pred.status === 'peak' ? '#e74c3c' : pred.status === 'approaching' ? '#f39c12' : '#27ae60',
-                        fillColor: pred.status === 'peak' ? '#e74c3c' : pred.status === 'approaching' ? '#f39c12' : '#27ae60',
-                        fillOpacity: 0.8,
-                        weight: 2,
-                      }}
-                    >
-                      <Popup>
-                        <div className="map-popup">
-                          <h4>🍁 {pred.location}</h4>
-                          <p><strong>Status:</strong> {pred.lateSeptStatus || pred.lateSepting}</p>
-                          <p><strong>Peak:</strong> {pred.expectedPeak}</p>
-                          <p>{pred.notes}</p>
-                        </div>
-                      </Popup>
-                    </CircleMarker>
-                  ))}
-                  {/* Best Drives */}
-                  {foliageTracker.bestDrives.map((drive) => (
-                    <CircleMarker
-                      key={drive.name}
-                      center={drive.coordinates}
-                      radius={8}
-                      pathOptions={{
-                        color: '#9b59b6',
-                        fillColor: '#9b59b6',
-                        fillOpacity: 0.9,
-                        weight: 2,
-                      }}
-                    >
-                      <Popup>
-                        <div className="map-popup">
-                          <h4>🚗 {drive.name}</h4>
-                          <p><strong>📍</strong> {drive.state} • {drive.distance}</p>
-                          <p><strong>Best View:</strong> {drive.peakView}</p>
-                          <p><em>{drive.note}</em></p>
-                        </div>
-                      </Popup>
-                    </CircleMarker>
-                  ))}
-                </MapContainer>
-              </div>
-              <div className="map-legend">
-                <span><span className="legend-dot" style={{background: '#e74c3c'}}></span> Peak Foliage</span>
-                <span><span className="legend-dot" style={{background: '#f39c12'}}></span> Approaching Peak</span>
-                <span><span className="legend-dot" style={{background: '#27ae60'}}></span> Early Color</span>
-                <span><span className="legend-dot" style={{background: '#9b59b6'}}></span> Scenic Drives</span>
-              </div>
-            </div>
-
-            {/* Current Conditions */}
-            <div className="foliage-current">
-              <h3>📊 Current Conditions (Live)</h3>
-              <div className="foliage-stats-grid">
-                {Object.entries(liveStats.foliageStatus).map(([region, percent]) => (
-                  <div key={region} className="foliage-stat-card">
-                    <div className="region-name">{region.replace(/([A-Z])/g, ' $1').trim()}</div>
-                    <div className="foliage-bar">
-                      <div 
-                        className="foliage-fill" 
-                        style={{ 
-                          width: `${percent}%`,
-                          backgroundColor: percent > 70 ? '#e74c3c' : percent > 40 ? '#f39c12' : '#27ae60'
-                        }}
-                      />
-                    </div>
-                    <div className="percent-label">{percent}% turned</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Location Predictions */}
-            <div className="foliage-predictions">
-              <h3>📅 Foliage Status by Location</h3>
-              <div className="predictions-list">
-                {foliageTracker.predictions.map((pred, idx) => {
-                  const colorClass = pred.status === 'peak' ? 'peak' : 
-                                    pred.status === 'approaching' ? 'near-peak' : 'early';
-                  const activityId = `foliage-${idx}`
-                  const selected = isSelected(activityId)
-                  return (
-                    <div key={pred.location} className={`prediction-card status-${colorClass} ${selected ? 'selected' : ''}`}>
-                      {selected && <div className="selected-badge">✓ Added</div>}
-                      <div className="pred-header">
-                        <h4>{pred.location}</h4>
-                        <span className="elevation">📍 {pred.elevation}</span>
-                      </div>
-                      <div className="pred-status">
-                        {pred.status === 'peak' && '🍁🔥'}
-                        {pred.status === 'approaching' && '🧡'}
-                        {pred.status === 'early' && '💚'}
-                        <span className="status-text">{pred.lateSeptStatus || pred.lateSepting}</span>
-                      </div>
-                      <p className="pred-notes">{pred.notes}</p>
-                      <div className="pred-meta">
-                        <span><strong>Peak:</strong> {pred.expectedPeak}</span>
-                        <span><strong>Best Trees:</strong> {pred.bestTreesNow}</span>
-                      </div>
-                      <button 
-                        className={`add-to-trip-btn ${selected ? 'added' : ''}`}
-                        onClick={() => selected ? removeActivity(activityId) : addActivity({
-                          id: activityId,
-                          type: 'foliage',
-                          name: pred.location,
-                          location: pred.elevation,
-                          coordinates: pred.coordinates,
-                          description: pred.notes,
-                          details: `Peak: ${pred.expectedPeak}`,
-                          duration: 2
-                        })}
+                  
+                  <div className="filter-chips">
+                    {['all', 'lobster', 'town', 'foliage', 'drive', 'lodging', 'food', 'hike'].map(filter => (
+                      <button
+                        key={filter}
+                        className={`filter-chip ${discoverFilter === filter ? 'active' : ''}`}
+                        onClick={() => setDiscoverFilter(filter)}
                       >
-                        {selected ? '✓ Added' : '+ Add'}
+                        {filter === 'all' ? '🌟 All' : `${activityTypes[filter]?.icon || '📍'} ${activityTypes[filter]?.label || filter}`}
                       </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Best Foliage Drives */}
-            <div className="foliage-hotspots">
-              <h3>🚗 Top Foliage Drives</h3>
-              <div className="hotspots-grid">
-                {foliageTracker.bestDrives.map((drive, idx) => {
-                  const activityId = `drive-${idx}`
-                  const selected = isSelected(activityId)
-                  return (
-                  <div key={drive.name} className={`hotspot-card ${selected ? 'selected' : ''}`}>
-                    {selected && <div className="selected-badge">✓ Added</div>}
-                    <h4>{drive.name}</h4>
-                    <p className="spot-location">📍 {drive.state} • {drive.distance}</p>
-                    <p className="peak-time">⏱️ Time: {drive.time}</p>
-                    <p className="photo-tip">✨ {drive.peakView}</p>
-                    <p className="drive-note"><em>{drive.note}</em></p>
-                    <button 
-                      className={`add-to-trip-btn ${selected ? 'added' : ''}`}
-                      onClick={() => selected ? removeActivity(activityId) : addActivity({
-                        id: activityId,
-                        type: 'drive',
-                        name: drive.name,
-                        location: drive.state,
-                        coordinates: drive.coordinates,
-                        rating: drive.rating,
-                        description: drive.note,
-                        details: drive.peakView,
-                        distance: drive.distance,
-                        duration: parseFloat(drive.time) || 2,
-                      })}
-                    >
-                      {selected ? '✓ Added' : '+ Add'}
-                    </button>
-                  </div>
-                )})}
-              </div>
-            </div>
-
-            <div className="foliage-tips-card">
-              <h3>🎯 Leaf Peeping Pro Tips</h3>
-              <ul>
-                <li><strong>Golden Hour:</strong> Best photos 6-8am and 5-7pm when light is warm</li>
-                <li><strong>After Rain:</strong> Colors pop MORE after a light rain - leaves are saturated</li>
-                <li><strong>Elevation Rule:</strong> Higher = earlier. Mountains peak 1-2 weeks before valleys</li>
-                <li><strong>Best Days:</strong> Overcast skies actually make colors more vibrant (no harsh shadows)</li>
-                <li><strong>Weekday Wins:</strong> Popular spots like Kancamagus are PACKED on weekends</li>
-              </ul>
-            </div>
-          </section>
-        </>
-      )}
-
-      {/* ⚓ HARBOR TOWNS TAB */}
-      {activeTab === 'towns' && (
-        <>
-          <section className="harbor-towns">
-            <div className="section-heading">
-              <p className="eyebrow">⚓ Coastal Charm</p>
-              <h2>Quintessential Harbor Towns</h2>
-              <p>The cutest, most walkable coastal villages along your route</p>
-            </div>
-
-            {/* Harbor Towns Map */}
-            <div className="tab-map-container">
-              <h3>🗺️ Harbor Towns Map</h3>
-              <div className="tab-map">
-                <MapContainer
-                  center={[43.5, -70.3]}
-                  zoom={8}
-                  style={{ height: '400px', width: '100%', borderRadius: '12px' }}
-                  scrollWheelZoom={true}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  {harborTowns.map((town, idx) => (
-                    <CircleMarker
-                      key={town.name}
-                      center={town.coordinates}
-                      radius={idx === 0 ? 12 : 10}
-                      pathOptions={{
-                        color: idx === 0 ? '#3498db' : '#1abc9c',
-                        fillColor: idx === 0 ? '#3498db' : '#1abc9c',
-                        fillOpacity: 0.8,
-                        weight: idx === 0 ? 3 : 2,
-                      }}
-                    >
-                      <Popup>
-                        <div className="map-popup">
-                          <h4>⚓ {town.name}</h4>
-                          <p><strong>Vibe:</strong> {town.vibe}</p>
-                          <p><strong>Walkability:</strong> {town.walkability}</p>
-                          <p><strong>📸 Photo Spot:</strong> {town.bestPhotoSpot}</p>
-                          <p><strong>🅿️</strong> {town.parking}</p>
-                          <a 
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${town.coordinates[0]},${town.coordinates[1]}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Get Directions →
-                          </a>
-                        </div>
-                      </Popup>
-                    </CircleMarker>
-                  ))}
-                </MapContainer>
-              </div>
-              <div className="map-legend">
-                <span><span className="legend-dot" style={{background: '#3498db'}}></span> Must Visit</span>
-                <span><span className="legend-dot" style={{background: '#1abc9c'}}></span> Harbor Towns</span>
-              </div>
-            </div>
-
-            <div className="towns-grid">
-              {harborTowns.map((town, idx) => {
-                const activityId = `town-${idx}`
-                const selected = isSelected(activityId)
-                return (
-                <div key={town.name} className={`town-card ${idx === 0 ? 'featured' : ''} ${selected ? 'selected' : ''}`}>
-                  {idx === 0 && <div className="featured-badge">⭐ Must Visit</div>}
-                  {selected && <div className="selected-badge">✓ Added</div>}
-                  <div className="town-header">
-                    <h3>{town.name}</h3>
-                    <span className="state-badge">{town.state}</span>
+                    ))}
                   </div>
                   
-                  <p className="town-vibe">{town.vibe} • Pop. {town.population}</p>
+                  <div className="results-count">
+                    {filteredActivities.length} options found
+                  </div>
+                </div>
 
-                  <div className="town-activities">
-                    <h4>Must Do</h4>
-                    <ul>
-                      {town.mustDo.slice(0, 3).map((activity, i) => (
-                        <li key={i}>{activity}</li>
-                      ))}
-                    </ul>
+                {/* Search any business/place (OpenStreetMap) */}
+                <div className="place-search">
+                  <div className="place-search-head">
+                    <h3>🔎 Search any place</h3>
+                    <p>
+                      Not in the list? Search OpenStreetMap (restaurants, shops, landmarks) and add it.
+                    </p>
                   </div>
 
-                  <div className="town-meta">
-                    <div className="walkability">
-                      <strong>🚶 Walkability:</strong> {town.walkability}
-                    </div>
-                    <div className="parking-tip">
-                      <strong>🅿️ Parking:</strong> {town.parking}
-                    </div>
-                  </div>
+                  <div className="place-search-controls">
+                    <input
+                      type="text"
+                      value={placeSearchQuery}
+                      onChange={(e) => setPlaceSearchQuery(e.target.value)}
+                      placeholder="Try: 'Eventide Oyster Portland' or 'coffee shop Bar Harbor'"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') runPlaceSearch()
+                      }}
+                    />
 
-                  <p className="town-mood"><em>"{town.mood}"</em></p>
-
-                  <div className="card-actions">
-                    <button 
-                      className={`add-to-trip-btn ${selected ? 'added' : ''}`}
-                      onClick={() => selected ? removeActivity(activityId) : addActivity({
-                        id: activityId,
-                        type: 'town',
-                        name: town.name,
-                        location: town.state,
-                        coordinates: town.coordinates,
-                        rating: town.rating,
-                        description: town.vibe,
-                        details: town.mustDo.join(', '),
-                        photoSpot: town.bestPhotoSpot,
-                        duration: 2.5,
-                      })}
+                    <select
+                      value={placeSearchRegion}
+                      onChange={(e) => setPlaceSearchRegion(e.target.value)}
+                      aria-label="Search region"
                     >
-                      {selected ? '✓ Added' : '+ Add'}
+                      <option value="maine_coast">Maine Coast</option>
+                      <option value="portland">Portland area</option>
+                      <option value="boston">Boston area</option>
+                      <option value="white_mountains">White Mountains</option>
+                      <option value="vermont">Vermont</option>
+                      <option value="montreal">Montreal</option>
+                      <option value="adirondacks">Adirondacks</option>
+                      <option value="anywhere">Anywhere</option>
+                    </select>
+
+                    <button
+                      className="place-search-btn"
+                      onClick={runPlaceSearch}
+                      disabled={placeSearchLoading}
+                    >
+                      {placeSearchLoading ? 'Searching…' : 'Search'}
                     </button>
                   </div>
-                </div>
-              )})}
-            </div>
 
-            <div className="harbor-tips-card">
-              <h3>🚗 Small Town Navigation Tips</h3>
-              <div className="tips-grid">
-                <div className="tip-item">
-                  <h4>🅿️ Parking Strategy</h4>
-                  <p>Arrive before 10am or after 3pm. Many towns have free parking on side streets 2-3 blocks from Main St.</p>
-                </div>
-                <div className="tip-item">
-                  <h4>🚶 Walking &gt; Driving</h4>
-                  <p>Park once and walk. Most harbor villages are under 1 mile end-to-end. You'll find more hidden gems on foot!</p>
-                </div>
-                <div className="tip-item">
-                  <h4>💵 Cash is King</h4>
-                  <p>Many small shops, ice cream stands, and lobster shacks are cash-only. Hit an ATM before exploring.</p>
-                </div>
-                <div className="tip-item">
-                  <h4>🌅 Magic Hours</h4>
-                  <p>Harbor towns are most photogenic at sunrise (empty!) and sunset (golden light on boats).</p>
-                </div>
-              </div>
-            </div>
-          </section>
-        </>
-      )}
+                  {placeSearchError && (
+                    <div className="place-search-error">{placeSearchError}</div>
+                  )}
 
-      {/* Planning Tab */}
-      {activeTab === 'planning' && (
-        <>
-          {/* Budget Calculator */}
-          <section className="budget-wrapper">
-            <BudgetCalculator estimates={budgetEstimate} />
-          </section>
-
-          {/* Emergency Contacts */}
-          <section className="emergency-section">
-            <h3>🆘 Emergency Contacts</h3>
-            <div className="emergency-grid">
-              {emergencyContacts.map((contact) => (
-                <div key={contact.name} className="emergency-card">
-                  <h4>{contact.name}</h4>
-                  <a href={`tel:${contact.phone}`} className="phone">{contact.phone}</a>
-                  <p className="contact-note">{contact.note}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Border Checklist */}
-          <section className="border-section">
-            <div className="card border-card">
-              <h3>🛂 Canada Border Checklist</h3>
-              <p className="warning">⚠️ Missing documents = denied entry!</p>
-              <ul className="border-list">
-                {fieldNotes.borderChecklist.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </section>
-
-          <section className="insights">
-            <h2>🧠 Key Operational Insights</h2>
-            <div className="insights-grid">
-              {keyInsights.map((insight) => (
-                <div key={insight.title} className="card">
-                  <h3>{insight.title}</h3>
-                  <p>{insight.detail}</p>
-                  {insight.actions && (
-                    <ul>
-                      {insight.actions.map((action, idx) => (
-                        <li key={idx}>{action}</li>
+                  {placeSearchResults.length > 0 && (
+                    <div className="place-search-results">
+                      {placeSearchResults.map((place) => (
+                          <div
+                            key={place.id}
+                            className="place-result"
+                            draggable
+                            onDragStart={(e) => onDragStartCatalogActivity(e, place)}
+                            title="Drag onto a day to schedule"
+                          >
+                          <div className="place-result-main">
+                            <div className="place-result-title">
+                              <span className="place-type">
+                                {activityTypes[place.type]?.icon || '📍'}
+                              </span>
+                              <div>
+                                <strong>{place.name}</strong>
+                                <div className="place-sub">{place.details || place.location}</div>
+                              </div>
+                            </div>
+                            <div className="place-actions">
+                              <button
+                                className="add-btn"
+                                onClick={() => addActivity(place)}
+                              >
+                                + Add to Trip
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   )}
                 </div>
-              ))}
-            </div>
-          </section>
 
-          <section className="alternatives">
-            <h2>🔀 Strategic Alternatives</h2>
-            <div className="cards-grid">
-              {alternatives.map((alt) => (
-                <div key={alt.title || alt.content} className="card">
-                  <h3>{alt.title}</h3>
-                  {alt.route && <p className="route-path"><strong>Route:</strong> {alt.route}</p>}
-                  {alt.pros && <p><strong>Pros:</strong> {alt.pros}</p>}
-                  {alt.cons && <p><strong>Cons:</strong> {alt.cons}</p>}
-                  {alt.content && <p>{alt.content}</p>}
+                {/* Quick Category Cards */}
+                {discoverFilter === 'all' && !searchQuery && (
+                  <div className="category-highlights">
+                    <div 
+                      className="category-card lobster"
+                      onClick={() => setDiscoverFilter('lobster')}
+                    >
+                      <span className="cat-icon">🦞</span>
+                      <h3>Lobster Spots</h3>
+                      <p>The best rolls and shacks on the coast</p>
+                      <span className="cat-count">
+                        {allActivities.filter(a => a.type === 'lobster').length} spots
+                      </span>
+                    </div>
+                    
+                    <div 
+                      className="category-card town"
+                      onClick={() => setDiscoverFilter('town')}
+                    >
+                      <span className="cat-icon">⚓</span>
+                      <h3>Harbor Towns</h3>
+                      <p>Charming coastal villages to explore</p>
+                      <span className="cat-count">
+                        {allActivities.filter(a => a.type === 'town').length} towns
+                      </span>
+                    </div>
+                    
+                    <div 
+                      className="category-card foliage"
+                      onClick={() => setDiscoverFilter('foliage')}
+                    >
+                      <span className="cat-icon">🍁</span>
+                      <h3>Fall Foliage</h3>
+                      <p>Peak color viewing spots</p>
+                      <span className="cat-count">
+                        {allActivities.filter(a => a.type === 'foliage').length} spots
+                      </span>
+                    </div>
+                    
+                    <div 
+                      className="category-card drive"
+                      onClick={() => setDiscoverFilter('drive')}
+                    >
+                      <span className="cat-icon">🚗</span>
+                      <h3>Scenic Drives</h3>
+                      <p>Beautiful routes through the mountains</p>
+                      <span className="cat-count">
+                        {allActivities.filter(a => a.type === 'drive').length} drives
+                      </span>
+                    </div>
+                    
+                    <div 
+                      className="category-card lodging"
+                      onClick={() => setDiscoverFilter('lodging')}
+                    >
+                      <span className="cat-icon">🏨</span>
+                      <h3>Where to Stay</h3>
+                      <p>Hotels, B&Bs, and cozy spots</p>
+                      <span className="cat-count">
+                        {allActivities.filter(a => a.type === 'lodging').length} options
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Activity Grid */}
+                <div className="activity-grid">
+                  {filteredActivities.map(activity => (
+                    <div
+                      key={activity.id}
+                      draggable
+                      onDragStart={(e) => onDragStartCatalogActivity(e, activity)}
+                      title="Drag onto a day to schedule"
+                    >
+                      <ActivityCard
+                        activity={activity}
+                        isAdded={isActivitySelected(activity.id)}
+                        onAdd={addActivity}
+                        onRemove={removeActivity}
+                      />
+                    </div>
+                  ))}
+                  
+                  {filteredActivities.length === 0 && (
+                    <div className="no-results">
+                      <p>No activities match your search. Try different keywords or filters.</p>
+                      <button onClick={() => { setSearchQuery(''); setDiscoverFilter('all') }}>
+                        Clear Filters
+                      </button>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          </section>
-        </>
-      )}
 
-      {/* Food Tab */}
-      {activeTab === 'food' && (
-        <>
-          <ReservationTracker reservations={reservations} />
+                {/* Map Preview */}
+                {filteredActivities.filter(a => a.coordinates).length > 0 && (
+                  <div className="discover-map">
+                    <h3>📍 On the Map</h3>
+                    <MapContainer
+                      center={[43.5, -71.0]}
+                      zoom={7}
+                      style={{ height: '300px', width: '100%', borderRadius: '12px' }}
+                      scrollWheelZoom={false}
+                    >
+                      <TileLayer
+                        attribution='&copy; OpenStreetMap'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      {filteredActivities.filter(a => a.coordinates).map(activity => (
+                        <CircleMarker
+                          key={activity.id}
+                          center={activity.coordinates}
+                          radius={8}
+                          pathOptions={{
+                            color: activityTypes[activity.type]?.color || '#666',
+                            fillColor: activityTypes[activity.type]?.color || '#666',
+                            fillOpacity: 0.8,
+                          }}
+                        >
+                          <Popup>
+                            <strong>{activity.name}</strong><br/>
+                            <span>{activity.location}</span><br/>
+                            <button onClick={() => addActivity(activity)}>+ Add to Trip</button>
+                          </Popup>
+                        </CircleMarker>
+                      ))}
+                    </MapContainer>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="toolkit-view">
+                <section className="toolkit-card">
+                  <div className="toolkit-card-head">
+                    <div>
+                      <h2>🧳 Toolkit</h2>
+                      <p className="muted" style={{ margin: 0 }}>
+                        Export your itinerary, share it with someone, or import a saved plan.
+                      </p>
+                    </div>
+                    <button className="cta-btn" onClick={seedBuilderFromMomRoute}>
+                      ➜ Copy Mom route into Builder
+                    </button>
+                  </div>
 
-          <section className="field-notes">
-            <div className="card">
-              <h3>🦞 Lobster Shack Intel</h3>
-              <ul>
-                {fieldNotes.lobsterShacks.map((shack) => (
-                  <li key={shack.name}>
-                    <strong>{shack.name} ({shack.location}):</strong> {shack.intel}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="card">
-              <h3>⛵ Harbor Town Vibes</h3>
-              <ul>
-                {fieldNotes.harborTowns.map((town) => (
-                  <li key={town.name}>
-                    <strong>{town.name}:</strong> {town.highlight}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
+                  {(toolkitStatus || toolkitError) && (
+                    <div className={`toolkit-alert ${toolkitError ? 'error' : 'ok'}`}>
+                      {toolkitError || toolkitStatus}
+                    </div>
+                  )}
 
-          {/* Playlist Section */}
-          <section className="playlist-section">
-            <div className="card playlist-card">
-              <h3>🎵 Road Trip Playlist</h3>
-              <p>{playlist.description}</p>
-              <iframe
-                style={{ borderRadius: '12px' }}
-                src={playlist.embedUrl}
-                width="100%"
-                height="152"
-                frameBorder="0"
-                allowFullScreen=""
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-              ></iframe>
-            </div>
-          </section>
-        </>
-      )}
+                  <div className="toolkit-grid">
+                    <div className="toolkit-panel">
+                      <h3>Export</h3>
+                      <p className="muted">Download a backup, or copy a share code.</p>
+                      <div className="toolkit-actions">
+                        <button className="toolkit-btn" onClick={exportAsJson}>Download JSON</button>
+                        <button className="toolkit-btn" onClick={exportAsText}>Download TXT</button>
+                        <button className="toolkit-btn" onClick={copyShareCode}>Copy share code</button>
+                      </div>
+                    </div>
 
-      {/* Packing Tab */}
-      {activeTab === 'packing' && (
-        <>
-          <section className="packing-wrapper">
-            <div className="section-heading">
-              <p className="eyebrow">Don't forget anything!</p>
-              <h2>🧳 Interactive Packing List</h2>
-              <p>Check items as you pack. Progress saves automatically!</p>
-            </div>
-            <PackingChecklist checklist={packingChecklist} />
-          </section>
+                    <div className="toolkit-panel">
+                      <h3>Import</h3>
+                      <p className="muted">Restore from a JSON file or paste a share code.</p>
 
-          <section className="field-notes packing-tips">
-            <div className="card">
-              <h3>👗 Pack Like a Pro</h3>
-              <ul>
-                {fieldNotes.packingList.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        </>
-      )}
+                      <div className="toolkit-actions">
+                        <label className="toolkit-file">
+                          <input
+                            type="file"
+                            accept="application/json"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (file) importFromFile(file)
+                              e.target.value = ''
+                            }}
+                          />
+                          Choose JSON file…
+                        </label>
+                      </div>
 
-      <footer>
-        <div className="footer-content">
-          <p className="footer-love">Made with 💕 for Tere & Mikaela</p>
-          <p>MMTrip.txt + DeepResearch.txt • Updated {new Date().getFullYear()}</p>
-          <button className="print-btn" onClick={() => window.print()}>
-            🖨️ Print Itinerary
-          </button>
-        </div>
+                      <textarea
+                        className="toolkit-textarea"
+                        value={shareCodeInput}
+                        onChange={(e) => setShareCodeInput(e.target.value)}
+                        placeholder="Paste share code here"
+                        rows={4}
+                      />
+                      <div className="toolkit-actions" style={{ justifyContent: 'flex-end' }}>
+                        <button className="toolkit-btn" onClick={importFromShareCode}>
+                          Import share code
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Packing Checklist stays here so Toolkit remains genuinely useful */}
+                <section className="info-section">
+                  <div className="section-header">
+                    <h2>🧳 Packing Checklist</h2>
+                    <div className="packing-progress-bar">
+                      <div
+                        className="progress-fill"
+                        style={{ width: `${packingProgress}%` }}
+                      />
+                      <span>{packingProgress}% packed</span>
+                    </div>
+                  </div>
+
+                  <div className="packing-grid">
+                    {Object.entries(packingChecklist).map(([category, items]) => (
+                      <div key={category} className="packing-category">
+                        <h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+                        <ul>
+                          {items.map((item) => {
+                            const key = `${category}-${item.item}`
+                            return (
+                              <li key={item.item}>
+                                <label>
+                                  <input
+                                    type="checkbox"
+                                    checked={packedItems[key] || false}
+                                    onChange={() => togglePackedItem(category, item.item)}
+                                  />
+                                  <span className={item.essential ? 'essential' : ''}>
+                                    {item.item}
+                                  </span>
+                                </label>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+
+      {/* ═══════════════════════════════════════════════════════════
+          FOOTER - Simple, clean
+          ═══════════════════════════════════════════════════════════ */}
+      <footer className="footer-clean">
+        <p>Made with 💕 for the best girls trip ever</p>
+        <button className="print-btn" onClick={() => window.print()}>
+          🖨️ Print Itinerary
+        </button>
       </footer>
-      </div> {/* End main-content */}
     </div>
   )
 }

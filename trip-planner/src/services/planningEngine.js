@@ -150,7 +150,7 @@ export class TripPlanningEngine {
   addActivity(activityId, options = {}) {
     const {
       dayId = null,
-      travelerId = null,
+      travelerId: _travelerId = null,
       autoSchedule = true
     } = options;
     
@@ -400,7 +400,7 @@ export class TripPlanningEngine {
   autoGenerateItinerary(options = {}) {
     const {
       prioritizeConsensus = true,
-      maxActivitiesPerDay = 5
+      maxActivitiesPerDay: _maxActivitiesPerDay = 5
     } = options;
     
     const activities = Array.from(this.allActivities.values())

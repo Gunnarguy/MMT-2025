@@ -1,14 +1,14 @@
 export const tripData = {
   title: "Tere & Mikaela's Epic Girls Trip",
-  subtitle: "New England & Southern Quebec • Late September 2025",
+  subtitle: "New England & Southern Quebec • Late September 2026",
   tagline: "Lobsters 🦞 • Leaves 🍁 • Love 💕",
   summary:
     "Begin in Boston, surf the Maine coast, crest the White and Green Mountains, cross into cosmopolitan Montreal, and descend through the Adirondacks to Saratoga/Albany— chasing foliage vertically while honoring the original 'girls trip' wish list.",
 
   // Trip dates for countdown
   tripDates: {
-    start: "2025-09-20",
-    end: "2025-09-27",
+    start: "2026-09-20",
+    end: "2026-09-27",
   },
 
   // The travelers!

@@ -264,7 +264,10 @@ export function useValidation(engine, dependencies = []) {
   
   useEffect(() => {
     validate();
-  }, [validate, ...dependencies]);
+    // NOTE: To keep lint/static analysis happy, we avoid spreading dependencies.
+    // Callers should pass a stable array reference (e.g. via useMemo) when they
+    // want re-validation on specific value changes.
+  }, [validate, dependencies]);
   
   return {
     validation,
