@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import './App.css'
 import 'leaflet/dist/leaflet.css'
-import { MapContainer, TileLayer, Polyline, CircleMarker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Polyline, CircleMarker, Popup, Marker } from 'react-leaflet'
 import { tripData } from './data'
 import { searchService } from './services/searchService'
+import { momsRoute } from './data/momsRoute'
+import MomsRouteTab from './components/MomsRouteTab'
 import { 
   dayItinerary, 
   scheduleOptions, 
@@ -1203,185 +1205,10 @@ function App() {
       <main className="main-clean">
 
         {/* ─────────────────────────────────────────────────────────
-            MOM'S ROUTE TAB
-            Anchored to MMTrip.txt + dayItinerary + tripData.map
+            MOM'S ROUTE TAB - Comprehensive View
             ───────────────────────────────────────────────────────── */}
         {activeTab === 'mom' && (
-          <div className="mom-view">
-            <div className="mom-hero">
-              <div>
-                <h2>Mom’s Suggested Route (Snapshot)</h2>
-                <p className="muted">
-                  This is the preserved, read-only snapshot from <strong>MMTrip.txt</strong>: Boston → Portland → Chelsea (Sally’s) → Montreal → optional Adirondacks → Saratoga/Albany.
-                  The <strong>Build & Customize</strong> tab is your sandbox for a brand-new itinerary.
-                </p>
-                <div style={{ marginTop: '0.75rem' }}>
-                  <button className="cta-btn" onClick={seedBuilderFromMomRoute}>
-                    ➜ Copy this route into Build & Customize
-                  </button>
-                </div>
-              </div>
-              <div className="mom-options">
-                {scheduleOptions.map(opt => (
-                  <button
-                    key={opt.id}
-                    className={`pill ${momRouteOption === opt.id ? 'active' : ''}`}
-                    onClick={() => setMomRouteOption(opt.id)}
-                    title={opt.vibe}
-                  >
-                    {opt.emoji} {opt.title}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {selectedMomOption && (
-              <section className="info-section" style={{ marginTop: '-0.5rem' }}>
-                <div className="section-header compact">
-                  <h3>{selectedMomOption.emoji} {selectedMomOption.title}</h3>
-                  <div className="small-note">{selectedMomOption.totalMiles}</div>
-                </div>
-                <p className="muted" style={{ marginTop: 0 }}>{selectedMomOption.vibe}</p>
-                {selectedMomOption.highlights?.length > 0 && (
-                  <ul className="highlights">
-                    {selectedMomOption.highlights.map((h, idx) => (
-                      <li key={idx}>{h}</li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            )}
-
-            {/* Route map + stop notes (restores “a TON of info” from the old map section) */}
-            {map?.routeCoordinates?.length > 1 && (
-              <section className="mom-map">
-                <div className="section-header compact">
-                  <h3>🗺️ Route Map</h3>
-                  <div className="small-note">Tap a stop for Mom note + research note.</div>
-                </div>
-                <div className="trip-map">
-                  <MapContainer
-                    center={map.center || [44.2, -72.2]}
-                    zoom={map.zoom || 6}
-                    style={{ height: '420px', width: '100%', borderRadius: '12px' }}
-                    scrollWheelZoom={true}
-                  >
-                    <TileLayer
-                      attribution='&copy; OpenStreetMap'
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <Polyline
-                      positions={map.routeCoordinates}
-                      pathOptions={{ color: '#2c3e50', weight: 4, opacity: 0.85 }}
-                    />
-                    {map.alternativeCoordinates?.length > 1 && (
-                      <Polyline
-                        positions={map.alternativeCoordinates}
-                        pathOptions={{ color: '#7f8c8d', weight: 3, opacity: 0.6, dashArray: '8 8' }}
-                      />
-                    )}
-                    {(map.stops || []).map(stop => (
-                      <CircleMarker
-                        key={stop.id}
-                        center={stop.coords}
-                        radius={8}
-                        pathOptions={{
-                          color: stop.category === 'departure' ? '#8e44ad' : '#1abc9c',
-                          fillColor: stop.category === 'departure' ? '#8e44ad' : '#1abc9c',
-                          fillOpacity: 0.9,
-                          weight: 2,
-                        }}
-                      >
-                        <Popup>
-                          <strong>{stop.name}</strong>
-                          <br />
-                          <em>Mom note:</em> {stop.mmNote}
-                          <br />
-                          <em>Research note:</em> {stop.researchNote}
-                        </Popup>
-                      </CircleMarker>
-                    ))}
-                    {(map.alternativeStops || []).map(stop => (
-                      <CircleMarker
-                        key={stop.id}
-                        center={stop.coords}
-                        radius={7}
-                        pathOptions={{
-                          color: '#7f8c8d',
-                          fillColor: '#7f8c8d',
-                          fillOpacity: 0.75,
-                          weight: 2,
-                        }}
-                      >
-                        <Popup>
-                          <strong>{stop.name}</strong>
-                          <br />
-                          <em>Alt idea:</em> {stop.mmNote}
-                          <br />
-                          <em>Research note:</em> {stop.researchNote}
-                        </Popup>
-                      </CircleMarker>
-                    ))}
-                  </MapContainer>
-                </div>
-              </section>
-            )}
-
-            {/* Day-by-day (Mom's structure) */}
-            <section className="mom-days">
-              <h3>📅 Day-by-day outline</h3>
-              <div className="days-list">
-                {dayItinerary.map(day => (
-                  <div key={day.id} className="day-card">
-                    <div className="day-header">
-                      <div className="day-info">
-                        <span className="day-label">Day {day.dayNumber}</span>
-                        <span className="day-date">{day.date}</span>
-                      </div>
-                      <span className="day-location">{day.label}</span>
-                    </div>
-                    <div className="day-activities">
-                      <div className="day-empty" style={{ justifyContent: 'flex-start' }}>
-                        <span>
-                          <strong>{day.emoji}</strong> {day.description}
-                        </span>
-                      </div>
-                      {day.momNote && (
-                        <div className="mom-note">
-                          <strong>Mom note:</strong> {day.momNote}
-                        </div>
-                      )}
-                      {day.foliage && (
-                        <div className="foliage-chip">🍁 {day.foliage}</div>
-                      )}
-                      {day.highlights?.length > 0 && (
-                        <ul className="highlights">
-                          {day.highlights.map((h, idx) => (
-                            <li key={idx}>{h}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Quick logistics (keeps the extra “why” info without turning into 10 tabs) */}
-            {Array.isArray(logistics) && logistics.length > 0 && (
-              <section className="mom-logistics">
-                <h3>🧠 Why this route works</h3>
-                <div className="info-cards">
-                  {logistics.map((item, idx) => (
-                    <div key={idx} className="info-card">
-                      <div className="info-title">{item.icon} {item.title}</div>
-                      <div className="info-body">{item.content}</div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-          </div>
+          <MomsRouteTab onCopyToBuilder={seedBuilderFromMomRoute} />
         )}
         
         {/* ─────────────────────────────────────────────────────────
