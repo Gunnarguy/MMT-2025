@@ -12,13 +12,297 @@ import {
 } from './data/tripData'
 
 // ============================================
-// UTILITY FUNCTIONS
+// OSRM DRIVING DIRECTIONS SERVICE
+// Real road-following routes with turn-by-turn directions
 // ============================================
 
-// NOTE:
-// We used to fetch OSRM routes between points. The current UI renders polylines
-// from tripData.map and markers from activities, so this helper is not currently
-// needed. Keeping the cache + distance utilities for potential future use.
+const routeCache = new Map()
+
+/**
+ * Calculate straight-line distance between two coordinates (Haversine formula)
+ */
+function calculateDistance(coord1, coord2) {
+  const R = 3959 // Earth's radius in miles
+  const dLat = (coord2[0] - coord1[0]) * Math.PI / 180
+  const dLon = (coord2[1] - coord1[1]) * Math.PI / 180
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  return R * c
+}
+
+/**
+ * Format seconds into human-readable duration
+ */
+function formatDuration(seconds) {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.round((seconds % 3600) / 60)
+  if (hours === 0) return `${minutes} min`
+  if (minutes === 0) return `${hours} hr`
+  return `${hours} hr ${minutes} min`
+}
+
+/**
+ * Get turn direction emoji for navigation
+ */
+function getTurnEmoji(maneuver, modifier) {
+  if (maneuver === 'depart') return '🚗'
+  if (maneuver === 'arrive') return '🏁'
+  if (maneuver === 'turn') {
+    if (modifier?.includes('left')) return '⬅️'
+    if (modifier?.includes('right')) return '➡️'
+    if (modifier?.includes('uturn')) return '↩️'
+  }
+  if (maneuver === 'merge') return '🔀'
+  if (maneuver === 'fork') return '🔱'
+  if (maneuver === 'roundabout') return '🔄'
+  if (maneuver === 'continue') return '⬆️'
+  return '📍'
+}
+
+/**
+ * Fetches real driving route from OSRM API
+ * Returns actual road-following polyline, distance, and duration
+ */
+async function fetchDrivingRoute(startCoords, endCoords) {
+  const cacheKey = `${startCoords.join(',')}-${endCoords.join(',')}`
+  
+  if (routeCache.has(cacheKey)) {
+    return routeCache.get(cacheKey)
+  }
+  
+  try {
+    // OSRM expects [lng, lat] not [lat, lng]
+    const start = `${startCoords[1]},${startCoords[0]}`
+    const end = `${endCoords[1]},${endCoords[0]}`
+    
+    const response = await fetch(
+      `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson&steps=true`
+    )
+    
+    if (!response.ok) throw new Error('Route fetch failed')
+    
+    const data = await response.json()
+    
+    if (data.code !== 'Ok' || !data.routes.length) {
+      throw new Error('No route found')
+    }
+    
+    const route = data.routes[0]
+    const result = {
+      coordinates: route.geometry.coordinates.map(c => [c[1], c[0]]),
+      distance: route.distance,
+      duration: route.duration,
+      distanceMiles: (route.distance / 1609.344).toFixed(1),
+      durationMinutes: Math.round(route.duration / 60),
+      durationFormatted: formatDuration(route.duration),
+      steps: route.legs[0].steps.map(step => ({
+        instruction: step.maneuver.type === 'depart' ? 'Start' :
+                     step.maneuver.type === 'arrive' ? 'Arrive at destination' :
+                     `${step.maneuver.modifier || ''} ${step.maneuver.type}`.trim(),
+        name: step.name || 'unnamed road',
+        distance: (step.distance / 1609.344).toFixed(1),
+        duration: Math.round(step.duration / 60),
+        maneuver: step.maneuver.type,
+        modifier: step.maneuver.modifier,
+      })),
+    }
+    
+    routeCache.set(cacheKey, result)
+    return result
+    
+  } catch (error) {
+    console.error('Route calculation error:', error)
+    const straightDist = calculateDistance(startCoords, endCoords)
+    return {
+      coordinates: [startCoords, endCoords],
+      distance: straightDist * 1609.344,
+      duration: (straightDist / 45) * 3600,
+      distanceMiles: straightDist.toFixed(1),
+      durationMinutes: Math.round((straightDist / 45) * 60),
+      durationFormatted: `~${Math.round((straightDist / 45) * 60)} min`,
+      steps: [],
+      isFallback: true,
+    }
+  }
+}
+
+/**
+ * Fetches routes for an array of activities (in order)
+ * Returns array of route segments with full details
+ */
+async function fetchRoutesBetweenActivities(activities) {
+  const coords = activities
+    .filter(a => a.coordinates && Array.isArray(a.coordinates) && a.coordinates.length === 2)
+    .map(a => ({ coords: a.coordinates, name: a.name }))
+  
+  if (coords.length < 2) return []
+  
+  const routes = []
+  for (let i = 0; i < coords.length - 1; i++) {
+    const route = await fetchDrivingRoute(coords[i].coords, coords[i + 1].coords)
+    routes.push({
+      from: coords[i].name,
+      to: coords[i + 1].name,
+      ...route,
+    })
+  }
+  
+  return routes
+}
+
+/**
+ * Custom hook for fetching and managing routes for scheduled activities
+ */
+function useRoutes(activities) {
+  const [routes, setRoutes] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [totalStats, setTotalStats] = useState({ miles: 0, time: 0, formatted: '' })
+  
+  // Create a stable key from activities to detect real changes
+  const activitiesKey = useMemo(() => {
+    return activities
+      .filter(a => a.coordinates)
+      .map(a => `${a.id}:${a.coordinates?.[0]},${a.coordinates?.[1]}`)
+      .join('|')
+  }, [activities])
+  
+  useEffect(() => {
+    if (activities.length < 2) {
+      setRoutes([])
+      setTotalStats({ miles: 0, time: 0, formatted: '' })
+      return
+    }
+    
+    let cancelled = false
+    
+    const fetchRoutes = async () => {
+      setLoading(true)
+      setError(null)
+      
+      try {
+        const routeData = await fetchRoutesBetweenActivities(activities)
+        if (cancelled) return
+        
+        setRoutes(routeData)
+        
+        const totalMiles = routeData.reduce((sum, r) => sum + parseFloat(r.distanceMiles), 0)
+        const totalSeconds = routeData.reduce((sum, r) => sum + r.duration, 0)
+        
+        setTotalStats({
+          miles: totalMiles.toFixed(1),
+          time: Math.round(totalSeconds / 60),
+          formatted: formatDuration(totalSeconds),
+        })
+      } catch (err) {
+        if (!cancelled) setError(err.message)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+    
+    fetchRoutes()
+    
+    return () => { cancelled = true }
+  }, [activitiesKey, activities.length])
+  
+  return { routes, loading, error, totalStats }
+}
+
+// ============================================
+// DRIVING DIRECTIONS COMPONENT
+// Shows turn-by-turn directions between activities
+// ============================================
+function DrivingDirections({ routes, loading, error, totalStats }) {
+  const [expandedRoute, setExpandedRoute] = useState(null)
+  
+  if (loading) {
+    return (
+      <div className="directions-loading">
+        <div className="loading-spinner">🚗</div>
+        <p>Calculating routes...</p>
+      </div>
+    )
+  }
+  
+  if (error) {
+    return (
+      <div className="directions-error">
+        <p>⚠️ Couldn't load routes: {error}</p>
+      </div>
+    )
+  }
+  
+  if (!routes || routes.length === 0) {
+    return null
+  }
+  
+  return (
+    <div className="driving-directions">
+      <div className="directions-header">
+        <h4>🧭 Turn-by-Turn Directions</h4>
+        <div className="trip-totals">
+          <span className="total-distance">📏 {totalStats.miles} mi total</span>
+          <span className="total-time">⏱️ {totalStats.formatted} driving</span>
+        </div>
+      </div>
+      
+      <div className="route-segments">
+        {routes.map((route, idx) => (
+          <div key={idx} className="route-segment">
+            <div 
+              className="segment-header"
+              onClick={() => setExpandedRoute(expandedRoute === idx ? null : idx)}
+            >
+              <div className="segment-info">
+                <span className="segment-number">{idx + 1}</span>
+                <div className="segment-endpoints">
+                  <strong>{route.from}</strong>
+                  <span className="arrow">→</span>
+                  <strong>{route.to}</strong>
+                </div>
+              </div>
+              <div className="segment-stats">
+                <span className="distance">{route.distanceMiles} mi</span>
+                <span className="duration">{route.durationFormatted}</span>
+                <span className={`expand-icon ${expandedRoute === idx ? 'expanded' : ''}`}>
+                  {expandedRoute === idx ? '▼' : '▶'}
+                </span>
+              </div>
+            </div>
+            
+            {expandedRoute === idx && route.steps && route.steps.length > 0 && (
+              <div className="segment-steps">
+                {route.steps.map((step, stepIdx) => (
+                  <div key={stepIdx} className="direction-step">
+                    <span className="step-icon">{getTurnEmoji(step.maneuver, step.modifier)}</span>
+                    <div className="step-details">
+                      <span className="step-instruction">
+                        {step.instruction.charAt(0).toUpperCase() + step.instruction.slice(1)}
+                        {step.name !== 'unnamed road' && ` onto ${step.name}`}
+                      </span>
+                      <span className="step-meta">
+                        {step.distance} mi • {step.duration} min
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {route.isFallback && (
+              <div className="fallback-notice">
+                ℹ️ Estimated (straight-line) - actual roads may vary
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 // Activity styling
 const activityTypes = {
@@ -806,11 +1090,10 @@ function App() {
     return null
   }, [])
 
-  const scheduledRouteCoords = useMemo(() => {
-    const coords = []
-
-    // Walk days in order, then activities in order.
-    tripDays.forEach((day) => {
+  // Scheduled activities in visit order (all days combined)
+  const scheduledInOrder = useMemo(() => {
+    const result = []
+    tripDays.forEach(day => {
       const dayActs = selectedActivities
         .filter(a => a.dayId === day.id && Array.isArray(a.coordinates) && a.coordinates.length === 2)
         .slice()
@@ -820,12 +1103,19 @@ function App() {
           if (ao !== bo) return ao - bo
           return String(a.name || '').localeCompare(String(b.name || ''))
         })
-
-      dayActs.forEach(a => coords.push(a.coordinates))
+      result.push(...dayActs)
     })
-
-    return coords
+    return result
   }, [selectedActivities, tripDays])
+
+  const scheduledRouteCoords = useMemo(() => {
+    return scheduledInOrder.map(a => a.coordinates)
+  }, [scheduledInOrder])
+
+  // ═══════════════════════════════════════════════════════════════
+  // DRIVING DIRECTIONS - Fetch real OSRM routes between stops
+  // ═══════════════════════════════════════════════════════════════
+  const { routes, loading: routesLoading, error: routesError, totalStats } = useRoutes(scheduledInOrder)
 
   const unscheduledActivities = useMemo(() => {
     return selectedActivities.filter(a => !a.dayId)
@@ -1320,10 +1610,17 @@ function App() {
                   </div>
                 </div>
 
-                {/* Trip Map */}
+                {/* Trip Map with real road-following routes */}
                 {selectedActivities.filter(a => a.coordinates).length > 0 && (
                   <div className="trip-map-section">
                     <h3>🗺️ Your Route</h3>
+                    {totalStats.miles > 0 && (
+                      <div className="route-summary-bar">
+                        <span>📍 {scheduledInOrder.length} stops</span>
+                        <span>📏 {totalStats.miles} mi</span>
+                        <span>⏱️ {totalStats.formatted}</span>
+                      </div>
+                    )}
                     <div className="trip-map">
                       <MapContainer
                         center={[43.5, -71.5]}
@@ -1336,10 +1633,24 @@ function App() {
                           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
 
-                        {scheduledRouteCoords.length > 1 && (
+                        {/* Render real driving routes from OSRM */}
+                        {routes.map((route, idx) => (
+                          <Polyline
+                            key={`route-${idx}`}
+                            positions={route.coordinates}
+                            pathOptions={{ 
+                              color: ['#3498db', '#e74c3c', '#27ae60', '#9b59b6', '#f39c12'][idx % 5],
+                              weight: 4,
+                              opacity: 0.8,
+                            }}
+                          />
+                        ))}
+                        
+                        {/* Fallback to straight lines if routes not loaded yet */}
+                        {routes.length === 0 && scheduledRouteCoords.length > 1 && (
                           <Polyline
                             positions={scheduledRouteCoords}
-                            pathOptions={{ color: '#2c3e50', weight: 4, opacity: 0.75 }}
+                            pathOptions={{ color: '#2c3e50', weight: 3, opacity: 0.5, dashArray: '10, 10' }}
                           />
                         )}
 
@@ -1363,6 +1674,14 @@ function App() {
                         ))}
                       </MapContainer>
                     </div>
+                    
+                    {/* Turn-by-turn driving directions */}
+                    <DrivingDirections 
+                      routes={routes} 
+                      loading={routesLoading} 
+                      error={routesError}
+                      totalStats={totalStats}
+                    />
                   </div>
                 )}
               </div>
