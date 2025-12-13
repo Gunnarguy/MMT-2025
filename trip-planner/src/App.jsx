@@ -6,6 +6,10 @@ import { tripData } from './data'
 import { searchService } from './services/searchService'
 import { momsRoute } from './data/momsRoute'
 import MomsRouteTab from './components/MomsRouteTab'
+import ScenarioControls from './components/ScenarioControls'
+import IdeaLab from './components/IdeaLab'
+import CreationCanvas from './components/CreationCanvas'
+import { useTripContext } from './context/TripContext'
 import { 
   dayItinerary, 
   scheduleOptions, 
@@ -437,6 +441,15 @@ function App() {
     map, logistics
   } = tripData
 
+  const {
+    setExperienceMode,
+    resetCanvasBlueprint,
+    hydrateCanvasFromStops,
+    canvasBlueprint,
+    updateCanvasDay,
+    setCreationNotes,
+  } = useTripContext()
+
   // ════════════════════════════════════════════════════════════════
   // CORE NAVIGATION
   // Two primary tabs:
@@ -515,19 +528,96 @@ function App() {
       })
     })
 
+    let applied = true
     setSelectedActivities((prev) => {
       if (prev.length > 0) {
         const ok = window.confirm(
           "Replace your current Build & Customize activities with Mom's route blocks?\n\n(Press Cancel to keep your current plan.)"
         )
-        if (!ok) return prev
+        if (!ok) {
+          applied = false
+          return prev
+        }
       }
       return nextActivities
     })
 
+    if (!applied) return
+
+    setExperienceMode('mom-blueprint')
+    hydrateCanvasFromStops(routeStops)
     setActiveTab('build')
     setBuildSection('schedule')
-  }, [map])
+  }, [
+    map,
+    hydrateCanvasFromStops,
+    setExperienceMode,
+    setActiveTab,
+    setBuildSection,
+    setSelectedActivities,
+  ])
+
+  const startBlankCanvas = useCallback(() => {
+    let proceed = true
+    setSelectedActivities((prev) => {
+      if (prev.length === 0) return []
+      const ok = window.confirm('Start with a blank canvas? This clears your current Build & Customize plan.')
+      if (!ok) {
+        proceed = false
+        return prev
+      }
+      return []
+    })
+
+    if (!proceed) return
+
+    resetCanvasBlueprint()
+    setExperienceMode('blank-canvas')
+    setActiveTab('build')
+    setBuildSection('schedule')
+  }, [
+    resetCanvasBlueprint,
+    setExperienceMode,
+    setActiveTab,
+    setBuildSection,
+    setSelectedActivities,
+  ])
+
+  const handleIdeaInspire = useCallback((idea) => {
+    if (!idea) return
+    setExperienceMode('blank-canvas')
+    setActiveTab('build')
+    setBuildSection('schedule')
+    setCreationNotes((prev) => {
+      const snippet = `• ${idea.title} — ${idea.summary}`
+      if (!prev) return snippet
+      if (prev.includes(snippet)) return prev
+      return `${prev}\n${snippet}`
+    })
+
+    const targetDay = canvasBlueprint.find((day) => !day.notes?.trim()) || canvasBlueprint[0]
+    if (!targetDay) return
+
+    const highlightText = idea.highlights?.length
+      ? idea.highlights.map((h) => `• ${h}`).join('\n')
+      : idea.summary
+
+    const addition = highlightText ? `${idea.title}\n${highlightText}` : idea.title
+
+    updateCanvasDay(targetDay.id, {
+      notes: targetDay.notes ? `${targetDay.notes}\n\n${addition}` : addition,
+      location: targetDay.location === 'Add a destination'
+        ? idea.region || targetDay.location
+        : targetDay.location,
+    })
+  }, [
+    canvasBlueprint,
+    setActiveTab,
+    setBuildSection,
+    setCreationNotes,
+    setExperienceMode,
+    updateCanvasDay,
+  ])
   
   // Use the Mom itinerary as the canonical day structure (still fully customizable).
   const tripDays = useMemo(() => {
@@ -538,6 +628,59 @@ function App() {
       location: d.label,
     }))
   }, [])
+
+  const applyCanvasToSchedule = useCallback(() => {
+    if (!canvasBlueprint.length) return
+
+    const candidateActivities = canvasBlueprint
+      .map((day, idx) => {
+        const hasLocation = day.location && day.location !== 'Add a destination'
+        const hasNotes = Boolean(day.notes && day.notes.trim())
+        if (!hasLocation && !hasNotes) return null
+        const mappedDay = tripDays[idx % tripDays.length]
+        return {
+          id: `canvas-${day.id}`,
+          name: hasLocation ? day.location : day.label,
+          location: hasLocation ? day.location : day.label,
+          description: day.notes,
+          type: 'custom',
+          dayId: mappedDay?.id ?? null,
+          order: idx,
+          source: 'canvas-workspace',
+        }
+      })
+      .filter(Boolean)
+
+    if (candidateActivities.length === 0) {
+      window.alert('Add at least one destination or note to the canvas before sending it to the schedule.')
+      return
+    }
+
+    let applied = true
+    setSelectedActivities((prev) => {
+      if (prev.length > 0) {
+        const ok = window.confirm('Replace your current plan with the canvas storyline?')
+        if (!ok) {
+          applied = false
+          return prev
+        }
+      }
+      return candidateActivities
+    })
+
+    if (!applied) return
+
+    setExperienceMode('blank-canvas')
+    setActiveTab('build')
+    setBuildSection('schedule')
+  }, [
+    canvasBlueprint,
+    tripDays,
+    setSelectedActivities,
+    setExperienceMode,
+    setActiveTab,
+    setBuildSection,
+  ])
 
   // Packing checklist state
   const [packedItems, setPackedItems] = useState(() => {
@@ -1208,7 +1351,10 @@ function App() {
             MOM'S ROUTE TAB - Comprehensive View
             ───────────────────────────────────────────────────────── */}
         {activeTab === 'mom' && (
-          <MomsRouteTab onCopyToBuilder={seedBuilderFromMomRoute} />
+          <MomsRouteTab 
+            onCopyToBuilder={seedBuilderFromMomRoute} 
+            onStartBlankCanvas={startBlankCanvas}
+          />
         )}
         
         {/* ─────────────────────────────────────────────────────────
@@ -1266,251 +1412,253 @@ function App() {
               </button>
             </div>
 
-            {buildSection === 'schedule' && selectedActivities.length === 0 ? (
-              /* Empty State */
-              <div className="empty-trip">
-                <div className="empty-icon">🗺️</div>
-                <h2>Start Planning Your Adventure</h2>
-                <p>Browse lobster spots, harbor towns, foliage drives, and more to build your perfect trip.</p>
-                <button 
-                  className="cta-btn"
-                  onClick={() => setBuildSection('discover')}
-                >
-                  🔍 Discover Activities
-                </button>
-              </div>
-            ) : buildSection === 'schedule' ? (
-              <div className="trip-builder">
-                {/* Unscheduled Pool */}
-                {unscheduledActivities.length > 0 && (
-                  <div className="unscheduled-section">
-                    <h3>📦 To Schedule ({unscheduledActivities.length})</h3>
-                    <p className="hint">Drag blocks onto a day (or use the dropdown).</p>
-                    <div className="unscheduled-list">
-                      {unscheduledActivities.map(activity => (
-                        <div
-                          key={activity.id}
-                          className={`unscheduled-item ${activity.type}`}
-                          draggable
-                          onDragStart={(e) => onDragStartActivity(e, activity)}
-                        >
-                          <span className="item-icon">
-                            {activityTypes[activity.type]?.icon || '📍'}
-                          </span>
-                          <div className="item-info">
-                            <strong>{activity.name}</strong>
-                            <span>{activity.location}</span>
-                          </div>
-                          <select 
-                            className="day-select"
-                            value=""
-                            onChange={(e) => assignToDay(activity.id, parseInt(e.target.value))}
-                          >
-                            <option value="">Add to day...</option>
-                            {tripDays.map(day => (
-                              <option key={day.id} value={day.id}>
-                                {day.label} - {day.location}
-                              </option>
-                            ))}
-                          </select>
-                          <button 
-                            className="remove-btn"
-                            onClick={() => removeActivity(activity.id)}
-                          >×</button>
-                        </div>
-                      ))}
+            {buildSection === 'schedule' ? (
+              <div className="build-creation-grid">
+                <div className="build-main-column">
+                  {selectedActivities.length === 0 ? (
+                    <div className="empty-trip">
+                      <div className="empty-icon">🗺️</div>
+                      <h2>Start Planning Your Adventure</h2>
+                      <p>Browse lobster spots, harbor towns, foliage drives, and more to build your perfect trip.</p>
+                      <button 
+                        className="cta-btn"
+                        onClick={() => setBuildSection('discover')}
+                      >
+                        🔍 Discover Activities
+                      </button>
                     </div>
-                  </div>
-                )}
-
-                {/* Day-by-Day Schedule */}
-                <div className="schedule-section">
-                  <h3>📅 Your Schedule</h3>
-                  <div className="days-list">
-                    {tripDays.map(day => {
-                      const dayActivities = getActivitiesForDay(day.id)
-                      return (
-                        <div
-                          key={day.id}
-                          className="day-card"
-                          onDragOver={(e) => e.preventDefault()}
-                          onDrop={(e) => {
-                            e.preventDefault()
-                            const payload = readDragPayload(e)
-                            if (!payload?.id && !payload?.activity?.id) return
-                            ensureAssignedToDay(payload, day.id)
-                          }}
-                        >
-                          <div className="day-header">
-                            <div className="day-info">
-                              <span className="day-label">{day.label}</span>
-                              <span className="day-date">{day.date}</span>
-                            </div>
-                            <span className="day-location">{day.location}</span>
-                          </div>
-                          
-                          <div className="day-activities">
-                            {dayActivities.length === 0 ? (
-                              <div className="day-empty">
-                                <span>No activities yet</span>
-                                <button 
-                                  className="quick-add"
-                                  onClick={() => setBuildSection('discover')}
+                  ) : (
+                    <div className="trip-builder">
+                      {unscheduledActivities.length > 0 && (
+                        <div className="unscheduled-section">
+                          <h3>📦 To Schedule ({unscheduledActivities.length})</h3>
+                          <p className="hint">Drag blocks onto a day (or use the dropdown).</p>
+                          <div className="unscheduled-list">
+                            {unscheduledActivities.map(activity => (
+                              <div
+                                key={activity.id}
+                                className={`unscheduled-item ${activity.type}`}
+                                draggable
+                                onDragStart={(e) => onDragStartActivity(e, activity)}
+                              >
+                                <span className="item-icon">
+                                  {activityTypes[activity.type]?.icon || '📍'}
+                                </span>
+                                <div className="item-info">
+                                  <strong>{activity.name}</strong>
+                                  <span>{activity.location}</span>
+                                </div>
+                                <select 
+                                  className="day-select"
+                                  value=""
+                                  onChange={(e) => assignToDay(activity.id, parseInt(e.target.value))}
                                 >
-                                  + Add
-                                </button>
+                                  <option value="">Add to day...</option>
+                                  {tripDays.map(day => (
+                                    <option key={day.id} value={day.id}>
+                                      {day.label} - {day.location}
+                                    </option>
+                                  ))}
+                                </select>
+                                <button 
+                                  className="remove-btn"
+                                  onClick={() => removeActivity(activity.id)}
+                                >×</button>
                               </div>
-                            ) : (
-                              <>
-                                {/* Drop zone at top (reorder within the day) */}
-                                <div
-                                  className="drop-zone"
-                                  onDragOver={(e) => e.preventDefault()}
-                                  onDrop={(e) => {
-                                    e.preventDefault()
-                                    const payload = readDragPayload(e)
-                                    if (!payload?.id && !payload?.activity?.id) return
-                                    ensureAssignedToDay(payload, day.id, 0)
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="schedule-section">
+                        <h3>📅 Your Schedule</h3>
+                        <div className="days-list">
+                          {tripDays.map(day => {
+                            const dayActivities = getActivitiesForDay(day.id)
+                            return (
+                              <div
+                                key={day.id}
+                                className="day-card"
+                                onDragOver={(e) => e.preventDefault()}
+                                onDrop={(e) => {
+                                  e.preventDefault()
+                                  const payload = readDragPayload(e)
+                                  if (!payload?.id && !payload?.activity?.id) return
+                                  ensureAssignedToDay(payload, day.id)
+                                }}
+                              >
+                                <div className="day-header">
+                                  <div className="day-info">
+                                    <span className="day-label">{day.label}</span>
+                                    <span className="day-date">{day.date}</span>
+                                  </div>
+                                  <span className="day-location">{day.location}</span>
+                                </div>
+                                
+                                <div className="day-activities">
+                                  {dayActivities.length === 0 ? (
+                                    <div className="day-empty">
+                                      <span>No activities yet</span>
+                                      <button 
+                                        className="quick-add"
+                                        onClick={() => setBuildSection('discover')}
+                                      >
+                                        + Add
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <div
+                                        className="drop-zone"
+                                        onDragOver={(e) => e.preventDefault()}
+                                        onDrop={(e) => {
+                                          e.preventDefault()
+                                          const payload = readDragPayload(e)
+                                          if (!payload?.id && !payload?.activity?.id) return
+                                          ensureAssignedToDay(payload, day.id, 0)
+                                        }}
+                                      />
+                                      {dayActivities.map((activity, idx) => (
+                                        <div key={activity.id}>
+                                          <div
+                                            className={`scheduled-activity ${activity.type}`}
+                                            draggable
+                                            onDragStart={(e) => onDragStartActivity(e, activity)}
+                                          >
+                                            <span className="activity-order">{idx + 1}</span>
+                                            <span className="activity-icon">
+                                              {activityTypes[activity.type]?.icon || '📍'}
+                                            </span>
+                                            <div className="activity-info">
+                                              <strong>{activity.name}</strong>
+                                              <span>{activity.location}</span>
+                                            </div>
+                                            <div className="activity-actions">
+                                              <select
+                                                className="move-select"
+                                                value={day.id}
+                                                onChange={(e) => {
+                                                  const val = e.target.value
+                                                  if (val === 'remove') {
+                                                    assignToDay(activity.id, null)
+                                                  } else {
+                                                    assignToDay(activity.id, parseInt(val))
+                                                  }
+                                                }}
+                                              >
+                                                {tripDays.map(d => (
+                                                  <option key={d.id} value={d.id}>
+                                                    {d.label}
+                                                  </option>
+                                                ))}
+                                                <option value="remove">Unschedule</option>
+                                              </select>
+                                              <button 
+                                                className="remove-btn"
+                                                onClick={() => removeActivity(activity.id)}
+                                              >×</button>
+                                            </div>
+                                          </div>
+
+                                          <div
+                                            className="drop-zone"
+                                            onDragOver={(e) => e.preventDefault()}
+                                            onDrop={(e) => {
+                                              e.preventDefault()
+                                              const payload = readDragPayload(e)
+                                              if (!payload?.id && !payload?.activity?.id) return
+                                              ensureAssignedToDay(payload, day.id, idx + 1)
+                                            }}
+                                          />
+                                        </div>
+                                      ))}
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      {selectedActivities.filter(a => a.coordinates).length > 0 && (
+                        <div className="trip-map-section">
+                          <h3>🗺️ Your Route</h3>
+                          {totalStats.miles > 0 && (
+                            <div className="route-summary-bar">
+                              <span>📍 {scheduledInOrder.length} stops</span>
+                              <span>📏 {totalStats.miles} mi</span>
+                              <span>⏱️ {totalStats.formatted}</span>
+                            </div>
+                          )}
+                          <div className="trip-map">
+                            <MapContainer
+                              center={[43.5, -71.5]}
+                              zoom={7}
+                              style={{ height: '350px', width: '100%', borderRadius: '12px' }}
+                              scrollWheelZoom={true}
+                            >
+                              <TileLayer
+                                attribution='&copy; OpenStreetMap'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                              />
+
+                              {routes.map((route, idx) => (
+                                <Polyline
+                                  key={`route-${idx}`}
+                                  positions={route.coordinates}
+                                  pathOptions={{ 
+                                    color: ['#3498db', '#e74c3c', '#27ae60', '#9b59b6', '#f39c12'][idx % 5],
+                                    weight: 4,
+                                    opacity: 0.8,
                                   }}
                                 />
-                                {dayActivities.map((activity, idx) => (
-                                  <div key={activity.id}>
-                                    <div
-                                      className={`scheduled-activity ${activity.type}`}
-                                      draggable
-                                      onDragStart={(e) => onDragStartActivity(e, activity)}
-                                    >
-                                      <span className="activity-order">{idx + 1}</span>
-                                      <span className="activity-icon">
-                                        {activityTypes[activity.type]?.icon || '📍'}
-                                      </span>
-                                      <div className="activity-info">
-                                        <strong>{activity.name}</strong>
-                                        <span>{activity.location}</span>
-                                      </div>
-                                      <div className="activity-actions">
-                                        <select
-                                          className="move-select"
-                                          value={day.id}
-                                          onChange={(e) => {
-                                            const val = e.target.value
-                                            if (val === 'remove') {
-                                              assignToDay(activity.id, null)
-                                            } else {
-                                              assignToDay(activity.id, parseInt(val))
-                                            }
-                                          }}
-                                        >
-                                          {tripDays.map(d => (
-                                            <option key={d.id} value={d.id}>
-                                              {d.label}
-                                            </option>
-                                          ))}
-                                          <option value="remove">Unschedule</option>
-                                        </select>
-                                        <button 
-                                          className="remove-btn"
-                                          onClick={() => removeActivity(activity.id)}
-                                        >×</button>
-                                      </div>
-                                    </div>
+                              ))}
+                              
+                              {routes.length === 0 && scheduledRouteCoords.length > 1 && (
+                                <Polyline
+                                  positions={scheduledRouteCoords}
+                                  pathOptions={{ color: '#2c3e50', weight: 3, opacity: 0.5, dashArray: '10, 10' }}
+                                />
+                              )}
 
-                                    {/* Drop zone after each block */}
-                                    <div
-                                      className="drop-zone"
-                                      onDragOver={(e) => e.preventDefault()}
-                                      onDrop={(e) => {
-                                        e.preventDefault()
-                                        const payload = readDragPayload(e)
-                                        if (!payload?.id && !payload?.activity?.id) return
-                                        ensureAssignedToDay(payload, day.id, idx + 1)
-                                      }}
-                                    />
-                                  </div>
-                                ))}
-                              </>
-                            )}
+                              {selectedActivities.filter(a => a.coordinates).map(activity => (
+                                <CircleMarker
+                                  key={activity.id}
+                                  center={activity.coordinates}
+                                  radius={activity.dayId ? 10 : 6}
+                                  pathOptions={{
+                                    color: activityTypes[activity.type]?.color || '#666',
+                                    fillColor: activityTypes[activity.type]?.color || '#666',
+                                    fillOpacity: activity.dayId ? 0.9 : 0.4,
+                                    weight: 2,
+                                  }}
+                                >
+                                  <Popup>
+                                    <strong>{activity.name}</strong><br/>
+                                    {activity.location}
+                                  </Popup>
+                                </CircleMarker>
+                              ))}
+                            </MapContainer>
                           </div>
+                          
+                          <DrivingDirections 
+                            routes={routes} 
+                            loading={routesLoading} 
+                            error={routesError}
+                            totalStats={totalStats}
+                          />
                         </div>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                {/* Trip Map with real road-following routes */}
-                {selectedActivities.filter(a => a.coordinates).length > 0 && (
-                  <div className="trip-map-section">
-                    <h3>🗺️ Your Route</h3>
-                    {totalStats.miles > 0 && (
-                      <div className="route-summary-bar">
-                        <span>📍 {scheduledInOrder.length} stops</span>
-                        <span>📏 {totalStats.miles} mi</span>
-                        <span>⏱️ {totalStats.formatted}</span>
-                      </div>
-                    )}
-                    <div className="trip-map">
-                      <MapContainer
-                        center={[43.5, -71.5]}
-                        zoom={7}
-                        style={{ height: '350px', width: '100%', borderRadius: '12px' }}
-                        scrollWheelZoom={true}
-                      >
-                        <TileLayer
-                          attribution='&copy; OpenStreetMap'
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-
-                        {/* Render real driving routes from OSRM */}
-                        {routes.map((route, idx) => (
-                          <Polyline
-                            key={`route-${idx}`}
-                            positions={route.coordinates}
-                            pathOptions={{ 
-                              color: ['#3498db', '#e74c3c', '#27ae60', '#9b59b6', '#f39c12'][idx % 5],
-                              weight: 4,
-                              opacity: 0.8,
-                            }}
-                          />
-                        ))}
-                        
-                        {/* Fallback to straight lines if routes not loaded yet */}
-                        {routes.length === 0 && scheduledRouteCoords.length > 1 && (
-                          <Polyline
-                            positions={scheduledRouteCoords}
-                            pathOptions={{ color: '#2c3e50', weight: 3, opacity: 0.5, dashArray: '10, 10' }}
-                          />
-                        )}
-
-                        {selectedActivities.filter(a => a.coordinates).map(activity => (
-                          <CircleMarker
-                            key={activity.id}
-                            center={activity.coordinates}
-                            radius={activity.dayId ? 10 : 6}
-                            pathOptions={{
-                              color: activityTypes[activity.type]?.color || '#666',
-                              fillColor: activityTypes[activity.type]?.color || '#666',
-                              fillOpacity: activity.dayId ? 0.9 : 0.4,
-                              weight: 2,
-                            }}
-                          >
-                            <Popup>
-                              <strong>{activity.name}</strong><br/>
-                              {activity.location}
-                            </Popup>
-                          </CircleMarker>
-                        ))}
-                      </MapContainer>
+                      )}
                     </div>
-                    
-                    {/* Turn-by-turn driving directions */}
-                    <DrivingDirections 
-                      routes={routes} 
-                      loading={routesLoading} 
-                      error={routesError}
-                      totalStats={totalStats}
-                    />
-                  </div>
-                )}
+                  )}
+                </div>
+                <aside className="build-creation-column">
+                  <ScenarioControls />
+                  <CreationCanvas onCommitPlan={applyCanvasToSchedule} />
+                  <IdeaLab onInspire={handleIdeaInspire} />
+                </aside>
               </div>
             ) : buildSection === 'discover' ? (
               <div className="discover-view">

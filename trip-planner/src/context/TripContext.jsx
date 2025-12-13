@@ -7,6 +7,20 @@ import PropTypes from 'prop-types';
 
 const TripContext = createContext(null);
 
+const defaultScenarioSettings = {
+  pace: 'balanced',
+  budget: 'flex',
+  drive: 'classic'
+};
+
+const buildBlankCanvas = () =>
+  Array.from({ length: 7 }).map((_, idx) => ({
+    id: `canvas-day-${idx + 1}`,
+    label: `Day ${idx + 1}`,
+    location: 'Add a destination',
+    notes: '',
+  }));
+
 export function TripProvider({ children }) {
   // ═══════════════════════════════════════════════════════════════════════════
   // CORE STATE
@@ -48,6 +62,49 @@ export function TripProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [experienceMode, setExperienceMode] = useState(() => {
+    if (typeof window === 'undefined') return 'mom-blueprint';
+    return localStorage.getItem('mmtrip-experience-mode') || 'mom-blueprint';
+  });
+
+  const [scenarioSettings, setScenarioSettings] = useState(() => {
+    if (typeof window === 'undefined') return defaultScenarioSettings;
+    try {
+      const saved = localStorage.getItem('mmtrip-scenario-settings');
+      return saved ? { ...defaultScenarioSettings, ...JSON.parse(saved) } : defaultScenarioSettings;
+    } catch (err) {
+      console.warn('Failed to parse scenario settings', err);
+      return defaultScenarioSettings;
+    }
+  });
+
+  const [ideaPins, setIdeaPins] = useState(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const saved = localStorage.getItem('mmtrip-idea-pins');
+      return saved ? JSON.parse(saved) : [];
+    } catch (err) {
+      console.warn('Failed to parse idea pins', err);
+      return [];
+    }
+  });
+
+  const [creationNotes, setCreationNotes] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    return localStorage.getItem('mmtrip-creation-notes') || '';
+  });
+
+  const [canvasBlueprint, setCanvasBlueprint] = useState(() => {
+    if (typeof window === 'undefined') return buildBlankCanvas();
+    try {
+      const saved = localStorage.getItem('mmtrip-canvas-blueprint');
+      return saved ? JSON.parse(saved) : buildBlankCanvas();
+    } catch (err) {
+      console.warn('Failed to parse canvas blueprint', err);
+      return buildBlankCanvas();
+    }
+  });
+
   // UI state
   const [activeTab, setActiveTab] = useState('overview');
   const [showSidebar, setShowSidebar] = useState(() => {
@@ -82,6 +139,26 @@ export function TripProvider({ children }) {
   useEffect(() => {
     localStorage.setItem('mmtrip-activities', JSON.stringify(selectedActivities));
   }, [selectedActivities]);
+
+  useEffect(() => {
+    localStorage.setItem('mmtrip-experience-mode', experienceMode);
+  }, [experienceMode]);
+
+  useEffect(() => {
+    localStorage.setItem('mmtrip-scenario-settings', JSON.stringify(scenarioSettings));
+  }, [scenarioSettings]);
+
+  useEffect(() => {
+    localStorage.setItem('mmtrip-idea-pins', JSON.stringify(ideaPins));
+  }, [ideaPins]);
+
+  useEffect(() => {
+    localStorage.setItem('mmtrip-creation-notes', creationNotes);
+  }, [creationNotes]);
+
+  useEffect(() => {
+    localStorage.setItem('mmtrip-canvas-blueprint', JSON.stringify(canvasBlueprint));
+  }, [canvasBlueprint]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // COMPUTED STATE
@@ -160,6 +237,53 @@ export function TripProvider({ children }) {
     return currentSelections.has(activityId);
   }, [currentSelections]);
 
+  const updateScenarioSetting = useCallback((key, value) => {
+    setScenarioSettings(prev => ({
+      ...prev,
+      [key]: value,
+    }));
+  }, []);
+
+  const pinIdea = useCallback((idea) => {
+    if (!idea || !idea.id) return;
+    setIdeaPins(prev => {
+      if (prev.some(item => item.id === idea.id)) return prev;
+      return [...prev, idea];
+    });
+  }, []);
+
+  const unpinIdea = useCallback((ideaId) => {
+    setIdeaPins(prev => prev.filter(item => item.id !== ideaId));
+  }, []);
+
+  const resetIdeaPins = useCallback(() => {
+    setIdeaPins([]);
+  }, []);
+
+  const resetCanvasBlueprint = useCallback(() => {
+    setCanvasBlueprint(buildBlankCanvas());
+  }, []);
+
+  const updateCanvasDay = useCallback((dayId, updates) => {
+    setCanvasBlueprint(prev => prev.map(day => (
+      day.id === dayId ? { ...day, ...updates } : day
+    )));
+  }, []);
+
+  const hydrateCanvasFromStops = useCallback((stops = []) => {
+    if (!Array.isArray(stops) || stops.length === 0) {
+      resetCanvasBlueprint();
+      return;
+    }
+    const normalized = stops.map((stop, idx) => ({
+      id: `canvas-stop-${stop.id ?? idx}`,
+      label: `${idx + 1}. ${stop.name || 'Stop'}`,
+      location: stop.state ? `${stop.name}, ${stop.state}` : stop.name || 'Add a location',
+      notes: stop.momQuote || stop.role || '',
+    }));
+    setCanvasBlueprint(normalized);
+  }, [resetCanvasBlueprint]);
+
   // ═══════════════════════════════════════════════════════════════════════════
   // CONTEXT VALUE
   // ═══════════════════════════════════════════════════════════════════════════
@@ -174,6 +298,11 @@ export function TripProvider({ children }) {
     showSidebar,
     selectedDay,
     currentSelections,
+    experienceMode,
+    scenarioSettings,
+    ideaPins,
+    creationNotes,
+    canvasBlueprint,
     
     // Actions
     setCurrentTravelerId,
@@ -187,7 +316,16 @@ export function TripProvider({ children }) {
     isActivitySelected,
     setActiveTab,
     setShowSidebar,
-    setSelectedDay
+    setSelectedDay,
+    setExperienceMode,
+    updateScenarioSetting,
+    pinIdea,
+    unpinIdea,
+    resetIdeaPins,
+    setCreationNotes,
+    resetCanvasBlueprint,
+    updateCanvasDay,
+    hydrateCanvasFromStops
   };
 
   return (

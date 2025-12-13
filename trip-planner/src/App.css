@@ -232,6 +232,41 @@ body {
   gap: 1.5rem;
 }
 
+.build-creation-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1100px) {
+  .build-creation-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+    align-items: flex-start;
+  }
+}
+
+.build-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.build-creation-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+}
+
+@media (max-width: 1099px) {
+  .build-creation-column {
+    position: static;
+  }
+}
+
 /* Build tab sub-navigation (Schedule / Discover / Toolkit) */
 .subnav-clean {
   display: flex;
