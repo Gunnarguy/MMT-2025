@@ -54,6 +54,13 @@ CREATE POLICY "Authenticated users can view shared trip"
   TO authenticated
   USING (true);
 
+-- Allow anonymous users (anon key) to view shared state
+CREATE POLICY "Anon users can view shared trip"
+  ON mmt_shared_trip
+  FOR SELECT
+  TO anon
+  USING (true);
+
 -- Only admin (Gunnar) can modify shared state
 -- For now, allow all authenticated users to update (can restrict later)
 CREATE POLICY "Authenticated users can update shared trip"
@@ -62,10 +69,24 @@ CREATE POLICY "Authenticated users can update shared trip"
   TO authenticated
   USING (true);
 
+-- Allow anonymous users (anon key) to update shared state
+CREATE POLICY "Anon users can update shared trip"
+  ON mmt_shared_trip
+  FOR UPDATE
+  TO anon
+  USING (true);
+
 CREATE POLICY "Authenticated users can insert shared trip"
   ON mmt_shared_trip
   FOR INSERT
   TO authenticated
+  WITH CHECK (true);
+
+-- Allow anonymous users (anon key) to insert shared state
+CREATE POLICY "Anon users can insert shared trip"
+  ON mmt_shared_trip
+  FOR INSERT
+  TO anon
   WITH CHECK (true);
 
 -- ============================================
@@ -76,10 +97,10 @@ ALTER PUBLICATION supabase_realtime ADD TABLE mmt_shared_trip;
 -- ============================================
 -- INDEXES
 -- ============================================
-CREATE INDEX IF NOT EXISTS idx_mmt_selections_user_id 
+CREATE INDEX IF NOT EXISTS idx_mmt_selections_user_id
   ON mmt_trip_selections(user_id);
 
-CREATE INDEX IF NOT EXISTS idx_mmt_selections_updated 
+CREATE INDEX IF NOT EXISTS idx_mmt_selections_updated
   ON mmt_trip_selections(updated_at DESC);
 
 -- ============================================
