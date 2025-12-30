@@ -4,8 +4,8 @@ import { defineConfig } from "vite";
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  // Use root for dev, and relative paths for production so it works on GitHub Pages AND locally.
-  base: command === "serve" ? "/" : "./",
+  // Use root for dev, and explicit repo path for production
+  base: command === "serve" ? "/" : "/MMT-2025/",
   server: {
     port: 5174,
   },
