@@ -70,6 +70,13 @@ export const categories = {
     color: '#8e44ad',
     description: 'Hotels, B&Bs, and places to stay'
   },
+  custom: {
+    id: 'custom',
+    name: 'Custom',
+    icon: '⭐',
+    color: '#f1c40f',
+    description: 'Places you add yourself'
+  }
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════

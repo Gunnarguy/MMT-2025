@@ -1,84 +1,57 @@
-# 🦞 MMT-2025: Maine Mother's Trip Planner
+# MMT-2025: New England Trip Planner
 
-A comprehensive, mobile-friendly trip planning application for Mom and Renee's fall 2025 Maine adventure. Built with React + Vite, featuring real-time collaboration via Supabase.
+A curated trip deck plus a hands-on builder for Mom and Renee's fall 2025 New England adventure. Built with React + Vite, with optional real-time sync via Supabase.
 
-**Live Site:** [https://gunnarhostetler.github.io/MMT-2025/](https://gunnarhostetler.github.io/MMT-2025/)
+**Live Site:** https://gunnarhostetler.github.io/MMT-2025/
 
-## 🍁 Features
+## Features
 
-- **Multi-Traveler Support:** Personalized views for Mom, Renee, and shared planning
-- **Explore Tab:** Browse lobster spots, harbor towns, foliage hotspots, and custom places
-- **"Add Anything" Search:** Search any location via OpenStreetMap/Nominatim
-- **Interactive Maps:** Leaflet-powered maps with route visualization
-- **Smart Routing:** OSRM-based driving directions and time estimates
-- **Mobile-First Design:** Fully responsive UI for all devices
-- **Real-time Sync:** Supabase integration for collaborative planning
+- **Mom's Route Deck:** A narrative, scannable view based on `MMTrip.txt` (warnings, highlights, packing, budgets, alternatives).
+- **DIY Trip Builder:** Build from scratch or remix templates with day-by-day planning.
+- **Custom Places Library:** Add, edit, and reuse your own places with notes, tags, and links.
+- **Activity Detail Drawer:** See tips, must-try items, ratings, and tags without leaving the planner.
+- **Scheduling + Day Board:** Time-block activities or drag them across days in a board view.
+- **Trip Tools:** Budgets, reservations, and checklist tracking built into the planner.
+- **Smart Routing:** OSRM driving routes + total distance/time estimates.
+- **Live Cost Estimator:** Optional $/mile calculator on the map panel.
+- **Exports + Links:** Calendar export, Google Maps routing, and quick weather lookup.
+- **Realtime Sync:** Supabase integration for shared planning (optional).
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
-
-# Build for production
-npm run build
-
-# Deploy to GitHub Pages
-npm run deploy
 ```
 
-## 🔧 Tech Stack
-
-- **Frontend:** React 19, Vite 7
-- **Mapping:** Leaflet, React-Leaflet, OSRM
-- **Backend:** Supabase (Auth, Database, Realtime)
-- **Styling:** CSS with comprehensive responsive design
-- **Deployment:** GitHub Pages with Actions CI/CD
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 trip-planner/
 ├── src/
-│   ├── components/       # Reusable UI components
-│   │   ├── Sidebar.jsx   # Mission control sidebar
-│   │   ├── TravelerSelector.jsx
-│   │   └── ItineraryCard.jsx
-│   ├── data/
-│   │   └── planContent.js # Trip data, catalog, team info
-│   ├── lib/
-│   │   └── supabase.js   # Supabase client & helpers
-│   ├── App.jsx           # Main application
-│   ├── App.css           # Styles (incl. mobile)
-│   └── main.jsx          # Entry point
-├── supabase/
-│   └── migrations/       # Database schema
-└── .github/
-    └── workflows/        # CI/CD deployment
+│   ├── components/         # UI building blocks
+│   ├── data/               # Catalogs + Mom's Route data
+│   ├── hooks/              # Custom hooks (routes, etc.)
+│   ├── lib/                # Supabase + Leaflet config
+│   ├── styles/             # App + Mom's Route styles
+│   ├── utils/              # Formatting + trip helpers
+│   ├── App.jsx             # App shell and view switcher
+│   └── main.jsx            # Entry point
+├── supabase/               # Database migrations
+└── public/
 ```
 
-## 🗄️ Supabase Setup
+## Supabase Setup (Optional)
 
-1. Create tables by running `supabase/migrations/001_mmt_tables.sql` in Supabase SQL Editor
+1. Run `supabase/migrations/001_mmt_tables.sql` in Supabase SQL Editor.
 2. Add GitHub Secrets:
-   - `VITE_SUPABASE_URL` - Your Supabase project URL
-   - `VITE_SUPABASE_ANON_KEY` - Your Supabase anon key
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
 
-## 🎨 Trip Highlights
+## Notes
 
-- **Dates:** October 2025 (Peak Foliage Season)
-- **Region:** Coastal Maine - Portland to Acadia
-- **Focus:** Lobster, Fall Colors, Harbor Towns, Relaxation
-
-## 👨‍👩‍👦 Team
-
-- **Mom (👩‍👧):** Trip Lead - Lobster & Relaxation Focus
-- **Renee (👰):** Co-Planner - Photography & Discovery
-- **Gunnar (🧑‍💻):** Tech Support - App Development
+- `MMTrip.txt` remains the authoritative route inspiration.
+- Templates live in `src/data/templates.js` and can be saved locally.
 
 ---
-
-*Built with ❤️ for the family Maine adventure*
+Built with love, lobster rolls, and leaf-peeping dreams.

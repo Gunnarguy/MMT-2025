@@ -1,10 +1,29 @@
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   line-height: 1.6;
   font-weight: 400;
 
-  color: #2c3e50;
-  background-color: #f8f9fa;
+  color: #1b2430;
+  background-color: #f8f5f0;
+
+  --ink-900: #1b2430;
+  --ink-700: #2c3e50;
+  --ink-500: #526177;
+  --sunset-600: #d55d2a;
+  --sunset-500: #e86f3a;
+  --sunset-400: #f08a4a;
+  --gold-400: #f2b95d;
+  --sea-500: #2aa6a0;
+  --pine-700: #0f3d33;
+  --mist-50: #f8f5f0;
+  --mist-100: #f1ece5;
+  --cloud-100: #f0f3f7;
+  --card-bg: #ffffff;
+  --shadow-soft: 0 12px 30px rgba(24, 32, 45, 0.08);
+  --shadow-card: 0 6px 18px rgba(24, 32, 45, 0.08);
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -50,6 +69,8 @@ body {
   padding-right: env(safe-area-inset-right);
   word-wrap: break-word;
   overflow-wrap: break-word;
+  background: var(--mist-50);
+  color: var(--ink-900);
 }
 
 /* Global touch-friendly button/interactive resets */
@@ -78,5 +99,6 @@ input[type="button"] {
 
 h1, h2, h3 {
   line-height: 1.2;
-  color: #d35400; /* Autumn orange */
+  color: var(--sunset-600);
+  font-family: 'Fraunces', 'Times New Roman', serif;
 }
