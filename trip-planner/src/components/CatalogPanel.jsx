@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { categories, regions } from "../data/catalog";
+import { formatHours } from "../utils/formatters";
 
 function normalizePlaceLabel(displayName) {
   if (!displayName) return "";
@@ -43,9 +44,67 @@ export default function CatalogPanel({
   const [placeLoading, setPlaceLoading] = useState(false);
   const placeAbortRef = useRef(null);
 
+  const [panelWidth, setPanelWidth] = useState(320);
+  const [isResizing, setIsResizing] = useState(false);
+  const panelRef = useRef(null);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+
+  const showExpandedDetails = panelWidth >= 500;
+
   const canQuickAdd = useMemo(() => {
     return Boolean(selectedDay?.id) && Boolean(onQuickAddCustomPlace);
   }, [selectedDay?.id, onQuickAddCustomPlace]);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isResizing) return;
+      const delta = e.clientX - startXRef.current;
+      const newWidth = Math.max(
+        260,
+        Math.min(800, startWidthRef.current + delta)
+      );
+      setPanelWidth(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    } else {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizing]);
+
+  const handleResizeStart = (e) => {
+    e.preventDefault();
+    setIsResizing(true);
+    startXRef.current = e.clientX;
+    startWidthRef.current = panelWidth;
+  };
+
+  const resetPlaceSearch = () => {
+    if (placeAbortRef.current) {
+      placeAbortRef.current.abort();
+      placeAbortRef.current = null;
+    }
+    setPlaceQuery("");
+    setPlaceResults([]);
+    setPlaceLoading(false);
+  };
 
   useEffect(() => {
     if (placeAbortRef.current) {
@@ -78,7 +137,11 @@ export default function CatalogPanel({
 
         const allowed = Array.isArray(allowedStateAbbrs)
           ? allowedStateAbbrs
-              .map((s) => String(s || "").toUpperCase().trim())
+              .map((s) =>
+                String(s || "")
+                  .toUpperCase()
+                  .trim()
+              )
               .filter(Boolean)
           : [];
         const allowedSet = new Set(allowed);
@@ -108,14 +171,17 @@ export default function CatalogPanel({
                     ? maybeIso.slice(3)
                     : "";
 
-                  const displayUpper = String(hit?.display_name || "").toUpperCase();
+                  const displayUpper = String(
+                    hit?.display_name || ""
+                  ).toUpperCase();
                   const displayMatch = displayUpper.match(
                     /,\s*([A-Z]{2})\s*(,|$)/
                   );
                   const displayState = displayMatch?.[1] || "";
 
                   const resolvedState = stateCode || isoState || displayState;
-                  if (!resolvedState || !allowedSet.has(resolvedState)) return null;
+                  if (!resolvedState || !allowedSet.has(resolvedState))
+                    return null;
                 }
 
                 return {
@@ -144,7 +210,22 @@ export default function CatalogPanel({
   }, [placeQuery, allowedStateAbbrs]);
 
   return (
-    <aside className="catalog">
+    <aside
+      className="catalog"
+      ref={panelRef}
+      style={{
+        width: `${panelWidth}px`,
+        minWidth: "260px",
+        maxWidth: "800px",
+        position: "relative",
+      }}
+    >
+      <div
+        className="catalog-resize-handle"
+        onMouseDown={handleResizeStart}
+        role="separator"
+        aria-label="Resize catalog panel"
+      />
       <div className="catalog-header">
         <h2>{searchMode === "catalog" ? "Activities" : "Your Places"}</h2>
         <div className="search-mode-toggle">
@@ -230,7 +311,12 @@ export default function CatalogPanel({
 
           <div className="catalog-list">
             {filteredCatalog.map((activity) => (
-              <div key={activity.id} className="catalog-item">
+              <div
+                key={activity.id}
+                className={`catalog-item ${
+                  showExpandedDetails ? "expanded" : ""
+                }`}
+              >
                 <button
                   type="button"
                   className="item-main"
@@ -250,8 +336,41 @@ export default function CatalogPanel({
                       )}
                     </strong>
                     <small>{activity.location}</small>
+                    {showExpandedDetails && activity.description && (
+                      <p className="item-description">{activity.description}</p>
+                    )}
                   </div>
                 </button>
+                {showExpandedDetails && (
+                  <div className="item-expanded-details">
+                    {activity.duration && (
+                      <div className="detail-row">
+                        <span className="detail-label">Duration:</span>
+                        <span>{formatHours(activity.duration)}</span>
+                      </div>
+                    )}
+                    {activity.price && (
+                      <div className="detail-row">
+                        <span className="detail-label">Cost:</span>
+                        <span>{activity.price}</span>
+                      </div>
+                    )}
+                    {activity.rating && (
+                      <div className="detail-row">
+                        <span className="detail-label">Rating:</span>
+                        <span>{activity.rating}</span>
+                      </div>
+                    )}
+                    {activity.tags && activity.tags.length > 0 && (
+                      <div className="detail-row">
+                        <span className="detail-label">Tags:</span>
+                        <span className="item-tags">
+                          {activity.tags.join(", ")}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="item-actions">
                   <button
                     className="add-btn"
@@ -261,13 +380,15 @@ export default function CatalogPanel({
                   >
                     Add
                   </button>
-                  <button
-                    type="button"
-                    className="ghost-btn"
-                    onClick={() => onOpenDetails(activity)}
-                  >
-                    Details
-                  </button>
+                  {!showExpandedDetails && (
+                    <button
+                      type="button"
+                      className="ghost-btn"
+                      onClick={() => onOpenDetails(activity)}
+                    >
+                      Details
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -325,8 +446,7 @@ export default function CatalogPanel({
                           location: normalizePlaceLocation(hit.displayName),
                           coordinates: hit.coordinates,
                         });
-                        setPlaceQuery("");
-                        setPlaceResults([]);
+                        resetPlaceSearch();
                       }}
                     >
                       <span className="item-icon">
@@ -355,8 +475,7 @@ export default function CatalogPanel({
                             location: normalizePlaceLocation(hit.displayName),
                             coordinates: hit.coordinates,
                           });
-                          setPlaceQuery("");
-                          setPlaceResults([]);
+                          resetPlaceSearch();
                         }}
                       >
                         Add

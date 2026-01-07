@@ -2,8 +2,7 @@ import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { categories } from '../data/catalog';
-import { formatDuration, formatMiles } from '../utils/formatters';
-import { computeEndTime } from '../utils/timeUtils';
+import { formatDuration, formatMiles } from "../utils/formatters";
 
 const dayTypes = [
   { value: 'arrival', label: 'Arrival' },
@@ -68,28 +67,23 @@ export default function DayPlanner({
   onRemoveDay,
   onDuplicateDay,
   onUpdateDay,
-  onUpdateSchedule,
-  onAutoSchedule,
   onReorderActivities,
   onRemoveActivity,
   onOpenDetails,
-  lodgingOptions
+  lodgingOptions,
 }) {
-  const schedule = selectedDay?.schedule || {};
-  const dayStartTime = selectedDay?.startTime || '09:00';
-
   return (
     <section className="trip-builder">
       <div className="day-tabs">
         {trip.days.map((day) => (
           <button
             key={day.id}
-            className={`day-tab ${day.id === selectedDayId ? 'active' : ''}`}
+            className={`day-tab ${day.id === selectedDayId ? "active" : ""}`}
             onClick={() => onSelectDay(day.id)}
             type="button"
           >
             <span className="day-num">D{day.dayNumber}</span>
-            <span className="day-loc">{day.location || '...'}</span>
+            <span className="day-loc">{day.location || "..."}</span>
             <span className="day-count">{day.activities.length}</span>
           </button>
         ))}
@@ -103,12 +97,16 @@ export default function DayPlanner({
           <div className="day-header">
             <div>
               <h2>Day {selectedDay.dayNumber}</h2>
-              <p className="day-load">{dayLoadLabel} | {dayLoad}</p>
+              <p className="day-load">
+                {dayLoadLabel} | {dayLoad}
+              </p>
             </div>
             <div className="day-actions">
               <select
-                value={selectedDay.type || 'custom'}
-                onChange={(e) => onUpdateDay(selectedDay.id, { type: e.target.value })}
+                value={selectedDay.type || "custom"}
+                onChange={(e) =>
+                  onUpdateDay(selectedDay.id, { type: e.target.value })
+                }
                 className="day-type-select"
               >
                 {dayTypes.map((type) => (
@@ -117,11 +115,19 @@ export default function DayPlanner({
                   </option>
                 ))}
               </select>
-              <button type="button" className="ghost-btn" onClick={() => onDuplicateDay(selectedDay.id)}>
+              <button
+                type="button"
+                className="ghost-btn"
+                onClick={() => onDuplicateDay(selectedDay.id)}
+              >
                 Duplicate
               </button>
               {trip.days.length > 1 && (
-                <button type="button" className="ghost-btn" onClick={() => onRemoveDay(selectedDay.id)}>
+                <button
+                  type="button"
+                  className="ghost-btn"
+                  onClick={() => onRemoveDay(selectedDay.id)}
+                >
                   Remove
                 </button>
               )}
@@ -133,7 +139,9 @@ export default function DayPlanner({
             <input
               type="text"
               value={selectedDay.location}
-              onChange={(e) => onUpdateDay(selectedDay.id, { location: e.target.value })}
+              onChange={(e) =>
+                onUpdateDay(selectedDay.id, { location: e.target.value })
+              }
               placeholder="Base location for the day"
               className="location-input"
             />
@@ -142,8 +150,10 @@ export default function DayPlanner({
           <label className="field">
             Lodging (optional)
             <select
-              value={selectedDay.lodging || ''}
-              onChange={(e) => onUpdateDay(selectedDay.id, { lodging: e.target.value || null })}
+              value={selectedDay.lodging || ""}
+              onChange={(e) =>
+                onUpdateDay(selectedDay.id, { lodging: e.target.value || null })
+              }
               className="lodging-select"
             >
               <option value="">Select lodging</option>
@@ -157,120 +167,19 @@ export default function DayPlanner({
 
           <textarea
             value={selectedDay.notes}
-            onChange={(e) => onUpdateDay(selectedDay.id, { notes: e.target.value })}
+            onChange={(e) =>
+              onUpdateDay(selectedDay.id, { notes: e.target.value })
+            }
             placeholder="Notes for this day: reservations, timing, backup options"
             className="day-notes"
           />
 
           <div className="activities-list">
-            <div className="schedule-panel">
-              <div className="schedule-header">
-                <div>
-                  <h3>Schedule</h3>
-                  <p>Set times, durations, and travel buffers.</p>
-                </div>
-                <div className="schedule-actions">
-                  <label>
-                    Start day at
-                    <input
-                      type="time"
-                      value={dayStartTime}
-                      onChange={(e) => onUpdateDay(selectedDay.id, { startTime: e.target.value })}
-                    />
-                  </label>
-                  <button type="button" className="ghost-btn" onClick={() => onAutoSchedule(selectedDay.id)}>
-                    Auto schedule
-                  </button>
-                </div>
-              </div>
-              {selectedDayActivities.length === 0 ? (
-                <p className="empty-msg">Add activities to build a timeline.</p>
-              ) : (
-                <div className="schedule-list">
-                  {selectedDayActivities.map((activity) => {
-                    const entry = schedule[activity.id] || {};
-                    const startTime = entry.startTime || '';
-                    const duration = entry.duration ?? activity.duration ?? '';
-                    const bufferMinutes = entry.bufferMinutes ?? 20;
-                    const endTime = startTime && duration ? computeEndTime(startTime, duration) : '';
-
-                    return (
-                      <div key={activity.id} className="schedule-row">
-                        <div className="schedule-title">
-                          <strong>{activity.name}</strong>
-                          <span>{activity.location}</span>
-                        </div>
-                        <label>
-                          Start
-                          <input
-                            type="time"
-                            value={startTime}
-                            onChange={(e) => onUpdateSchedule(selectedDay.id, activity.id, { startTime: e.target.value })}
-                          />
-                        </label>
-                        <label>
-                          Duration (hrs)
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.25"
-                            value={duration}
-                            onChange={(e) => onUpdateSchedule(selectedDay.id, activity.id, { duration: e.target.value })}
-                          />
-                        </label>
-                        <label>
-                          Buffer (min)
-                          <input
-                            type="number"
-                            min="0"
-                            step="5"
-                            value={bufferMinutes}
-                            onChange={(e) =>
-                              onUpdateSchedule(selectedDay.id, activity.id, { bufferMinutes: e.target.value })
-                            }
-                          />
-                        </label>
-                        <div className="schedule-end">Ends {endTime || '--'}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-            <div className="drive-summary">
-              <div className="drive-header">
-                <h3>Driving</h3>
-                {!dayRoute && <span className="drive-meta">Add two or more pinned stops.</span>}
-              </div>
-              {dayRoute ? (
-                <>
-                  <div className="drive-totals">
-                    Total: <strong>{formatMiles(dayRoute.distance_m)}</strong> |{' '}
-                    <strong>{formatDuration(dayRoute.duration_s)}</strong>
-                  </div>
-                  {dayRoute.legs?.length > 0 && (
-                    <div className="drive-legs">
-                      {dayRoute.legs.map((leg, i) => (
-                        <div key={i} className="drive-leg">
-                          <span className="drive-leg-title">
-                            {leg.from} -> {leg.to}
-                          </span>
-                          <span className="drive-leg-meta">
-                            {formatMiles(leg.distance_m)} | {formatDuration(leg.duration_s)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="drive-empty">No driving route yet.</div>
-              )}
-            </div>
-
             <h3>Activities ({selectedDayActivities.length})</h3>
             {selectedDayActivities.length === 0 ? (
-              <p className="empty-msg">Add activities from the catalog or your custom list.</p>
+              <p className="empty-msg">
+                Add activities from the catalog or your custom list.
+              </p>
             ) : (
               <DndContext
                 collisionDetection={closestCenter}
@@ -282,7 +191,10 @@ export default function DayPlanner({
                   onReorderActivities(selectedDay.id, oldIndex, newIndex);
                 }}
               >
-                <SortableContext items={selectedDayActivityIds} strategy={verticalListSortingStrategy}>
+                <SortableContext
+                  items={selectedDayActivityIds}
+                  strategy={verticalListSortingStrategy}
+                >
                   {selectedDayActivities.map((activity, idx) => (
                     <SortableActivityCard
                       key={activity.id}
@@ -296,6 +208,42 @@ export default function DayPlanner({
                 </SortableContext>
               </DndContext>
             )}
+
+            <div className="drive-summary">
+              <div className="drive-header">
+                <h3>Driving</h3>
+                {!dayRoute && (
+                  <span className="drive-meta">
+                    Add two or more pinned stops.
+                  </span>
+                )}
+              </div>
+              {dayRoute ? (
+                <>
+                  <div className="drive-totals">
+                    Total: <strong>{formatMiles(dayRoute.distance_m)}</strong> |{" "}
+                    <strong>{formatDuration(dayRoute.duration_s)}</strong>
+                  </div>
+                  {dayRoute.legs?.length > 0 && (
+                    <div className="drive-legs">
+                      {dayRoute.legs.map((leg, i) => (
+                        <div key={i} className="drive-leg">
+                          <span className="drive-leg-title">
+                            {leg.from} -&gt; {leg.to}
+                          </span>
+                          <span className="drive-leg-meta">
+                            {formatMiles(leg.distance_m)} |{" "}
+                            {formatDuration(leg.duration_s)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="drive-empty">No driving route yet.</div>
+              )}
+            </div>
           </div>
         </div>
       )}
