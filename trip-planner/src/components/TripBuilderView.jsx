@@ -5,22 +5,16 @@ import { useRoutes } from "../hooks/useRoutes";
 import { formatHours } from "../utils/formatters";
 import { geocodePlace } from "../utils/geocode";
 import { buildAutoSchedule } from "../utils/timeUtils";
+import { buildTripSkeleton, normalizeTripDays } from "../utils/tripUtils";
 import {
   expandWithNeighborStates,
   extractMentionedStateAbbrs,
 } from "../utils/usStates";
-import {
-  buildTripSkeleton,
-  hasAnyActivities,
-  normalizeTripDays,
-} from "../utils/tripUtils";
 import ActivityDetailModal from "./ActivityDetailModal";
 import CatalogPanel from "./CatalogPanel";
 import DayBoard from "./DayBoard";
 import DayPlanner from "./DayPlanner";
 import MapPanel from "./MapPanel";
-import TripSetupPanel from "./TripSetupPanel";
-import TripToolsPanel from "./TripToolsPanel";
 
 const COST_PER_MILE_KEY = "mmt-cost-per-mile";
 
@@ -321,31 +315,6 @@ export default function TripBuilderView({
     setSelectedDayId("day-1");
   }, [setTrip]);
 
-  const handleApplySkeleton = useCallback(
-    (form) => {
-      if (
-        hasAnyActivities(trip.days) &&
-        !window.confirm("This will replace your current plan. Continue?")
-      ) {
-        return;
-      }
-      const nextTrip = buildTripSkeleton({
-        name: trip.name,
-        startLocation: form.startLocation,
-        endLocation: form.endLocation,
-        dayCount: form.dayCount,
-        style: form.style,
-      });
-      nextTrip.startDate = trip.startDate || "";
-      nextTrip.budget = trip.budget || undefined;
-      nextTrip.reservations = trip.reservations || undefined;
-      nextTrip.checklist = trip.checklist || undefined;
-      setTrip(nextTrip);
-      setSelectedDayId("day-1");
-    },
-    [trip.days, trip.name, setTrip]
-  );
-
   const handleQuickAddCustomPlace = useCallback(
     async ({ dayId, name, location, coordinates }) => {
       const placeName = String(name || "").trim();
@@ -609,14 +578,6 @@ export default function TripBuilderView({
       />
 
       <div className="planner-column">
-        <TripSetupPanel
-          trip={trip}
-          onNameChange={(name) => setTrip((prev) => ({ ...prev, name }))}
-          onStartDateChange={(value) =>
-            setTrip((prev) => ({ ...prev, startDate: value }))
-          }
-          onApplySkeleton={handleApplySkeleton}
-        />
         <div className="planner-view-toggle">
           <button
             type="button"
@@ -633,11 +594,6 @@ export default function TripBuilderView({
             All Days Board
           </button>
         </div>
-        <TripToolsPanel
-          trip={trip}
-          setTrip={setTrip}
-          getActivity={getAnyActivity}
-        />
         {plannerView === "day" ? (
           <DayPlanner
             trip={trip}
