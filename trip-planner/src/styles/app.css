@@ -395,6 +395,22 @@
   padding-top: 0.5rem;
   border-top: 1px solid rgba(27, 36, 48, 0.1);
 }
+
+.catalog-item.custom-item {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.catalog-item.custom-item .item-main {
+  width: 100%;
+}
+
+.catalog-item.custom-item .item-actions {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
 .catalog-item .item-main {
   display: flex;
   align-items: center;
@@ -405,6 +421,8 @@
   padding: 0;
   text-align: left;
   color: inherit;
+  flex: 1;
+  min-width: 0;
 }
 
 .item-icon {
@@ -460,6 +478,7 @@
 .item-actions {
   display: flex;
   gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .add-btn {
@@ -470,6 +489,8 @@
   padding: 0.35rem 0.7rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  font-size: 0.85rem;
 }
 
 .add-custom-btn {
