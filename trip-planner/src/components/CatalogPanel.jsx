@@ -404,6 +404,7 @@ export default function CatalogPanel({
                   showExpandedDetails ? "expanded" : ""
                 }`}
               >
+                {/* Compact header row */}
                 <div className="item-header">
                   <span className="item-icon">
                     {categories[activity.category]?.icon}
@@ -420,112 +421,196 @@ export default function CatalogPanel({
                     </strong>
                     <small>{activity.location}</small>
                   </div>
-                  {/* Quick meta badges - always visible */}
-                  <div className="item-quick-meta">
-                    {activity.rating && (
-                      <span className="meta-badge rating">★ {activity.rating}</span>
-                    )}
-                    {activity.price && (
-                      <span className="meta-badge price">{activity.price}</span>
-                    )}
-                  </div>
+                  <button
+                    className="add-btn-compact"
+                    onClick={() => onAddActivity(selectedDay?.id, activity.id)}
+                    title={`Add to Day ${selectedDay?.dayNumber}`}
+                    type="button"
+                  >
+                    +
+                  </button>
                 </div>
 
+                {/* Always show quick stats row */}
+                <div className="item-stats-row">
+                  {activity.rating && (
+                    <span className="stat-badge rating" title={`${activity.reviewCount ? activity.reviewCount.toLocaleString() + ' reviews' : 'Rating'}`}>
+                      ★ {activity.rating}
+                    </span>
+                  )}
+                  {activity.price && (
+                    <span className="stat-badge price" title={activity.priceRange || 'Price level'}>
+                      {activity.price}
+                    </span>
+                  )}
+                  {activity.duration && (
+                    <span className="stat-badge time">
+                      ⏱ {formatHours(activity.duration)}
+                    </span>
+                  )}
+                  {activity.waitTime && (
+                    <span className="stat-badge wait" title="Typical wait">
+                      ⏳ {activity.waitTime}
+                    </span>
+                  )}
+                </div>
+
+                {/* Expanded details */}
                 {showExpandedDetails && (
-                  <div className="item-rich-details">
+                  <div className="item-expanded">
+                    {/* Description */}
                     {activity.description && (
-                      <p className="item-description">{activity.description}</p>
+                      <p className="exp-description">{activity.description}</p>
                     )}
 
-                    {/* Key info row */}
-                    <div className="item-meta-row">
-                      {activity.duration && (
-                        <span className="meta-chip">
-                          <span className="meta-icon">⏱</span>
-                          {formatHours(activity.duration)}
-                        </span>
+                    {/* Contact & Practical Info Grid */}
+                    <div className="exp-info-grid">
+                      {activity.address && (
+                        <a 
+                          className="exp-info-link" 
+                          href={`https://maps.google.com/?q=${encodeURIComponent(activity.address)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Open in Google Maps"
+                        >
+                          <span className="exp-icon">📍</span>
+                          <span className="exp-text">{activity.address.split(',')[0]}</span>
+                        </a>
                       )}
-                      {activity.waitTime && (
-                        <span className="meta-chip wait">
-                          <span className="meta-icon">⏳</span>
-                          {activity.waitTime}
-                        </span>
+                      {activity.phone && (
+                        <a className="exp-info-link" href={`tel:${activity.phone}`}>
+                          <span className="exp-icon">📞</span>
+                          <span className="exp-text">{activity.phone}</span>
+                        </a>
+                      )}
+                      {activity.hours && (
+                        <div className="exp-info-item">
+                          <span className="exp-icon">🕐</span>
+                          <span className="exp-text">{activity.hours}</span>
+                        </div>
+                      )}
+                      {activity.parking && (
+                        <div className="exp-info-item">
+                          <span className="exp-icon">🅿️</span>
+                          <span className="exp-text">{activity.parking}</span>
+                        </div>
                       )}
                     </div>
 
-                    {/* Must try callout */}
+                    {/* Payment/special notes */}
+                    {activity.paymentNote && (
+                      <div className="exp-note">{activity.paymentNote}</div>
+                    )}
+
+                    {/* Must try */}
                     {activity.mustTry && (
-                      <div className="item-callout must-try">
-                        <span className="callout-label">🍽 Must Try:</span>
-                        <span>{activity.mustTry}</span>
+                      <div className="exp-callout must-try">
+                        <strong>🍽 Try:</strong> {activity.mustTry}
                       </div>
                     )}
 
-                    {/* Highlights */}
+                    {/* Highlights (compact) */}
                     {activity.highlights && activity.highlights.length > 0 && (
-                      <div className="item-highlights">
-                        <span className="highlights-label">✨ Highlights:</span>
-                        <ul>
-                          {activity.highlights.slice(0, 3).map((h, i) => (
-                            <li key={i}>{h}</li>
-                          ))}
-                        </ul>
+                      <div className="exp-highlights">
+                        {activity.highlights.slice(0, 3).map((h, i) => (
+                          <span key={i} className="highlight-chip">✓ {h}</span>
+                        ))}
                       </div>
                     )}
 
                     {/* Pro tip */}
                     {activity.tip && (
-                      <div className="item-callout tip">
-                        <span className="callout-label">💡 Tip:</span>
-                        <span>{activity.tip}</span>
+                      <div className="exp-callout tip">
+                        <strong>💡</strong> {activity.tip}
                       </div>
                     )}
 
                     {/* Mom quote */}
                     {activity.momQuote && (
-                      <blockquote className="item-mom-quote">
-                        "{activity.momQuote}"
-                      </blockquote>
-                    )}
-
-                    {/* Photo spot */}
-                    {activity.photoSpot && (
-                      <div className="item-photo-spot">
-                        <span className="meta-icon">📸</span>
-                        <span>{activity.photoSpot}</span>
+                      <div className="exp-mom-quote">
+                        ❤️ "{activity.momQuote}"
                       </div>
                     )}
 
-                    {/* Tags */}
+                    {/* External links row */}
+                    <div className="exp-links-row">
+                      {activity.website && (
+                        <a 
+                          href={activity.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="exp-link"
+                        >
+                          🌐 Website
+                        </a>
+                      )}
+                      {activity.coordinates && (
+                        <a 
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${activity.coordinates[0]},${activity.coordinates[1]}`}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="exp-link"
+                        >
+                          🗺 Directions
+                        </a>
+                      )}
+                      {activity.yelpRating && (
+                        <a 
+                          href={`https://www.yelp.com/search?find_desc=${encodeURIComponent(activity.name)}&find_loc=${encodeURIComponent(activity.location)}`}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="exp-link yelp"
+                          title={`Yelp: ${activity.yelpRating}/5`}
+                        >
+                          <span style={{color: '#d32323'}}>●</span> Yelp {activity.yelpRating}
+                        </a>
+                      )}
+                      {activity.googleRating && (
+                        <a 
+                          href={`https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' ' + activity.location)}`}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="exp-link google"
+                          title={`Google: ${activity.googleRating}/5`}
+                        >
+                          <span style={{color: '#4285f4'}}>●</span> Google {activity.googleRating}
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Tags row */}
                     {activity.tags && activity.tags.length > 0 && (
-                      <div className="item-tags-row">
+                      <div className="exp-tags">
                         {activity.tags.map((tag) => (
                           <span key={tag} className="tag-pill">{tag}</span>
                         ))}
                       </div>
                     )}
+
+                    {/* Photo spot */}
+                    {activity.photoSpot && (
+                      <div className="exp-photo-spot">
+                        📸 Best shot: {activity.photoSpot}
+                      </div>
+                    )}
                   </div>
                 )}
 
-                <div className="item-actions">
-                  <button
-                    className="add-btn"
-                    onClick={() => onAddActivity(selectedDay?.id, activity.id)}
-                    title={`Add to Day ${selectedDay?.dayNumber}`}
-                    type="button"
-                  >
-                    + Add
-                  </button>
-                  {!showExpandedDetails && (
+                {/* Collapsed state: show details button */}
+                {!showExpandedDetails && (
+                  <div className="item-collapsed-actions">
+                    {activity.mustTry && (
+                      <span className="collapsed-hint">🍽 {activity.mustTry.substring(0, 30)}...</span>
+                    )}
                     <button
                       type="button"
-                      className="ghost-btn"
+                      className="ghost-btn-sm"
                       onClick={() => onOpenDetails(activity)}
                     >
-                      Details
+                      Details →
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             ))}
 
