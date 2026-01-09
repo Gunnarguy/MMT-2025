@@ -434,12 +434,22 @@ export default function CatalogPanel({
                 {/* Always show quick stats row */}
                 <div className="item-stats-row">
                   {activity.rating && (
-                    <span className="stat-badge rating" title={`${activity.reviewCount ? activity.reviewCount.toLocaleString() + ' reviews' : 'Rating'}`}>
+                    <span
+                      className="stat-badge rating"
+                      title={`${
+                        activity.reviewCount
+                          ? activity.reviewCount.toLocaleString() + " reviews"
+                          : "Rating"
+                      }`}
+                    >
                       ★ {activity.rating}
                     </span>
                   )}
                   {activity.price && (
-                    <span className="stat-badge price" title={activity.priceRange || 'Price level'}>
+                    <span
+                      className="stat-badge price"
+                      title={activity.priceRange || "Price level"}
+                    >
                       {activity.price}
                     </span>
                   )}
@@ -466,19 +476,26 @@ export default function CatalogPanel({
                     {/* Contact & Practical Info Grid */}
                     <div className="exp-info-grid">
                       {activity.address && (
-                        <a 
-                          className="exp-info-link" 
-                          href={`https://maps.google.com/?q=${encodeURIComponent(activity.address)}`}
+                        <a
+                          className="exp-info-link"
+                          href={`https://maps.google.com/?q=${encodeURIComponent(
+                            activity.address
+                          )}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           title="Open in Google Maps"
                         >
                           <span className="exp-icon">📍</span>
-                          <span className="exp-text">{activity.address.split(',')[0]}</span>
+                          <span className="exp-text">
+                            {activity.address.split(",")[0]}
+                          </span>
                         </a>
                       )}
                       {activity.phone && (
-                        <a className="exp-info-link" href={`tel:${activity.phone}`}>
+                        <a
+                          className="exp-info-link"
+                          href={`tel:${activity.phone}`}
+                        >
                           <span className="exp-icon">📞</span>
                           <span className="exp-text">{activity.phone}</span>
                         </a>
@@ -513,7 +530,9 @@ export default function CatalogPanel({
                     {activity.highlights && activity.highlights.length > 0 && (
                       <div className="exp-highlights">
                         {activity.highlights.slice(0, 3).map((h, i) => (
-                          <span key={i} className="highlight-chip">✓ {h}</span>
+                          <span key={i} className="highlight-chip">
+                            ✓ {h}
+                          </span>
                         ))}
                       </div>
                     )}
@@ -535,9 +554,9 @@ export default function CatalogPanel({
                     {/* External links row */}
                     <div className="exp-links-row">
                       {activity.website && (
-                        <a 
-                          href={activity.website} 
-                          target="_blank" 
+                        <a
+                          href={activity.website}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="exp-link"
                         >
@@ -545,9 +564,9 @@ export default function CatalogPanel({
                         </a>
                       )}
                       {activity.coordinates && (
-                        <a 
+                        <a
                           href={`https://www.google.com/maps/dir/?api=1&destination=${activity.coordinates[0]},${activity.coordinates[1]}`}
-                          target="_blank" 
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="exp-link"
                         >
@@ -555,25 +574,31 @@ export default function CatalogPanel({
                         </a>
                       )}
                       {activity.yelpRating && (
-                        <a 
-                          href={`https://www.yelp.com/search?find_desc=${encodeURIComponent(activity.name)}&find_loc=${encodeURIComponent(activity.location)}`}
-                          target="_blank" 
+                        <a
+                          href={`https://www.yelp.com/search?find_desc=${encodeURIComponent(
+                            activity.name
+                          )}&find_loc=${encodeURIComponent(activity.location)}`}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="exp-link yelp"
                           title={`Yelp: ${activity.yelpRating}/5`}
                         >
-                          <span style={{color: '#d32323'}}>●</span> Yelp {activity.yelpRating}
+                          <span style={{ color: "#d32323" }}>●</span> Yelp{" "}
+                          {activity.yelpRating}
                         </a>
                       )}
                       {activity.googleRating && (
-                        <a 
-                          href={`https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' ' + activity.location)}`}
-                          target="_blank" 
+                        <a
+                          href={`https://www.google.com/maps/search/${encodeURIComponent(
+                            activity.name + " " + activity.location
+                          )}`}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="exp-link google"
                           title={`Google: ${activity.googleRating}/5`}
                         >
-                          <span style={{color: '#4285f4'}}>●</span> Google {activity.googleRating}
+                          <span style={{ color: "#4285f4" }}>●</span> Google{" "}
+                          {activity.googleRating}
                         </a>
                       )}
                     </div>
@@ -582,7 +607,9 @@ export default function CatalogPanel({
                     {activity.tags && activity.tags.length > 0 && (
                       <div className="exp-tags">
                         {activity.tags.map((tag) => (
-                          <span key={tag} className="tag-pill">{tag}</span>
+                          <span key={tag} className="tag-pill">
+                            {tag}
+                          </span>
                         ))}
                       </div>
                     )}
@@ -600,7 +627,9 @@ export default function CatalogPanel({
                 {!showExpandedDetails && (
                   <div className="item-collapsed-actions">
                     {activity.mustTry && (
-                      <span className="collapsed-hint">🍽 {activity.mustTry.substring(0, 30)}...</span>
+                      <span className="collapsed-hint">
+                        🍽 {activity.mustTry.substring(0, 30)}...
+                      </span>
                     )}
                     <button
                       type="button"
