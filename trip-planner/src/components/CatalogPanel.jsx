@@ -404,11 +404,7 @@ export default function CatalogPanel({
                   showExpandedDetails ? "expanded" : ""
                 }`}
               >
-                <button
-                  type="button"
-                  className="item-main"
-                  onClick={() => onOpenDetails(activity)}
-                >
+                <div className="item-header">
                   <span className="item-icon">
                     {categories[activity.category]?.icon}
                   </span>
@@ -416,48 +412,101 @@ export default function CatalogPanel({
                     <strong>
                       {activity.name}
                       {activity.momMentioned && (
-                        <span className="icon-mom" title="Mom Approved">
+                        <span className="icon-mom" title="Mom Mentioned This!">
                           {" "}
                           ❤️
                         </span>
                       )}
                     </strong>
                     <small>{activity.location}</small>
-                    {showExpandedDetails && activity.description && (
-                      <p className="item-description">{activity.description}</p>
-                    )}
                   </div>
-                </button>
-                {showExpandedDetails && (
-                  <div className="item-expanded-details">
-                    {activity.duration && (
-                      <div className="detail-row">
-                        <span className="detail-label">Duration:</span>
-                        <span>{formatHours(activity.duration)}</span>
-                      </div>
+                  {/* Quick meta badges - always visible */}
+                  <div className="item-quick-meta">
+                    {activity.rating && (
+                      <span className="meta-badge rating">★ {activity.rating}</span>
                     )}
                     {activity.price && (
-                      <div className="detail-row">
-                        <span className="detail-label">Cost:</span>
-                        <span>{activity.price}</span>
-                      </div>
+                      <span className="meta-badge price">{activity.price}</span>
                     )}
-                    {activity.rating && (
-                      <div className="detail-row">
-                        <span className="detail-label">Rating:</span>
-                        <span>{activity.rating}</span>
-                      </div>
+                  </div>
+                </div>
+
+                {showExpandedDetails && (
+                  <div className="item-rich-details">
+                    {activity.description && (
+                      <p className="item-description">{activity.description}</p>
                     )}
-                    {activity.tags && activity.tags.length > 0 && (
-                      <div className="detail-row">
-                        <span className="detail-label">Tags:</span>
-                        <span className="item-tags">
-                          {activity.tags.join(", ")}
+
+                    {/* Key info row */}
+                    <div className="item-meta-row">
+                      {activity.duration && (
+                        <span className="meta-chip">
+                          <span className="meta-icon">⏱</span>
+                          {formatHours(activity.duration)}
                         </span>
+                      )}
+                      {activity.waitTime && (
+                        <span className="meta-chip wait">
+                          <span className="meta-icon">⏳</span>
+                          {activity.waitTime}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Must try callout */}
+                    {activity.mustTry && (
+                      <div className="item-callout must-try">
+                        <span className="callout-label">🍽 Must Try:</span>
+                        <span>{activity.mustTry}</span>
+                      </div>
+                    )}
+
+                    {/* Highlights */}
+                    {activity.highlights && activity.highlights.length > 0 && (
+                      <div className="item-highlights">
+                        <span className="highlights-label">✨ Highlights:</span>
+                        <ul>
+                          {activity.highlights.slice(0, 3).map((h, i) => (
+                            <li key={i}>{h}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Pro tip */}
+                    {activity.tip && (
+                      <div className="item-callout tip">
+                        <span className="callout-label">💡 Tip:</span>
+                        <span>{activity.tip}</span>
+                      </div>
+                    )}
+
+                    {/* Mom quote */}
+                    {activity.momQuote && (
+                      <blockquote className="item-mom-quote">
+                        "{activity.momQuote}"
+                      </blockquote>
+                    )}
+
+                    {/* Photo spot */}
+                    {activity.photoSpot && (
+                      <div className="item-photo-spot">
+                        <span className="meta-icon">📸</span>
+                        <span>{activity.photoSpot}</span>
+                      </div>
+                    )}
+
+                    {/* Tags */}
+                    {activity.tags && activity.tags.length > 0 && (
+                      <div className="item-tags-row">
+                        {activity.tags.map((tag) => (
+                          <span key={tag} className="tag-pill">{tag}</span>
+                        ))}
                       </div>
                     )}
                   </div>
                 )}
+
                 <div className="item-actions">
                   <button
                     className="add-btn"
@@ -465,7 +514,7 @@ export default function CatalogPanel({
                     title={`Add to Day ${selectedDay?.dayNumber}`}
                     type="button"
                   >
-                    Add
+                    + Add
                   </button>
                   {!showExpandedDetails && (
                     <button
