@@ -126,7 +126,8 @@ export default function TripBuilderView({
 
   const filteredCatalog = useMemo(() => {
     let results = activityCatalog.filter(
-      (activity) => activity.category !== "city"
+      (activity) =>
+        activity.category !== "city" && activity.category !== "lodging"
     );
 
     if (catalogFilter !== "all") {

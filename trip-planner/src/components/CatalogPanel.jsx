@@ -351,7 +351,12 @@ export default function CatalogPanel({
               All
             </button>
             {Object.values(categories)
-              .filter((cat) => cat.id !== "city" && cat.id !== "custom")
+              .filter(
+                (cat) =>
+                  cat.id !== "city" &&
+                  cat.id !== "custom" &&
+                  cat.id !== "lodging"
+              )
               .map((cat) => (
                 <button
                   key={cat.id}
