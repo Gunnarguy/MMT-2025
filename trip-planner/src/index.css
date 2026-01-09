@@ -37,10 +37,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   /* Ensure proper mobile viewport behavior */
   -webkit-text-size-adjust: 100%;
-  
+
   /* 10x Mobile UX Variables */
   --touch-target-min: 44px;
   --mobile-spacing-xs: 0.35rem;
@@ -82,7 +82,7 @@ body {
 }
 
 /* Global touch-friendly button/interactive resets */
-button, 
+button,
 [role="button"],
 input[type="submit"],
 input[type="button"] {
