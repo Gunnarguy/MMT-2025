@@ -1058,7 +1058,7 @@
     align-self: flex-start;
   max-height: clamp(520px, 78vh, 860px);
   }
-
+  
   .map-resize-handle {
     position: absolute;
     top: 0;
@@ -1070,11 +1070,11 @@
     background: transparent;
     transition: background 0.2s ease;
   }
-
+  
   .map-resize-handle:hover {
     background: var(--mist-100);
   }
-
+  
   .map-resize-handle::after {
     content: '';
     position: absolute;
@@ -1088,7 +1088,7 @@
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-
+  
   .map-resize-handle:hover::after {
     opacity: 1;
 }
@@ -1168,13 +1168,13 @@
 .map-controls {
     flex-wrap: wrap;
     }
-
+    
     .map-controls.expanded {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 0.6rem;
     }
-
+    
     .map-controls.expanded .cost-input,
     .map-controls.expanded .style-select,
     .map-controls.expanded .btn-primary,

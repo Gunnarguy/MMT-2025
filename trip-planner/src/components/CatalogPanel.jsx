@@ -17,6 +17,65 @@ function normalizePlaceLocation(displayName) {
   return parts.slice(1).join(", ");
 }
 
+function resolveHitStateAbbr(hit) {
+  const stateCode = String(hit?.address?.state_code || "")
+    .toUpperCase()
+    .trim();
+  if (stateCode) return stateCode;
+
+  const maybeIso = String(hit?.address?.ISO3166_2_lvl4 || "")
+    .toUpperCase()
+    .trim();
+  const isoState = maybeIso.startsWith("US-") ? maybeIso.slice(3) : "";
+  if (isoState) return isoState;
+
+  const displayUpper = String(hit?.display_name || "").toUpperCase();
+  const displayMatch = displayUpper.match(/,\s*([A-Z]{2})\s*(,|$)/);
+  return displayMatch?.[1] || "";
+}
+
+function buildNortheastViewbox(allowedStatesUpper) {
+  const allowed = Array.isArray(allowedStatesUpper) ? allowedStatesUpper : [];
+  const set = new Set(allowed);
+  const NE = ["ME", "NH", "VT", "MA", "CT", "RI", "NY"]; // bias toward trip area
+  const hasNE = NE.some((abbr) => set.has(abbr));
+  if (!hasNE) return null;
+
+  // lon_left, lat_top, lon_right, lat_bottom
+  return {
+    left: -73.8,
+    top: 47.6,
+    right: -66.8,
+    bottom: 40.9,
+  };
+}
+
+function haversineKm(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return null;
+  const lat1 = Number(a[0]);
+  const lon1 = Number(a[1]);
+  const lat2 = Number(b[0]);
+  const lon2 = Number(b[1]);
+  if (
+    !Number.isFinite(lat1) ||
+    !Number.isFinite(lon1) ||
+    !Number.isFinite(lat2) ||
+    !Number.isFinite(lon2)
+  ) {
+    return null;
+  }
+  const R = 6371;
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const s1 = Math.sin(dLat / 2);
+  const s2 = Math.sin(dLon / 2);
+  const c1 = Math.cos(toRad(lat1));
+  const c2 = Math.cos(toRad(lat2));
+  const h = s1 * s1 + c1 * c2 * s2 * s2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
 export default function CatalogPanel({
   searchMode,
   onModeChange,
@@ -35,6 +94,8 @@ export default function CatalogPanel({
   customActivities,
   onQuickAddCustomPlace,
   allowedStateAbbrs,
+  allowCanadaPlaces,
+  placeSearchCenter,
   onDeleteCustom,
 }) {
   const customList = Object.values(customActivities || {});
@@ -125,16 +186,6 @@ export default function CatalogPanel({
 
     const timer = window.setTimeout(async () => {
       try {
-        const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&countrycodes=us&limit=10&q=${encodeURIComponent(
-          q
-        )}&email=${encodeURIComponent("mmt-trip-planner@example.com")}`;
-        const res = await fetch(url, { signal: controller.signal });
-        if (!res.ok) {
-          setPlaceResults([]);
-          return;
-        }
-        const data = await res.json();
-
         const allowed = Array.isArray(allowedStateAbbrs)
           ? allowedStateAbbrs
               .map((s) =>
@@ -146,6 +197,27 @@ export default function CatalogPanel({
           : [];
         const allowedSet = new Set(allowed);
 
+        const viewbox = buildNortheastViewbox(allowed);
+        const viewboxParam = viewbox
+          ? `&viewbox=${encodeURIComponent(
+              `${viewbox.left},${viewbox.top},${viewbox.right},${viewbox.bottom}`
+            )}`
+          : "";
+
+        const countryCodes = allowCanadaPlaces ? "us,ca" : "us";
+
+        const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&countrycodes=${encodeURIComponent(
+          countryCodes
+        )}&limit=10${viewboxParam}&q=${encodeURIComponent(
+          q
+        )}&email=${encodeURIComponent("mmt-trip-planner@example.com")}`;
+        const res = await fetch(url, { signal: controller.signal });
+        if (!res.ok) {
+          setPlaceResults([]);
+          return;
+        }
+        const data = await res.json();
+
         const normalized = Array.isArray(data)
           ? data
               .map((hit) => {
@@ -153,47 +225,57 @@ export default function CatalogPanel({
                 const lon = Number(hit?.lon);
                 if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
 
-                // US-only is already requested, but keep a defensive check.
+                // US-only is usually requested; allow CA only when enabled.
                 const countryCode = String(hit?.address?.country_code || "")
                   .toLowerCase()
                   .trim();
-                if (countryCode && countryCode !== "us") return null;
-
-                // If we have allowed states, filter by address.state_code/state.
-                if (allowedSet.size > 0) {
-                  const stateCode = String(hit?.address?.state_code || "")
-                    .toUpperCase()
-                    .trim();
-                  const maybeIso = String(hit?.address?.ISO3166_2_lvl4 || "")
-                    .toUpperCase()
-                    .trim();
-                  const isoState = maybeIso.startsWith("US-")
-                    ? maybeIso.slice(3)
-                    : "";
-
-                  const displayUpper = String(
-                    hit?.display_name || ""
-                  ).toUpperCase();
-                  const displayMatch = displayUpper.match(
-                    /,\s*([A-Z]{2})\s*(,|$)/
-                  );
-                  const displayState = displayMatch?.[1] || "";
-
-                  const resolvedState = stateCode || isoState || displayState;
-                  if (!resolvedState || !allowedSet.has(resolvedState))
+                if (countryCode) {
+                  if (countryCode === "us") {
+                    // ok
+                  } else if (allowCanadaPlaces && countryCode === "ca") {
+                    // ok
+                  } else {
                     return null;
+                  }
                 }
+
+                const resolvedState = resolveHitStateAbbr(hit);
 
                 return {
                   id: String(hit?.place_id || `${lat},${lon}`),
                   displayName: String(hit?.display_name || ""),
                   coordinates: [lat, lon],
+                  stateAbbr: resolvedState,
                 };
               })
               .filter(Boolean)
           : [];
 
-        setPlaceResults(normalized.slice(0, 6));
+        const ranked = [...normalized]
+          .map((r, idx) => {
+            const inAllowed =
+              allowedSet.size > 0 && r.stateAbbr
+                ? allowedSet.has(r.stateAbbr)
+                : false;
+            const distKm = placeSearchCenter
+              ? haversineKm(placeSearchCenter, r.coordinates)
+              : null;
+            return { ...r, _idx: idx, _inAllowed: inAllowed, _distKm: distKm };
+          })
+          .sort((a, b) => {
+            // 1) Prefer inferred trip states first
+            if (a._inAllowed !== b._inAllowed) return a._inAllowed ? -1 : 1;
+            // 2) Then prefer nearer to the selected day / trip area
+            const ad = a._distKm;
+            const bd = b._distKm;
+            if (ad != null && bd != null && ad !== bd) return ad - bd;
+            if (ad != null && bd == null) return -1;
+            if (ad == null && bd != null) return 1;
+            // 3) Fall back to original order
+            return a._idx - b._idx;
+          });
+
+        setPlaceResults(ranked.slice(0, 6));
       } catch (e) {
         if (e?.name !== "AbortError") {
           setPlaceResults([]);

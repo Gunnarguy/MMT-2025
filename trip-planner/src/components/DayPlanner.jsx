@@ -70,7 +70,6 @@ export default function DayPlanner({
   onReorderActivities,
   onRemoveActivity,
   onOpenDetails,
-  lodgingOptions,
 }) {
   return (
     <section className="trip-builder">
@@ -135,34 +134,16 @@ export default function DayPlanner({
           </div>
 
           <label className="field">
-            Where are you staying?
+            Day location (optional)
             <input
               type="text"
               value={selectedDay.location}
               onChange={(e) =>
                 onUpdateDay(selectedDay.id, { location: e.target.value })
               }
-              placeholder="Base location for the day"
+              placeholder="City / area (e.g., Portland, ME)"
               className="location-input"
             />
-          </label>
-
-          <label className="field">
-            Lodging (optional)
-            <select
-              value={selectedDay.lodging || ""}
-              onChange={(e) =>
-                onUpdateDay(selectedDay.id, { lodging: e.target.value || null })
-              }
-              className="lodging-select"
-            >
-              <option value="">Select lodging</option>
-              {lodgingOptions.map((lodging) => (
-                <option key={lodging.id} value={lodging.id}>
-                  {lodging.name} - {lodging.location}
-                </option>
-              ))}
-            </select>
           </label>
 
           <textarea

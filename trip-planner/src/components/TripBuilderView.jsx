@@ -99,6 +99,26 @@ export default function TripBuilderView({
     return expandWithNeighborStates(Array.from(mentioned));
   }, [trip?.startLocation, trip?.endLocation, trip?.days, customActivities]);
 
+  const allowCanadaPlaces = useMemo(() => {
+    const texts = [];
+    if (trip?.startLocation) texts.push(trip.startLocation);
+    if (trip?.endLocation) texts.push(trip.endLocation);
+    (trip?.days || []).forEach((day) => {
+      if (day?.location) texts.push(day.location);
+      if (day?.label) texts.push(day.label);
+      if (day?.notes) texts.push(day.notes);
+    });
+    const haystack = texts.join(" ").toLowerCase();
+    return (
+      haystack.includes("canada") ||
+      haystack.includes("montreal") ||
+      haystack.includes("québec") ||
+      haystack.includes("quebec") ||
+      haystack.includes(" qc") ||
+      haystack.includes(",qc")
+    );
+  }, [trip?.startLocation, trip?.endLocation, trip?.days]);
+
   const selectedDayActivityIds = useMemo(
     () => selectedDay?.activities || [],
     [selectedDay]
@@ -479,6 +499,24 @@ export default function TripBuilderView({
     getActivityWaypoints,
   ]);
 
+  const customPlaceSearchCenter = useMemo(() => {
+    if (!selectedDayBounds || selectedDayBounds.length === 0) return null;
+    let latSum = 0;
+    let lonSum = 0;
+    let count = 0;
+    selectedDayBounds.forEach((pt) => {
+      if (!Array.isArray(pt) || pt.length < 2) return;
+      const lat = Number(pt[0]);
+      const lon = Number(pt[1]);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+      latSum += lat;
+      lonSum += lon;
+      count += 1;
+    });
+    if (count === 0) return null;
+    return [latSum / count, lonSum / count];
+  }, [selectedDayBounds]);
+
   const googleMapsUrl = useMemo(() => {
     if (!selectedDay) return null;
 
@@ -549,11 +587,6 @@ export default function TripBuilderView({
   const dayLoad =
     dayLoadHours > 0 ? `Est. ${formatHours(dayLoadHours)}` : "No timing yet";
 
-  const lodgingOptions = useMemo(
-    () => activityCatalog.filter((activity) => activity.category === "lodging"),
-    []
-  );
-
   return (
     <div className="builder-layout">
       <CatalogPanel
@@ -574,6 +607,8 @@ export default function TripBuilderView({
         customActivities={customActivities}
         onQuickAddCustomPlace={handleQuickAddCustomPlace}
         allowedStateAbbrs={allowedPlaceStateAbbrs}
+        allowCanadaPlaces={allowCanadaPlaces}
+        placeSearchCenter={customPlaceSearchCenter}
         onDeleteCustom={handleDeleteCustom}
       />
 
@@ -614,7 +649,6 @@ export default function TripBuilderView({
             onReorderActivities={reorderDayActivities}
             onRemoveActivity={removeActivityFromDay}
             onOpenDetails={setDetailActivity}
-            lodgingOptions={lodgingOptions}
           />
         ) : (
           <DayBoard
