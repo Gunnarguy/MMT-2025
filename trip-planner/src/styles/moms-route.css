@@ -25,7 +25,7 @@
   padding: 2rem;
   border-radius: 28px;
   background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2)),
-    linear-gradient(135deg, #f2b95d 0%, #f08a4a 45%, #d55d2a 100%);
+    linear-gradient(135deg, #c4b5fd 0%, #a78bfa 45%, #8b5cf6 100%);
   color: #fff;
   box-shadow: 0 30px 60px rgba(213, 93, 42, 0.25);
   position: relative;
@@ -168,7 +168,7 @@
 }
 
 .featured-card {
-  background: linear-gradient(135deg, #fff2e0 0%, #fff 70%);
+  background: linear-gradient(135deg, #f5f3ff 0%, #fff 70%);
   border-radius: 18px;
   padding: 1.2rem;
   box-shadow: var(--shadow-card);
@@ -380,7 +380,7 @@
 }
 
 .alt-panel {
-  background: linear-gradient(135deg, #fff2e0, #ffffff);
+  background: linear-gradient(135deg, #f5f3ff, #ffffff);
 }
 
 .alt-grid {
@@ -414,7 +414,7 @@
   text-align: center;
   padding: 2rem;
   border-radius: 24px;
-  background: linear-gradient(135deg, #f8f4ef, #ffffff);
+  background: linear-gradient(135deg, #faf8ff, #ffffff);
   box-shadow: var(--shadow-card);
 }
 
