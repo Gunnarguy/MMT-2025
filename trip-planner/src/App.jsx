@@ -34,6 +34,7 @@ export default function App() {
   const [activeView, setActiveView] = useState(() => (savedTrip ? 'builder' : 'moms'));
   const [customActivities, setCustomActivities] = useState(() => loadCustomActivities(CUSTOM_ACTIVITIES_KEY));
   const [customTemplates, setCustomTemplates] = useState(() => loadCustomTemplates(CUSTOM_TEMPLATES_KEY));
+  const [syncStatus, setSyncStatus] = useState(supabaseEnabled ? 'syncing' : 'offline');
 
   const templates = useMemo(() => mergeTemplates(routeTemplates, customTemplates), [customTemplates]);
 
@@ -54,16 +55,14 @@ export default function App() {
   const clientId = useMemo(() => getClientId(CLIENT_ID_KEY), []);
   const [remoteReady, setRemoteReady] = useState(false);
   const initialTripRef = useRef(trip);
+  const initialCustomActivitiesRef = useRef(customActivities);
 
   useEffect(() => {
     if (!remoteReady) {
       initialTripRef.current = trip;
+      initialCustomActivitiesRef.current = customActivities;
     }
-  }, [trip, remoteReady]);
-
-  useEffect(() => {
-    saveCustomActivities(CUSTOM_ACTIVITIES_KEY, customActivities);
-  }, [customActivities]);
+  }, [trip, customActivities, remoteReady]);
 
   useEffect(() => {
     saveCustomTemplates(CUSTOM_TEMPLATES_KEY, customTemplates);
@@ -86,26 +85,53 @@ export default function App() {
       }
 
       const remoteTrip = data?.state?.trip;
+      const remoteCustomActivities = data?.state?.customActivities;
+      
       if (isValidTripState(remoteTrip) && remoteTrip.days.length) {
         setTrip(remoteTrip);
-      } else {
+      }
+      
+      // Load custom activities from remote if they exist
+      if (remoteCustomActivities && typeof remoteCustomActivities === 'object') {
+        setCustomActivities(prev => ({ ...prev, ...remoteCustomActivities }));
+      }
+      
+      // If no remote state, push current local state
+      if (!data?.state?.initialized) {
         await upsertSharedTripState(
-          { initialized: true, trip: initialTripRef.current, updatedBy: clientId, updatedAt: Date.now() },
+          { 
+            initialized: true, 
+            trip: initialTripRef.current, 
+            customActivities: initialCustomActivitiesRef.current,
+            updatedBy: clientId, 
+            updatedAt: Date.now() 
+          },
           SHARED_TRIP_ID
         );
       }
 
       subscription = subscribeToSharedTrip(SHARED_TRIP_ID, (payload) => {
         const next = payload?.new?.state;
-        const nextTrip = next?.trip;
-        if (!isValidTripState(nextTrip) || !nextTrip.days.length) return;
+        if (!next) return;
         if (next?.updatedBy && next.updatedBy === clientId) return;
 
-        setTrip(nextTrip);
-        saveTrip(STORAGE_KEY, nextTrip);
+        // Sync trip
+        const nextTrip = next?.trip;
+        if (isValidTripState(nextTrip) && nextTrip.days.length) {
+          setTrip(nextTrip);
+          saveTrip(STORAGE_KEY, nextTrip);
+        }
+        
+        // Sync custom activities
+        const nextCustomActivities = next?.customActivities;
+        if (nextCustomActivities && typeof nextCustomActivities === 'object') {
+          setCustomActivities(nextCustomActivities);
+          saveCustomActivities(CUSTOM_ACTIVITIES_KEY, nextCustomActivities);
+        }
       });
 
       setRemoteReady(true);
+      setSyncStatus('synced');
     }
 
     bootstrapFromSupabase();
@@ -116,22 +142,35 @@ export default function App() {
     };
   }, [clientId]);
 
+  // Sync trip AND customActivities to Supabase whenever either changes
   useEffect(() => {
     saveTrip(STORAGE_KEY, trip);
+    saveCustomActivities(CUSTOM_ACTIVITIES_KEY, customActivities);
 
     if (!supabaseEnabled || !remoteReady) return;
 
+    setSyncStatus('syncing');
+
     const t = setTimeout(() => {
       upsertSharedTripState(
-        { initialized: true, trip, updatedBy: clientId, updatedAt: Date.now() },
+        { 
+          initialized: true, 
+          trip, 
+          customActivities,
+          updatedBy: clientId, 
+          updatedAt: Date.now() 
+        },
         SHARED_TRIP_ID
-      ).catch((e) => {
+      ).then(() => {
+        setSyncStatus('synced');
+      }).catch((e) => {
         console.warn('Supabase upsert shared trip failed:', e);
+        setSyncStatus('offline');
       });
     }, 600);
 
     return () => clearTimeout(t);
-  }, [trip, remoteReady, clientId]);
+  }, [trip, customActivities, remoteReady, clientId]);
 
   const handleLoadTemplate = (templateId) => {
     const template = templates.find((item) => item.id === templateId);
@@ -164,6 +203,7 @@ export default function App() {
           setActiveView('builder');
         }}
         onSaveTemplate={handleSaveTemplate}
+        syncStatus={syncStatus}
       />
 
       <main className="main">

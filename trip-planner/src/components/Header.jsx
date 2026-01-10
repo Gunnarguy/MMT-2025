@@ -5,7 +5,8 @@ export default function Header({
   templates,
   selectedTemplateId,
   onLoadTemplate,
-  onSaveTemplate
+  onSaveTemplate,
+  syncStatus
 }) {
   return (
     <header className="header">
@@ -13,6 +14,17 @@ export default function Header({
         <div className="brand-title">
           <h1>MMT 2025</h1>
           <span className="tagline">Girls Trip to New England</span>
+          {syncStatus && (
+            <span className={`sync-badge ${syncStatus}`} title={
+              syncStatus === 'synced' ? 'All changes saved to cloud' :
+              syncStatus === 'syncing' ? 'Syncing changes...' :
+              syncStatus === 'offline' ? 'Working offline' : ''
+            }>
+              {syncStatus === 'synced' && '☁️ Synced'}
+              {syncStatus === 'syncing' && '⏳ Syncing...'}
+              {syncStatus === 'offline' && '📴 Offline'}
+            </span>
+          )}
         </div>
         <p className="brand-subtitle">Plan, remix, and build the trip that feels perfect.</p>
       </div>
