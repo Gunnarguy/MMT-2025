@@ -1783,6 +1783,26 @@
   gap: 0.6rem;
 }
 
+.board-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.column-drag-handle {
+  appearance: none;
+  border: 1px solid rgba(27, 36, 48, 0.18);
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.15rem 0.4rem;
+  line-height: 1;
+  color: var(--ink-500);
+  cursor: grab;
+}
+
+.column-drag-handle:active {
+  cursor: grabbing;
+}
 .board-column-header h4 {
   margin: 0;
 }

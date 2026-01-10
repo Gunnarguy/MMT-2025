@@ -1,31 +1,59 @@
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { categories } from '../data/catalog';
+import {
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { categories } from "../data/catalog";
 import { formatDuration, formatMiles } from "../utils/formatters";
 
 const dayTypes = [
-  { value: 'arrival', label: 'Arrival' },
-  { value: 'drive', label: 'Drive day' },
-  { value: 'explore', label: 'Explore' },
-  { value: 'relaxed', label: 'Relaxed' },
-  { value: 'departure', label: 'Departure' },
-  { value: 'custom', label: 'Custom' }
+  { value: "arrival", label: "Arrival" },
+  { value: "drive", label: "Drive day" },
+  { value: "explore", label: "Explore" },
+  { value: "relaxed", label: "Relaxed" },
+  { value: "departure", label: "Departure" },
+  { value: "custom", label: "Custom" },
 ];
 
-function SortableActivityCard({ activity, index, dayId, onRemove, onOpenDetails }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: activity.id
+function SortableActivityCard({
+  activity,
+  index,
+  dayId,
+  onRemove,
+  onOpenDetails,
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: activity.id,
   });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.6 : 1
+    opacity: isDragging ? 0.6 : 1,
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={`activity-card ${activity.isCustom ? 'custom' : ''}`}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`activity-card ${activity.isCustom ? "custom" : ""}`}
+    >
       <span className="activity-order">{index + 1}</span>
       <button
         className="drag-handle"
@@ -36,8 +64,14 @@ function SortableActivityCard({ activity, index, dayId, onRemove, onOpenDetails 
       >
         ::
       </button>
-      <button type="button" className="activity-main" onClick={() => onOpenDetails(activity)}>
-        <span className="activity-icon">{categories[activity.category]?.icon ?? '*'}</span>
+      <button
+        type="button"
+        className="activity-main"
+        onClick={() => onOpenDetails(activity)}
+      >
+        <span className="activity-icon">
+          {categories[activity.category]?.icon ?? "*"}
+        </span>
         <div className="activity-info">
           <strong>
             {activity.name}
@@ -46,10 +80,50 @@ function SortableActivityCard({ activity, index, dayId, onRemove, onOpenDetails 
           <small>{activity.location}</small>
         </div>
       </button>
-      <button className="remove-btn" onClick={() => onRemove(dayId, activity.id)} type="button">
+      <button
+        className="remove-btn"
+        onClick={() => onRemove(dayId, activity.id)}
+        type="button"
+      >
         x
       </button>
     </div>
+  );
+}
+
+function SortableDayTab({ day, isActive, onSelect }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: day.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.75 : 1,
+  };
+
+  return (
+    <button
+      ref={setNodeRef}
+      style={style}
+      className={`day-tab ${isActive ? "active" : ""}`}
+      onClick={() => onSelect(day.id)}
+      type="button"
+      {...attributes}
+      {...listeners}
+      aria-label={`Day ${day.dayNumber}: drag to reorder`}
+    >
+      <span className="day-num">D{day.dayNumber}</span>
+      <span className="day-loc">{day.location || "..."}</span>
+      <span className="day-count">{day.activities.length}</span>
+    </button>
   );
 }
 
@@ -63,6 +137,7 @@ export default function DayPlanner({
   dayLoad,
   dayLoadLabel,
   onSelectDay,
+  onReorderDays,
   onAddDay,
   onRemoveDay,
   onDuplicateDay,
@@ -71,25 +146,39 @@ export default function DayPlanner({
   onRemoveActivity,
   onOpenDetails,
 }) {
+  const dayTabSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  );
+
   return (
     <section className="trip-builder">
-      <div className="day-tabs">
-        {trip.days.map((day) => (
-          <button
-            key={day.id}
-            className={`day-tab ${day.id === selectedDayId ? "active" : ""}`}
-            onClick={() => onSelectDay(day.id)}
-            type="button"
+      <DndContext
+        sensors={dayTabSensors}
+        collisionDetection={closestCenter}
+        onDragEnd={({ active, over }) => {
+          if (!over || active.id === over.id) return;
+          onReorderDays?.(active.id, over.id);
+        }}
+      >
+        <div className="day-tabs">
+          <SortableContext
+            items={trip.days.map((d) => d.id)}
+            strategy={horizontalListSortingStrategy}
           >
-            <span className="day-num">D{day.dayNumber}</span>
-            <span className="day-loc">{day.location || "..."}</span>
-            <span className="day-count">{day.activities.length}</span>
+            {trip.days.map((day) => (
+              <SortableDayTab
+                key={day.id}
+                day={day}
+                isActive={day.id === selectedDayId}
+                onSelect={onSelectDay}
+              />
+            ))}
+          </SortableContext>
+          <button className="add-day-btn" onClick={onAddDay} type="button">
+            +
           </button>
-        ))}
-        <button className="add-day-btn" onClick={onAddDay} type="button">
-          +
-        </button>
-      </div>
+        </div>
+      </DndContext>
 
       {selectedDay && (
         <div className="day-content">

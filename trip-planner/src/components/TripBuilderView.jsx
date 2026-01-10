@@ -318,6 +318,25 @@ export default function TripBuilderView({
     [trip.days.length, setTrip]
   );
 
+  const reorderDays = useCallback(
+    (activeDayId, overDayId) => {
+      if (!activeDayId || !overDayId || activeDayId === overDayId) return;
+      setTrip((prev) => {
+        const oldIndex = prev.days.findIndex((day) => day.id === activeDayId);
+        const newIndex = prev.days.findIndex((day) => day.id === overDayId);
+        if (oldIndex < 0 || newIndex < 0) return prev;
+
+        const moved = arrayMove(prev.days, oldIndex, newIndex);
+        const renumbered = moved.map((day, i) => ({
+          ...day,
+          dayNumber: i + 1,
+        }));
+        return { ...prev, days: renumbered };
+      });
+    },
+    [setTrip]
+  );
+
   const duplicateDay = useCallback(
     (dayId) => {
       setTrip((prev) => {
@@ -717,6 +736,7 @@ export default function TripBuilderView({
             dayLoad={dayLoad}
             dayLoadLabel={dayLoadLabel}
             onSelectDay={setSelectedDayId}
+            onReorderDays={reorderDays}
             onAddDay={addDay}
             onRemoveDay={removeDay}
             onDuplicateDay={duplicateDay}
