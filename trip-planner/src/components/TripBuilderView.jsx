@@ -12,6 +12,7 @@ import {
 } from "../utils/usStates";
 import ActivityDetailModal from "./ActivityDetailModal";
 import CatalogPanel from "./CatalogPanel";
+import CustomPlaceModal from "./CustomPlaceModal";
 import DayBoard from "./DayBoard";
 import DayPlanner from "./DayPlanner";
 import MapPanel from "./MapPanel";
@@ -33,6 +34,7 @@ export default function TripBuilderView({
   const [searchQuery, setSearchQuery] = useState("");
   const [showMomOnly, setShowMomOnly] = useState(false);
   const [detailActivity, setDetailActivity] = useState(null);
+  const [editingActivity, setEditingActivity] = useState(null);
   const [plannerView, setPlannerView] = useState("day");
 
   const [costPerMile, setCostPerMile] = useState(() => {
@@ -403,6 +405,57 @@ export default function TripBuilderView({
     [detailActivity, setCustomActivities, setTrip]
   );
 
+  // Handle editing an activity (custom or private catalog item)
+  const handleEditActivity = useCallback((activity) => {
+    setEditingActivity(activity);
+    setDetailActivity(null); // Close detail modal while editing
+  }, []);
+
+  // Save edited activity (merges into customActivities for private items)
+  const handleSaveEditedActivity = useCallback(
+    (formData) => {
+      const originalActivity = editingActivity;
+      if (!originalActivity) return;
+
+      // For catalog items with private flag, we store a custom override
+      const activityId = originalActivity.isCustom
+        ? originalActivity.id
+        : `custom-${originalActivity.id}`;
+
+      const updatedActivity = {
+        ...originalActivity,
+        ...formData,
+        id: activityId,
+        isCustom: true,
+        // Keep original catalog data we want to preserve
+        momMentioned: originalActivity.momMentioned,
+        momQuote: originalActivity.momQuote,
+        private: originalActivity.private,
+      };
+
+      setCustomActivities((prev) => ({
+        ...prev,
+        [activityId]: updatedActivity,
+      }));
+
+      // If this was a catalog item, replace references in trip days
+      if (!originalActivity.isCustom && originalActivity.id !== activityId) {
+        setTrip((prev) => ({
+          ...prev,
+          days: prev.days.map((day) => ({
+            ...day,
+            activities: day.activities.map((id) =>
+              id === originalActivity.id ? activityId : id
+            ),
+          })),
+        }));
+      }
+
+      setEditingActivity(null);
+    },
+    [editingActivity, setCustomActivities, setTrip]
+  );
+
   const getActivityWaypoints = useCallback(
     (day) => {
       return (day?.activities || [])
@@ -687,8 +740,19 @@ export default function TripBuilderView({
           onClose={() => setDetailActivity(null)}
           onAddToDay={addActivityToDay}
           onRemoveFromDay={removeActivityFromDay}
-          onEditCustom={() => {}}
+          onEditCustom={handleEditActivity}
           onDeleteCustom={handleDeleteCustom}
+        />
+      )}
+
+      {editingActivity && (
+        <CustomPlaceModal
+          isOpen={true}
+          onClose={() => setEditingActivity(null)}
+          onSave={handleSaveEditedActivity}
+          initialData={editingActivity}
+          days={trip.days}
+          defaultDayId={selectedDayId}
         />
       )}
     </div>

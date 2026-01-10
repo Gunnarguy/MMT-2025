@@ -64,9 +64,7 @@ export default function ActivityDetailModal({
               {activity.momMentioned && (
                 <span className="badge-mom">❤️ Mom Approved</span>
               )}
-              {isPrivate && (
-                <span className="badge-private">🏠 Private</span>
-              )}
+              {isPrivate && <span className="badge-private">🏠 Private</span>}
             </div>
             <h2>
               {category?.icon} {activity.name}
@@ -250,26 +248,28 @@ export default function ActivityDetailModal({
             </button>
           )}
 
-          {activity.isCustom && (
-            <div className="custom-actions">
-              {typeof onEditCustom === "function" && (
+          {/* Edit button for custom OR private activities */}
+          {(activity.isCustom || activity.private) &&
+            typeof onEditCustom === "function" && (
+              <div className="custom-actions">
                 <button
                   type="button"
                   className="btn-outline"
                   onClick={() => onEditCustom(activity)}
                 >
-                  Edit
+                  ✏️ Edit Details
                 </button>
-              )}
-              <button
-                type="button"
-                className="btn-danger"
-                onClick={() => onDeleteCustom(activity)}
-              >
-                Delete
-              </button>
-            </div>
-          )}
+                {activity.isCustom && (
+                  <button
+                    type="button"
+                    className="btn-danger"
+                    onClick={() => onDeleteCustom(activity)}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            )}
         </div>
       </div>
     </div>
