@@ -8,75 +8,75 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 export const categories = {
   lobster: {
-    id: 'lobster',
-    name: 'Lobster Spots',
-    icon: '🦞',
-    color: '#e74c3c',
-    description: 'The best lobster rolls and seafood shacks'
+    id: "lobster",
+    name: "Lobster Spots",
+    icon: "🦞",
+    color: "#c084fc",
+    description: "The best lobster rolls and seafood shacks",
   },
   town: {
-    id: 'town',
-    name: 'Harbor Towns',
-    icon: '⚓',
-    color: '#1abc9c',
-    description: 'Charming coastal villages to explore'
+    id: "town",
+    name: "Harbor Towns",
+    icon: "⚓",
+    color: "#a78bfa",
+    description: "Charming coastal villages to explore",
   },
   hike: {
-    id: 'hike',
-    name: 'Hikes & Nature',
-    icon: '🥾',
-    color: '#27ae60',
-    description: 'Trails, waterfalls, and outdoor adventures'
+    id: "hike",
+    name: "Hikes & Nature",
+    icon: "🥾",
+    color: "#8b5cf6",
+    description: "Trails, waterfalls, and outdoor adventures",
   },
   drive: {
-    id: 'drive',
-    name: 'Scenic Drives',
-    icon: '🚗',
-    color: '#9b59b6',
-    description: 'Beautiful routes through mountains and coast'
+    id: "drive",
+    name: "Scenic Drives",
+    icon: "🚗",
+    color: "#7c3aed",
+    description: "Beautiful routes through mountains and coast",
   },
   foliage: {
-    id: 'foliage',
-    name: 'Foliage Spots',
-    icon: '🍁',
-    color: '#e67e22',
-    description: 'Best fall color viewing locations'
+    id: "foliage",
+    name: "Foliage Spots",
+    icon: "🍁",
+    color: "#6d28d9",
+    description: "Best fall color viewing locations",
   },
   city: {
-    id: 'city',
-    name: 'Cities',
-    icon: '🏙️',
-    color: '#34495e',
-    description: 'Major city destinations'
+    id: "city",
+    name: "Cities",
+    icon: "🏙️",
+    color: "#5b21b6",
+    description: "Major city destinations",
   },
   food: {
-    id: 'food',
-    name: 'Food & Dining',
-    icon: '🍽️',
-    color: '#f39c12',
-    description: 'Restaurants, cafes, and food experiences'
+    id: "food",
+    name: "Food & Dining",
+    icon: "🍽️",
+    color: "#a855f7",
+    description: "Restaurants, cafes, and food experiences",
   },
   landmark: {
-    id: 'landmark',
-    name: 'Landmarks',
-    icon: '📸',
-    color: '#3498db',
-    description: 'Must-see attractions and photo spots'
+    id: "landmark",
+    name: "Landmarks",
+    icon: "📸",
+    color: "#9333ea",
+    description: "Must-see attractions and photo spots",
   },
   lodging: {
-    id: 'lodging',
-    name: 'Lodging',
-    icon: '🏨',
-    color: '#8e44ad',
-    description: 'Hotels, B&Bs, and places to stay'
+    id: "lodging",
+    name: "Lodging",
+    icon: "🏨",
+    color: "#7e22ce",
+    description: "Hotels, B&Bs, and places to stay",
   },
   custom: {
-    id: 'custom',
-    name: 'Custom',
-    icon: '⭐',
-    color: '#f1c40f',
-    description: 'Places you add yourself'
-  }
+    id: "custom",
+    name: "Custom",
+    icon: "⭐",
+    color: "#c4b5fd",
+    description: "Places you add yourself",
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════

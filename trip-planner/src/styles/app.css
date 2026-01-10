@@ -97,7 +97,7 @@
 
 .nav-btn.active {
   background: #fff;
-  color: var(--sunset-600);
+  color: var(--sea-600);
   box-shadow: 0 8px 20px rgba(255, 255, 255, 0.35);
 }
 
@@ -139,7 +139,7 @@
 .btn-primary {
   border: none;
   background: #fff;
-  color: var(--sunset-600);
+  color: var(--sea-600);
   font-weight: 700;
   padding: 0.6rem 1.2rem;
   border-radius: 999px;
@@ -327,9 +327,9 @@
 }
 
 .filter-btn.active {
-  background: var(--sunset-500);
+  background: var(--sea-500);
   color: #fff;
-  border-color: var(--sunset-500);
+  border-color: var(--sea-500);
 }
 
 .mom-filter {
@@ -461,8 +461,8 @@
 }
 
 .stat-badge.rating {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  color: #92400e;
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #6d28d9;
 }
 
 .stat-badge.price {
@@ -476,8 +476,8 @@
 }
 
 .stat-badge.wait {
-  background: #fef3c7;
-  color: #92400e;
+  background: #f5f3ff;
+    color: #7c3aed;
 }
 
 /* Collapsed state actions */
@@ -565,8 +565,8 @@
 .exp-note {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #b45309;
-  background: #fffbeb;
+  color: #6d28d9;
+    background: #f5f3ff;
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-sm);
 }
@@ -580,8 +580,8 @@
 }
 
 .exp-callout.must-try {
-  background: linear-gradient(135deg, #fef7ed, #ffedd5);
-  border-left: 2px solid var(--sunset-400);
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+    border-left: 2px solid var(--sea-400);
 }
 
 .exp-callout.tip {
@@ -646,7 +646,7 @@
 }
 
 .exp-link.yelp:hover {
-  background: #fee2e2;
+  background: #ede9fe;
 }
 
 .exp-link.google:hover {
@@ -725,7 +725,7 @@
 
 .add-custom-btn {
   border: none;
-  background: var(--sunset-500);
+  background: var(--sea-500);
   color: #fff;
   padding: 0.5rem 0.9rem;
   border-radius: 999px;
@@ -743,7 +743,7 @@
 .custom-place-form {
   padding: 1rem;
   border-top: 1px solid var(--mist-100);
-  background: linear-gradient(135deg, #f8f4ef 0%, #f0fbf9 100%);
+  background: linear-gradient(135deg, #faf8ff 0%, #f5f3ff 100%);
 }
 
 .custom-place-form h4 {
@@ -981,9 +981,9 @@
 }
 
 .day-tab.active {
-  background: var(--sunset-500);
+  background: var(--sea-500);
   color: #fff;
-  border-color: var(--sunset-500);
+  border-color: var(--sea-500);
 }
 
 .day-num {
@@ -1265,14 +1265,14 @@
 .mom-badge {
   margin-left: 0.35rem;
   font-size: 0.8rem;
-  color: var(--sunset-500);
+  color: var(--sea-500);
 }
 
 .activity-order {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--sunset-500);
+  background: var(--sea-500);
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -1519,7 +1519,7 @@
 }
 
 .board-column.active {
-  border-color: var(--sunset-500);
+  border-color: var(--sea-500);
 }
 
 .board-column-header {
