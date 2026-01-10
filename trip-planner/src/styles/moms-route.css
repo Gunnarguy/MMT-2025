@@ -25,9 +25,9 @@
   padding: 2rem;
   border-radius: 28px;
   background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2)),
-    linear-gradient(135deg, #e0d8f8 0%, #d4c8f5 45%, #c4b5f0 100%);
+    linear-gradient(135deg, #c7abef 0%, #b99ae8 45%, #a88be0 100%);
   color: #fff;
-  box-shadow: 0 30px 60px rgba(213, 93, 42, 0.25);
+  box-shadow: 0 30px 60px rgba(139, 92, 246, 0.2);
   position: relative;
   overflow: hidden;
   animation: riseIn 0.6s ease both;
