@@ -5,76 +5,77 @@
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // CATEGORY DEFINITIONS
+// Colors are mid-tone lavenders for good contrast on white card backgrounds
 // ═══════════════════════════════════════════════════════════════════════════════
 export const categories = {
   lobster: {
     id: "lobster",
     name: "Lobster Spots",
     icon: "🦞",
-    color: "#c4a8f0",
+    color: "#9b7dd4",
     description: "The best lobster rolls and seafood shacks",
   },
   town: {
     id: "town",
     name: "Harbor Towns",
     icon: "⚓",
-    color: "#b89de8",
+    color: "#8b6bba",
     description: "Charming coastal villages to explore",
   },
   hike: {
     id: "hike",
     name: "Hikes & Nature",
     icon: "🥾",
-    color: "#ad92e0",
+    color: "#7b5caa",
     description: "Trails, waterfalls, and outdoor adventures",
   },
   drive: {
     id: "drive",
     name: "Scenic Drives",
     icon: "🚗",
-    color: "#a387d8",
+    color: "#8a6dc2",
     description: "Beautiful routes through mountains and coast",
   },
   foliage: {
     id: "foliage",
     name: "Foliage Spots",
     icon: "🍁",
-    color: "#b094e0",
+    color: "#9878cc",
     description: "Best fall color viewing locations",
   },
   city: {
     id: "city",
     name: "Cities",
     icon: "🏙️",
-    color: "#a68ad8",
+    color: "#7b5caa",
     description: "Major city destinations",
   },
   food: {
     id: "food",
     name: "Food & Dining",
     icon: "🍽️",
-    color: "#bda0e8",
+    color: "#9b7dd4",
     description: "Restaurants, cafes, and food experiences",
   },
   landmark: {
     id: "landmark",
     name: "Landmarks",
     icon: "📸",
-    color: "#b496e0",
+    color: "#8b6bba",
     description: "Must-see attractions and photo spots",
   },
   lodging: {
     id: "lodging",
     name: "Lodging",
     icon: "🏨",
-    color: "#b89ae0",
+    color: "#8a6dc2",
     description: "Hotels, B&Bs, and places to stay",
   },
   custom: {
     id: "custom",
     name: "Custom",
     icon: "⭐",
-    color: "#c8b0f0",
+    color: "#9878cc",
     description: "Places you add yourself",
   },
 };

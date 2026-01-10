@@ -29,21 +29,27 @@ body {
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 .header {
-  background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
+  background: linear-gradient(135deg,
+        var(--lavender-700) 0%,
+        var(--lavender-600) 35%,
+        var(--lavender-500) 70%,
+        var(--lavender-400) 100%);
   color: white;
+  text-shadow: var(--text-glow);
   padding: 0.75rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(91, 62, 138, 0.2);
 }
 
 .header-brand h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
+  text-shadow: var(--text-glow);
 }
 
 .header-brand .tagline {
