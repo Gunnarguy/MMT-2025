@@ -72,9 +72,11 @@ export default function MapPanel({
   tripRouteTotals,
   routesLoading,
   routesError,
-  costPerMile,
-  onCostChange,
-  estimatedTripCost,
+  gasPricePerGallon,
+  onGasPriceChange,
+  vehicleMpg,
+  onVehicleMpgChange,
+  estimatedFuelCost,
   onResetTrip,
   googleMapsUrl,
   weatherUrl,
@@ -224,11 +226,11 @@ export default function MapPanel({
                   {formatDuration(tripRouteTotals.duration_s)}
                 </span>
               </div>
-              {estimatedTripCost != null && (
+              {estimatedFuelCost != null && (
                 <div className="metric-item">
-                  <span className="metric-label">Estimated Cost</span>
+                  <span className="metric-label">Est. Fuel Cost</span>
                   <span className="metric-value">
-                    {formatCurrency(estimatedTripCost)}
+                    {formatCurrency(estimatedFuelCost)}
                   </span>
                 </div>
               )}
@@ -262,15 +264,34 @@ export default function MapPanel({
 
           <label className="cost-input">
             {showExpandedStats && (
-              <span className="input-label">Cost per mile</span>
+              <span className="input-label">Price per gallon</span>
             )}
-            <span className="input-prefix">$/mi</span>
-            <input
-              value={costPerMile}
-              onChange={(e) => onCostChange(e.target.value)}
-              inputMode="decimal"
-              placeholder="0.00"
-            />
+            <div className="input-row">
+              <span className="input-prefix">$/gal</span>
+              <input
+                value={gasPricePerGallon}
+                onChange={(e) => onGasPriceChange(e.target.value)}
+                inputMode="decimal"
+                placeholder="3.50"
+                aria-label="Gas price per gallon"
+              />
+            </div>
+          </label>
+
+          <label className="cost-input">
+            {showExpandedStats && (
+              <span className="input-label">Vehicle MPG</span>
+            )}
+            <div className="input-row">
+              <span className="input-prefix">MPG</span>
+              <input
+                value={vehicleMpg}
+                onChange={(e) => onVehicleMpgChange(e.target.value)}
+                inputMode="decimal"
+                placeholder="28"
+                aria-label="Vehicle miles per gallon"
+              />
+            </div>
           </label>
           {googleMapsUrl && (
             <a

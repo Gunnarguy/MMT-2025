@@ -17,7 +17,8 @@ import DayBoard from "./DayBoard";
 import DayPlanner from "./DayPlanner";
 import MapPanel from "./MapPanel";
 
-const COST_PER_MILE_KEY = "mmt-cost-per-mile";
+const GAS_PRICE_PER_GALLON_KEY = "mmt-gas-price-per-gallon";
+const VEHICLE_MPG_KEY = "mmt-vehicle-mpg";
 
 export default function TripBuilderView({
   trip,
@@ -37,9 +38,17 @@ export default function TripBuilderView({
   const [editingActivity, setEditingActivity] = useState(null);
   const [plannerView, setPlannerView] = useState("day");
 
-  const [costPerMile, setCostPerMile] = useState(() => {
+  const [gasPricePerGallon, setGasPricePerGallon] = useState(() => {
     try {
-      return localStorage.getItem(COST_PER_MILE_KEY) || "";
+      return localStorage.getItem(GAS_PRICE_PER_GALLON_KEY) || "";
+    } catch {
+      return "";
+    }
+  });
+
+  const [vehicleMpg, setVehicleMpg] = useState(() => {
+    try {
+      return localStorage.getItem(VEHICLE_MPG_KEY) || "";
     } catch {
       return "";
     }
@@ -47,11 +56,19 @@ export default function TripBuilderView({
 
   useEffect(() => {
     try {
-      localStorage.setItem(COST_PER_MILE_KEY, costPerMile);
+      localStorage.setItem(GAS_PRICE_PER_GALLON_KEY, gasPricePerGallon);
     } catch {
       // ignore
     }
-  }, [costPerMile]);
+  }, [gasPricePerGallon]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(VEHICLE_MPG_KEY, vehicleMpg);
+    } catch {
+      // ignore
+    }
+  }, [vehicleMpg]);
 
   useEffect(() => {
     if (!trip.days.length) return;
@@ -491,15 +508,21 @@ export default function TripBuilderView({
     return { distance_m, duration_s };
   }, [dayRoutes]);
 
-  const parsedCostPerMile = useMemo(() => {
-    const n = Number(String(costPerMile).trim());
+  const parsedGasPricePerGallon = useMemo(() => {
+    const n = Number(String(gasPricePerGallon).trim());
     return Number.isFinite(n) && n > 0 ? n : null;
-  }, [costPerMile]);
+  }, [gasPricePerGallon]);
+
+  const parsedVehicleMpg = useMemo(() => {
+    const n = Number(String(vehicleMpg).trim());
+    return Number.isFinite(n) && n > 0 ? n : null;
+  }, [vehicleMpg]);
 
   const tripMiles = tripRouteTotals.distance_m / 1609.344;
-  const estimatedTripCost = parsedCostPerMile
-    ? tripMiles * parsedCostPerMile
-    : null;
+  const estimatedFuelCost =
+    parsedGasPricePerGallon && parsedVehicleMpg
+      ? (tripMiles / parsedVehicleMpg) * parsedGasPricePerGallon
+      : null;
 
   const mapActivities = useMemo(() => {
     const activities = [];
@@ -724,9 +747,11 @@ export default function TripBuilderView({
         tripRouteTotals={tripRouteTotals}
         routesLoading={routesLoading}
         routesError={routesError}
-        costPerMile={costPerMile}
-        onCostChange={setCostPerMile}
-        estimatedTripCost={estimatedTripCost}
+        gasPricePerGallon={gasPricePerGallon}
+        onGasPriceChange={setGasPricePerGallon}
+        vehicleMpg={vehicleMpg}
+        onVehicleMpgChange={setVehicleMpg}
+        estimatedFuelCost={estimatedFuelCost}
         onResetTrip={clearTrip}
         googleMapsUrl={googleMapsUrl}
         weatherUrl={weatherUrl}

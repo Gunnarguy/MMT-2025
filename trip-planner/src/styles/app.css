@@ -555,6 +555,8 @@
 
 .search-input {
   width: 100%;
+  box-sizing: border-box;
+  display: block;
   padding: 0.6rem 0.75rem;
   border-radius: 999px;
   border: 1px solid rgba(27, 36, 48, 0.2);
@@ -1716,10 +1718,14 @@
   color: var(--ink-600);
 }
 
-.map-controls.expanded .input-prefix {
-  position: absolute;
-  margin-top: 1.7rem;
-  margin-left: 0.5rem;
+.input-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.map-controls.expanded .input-row {
+  width: 100%;
 }
 .cost-input input {
   border: none;
@@ -1730,7 +1736,6 @@
 .map-controls.expanded .cost-input input {
   width: 100%;
   padding: 0.5rem 0.7rem;
-  padding-left: 2.2rem;
   border: 1px solid rgba(27, 36, 48, 0.2);
   border-radius: var(--radius-sm);
 }
