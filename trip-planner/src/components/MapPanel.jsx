@@ -194,9 +194,9 @@ export default function MapPanel({
                 Trip: {formatMiles(tripRouteTotals.distance_m)} |{" "}
                 {formatDuration(tripRouteTotals.duration_s)}
               </span>
-              {estimatedTripCost != null && (
+              {estimatedFuelCost != null && (
                 <span className="map-stat">
-                  Est: {formatCurrency(estimatedTripCost)}
+                  Est: {formatCurrency(estimatedFuelCost)}
                 </span>
               )}
               {routesLoading && (
