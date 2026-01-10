@@ -475,7 +475,7 @@ export default function CatalogPanel({
 
                     {/* Contact & Practical Info Grid */}
                     <div className="exp-info-grid">
-                      {activity.address && (
+                      {activity.address && !activity.private && (
                         <a
                           className="exp-info-link"
                           href={`https://maps.google.com/?q=${encodeURIComponent(
@@ -491,7 +491,7 @@ export default function CatalogPanel({
                           </span>
                         </a>
                       )}
-                      {activity.phone && (
+                      {activity.phone && !activity.private && (
                         <a
                           className="exp-info-link"
                           href={`tel:${activity.phone}`}
@@ -563,7 +563,7 @@ export default function CatalogPanel({
                           🌐 Website
                         </a>
                       )}
-                      {activity.coordinates && (
+                      {activity.coordinates && !activity.private && (
                         <a
                           href={`https://www.google.com/maps/dir/?api=1&destination=${activity.coordinates[0]},${activity.coordinates[1]}`}
                           target="_blank"
@@ -573,7 +573,7 @@ export default function CatalogPanel({
                           🗺 Directions
                         </a>
                       )}
-                      {activity.yelpRating && (
+                      {activity.yelpRating && !activity.private && (
                         <a
                           href={`https://www.yelp.com/search?find_desc=${encodeURIComponent(
                             activity.name
@@ -587,7 +587,7 @@ export default function CatalogPanel({
                           {activity.yelpRating}
                         </a>
                       )}
-                      {activity.googleRating && (
+                      {activity.googleRating && !activity.private && (
                         <a
                           href={`https://www.google.com/maps/search/${encodeURIComponent(
                             activity.name + " " + activity.location

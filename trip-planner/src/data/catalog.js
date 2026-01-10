@@ -816,6 +816,7 @@ export const activityCatalog = [
     duration: 3,
     difficulty: "Variable",
     distance: "Multiple trails on property",
+    private: true,
     description:
       "Private property hiking, dark skies for stargazing, peak foliage timing.",
     tip: "Grab groceries in Barre or Lebanon before arriving—closest store is 20 min away",
@@ -1215,6 +1216,7 @@ export const activityCatalog = [
     coordinates: [43.9887, -72.4476],
     priceRange: "Friend rate!",
     type: "Private Home",
+    private: true,
     description:
       "The REAL Vermont experience. Mountain views, hiking access, a million stars at night.",
     amenities: [
