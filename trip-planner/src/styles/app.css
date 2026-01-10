@@ -1616,11 +1616,70 @@
   margin-top: 0.6rem;
 }
 
+.modal-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: var(--mist-50);
+  border-radius: var(--radius-sm);
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.meta-item.span-2 {
+  grid-column: span 2;
+}
+
+.meta-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-500);
+}
+
+.meta-item a {
+  color: var(--sea-600);
+  text-decoration: none;
+}
+
+.meta-item a:hover {
+  text-decoration: underline;
+}
+
 .modal-eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.7rem;
   color: var(--ink-500);
+}
+
+.modal-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge-mom {
+  font-size: 0.7rem;
+  background: linear-gradient(135deg, #ffe0e6, #ffd0d8);
+  color: #c0392b;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.badge-private {
+  font-size: 0.7rem;
+  background: linear-gradient(135deg, var(--sea-100), var(--sea-200));
+  color: var(--sea-700);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
 }
 
 .modal-description {

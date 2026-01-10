@@ -41,10 +41,11 @@ export default function ActivityDetailModal({
   if (!activity) return null;
 
   const category = categories[activity.category] || categories.custom;
-  const mapsUrl = buildMapsUrl(activity);
-  const menuSearchUrl = buildSearchUrl(activity, "menu");
-  const reviewsSearchUrl = buildSearchUrl(activity, "reviews");
-  const imagesSearchUrl = buildSearchUrl(activity, "photos");
+  const isPrivate = activity.private || activity.isCustom;
+  const mapsUrl = isPrivate ? null : buildMapsUrl(activity);
+  const menuSearchUrl = isPrivate ? null : buildSearchUrl(activity, "menu");
+  const reviewsSearchUrl = isPrivate ? null : buildSearchUrl(activity, "reviews");
+  const imagesSearchUrl = isPrivate ? null : buildSearchUrl(activity, "photos");
 
   return (
     <div className="modal-overlay" onClick={onClose} role="presentation">
@@ -62,6 +63,9 @@ export default function ActivityDetailModal({
               </span>
               {activity.momMentioned && (
                 <span className="badge-mom">❤️ Mom Approved</span>
+              )}
+              {isPrivate && (
+                <span className="badge-private">🏠 Private</span>
               )}
             </div>
             <h2>
@@ -97,7 +101,7 @@ export default function ActivityDetailModal({
                 <span>{activity.price}</span>
               </div>
             )}
-            {activity.rating && (
+            {activity.rating && !isPrivate && (
               <div className="meta-item">
                 <span className="meta-label">Rating</span>
                 <span>{activity.rating} ★</span>
@@ -109,34 +113,54 @@ export default function ActivityDetailModal({
                 <span>{activity.waitTime}</span>
               </div>
             )}
+            {activity.address && (
+              <div className="meta-item span-2">
+                <span className="meta-label">Address</span>
+                <span>{activity.address}</span>
+              </div>
+            )}
+            {activity.phone && (
+              <div className="meta-item">
+                <span className="meta-label">Phone</span>
+                <a href={`tel:${activity.phone}`}>{activity.phone}</a>
+              </div>
+            )}
           </div>
 
-          <div className="modal-deep-links">
-            <a
-              className="deep-link"
-              href={reviewsSearchUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="icon">⭐</span> Check Reviews
-            </a>
-            <a
-              className="deep-link"
-              href={menuSearchUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="icon">🍽️</span> Find Menu
-            </a>
-            <a
-              className="deep-link"
-              href={imagesSearchUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="icon">📸</span> See Photos
-            </a>
-          </div>
+          {(reviewsSearchUrl || menuSearchUrl || imagesSearchUrl) && (
+            <div className="modal-deep-links">
+              {reviewsSearchUrl && (
+                <a
+                  className="deep-link"
+                  href={reviewsSearchUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span className="icon">⭐</span> Check Reviews
+                </a>
+              )}
+              {menuSearchUrl && (
+                <a
+                  className="deep-link"
+                  href={menuSearchUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span className="icon">🍽️</span> Find Menu
+                </a>
+              )}
+              {imagesSearchUrl && (
+                <a
+                  className="deep-link"
+                  href={imagesSearchUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span className="icon">📸</span> See Photos
+                </a>
+              )}
+            </div>
+          )}
 
           <div className="modal-callouts">
             {activity.mustTry && (

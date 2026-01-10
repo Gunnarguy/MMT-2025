@@ -4,6 +4,7 @@ import { categories } from "../data/catalog";
 const emptyForm = {
   name: "",
   location: "",
+  address: "",
   category: "custom",
   description: "",
   duration: "",
@@ -12,6 +13,7 @@ const emptyForm = {
   notes: "",
   tags: "",
   website: "",
+  phone: "",
 };
 
 export default function CustomPlaceModal({
@@ -172,6 +174,22 @@ export default function CustomPlaceModal({
                   {searching ? "..." : "🔍"}
                 </button>
               </div>
+            </label>
+            <label className="span-2">
+              Address (optional)
+              <input
+                value={form.address}
+                onChange={handleChange("address")}
+                placeholder="Full address for directions"
+              />
+            </label>
+            <label>
+              Phone (optional)
+              <input
+                value={form.phone}
+                onChange={handleChange("phone")}
+                placeholder="(207) 555-1234"
+              />
             </label>
             <label>
               Category
