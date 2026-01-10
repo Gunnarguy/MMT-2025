@@ -19,7 +19,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1.1rem 1.5rem;
-  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 40%, #7c3aed 100%);
+  background: linear-gradient(135deg, #d4c8f5 0%, #c4b5f0 40%, #b8a4e8 100%);
   color: #fff;
   position: sticky;
   top: 0;
@@ -461,8 +461,8 @@
 }
 
 .stat-badge.rating {
-  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
-    color: #6d28d9;
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+    color: #9d8bd4;
 }
 
 .stat-badge.price {
@@ -476,8 +476,8 @@
 }
 
 .stat-badge.wait {
-  background: #f5f3ff;
-    color: #7c3aed;
+  background: #f8f6ff;
+    color: #b8a4e8;
 }
 
 /* Collapsed state actions */
@@ -565,8 +565,8 @@
 .exp-note {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #6d28d9;
-    background: #f5f3ff;
+  color: #9d8bd4;
+    background: #f8f6ff;
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-sm);
 }

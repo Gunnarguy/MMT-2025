@@ -25,7 +25,7 @@
   padding: 2rem;
   border-radius: 28px;
   background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2)),
-    linear-gradient(135deg, #c4b5fd 0%, #a78bfa 45%, #8b5cf6 100%);
+    linear-gradient(135deg, #e0d8f8 0%, #d4c8f5 45%, #c4b5f0 100%);
   color: #fff;
   box-shadow: 0 30px 60px rgba(213, 93, 42, 0.25);
   position: relative;
