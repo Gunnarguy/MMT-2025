@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { signInWithEmail, isEmailAllowed } from '../lib/supabase'
+import { isEmailAllowed, signInWithEmail } from "../lib/supabase";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('')
@@ -7,26 +7,26 @@ export default function LoginScreen() {
   const [errorMessage, setErrorMessage] = useState('')
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus('sending')
-    setErrorMessage('')
+    e.preventDefault();
+    setStatus("sending");
+    setErrorMessage("");
 
     // Quick client-side check
     if (!isEmailAllowed(email)) {
-      setStatus('error')
-      setErrorMessage("Sorry, this email isn't on the guest list! 🦞")
-      return
+      setStatus("error");
+      setErrorMessage("Sorry, this email isn't on the guest list! 🦞");
+      return;
     }
 
-    const { error } = await signInWithEmail(email)
-    
+    const { error } = await signInWithEmail(email);
+
     if (error) {
-      setStatus('error')
-      setErrorMessage(error.message)
+      setStatus("error");
+      setErrorMessage(error.message);
     } else {
-      setStatus('sent')
+      setStatus("sent");
     }
-  }
+  };
 
   return (
     <div className="login-screen">
@@ -37,15 +37,19 @@ export default function LoginScreen() {
           <p className="login-subtitle">Family-only access</p>
         </div>
 
-        {status === 'sent' ? (
+        {status === "sent" ? (
           <div className="login-success">
             <span className="success-emoji">✉️</span>
             <h2>Check your email!</h2>
-            <p>We sent a magic link to <strong>{email}</strong></p>
-            <p className="login-hint">Click the link in the email to sign in. It might take a minute!</p>
-            <button 
+            <p>
+              We sent a magic link to <strong>{email}</strong>
+            </p>
+            <p className="login-hint">
+              Click the link in the email to sign in. It might take a minute!
+            </p>
+            <button
               className="btn-outline login-btn"
-              onClick={() => setStatus('idle')}
+              onClick={() => setStatus("idle")}
             >
               Try a different email
             </button>
@@ -60,26 +64,25 @@ export default function LoginScreen() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={status === 'sending'}
+              disabled={status === "sending"}
               autoFocus
             />
-            
-            {status === 'error' && (
-              <div className="login-error">
-                {errorMessage}
-              </div>
+
+            {status === "error" && (
+              <div className="login-error">{errorMessage}</div>
             )}
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn-primary login-btn"
-              disabled={status === 'sending'}
+              disabled={status === "sending"}
             >
-              {status === 'sending' ? '⏳ Sending...' : '🔐 Send Magic Link'}
+              {status === "sending" ? "⏳ Sending..." : "🔐 Send Magic Link"}
             </button>
 
             <p className="login-hint">
-              Only family members can access this trip planner. If you're not on the list, ask Gunnar!
+              Only family members can access this trip planner. If you're not on
+              the list, ask Gunnar!
             </p>
           </form>
         )}
@@ -89,5 +92,5 @@ export default function LoginScreen() {
         <span>🌊 Planning adventures since 2025</span>
       </div>
     </div>
-  )
+  );
 }

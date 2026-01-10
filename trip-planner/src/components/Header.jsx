@@ -17,43 +17,52 @@ export default function Header({
           <h1>MMT 2025</h1>
           <span className="tagline">Girls Trip to New England</span>
           {syncStatus && (
-            <span className={`sync-badge ${syncStatus}`} title={
-              syncStatus === 'synced' ? 'All changes saved to cloud' :
-              syncStatus === 'syncing' ? 'Syncing changes...' :
-              syncStatus === 'offline' ? 'Working offline' : ''
-            }>
-              {syncStatus === 'synced' && '☁️ Synced'}
-              {syncStatus === 'syncing' && '⏳ Syncing...'}
-              {syncStatus === 'offline' && '📴 Offline'}
+            <span
+              className={`sync-badge ${syncStatus}`}
+              title={
+                syncStatus === "synced"
+                  ? "All changes saved to cloud"
+                  : syncStatus === "syncing"
+                  ? "Syncing changes..."
+                  : syncStatus === "offline"
+                  ? "Working offline"
+                  : ""
+              }
+            >
+              {syncStatus === "synced" && "☁️ Synced"}
+              {syncStatus === "syncing" && "⏳ Syncing..."}
+              {syncStatus === "offline" && "📴 Offline"}
             </span>
           )}
         </div>
-        <p className="brand-subtitle">Plan, remix, and build the trip that feels perfect.</p>
+        <p className="brand-subtitle">
+          Plan, remix, and build the trip that feels perfect.
+        </p>
       </div>
 
       <div className="header-nav">
         <button
           type="button"
-          className={`nav-btn ${activeView === 'moms' ? 'active' : ''}`}
-          onClick={() => onViewChange('moms')}
+          className={`nav-btn ${activeView === "moms" ? "active" : ""}`}
+          onClick={() => onViewChange("moms")}
         >
           Mom&#39;s Route
         </button>
         <button
           type="button"
-          className={`nav-btn ${activeView === 'builder' ? 'active' : ''}`}
-          onClick={() => onViewChange('builder')}
+          className={`nav-btn ${activeView === "builder" ? "active" : ""}`}
+          onClick={() => onViewChange("builder")}
         >
           Build &amp; Customize
         </button>
       </div>
 
       <div className="header-actions">
-        {activeView === 'builder' && (
+        {activeView === "builder" && (
           <>
             <select
               className="template-select"
-              value={selectedTemplateId || ''}
+              value={selectedTemplateId || ""}
               onChange={(e) => e.target.value && onLoadTemplate(e.target.value)}
             >
               <option value="">Load a template...</option>
@@ -63,7 +72,11 @@ export default function Header({
                 </option>
               ))}
             </select>
-            <button type="button" className="btn-primary" onClick={onSaveTemplate}>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={onSaveTemplate}
+            >
               Save as Template
             </button>
           </>
@@ -78,10 +91,10 @@ export default function Header({
       {user && (
         <div className="header-user">
           <span className="user-email" title={user.email}>
-            👤 {user.email.split('@')[0]}
+            👤 {user.email.split("@")[0]}
           </span>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn-signout"
             onClick={onSignOut}
             title="Sign out"
