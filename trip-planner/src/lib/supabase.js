@@ -1,7 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// NOTE: The Supabase anon key is public (it ships to the browser in production).
+// We still prefer env vars, but we keep a fallback so family members can run the
+// app (or cached builds) without a local `.env`.
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL ||
+  "https://miihwxxgqyyotptiihej.supabase.co";
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1paWh3eHhncXl5b3RwdGlpaGVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4ODg0MDEsImV4cCI6MjA4MjQ2NDQwMX0.lq2BH0iG1891KyvhCcJ0cHJunuLRTcDtk2W1jvQ0V5w";
 
 export const supabaseEnabled = Boolean(supabaseUrl && supabaseAnonKey);
 
