@@ -5,6 +5,7 @@ import "./styles/app.css";
 import "./styles/moms-route.css";
 
 import Header from "./components/Header";
+import LoginScreen from "./components/LoginScreen";
 import MomsRouteView from "./components/MomsRouteView";
 import TripBuilderView from "./components/TripBuilderView";
 
@@ -12,6 +13,10 @@ import { momsRoute } from "./data/momsRoute";
 import { getRouteTemplate, routeTemplates } from "./data/templates";
 import {
   fetchSharedTripState,
+  getSession,
+  isEmailAllowed,
+  onAuthStateChange,
+  signOut,
   subscribeToSharedTrip,
   supabaseEnabled,
   upsertSharedTripState,
@@ -40,6 +45,62 @@ const CLIENT_ID_KEY = "mmt-2025-client-id";
 const SHARED_TRIP_ID = "mmt-2025-maine";
 
 export default function App() {
+  // Auth state
+  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // Check auth on mount and listen for changes
+  useEffect(() => {
+    // Check initial session
+    getSession().then(({ data }) => {
+      const session = data?.session;
+      if (session?.user && isEmailAllowed(session.user.email)) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+      setAuthLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = onAuthStateChange((event, session) => {
+      if (session?.user && isEmailAllowed(session.user.email)) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription?.unsubscribe?.();
+  }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    setUser(null);
+  };
+
+  // Show loading state
+  if (authLoading) {
+    return (
+      <div className="login-screen">
+        <div className="login-card" style={{ textAlign: 'center' }}>
+          <span style={{ fontSize: '2rem' }}>🦞</span>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login if not authenticated
+  if (!user) {
+    return <LoginScreen />;
+  }
+
+  // User is authenticated - render the app
+  return <AuthenticatedApp user={user} onSignOut={handleSignOut} />;
+}
+
+function AuthenticatedApp({ user, onSignOut }) {
   const savedTrip = useMemo(() => loadTrip(STORAGE_KEY), []);
   const [activeView, setActiveView] = useState(() =>
     savedTrip ? "builder" : "moms"
@@ -238,6 +299,8 @@ export default function App() {
         }}
         onSaveTemplate={handleSaveTemplate}
         syncStatus={syncStatus}
+        user={user}
+        onSignOut={onSignOut}
       />
 
       <main className="main">

@@ -9,6 +9,51 @@ export const supabase = supabaseEnabled
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
+// Allowed emails for this family trip planner
+const ALLOWED_EMAILS = [
+  'italgalpal@gmail.com',
+  'mikaelahostetler@gmail.com',
+  'gunnarguy@me.com' // Adding you too!
+]
+
+export function isEmailAllowed(email) {
+  return ALLOWED_EMAILS.includes(email?.toLowerCase())
+}
+
+// Auth functions
+export async function signInWithEmail(email) {
+  if (!supabase) return { data: null, error: new Error('Supabase not configured') }
+  
+  // Check if email is allowed before sending magic link
+  if (!isEmailAllowed(email)) {
+    return { data: null, error: new Error('This email is not authorized to access this trip planner.') }
+  }
+  
+  const { data, error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: window.location.origin + window.location.pathname,
+    }
+  })
+  
+  return { data, error }
+}
+
+export async function signOut() {
+  if (!supabase) return { error: null }
+  return await supabase.auth.signOut()
+}
+
+export async function getSession() {
+  if (!supabase) return { data: { session: null }, error: null }
+  return await supabase.auth.getSession()
+}
+
+export function onAuthStateChange(callback) {
+  if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } }
+  return supabase.auth.onAuthStateChange(callback)
+}
+
 const SHARED_TRIP_TABLE = 'mmt_shared_trip'
 const DEFAULT_SHARED_TRIP_ID = 'mmt-2025-maine'
 

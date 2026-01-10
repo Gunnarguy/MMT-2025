@@ -6,7 +6,9 @@ export default function Header({
   selectedTemplateId,
   onLoadTemplate,
   onSaveTemplate,
-  syncStatus
+  syncStatus,
+  user,
+  onSignOut
 }) {
   return (
     <header className="header">
@@ -72,6 +74,22 @@ export default function Header({
         <span className="stat-chip">{tripStats.days} days</span>
         <span className="stat-chip">{tripStats.activities} activities</span>
       </div>
+
+      {user && (
+        <div className="header-user">
+          <span className="user-email" title={user.email}>
+            👤 {user.email.split('@')[0]}
+          </span>
+          <button 
+            type="button" 
+            className="btn-signout"
+            onClick={onSignOut}
+            title="Sign out"
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
     </header>
   );
 }
