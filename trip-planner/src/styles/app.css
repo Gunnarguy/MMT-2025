@@ -1812,7 +1812,7 @@
 .board-column-header h4 {
   margin: 0;
   font-size: 0.9rem;
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .board-column-header p {
@@ -1820,10 +1820,10 @@
   font-size: 0.72rem;
   color: var(--ink-500);
   line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   word-break: break-word;
 }
 
