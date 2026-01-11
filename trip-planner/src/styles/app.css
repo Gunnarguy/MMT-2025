@@ -1225,16 +1225,17 @@
 .day-tab {
   border: 1px solid rgba(27, 36, 48, 0.2);
   background: #fff;
-  padding: 0.6rem 0.8rem;
+  padding: 0.6rem 1rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  min-width: 120px;
-    max-width: 180px;
+  flex-shrink: 0;
+    max-width: 280px;
     display: flex;
     flex-direction: column;
     align-items: center;
   gap: 0.25rem;
-    text-align: center;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .day-tab.active {
@@ -1249,7 +1250,7 @@
 }
 
 .day-label {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.3;
 }
