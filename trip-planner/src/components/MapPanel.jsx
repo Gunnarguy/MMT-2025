@@ -70,6 +70,9 @@ export default function MapPanel({
   selectedDayId,
   selectedDayBounds,
   tripRouteTotals,
+  selectedDayStats,
+  viewMode,
+  totalDays,
   routesLoading,
   routesError,
   gasPricePerGallon,
@@ -81,8 +84,8 @@ export default function MapPanel({
   googleMapsUrl,
   weatherUrl,
 }) {
-  const MIN_WIDTH = 360;
-  const MAX_WIDTH = 720;
+  const MIN_WIDTH = 320;
+  const MAX_WIDTH = 800;
 
   const [mapStyle, setMapStyle] = useState("light");
   const [panelWidth, setPanelWidth] = useState(450);
@@ -91,28 +94,68 @@ export default function MapPanel({
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
   const mapRef = useRef(null);
+  const rafRef = useRef(null);
+  const mapInvalidateTimeoutRef = useRef(null);
 
-  const showExpandedStats = panelWidth >= 600;
+  const showExpandedStats = panelWidth >= 550;
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!isResizing) return;
-      // For right panel, drag left decreases X, so we subtract delta
-      const delta = startXRef.current - e.clientX;
-      const newWidth = Math.max(
-        MIN_WIDTH,
-        Math.min(MAX_WIDTH, startWidthRef.current + delta)
-      );
-      setPanelWidth(newWidth);
+
+      // Cancel any pending animation frame
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+
+      // Use RAF for smooth updates
+      rafRef.current = requestAnimationFrame(() => {
+        const delta = startXRef.current - e.clientX;
+        const newWidth = Math.max(
+          MIN_WIDTH,
+          Math.min(MAX_WIDTH, startWidthRef.current + delta)
+        );
+        setPanelWidth(newWidth);
+      });
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isResizing) return;
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+
+      rafRef.current = requestAnimationFrame(() => {
+        const delta = startXRef.current - touch.clientX;
+        const newWidth = Math.max(
+          MIN_WIDTH,
+          Math.min(MAX_WIDTH, startWidthRef.current + delta)
+        );
+        setPanelWidth(newWidth);
+      });
     };
 
     const handleMouseUp = () => {
       setIsResizing(false);
+      // Final map invalidation after resize ends
+      if (mapRef.current) {
+        setTimeout(() => {
+          mapRef.current?.invalidateSize();
+        }, 50);
+      }
     };
 
     if (isResizing) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+      document.addEventListener("touchend", handleMouseUp);
+      document.addEventListener("touchcancel", handleMouseUp);
       document.body.style.cursor = "col-resize";
       document.body.style.userSelect = "none";
     } else {
@@ -123,33 +166,63 @@ export default function MapPanel({
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleMouseUp);
+      document.removeEventListener("touchcancel", handleMouseUp);
       document.body.style.cursor = "";
       document.body.style.userSelect = "";
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
   }, [isResizing]);
 
   const handleResizeStart = (e) => {
     e.preventDefault();
     setIsResizing(true);
-    startXRef.current = e.clientX;
+    startXRef.current = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
     startWidthRef.current = panelWidth;
   };
 
+  // Throttled map invalidation during resize
   useEffect(() => {
     if (!mapRef.current) return;
-    const map = mapRef.current;
-    requestAnimationFrame(() => {
-      map.invalidateSize();
-    });
-  }, [panelWidth]);
+
+    // Clear any pending invalidation
+    if (mapInvalidateTimeoutRef.current) {
+      clearTimeout(mapInvalidateTimeoutRef.current);
+    }
+
+    // During resize, throttle invalidation to reduce jank
+    if (isResizing) {
+      mapInvalidateTimeoutRef.current = setTimeout(() => {
+        mapRef.current?.invalidateSize();
+      }, 100);
+    } else {
+      // When not resizing, invalidate immediately
+      requestAnimationFrame(() => {
+        mapRef.current?.invalidateSize();
+      });
+    }
+
+    return () => {
+      if (mapInvalidateTimeoutRef.current) {
+        clearTimeout(mapInvalidateTimeoutRef.current);
+      }
+    };
+  }, [panelWidth, isResizing]);
 
   useEffect(() => {
     if (!panelRef.current || !mapRef.current) return undefined;
     const map = mapRef.current;
     const observer = new ResizeObserver(() => {
-      requestAnimationFrame(() => {
+      // Throttle ResizeObserver callbacks too
+      if (mapInvalidateTimeoutRef.current) {
+        clearTimeout(mapInvalidateTimeoutRef.current);
+      }
+      mapInvalidateTimeoutRef.current = setTimeout(() => {
         map.invalidateSize();
-      });
+      }, 50);
     });
     observer.observe(panelRef.current);
     return () => observer.disconnect();
@@ -171,6 +244,7 @@ export default function MapPanel({
     <aside
       className="map-panel"
       ref={panelRef}
+      data-resizing={isResizing}
       style={{
         width: `${panelWidth}px`,
         minWidth: `${MIN_WIDTH}px`,
@@ -181,23 +255,54 @@ export default function MapPanel({
       <div
         className="map-resize-handle"
         onMouseDown={handleResizeStart}
+        onTouchStart={handleResizeStart}
         role="separator"
         aria-label="Resize map panel"
       />
       <div className="map-header">
         <div className="map-title">
-          <h3>Trip map</h3>
+          {/* Show day-specific title when in day view, trip title when in board view */}
+          <h3>
+            {viewMode === "day" && selectedDayStats
+              ? `Day ${selectedDayStats.dayNumber}${
+                  selectedDayStats.location
+                    ? ` – ${selectedDayStats.location}`
+                    : ""
+                }`
+              : "Trip map"}
+          </h3>
           {!showExpandedStats ? (
             <div className="map-metrics">
-              <span className="map-stat">{mapActivities.length} pins</span>
-              <span className="map-stat">
-                Trip: {formatMiles(tripRouteTotals.distance_m)} |{" "}
-                {formatDuration(tripRouteTotals.duration_s)}
-              </span>
-              {estimatedFuelCost != null && (
-                <span className="map-stat">
-                  Est: {formatCurrency(estimatedFuelCost)}
-                </span>
+              {viewMode === "day" && selectedDayStats ? (
+                <>
+                  <span className="map-stat">
+                    {selectedDayStats.activityCount} activities
+                  </span>
+                  <span className="map-stat">
+                    {formatMiles(selectedDayStats.distance_m)} |{" "}
+                    {formatDuration(selectedDayStats.duration_s)}
+                  </span>
+                  {selectedDayStats.estimatedFuelCost != null && (
+                    <span className="map-stat">
+                      Est: {formatCurrency(selectedDayStats.estimatedFuelCost)}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="map-stat">
+                    {totalDays} days | {mapActivities.length} pins
+                  </span>
+                  <span className="map-stat">
+                    {formatMiles(tripRouteTotals.distance_m)} |{" "}
+                    {formatDuration(tripRouteTotals.duration_s)}
+                  </span>
+                  {estimatedFuelCost != null && (
+                    <span className="map-stat">
+                      Est: {formatCurrency(estimatedFuelCost)}
+                    </span>
+                  )}
+                </>
               )}
               {routesLoading && (
                 <span className="map-stat">Calculating routes...</span>
@@ -208,31 +313,64 @@ export default function MapPanel({
             </div>
           ) : (
             <div className="map-metrics-expanded">
-              <div className="metric-item">
-                <span className="metric-label">Activities</span>
-                <span className="metric-value">
-                  {mapActivities.length} pins
-                </span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-label">Trip Distance</span>
-                <span className="metric-value">
-                  {formatMiles(tripRouteTotals.distance_m)}
-                </span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-label">Drive Time</span>
-                <span className="metric-value">
-                  {formatDuration(tripRouteTotals.duration_s)}
-                </span>
-              </div>
-              {estimatedFuelCost != null && (
-                <div className="metric-item">
-                  <span className="metric-label">Est. Fuel Cost</span>
-                  <span className="metric-value">
-                    {formatCurrency(estimatedFuelCost)}
-                  </span>
-                </div>
+              {viewMode === "day" && selectedDayStats ? (
+                <>
+                  <div className="metric-item">
+                    <span className="metric-label">Activities</span>
+                    <span className="metric-value">
+                      {selectedDayStats.activityCount} stops
+                    </span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Day Distance</span>
+                    <span className="metric-value">
+                      {formatMiles(selectedDayStats.distance_m)}
+                    </span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Drive Time</span>
+                    <span className="metric-value">
+                      {formatDuration(selectedDayStats.duration_s)}
+                    </span>
+                  </div>
+                  {selectedDayStats.estimatedFuelCost != null && (
+                    <div className="metric-item">
+                      <span className="metric-label">Est. Fuel</span>
+                      <span className="metric-value">
+                        {formatCurrency(selectedDayStats.estimatedFuelCost)}
+                      </span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="metric-item">
+                    <span className="metric-label">Trip Overview</span>
+                    <span className="metric-value">
+                      {totalDays} days | {mapActivities.length} pins
+                    </span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Total Distance</span>
+                    <span className="metric-value">
+                      {formatMiles(tripRouteTotals.distance_m)}
+                    </span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Total Drive Time</span>
+                    <span className="metric-value">
+                      {formatDuration(tripRouteTotals.duration_s)}
+                    </span>
+                  </div>
+                  {estimatedFuelCost != null && (
+                    <div className="metric-item">
+                      <span className="metric-label">Est. Fuel Cost</span>
+                      <span className="metric-value">
+                        {formatCurrency(estimatedFuelCost)}
+                      </span>
+                    </div>
+                  )}
+                </>
               )}
               {routesLoading && (
                 <div className="metric-item status">

@@ -1571,43 +1571,55 @@
 .map-panel {
   padding: 0;
   position: relative;
-    min-width: 0;
+  min-width: 0;
     align-self: flex-start;
   max-height: clamp(520px, 78vh, 860px);
+  /* Smooth resize with GPU acceleration */
+    will-change: width;
+    contain: layout style;
   }
+  
+  /* Disable transitions during resize for smoothness */
+  .map-panel[data-resizing="true"] {
+    transition: none !important;
+  }
+  
+  .map-panel[data-resizing="true"] * {
+    transition: none !important;
+}
 
-  .map-resize-handle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 8px;
+.map-resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
     height: 100%;
     cursor: col-resize;
     z-index: 10;
     background: transparent;
-    transition: background 0.2s ease;
+  transition: background 0.15s ease;
   }
 
-  .map-resize-handle:hover {
-    background: var(--mist-100);
-  }
+.map-resize-handle:hover {
+  background: var(--mist-100);
+}
 
-  .map-resize-handle::after {
-    content: '';
-    position: absolute;
-    left: 3px;
+.map-resize-handle::after {
+  content: '';
+  position: absolute;
+  left: 4px;
     top: 50%;
     transform: translateY(-50%);
-    width: 2px;
-    height: 40px;
+  width: 3px;
+    height: 48px;
     background: var(--sea-500);
     border-radius: 2px;
     opacity: 0;
-    transition: opacity 0.2s ease;
+  transition: opacity 0.15s ease;
   }
 
-  .map-resize-handle:hover::after {
-    opacity: 1;
+.map-resize-handle:hover::after {
+  opacity: 1;
 }
 
 .map-header {

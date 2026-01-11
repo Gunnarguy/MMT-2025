@@ -549,6 +549,39 @@ export default function TripBuilderView({
       ? (tripMiles / parsedVehicleMpg) * parsedGasPricePerGallon
       : null;
 
+  // Selected day stats for MapPanel
+  const selectedDayStats = useMemo(() => {
+    if (!selectedDay) return null;
+    const dayRoute = dayRoutes[selectedDayId] || {
+      distance_m: 0,
+      duration_s: 0,
+    };
+    const dayActivities = selectedDay.activities
+      .map((id) => getAnyActivity(id))
+      .filter((a) => a?.coordinates && a?.category !== "city");
+    const dayMiles = dayRoute.distance_m / 1609.344;
+    const dayFuelCost =
+      parsedGasPricePerGallon && parsedVehicleMpg && dayMiles > 0
+        ? (dayMiles / parsedVehicleMpg) * parsedGasPricePerGallon
+        : null;
+    return {
+      dayNumber: selectedDay.dayNumber,
+      label: selectedDay.label || `Day ${selectedDay.dayNumber}`,
+      location: selectedDay.location,
+      activityCount: dayActivities.length,
+      distance_m: dayRoute.distance_m,
+      duration_s: dayRoute.duration_s,
+      estimatedFuelCost: dayFuelCost,
+    };
+  }, [
+    selectedDay,
+    selectedDayId,
+    dayRoutes,
+    getAnyActivity,
+    parsedGasPricePerGallon,
+    parsedVehicleMpg,
+  ]);
+
   const mapActivities = useMemo(() => {
     const activities = [];
     trip.days.forEach((day) => {
@@ -771,6 +804,9 @@ export default function TripBuilderView({
         selectedDayId={selectedDayId}
         selectedDayBounds={selectedDayBounds}
         tripRouteTotals={tripRouteTotals}
+        selectedDayStats={selectedDayStats}
+        viewMode={plannerView}
+        totalDays={trip.days.length}
         routesLoading={routesLoading}
         routesError={routesError}
         gasPricePerGallon={gasPricePerGallon}
