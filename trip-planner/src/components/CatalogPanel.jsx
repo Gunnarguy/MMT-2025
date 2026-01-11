@@ -186,21 +186,18 @@ export default function CatalogPanel({
           : [];
         const allowedSet = new Set(allowed);
 
-        // Build viewbox from detected trip states (works for any US state or Canadian province)
+        // Build bounding box from detected trip states for location bias
         const viewbox = buildViewboxFromStates(allowed);
-        const viewboxParam = viewbox
-          ? `&viewbox=${encodeURIComponent(
-              `${viewbox.left},${viewbox.top},${viewbox.right},${viewbox.bottom}`
-            )}&bounded=0`
+
+        // Use Photon geocoding API (faster, more reliable than Nominatim)
+        // Photon uses bbox format: minLon,minLat,maxLon,maxLat
+        const bboxParam = viewbox
+          ? `&bbox=${viewbox.left},${viewbox.bottom},${viewbox.right},${viewbox.top}`
           : "";
 
-        const countryCodes = allowCanadaPlaces ? "us,ca" : "us";
-
-        const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&countrycodes=${encodeURIComponent(
-          countryCodes
-        )}&limit=15${viewboxParam}&q=${encodeURIComponent(
+        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(
           q
-        )}&email=${encodeURIComponent("mmt-trip-planner@example.com")}`;
+        )}&limit=15${bboxParam}`;
         const res = await fetch(url, { signal: controller.signal });
         if (!res.ok) {
           setPlaceResults([]);
@@ -208,17 +205,21 @@ export default function CatalogPanel({
         }
         const data = await res.json();
 
-        const normalized = Array.isArray(data)
-          ? data
-              .map((hit) => {
-                const lat = Number(hit?.lat);
-                const lon = Number(hit?.lon);
+        const normalized = Array.isArray(data?.features)
+          ? data.features
+              .map((feature) => {
+                const coords = feature?.geometry?.coordinates;
+                if (!Array.isArray(coords) || coords.length < 2) return null;
+                const lon = Number(coords[0]);
+                const lat = Number(coords[1]);
                 if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
 
-                // US-only is usually requested; allow CA only when enabled.
-                const countryCode = String(hit?.address?.country_code || "")
+                const props = feature?.properties || {};
+                const countryCode = String(props.countrycode || "")
                   .toLowerCase()
                   .trim();
+
+                // Filter by country - US always allowed, Canada if trip is near border
                 if (countryCode) {
                   if (countryCode === "us") {
                     // ok
@@ -229,11 +230,24 @@ export default function CatalogPanel({
                   }
                 }
 
-                const resolvedState = resolveHitStateAbbr(hit);
+                // Build display name from Photon properties
+                const nameParts = [props.name];
+                if (props.city && props.city !== props.name)
+                  nameParts.push(props.city);
+                if (props.county) nameParts.push(props.county);
+                if (props.state) nameParts.push(props.state);
+                if (props.country) nameParts.push(props.country);
+                const displayName = nameParts.filter(Boolean).join(", ");
+
+                const stateAbbr = String(props.state || "")
+                  .toUpperCase()
+                  .trim();
+                // Try to get 2-letter abbreviation from state name
+                const resolvedState = stateAbbr.length === 2 ? stateAbbr : "";
 
                 return {
-                  id: String(hit?.place_id || `${lat},${lon}`),
-                  displayName: String(hit?.display_name || ""),
+                  id: String(props.osm_id || `${lat},${lon}`),
+                  displayName,
                   coordinates: [lat, lon],
                   stateAbbr: resolvedState,
                 };
@@ -265,7 +279,7 @@ export default function CatalogPanel({
             return a._idx - b._idx;
           });
 
-        setPlaceResults(ranked.slice(0, 6));
+        setPlaceResults(ranked.slice(0, 8));
       } catch (e) {
         if (e?.name !== "AbortError") {
           setPlaceResults([]);
@@ -279,7 +293,7 @@ export default function CatalogPanel({
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [placeQuery, allowedStateAbbrs]);
+  }, [placeQuery, allowedStateAbbrs, allowCanadaPlaces, placeSearchCenter]);
 
   return (
     <aside
