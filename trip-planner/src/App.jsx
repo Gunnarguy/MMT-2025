@@ -137,17 +137,16 @@ function AuthenticatedApp({ user, onSignOut }) {
   const [remoteReady, setRemoteReady] = useState(false);
   const initialTripRef = useRef(trip);
   const initialCustomActivitiesRef = useRef(customActivities);
+  const initialCustomTemplatesRef = useRef(customTemplates);
+  const lastSyncedRef = useRef(null);
 
   useEffect(() => {
     if (!remoteReady) {
       initialTripRef.current = trip;
       initialCustomActivitiesRef.current = customActivities;
+      initialCustomTemplatesRef.current = customTemplates;
     }
-  }, [trip, customActivities, remoteReady]);
-
-  useEffect(() => {
-    saveCustomTemplates(CUSTOM_TEMPLATES_KEY, customTemplates);
-  }, [customTemplates]);
+  }, [trip, customActivities, customTemplates, remoteReady]);
 
   useEffect(() => {
     if (!supabaseEnabled) return;
@@ -167,6 +166,7 @@ function AuthenticatedApp({ user, onSignOut }) {
 
       const remoteTrip = data?.state?.trip;
       const remoteCustomActivities = data?.state?.customActivities;
+      const remoteCustomTemplates = data?.state?.customTemplates;
 
       if (isValidTripState(remoteTrip) && remoteTrip.days.length) {
         setTrip(remoteTrip);
@@ -180,6 +180,19 @@ function AuthenticatedApp({ user, onSignOut }) {
         setCustomActivities((prev) => ({ ...prev, ...remoteCustomActivities }));
       }
 
+      // Load custom templates from remote if they exist (merge with local)
+      if (
+        Array.isArray(remoteCustomTemplates) &&
+        remoteCustomTemplates.length
+      ) {
+        setCustomTemplates((prev) => {
+          // Merge: keep all remote templates, add any local ones not already present
+          const remoteIds = new Set(remoteCustomTemplates.map((t) => t.id));
+          const uniqueLocal = prev.filter((t) => !remoteIds.has(t.id));
+          return [...remoteCustomTemplates, ...uniqueLocal];
+        });
+      }
+
       // If no remote state, push current local state
       if (!data?.state?.initialized) {
         await upsertSharedTripState(
@@ -187,6 +200,7 @@ function AuthenticatedApp({ user, onSignOut }) {
             initialized: true,
             trip: initialTripRef.current,
             customActivities: initialCustomActivitiesRef.current,
+            customTemplates: initialCustomTemplatesRef.current,
             updatedBy: clientId,
             updatedAt: Date.now(),
           },
@@ -198,6 +212,9 @@ function AuthenticatedApp({ user, onSignOut }) {
         const next = payload?.new?.state;
         if (!next) return;
         if (next?.updatedBy && next.updatedBy === clientId) return;
+
+        // Mark that we're applying remote updates (skip sync-back)
+        isApplyingRemoteRef.current = true;
 
         // Sync trip
         const nextTrip = next?.trip;
@@ -212,6 +229,18 @@ function AuthenticatedApp({ user, onSignOut }) {
           setCustomActivities(nextCustomActivities);
           saveCustomActivities(CUSTOM_ACTIVITIES_KEY, nextCustomActivities);
         }
+
+        // Sync custom templates
+        const nextCustomTemplates = next?.customTemplates;
+        if (Array.isArray(nextCustomTemplates)) {
+          setCustomTemplates(nextCustomTemplates);
+          saveCustomTemplates(CUSTOM_TEMPLATES_KEY, nextCustomTemplates);
+        }
+
+        // Clear the flag after a tick to allow future local changes to sync
+        setTimeout(() => {
+          isApplyingRemoteRef.current = false;
+        }, 100);
       });
 
       setRemoteReady(true);
@@ -226,27 +255,42 @@ function AuthenticatedApp({ user, onSignOut }) {
     };
   }, [clientId]);
 
-  // Sync trip AND customActivities to Supabase whenever either changes
+  // Sync trip, customActivities, AND customTemplates to Supabase whenever any changes
   useEffect(() => {
     saveTrip(STORAGE_KEY, trip);
     saveCustomActivities(CUSTOM_ACTIVITIES_KEY, customActivities);
+    saveCustomTemplates(CUSTOM_TEMPLATES_KEY, customTemplates);
 
     if (!supabaseEnabled || !remoteReady) return;
+
+    // Skip sync if we're just applying remote updates
+    if (isApplyingRemoteRef.current) return;
+
+    // Create a hash to compare and avoid duplicate syncs
+    const stateHash = JSON.stringify({
+      trip,
+      customActivities,
+      customTemplates,
+    });
+    if (lastSyncedRef.current === stateHash) {
+      return; // Already synced this exact state
+    }
 
     setSyncStatus("syncing");
 
     const t = setTimeout(() => {
-      upsertSharedTripState(
-        {
-          initialized: true,
-          trip,
-          customActivities,
-          updatedBy: clientId,
-          updatedAt: Date.now(),
-        },
-        SHARED_TRIP_ID
-      )
+      const payload = {
+        initialized: true,
+        trip,
+        customActivities,
+        customTemplates,
+        updatedBy: clientId,
+        updatedAt: Date.now(),
+      };
+
+      upsertSharedTripState(payload, SHARED_TRIP_ID)
         .then(() => {
+          lastSyncedRef.current = stateHash;
           setSyncStatus("synced");
         })
         .catch((e) => {
@@ -256,7 +300,7 @@ function AuthenticatedApp({ user, onSignOut }) {
     }, 600);
 
     return () => clearTimeout(t);
-  }, [trip, customActivities, remoteReady, clientId]);
+  }, [trip, customActivities, customTemplates, remoteReady, clientId]);
 
   const handleLoadTemplate = (templateId) => {
     if (templateId === "blank") {
