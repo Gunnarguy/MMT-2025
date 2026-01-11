@@ -1771,8 +1771,8 @@
   background: var(--cloud-100);
   min-height: 200px;
   min-width: 180px;
-  max-width: 220px;
-  flex: 1 0 180px;
+    max-width: 220px;
+    flex: 1 0 180px;
   border: 2px solid transparent;
 }
 
