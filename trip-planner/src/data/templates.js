@@ -508,6 +508,7 @@ export const routeTemplates = [
           "mi-doc-image-01",
           "mi-doc-image-02",
           "mi-avis-canada-insurance-card",
+          "mi-badger-ferry-note",
           "mi-city-chicago",
           "mi-city-grand-rapids",
           "mi-town-ludington",
@@ -526,9 +527,12 @@ export const routeTemplates = [
           "mi-sleeping-bear-pass",
           "mi-sleeping-bear-dunes",
           "mi-pierce-stocking-drive",
-          "mi-town-traverse-city",
+          "mi-glen-haven",
+          "mi-loon-lake",
+          "mi-city-traverse-city",
           "mi-mission-point-lighthouse",
           "mi-old-mission-wine-trail",
+          "mi-traverse-city-wineries",
         ],
         flexible: true,
       },
@@ -543,11 +547,16 @@ export const routeTemplates = [
         suggestedActivities: [
           "mi-torch-lake",
           "mi-torch-lake-kayak",
-          "mi-petoskey-bryant-park",
-          "mi-petoskey-magnus-park",
+          "mi-town-alden",
+          "mi-petoskey-stones-bryant",
+          "mi-petoskey-stones-vans",
+          "mi-petoskey-stones-peterson",
+          "mi-petoskey-stones-magnus",
+          "mi-petoskey-stones-cross-village",
           "mi-town-charlevoix",
           "mi-castle-farms",
-          "mi-town-mackinaw-city",
+          "mi-charlevoix-lighthouse",
+          "mi-city-mackinaw-city",
         ],
         flexible: true,
       },
@@ -560,8 +569,9 @@ export const routeTemplates = [
           "Target: 7:00 AM.\nPark at ferry dock OR call shuttle if staying within ~1.5 miles of dock.\nIf driving to ferry: arrive 30 min prior to departure (7:30 AM).\nParking: $10. Ferry: $52 per person round trip.\nFerry info: 1-800-638-9892.\n\nRide bikes, tour town, eat well. Return ~4:00–4:30 PM.",
         suggestedActivities: [
           "mi-mackinac-island",
+          "mi-mackinac-ferry",
           "mi-mackinac-bridge",
-          "mi-town-mackinaw-city",
+          "mi-city-mackinaw-city",
         ],
         flexible: true,
       },
@@ -572,7 +582,7 @@ export const routeTemplates = [
         type: "explore",
         notes:
           "Second day on the island (flex day). Repeat bikes/town/food, or pick any missed highlights.",
-        suggestedActivities: ["mi-mackinac-island"],
+        suggestedActivities: ["mi-mackinac-island", "mi-mackinac-ferry"],
         flexible: true,
       },
       {
@@ -583,7 +593,11 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Frankenmuth (~2h 50m): Little Bavaria; cute/quaint; good food?\nMidland/Saginaw/Howell (~1h–1h 30m): small livable towns (Howell noted as ‘best overall downtown’).\nOptional: Sarnia, Canada (~2h to border) overnight.",
-        suggestedActivities: ["mi-town-frankenmuth", "mi-town-howell", "mi-town-sarnia"],
+        suggestedActivities: [
+          "mi-town-frankenmuth",
+          "mi-town-howell",
+          "mi-town-sarnia",
+        ],
         flexible: true,
       },
       {
@@ -593,7 +607,7 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Optional: Windsor, Canada (~2h to border).\nDetroit: meet Julia downtown? Overnight at Julia’s.",
-        suggestedActivities: ["mi-town-windsor", "mi-city-detroit"],
+        suggestedActivities: ["mi-city-windsor", "mi-city-detroit"],
         flexible: true,
       },
       {
@@ -603,7 +617,11 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Ann Arbor stop (optional).\nKalamazoo (~1h 46m) for a driving break.\nHome (~3h).",
-        suggestedActivities: ["mi-city-ann-arbor", "mi-city-kalamazoo", "mi-city-chicago"],
+        suggestedActivities: [
+          "mi-city-ann-arbor",
+          "mi-city-kalamazoo",
+          "mi-city-chicago",
+        ],
         flexible: true,
       },
     ],

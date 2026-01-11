@@ -43,47 +43,25 @@ export default function Header({
         </p>
       </div>
 
-      <div className="header-nav">
-        <button
-          type="button"
-          className={`nav-btn ${activeView === "moms" ? "active" : ""}`}
-          onClick={() => onViewChange("moms")}
-        >
-          Mom&#39;s Route
-        </button>
-        <button
-          type="button"
-          className={`nav-btn ${activeView === "builder" ? "active" : ""}`}
-          onClick={() => onViewChange("builder")}
-        >
-          Build &amp; Customize
-        </button>
-      </div>
+      {/* Single view - no nav needed */}
 
       <div className="header-actions">
-        {activeView === "builder" && (
-          <>
-            <select
-              className="template-select"
-              value={selectedTemplateId || ""}
-              onChange={(e) => e.target.value && onLoadTemplate(e.target.value)}
-            >
-              <option value="">Load a template...</option>
-              {templates.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.emoji} {t.name}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={onSaveTemplate}
-            >
-              Save as Template
-            </button>
-          </>
-        )}
+        <select
+          className="template-select"
+          value={selectedTemplateId || ""}
+          onChange={(e) => e.target.value && onLoadTemplate(e.target.value)}
+        >
+          <option value="">Load a trip...</option>
+          <option value="blank">✨ Start Fresh (Blank Trip)</option>
+          {templates.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.emoji} {t.name}
+            </option>
+          ))}
+        </select>
+        <button type="button" className="btn-primary" onClick={onSaveTemplate}>
+          Save as Template
+        </button>
       </div>
 
       <div className="header-stats">

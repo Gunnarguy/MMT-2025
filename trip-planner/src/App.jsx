@@ -2,14 +2,11 @@ import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./lib/leafletConfig";
 import "./styles/app.css";
-import "./styles/moms-route.css";
 
 import Header from "./components/Header";
 import LoginScreen from "./components/LoginScreen";
-import MomsRouteView from "./components/MomsRouteView";
 import TripBuilderView from "./components/TripBuilderView";
 
-import { momsRoute } from "./data/momsRoute";
 import { getRouteTemplate, routeTemplates } from "./data/templates";
 import {
   fetchSharedTripState,
@@ -63,7 +60,9 @@ export default function App() {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = onAuthStateChange((event, session) => {
       if (session?.user && isEmailAllowed(session.user.email)) {
         setUser(session.user);
       } else {
@@ -83,8 +82,8 @@ export default function App() {
   if (authLoading) {
     return (
       <div className="login-screen">
-        <div className="login-card" style={{ textAlign: 'center' }}>
-          <span style={{ fontSize: '2rem' }}>🦞</span>
+        <div className="login-card" style={{ textAlign: "center" }}>
+          <span style={{ fontSize: "2rem" }}>🦞</span>
           <p>Loading...</p>
         </div>
       </div>
@@ -102,9 +101,7 @@ export default function App() {
 
 function AuthenticatedApp({ user, onSignOut }) {
   const savedTrip = useMemo(() => loadTrip(STORAGE_KEY), []);
-  const [activeView, setActiveView] = useState(() =>
-    savedTrip ? "builder" : "moms"
-  );
+  const [activeView, setActiveView] = useState("builder");
   const [customActivities, setCustomActivities] = useState(() =>
     loadCustomActivities(CUSTOM_ACTIVITIES_KEY)
   );
@@ -115,8 +112,14 @@ function AuthenticatedApp({ user, onSignOut }) {
     supabaseEnabled ? "syncing" : "offline"
   );
 
+  // Only show Mom's trips + any custom templates the user saved
+  const momsTripIds = ["moms-original", "girls-michigan"];
   const templates = useMemo(
-    () => mergeTemplates(routeTemplates, customTemplates),
+    () =>
+      mergeTemplates(
+        routeTemplates.filter((t) => momsTripIds.includes(t.id)),
+        customTemplates
+      ),
     [customTemplates]
   );
 
@@ -130,14 +133,6 @@ function AuthenticatedApp({ user, onSignOut }) {
   });
 
   const tripStats = useMemo(() => getTripStats(trip.days), [trip.days]);
-  const momsStats = useMemo(() => {
-    const activities = momsRoute.stops.reduce(
-      (sum, stop) => sum + stop.activities.length,
-      0
-    );
-    return { days: momsRoute.stops.length, activities };
-  }, []);
-  const headerStats = activeView === "moms" ? momsStats : tripStats;
 
   const clientId = useMemo(() => getClientId(CLIENT_ID_KEY), []);
   const [remoteReady, setRemoteReady] = useState(false);
@@ -265,6 +260,10 @@ function AuthenticatedApp({ user, onSignOut }) {
   }, [trip, customActivities, remoteReady, clientId]);
 
   const handleLoadTemplate = (templateId) => {
+    if (templateId === "blank") {
+      setTrip(buildBlankTrip({ dayCount: 7, name: "My Custom Trip" }));
+      return;
+    }
     const template = templates.find((item) => item.id === templateId);
     if (!template) return;
     setTrip(buildTripFromTemplate(template));
@@ -280,22 +279,16 @@ function AuthenticatedApp({ user, onSignOut }) {
     setCustomTemplates((prev) => [...prev, next]);
   };
 
-  const handleCopyToBuilder = () => {
-    handleLoadTemplate("moms-original");
-    setActiveView("builder");
-  };
-
   return (
     <div className="app">
       <Header
         activeView={activeView}
         onViewChange={setActiveView}
-        tripStats={headerStats}
+        tripStats={tripStats}
         templates={templates}
         selectedTemplateId={trip.templateId}
         onLoadTemplate={(templateId) => {
           handleLoadTemplate(templateId);
-          setActiveView("builder");
         }}
         onSaveTemplate={handleSaveTemplate}
         syncStatus={syncStatus}
@@ -304,16 +297,12 @@ function AuthenticatedApp({ user, onSignOut }) {
       />
 
       <main className="main">
-        {activeView === "moms" ? (
-          <MomsRouteView onCopyToBuilder={handleCopyToBuilder} />
-        ) : (
-          <TripBuilderView
-            trip={trip}
-            setTrip={setTrip}
-            customActivities={customActivities}
-            setCustomActivities={setCustomActivities}
-          />
-        )}
+        <TripBuilderView
+          trip={trip}
+          setTrip={setTrip}
+          customActivities={customActivities}
+          setCustomActivities={setCustomActivities}
+        />
       </main>
 
       <footer className="footer">
