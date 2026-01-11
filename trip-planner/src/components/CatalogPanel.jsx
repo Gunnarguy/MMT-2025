@@ -18,6 +18,106 @@ function normalizePlaceLocation(displayName) {
   return parts.slice(1).join(", ");
 }
 
+// Map OSM types to icons and categories
+function getPlaceTypeInfo(props) {
+  const osmKey = String(props?.osm_key || "").toLowerCase();
+  const osmValue = String(props?.osm_value || "").toLowerCase();
+  const type = props?.type || "";
+
+  // Restaurants & Food
+  if (
+    osmValue === "restaurant" ||
+    osmValue === "fast_food" ||
+    osmValue === "food_court"
+  ) {
+    return { icon: "🍽️", label: "Restaurant", category: "food" };
+  }
+  if (osmValue === "cafe" || osmValue === "coffee") {
+    return { icon: "☕", label: "Café", category: "food" };
+  }
+  if (osmValue === "bar" || osmValue === "pub" || osmValue === "brewery") {
+    return { icon: "🍺", label: "Bar", category: "food" };
+  }
+  if (osmValue === "bakery") {
+    return { icon: "🥐", label: "Bakery", category: "food" };
+  }
+  if (osmValue === "ice_cream") {
+    return { icon: "🍦", label: "Ice Cream", category: "food" };
+  }
+  if (osmKey === "amenity" && osmValue === "food") {
+    return { icon: "🍽️", label: "Food", category: "food" };
+  }
+
+  // Attractions & Tourism
+  if (osmValue === "museum" || osmValue === "gallery") {
+    return { icon: "🏛️", label: "Museum", category: "attraction" };
+  }
+  if (osmValue === "attraction" || osmValue === "viewpoint") {
+    return { icon: "📸", label: "Attraction", category: "attraction" };
+  }
+  if (osmValue === "theme_park" || osmValue === "amusement_arcade") {
+    return { icon: "🎢", label: "Theme Park", category: "attraction" };
+  }
+  if (osmValue === "zoo" || osmValue === "aquarium") {
+    return { icon: "🦁", label: "Zoo/Aquarium", category: "attraction" };
+  }
+  if (osmValue === "beach") {
+    return { icon: "🏖️", label: "Beach", category: "attraction" };
+  }
+  if (osmKey === "natural" || osmValue === "park" || osmValue === "nature_reserve") {
+    return { icon: "🌲", label: "Nature", category: "attraction" };
+  }
+  if (osmValue === "national_park" || osmValue === "state_park") {
+    return { icon: "🏞️", label: "Park", category: "attraction" };
+  }
+
+  // Lodging
+  if (
+    osmValue === "hotel" ||
+    osmValue === "motel" ||
+    osmValue === "hostel" ||
+    osmValue === "guest_house"
+  ) {
+    return { icon: "🏨", label: "Hotel", category: "lodging" };
+  }
+  if (osmValue === "camp_site" || osmValue === "caravan_site") {
+    return { icon: "⛺", label: "Camping", category: "lodging" };
+  }
+
+  // Shopping
+  if (osmKey === "shop" || osmValue === "mall" || osmValue === "marketplace") {
+    return { icon: "🛍️", label: "Shopping", category: "shopping" };
+  }
+
+  // Transport
+  if (osmValue === "airport" || osmValue === "aerodrome") {
+    return { icon: "✈️", label: "Airport", category: "transport" };
+  }
+  if (osmValue === "station" || osmValue === "bus_station") {
+    return { icon: "🚉", label: "Station", category: "transport" };
+  }
+  if (osmValue === "fuel" || osmValue === "gas_station") {
+    return { icon: "⛽", label: "Gas Station", category: "transport" };
+  }
+
+  // Places/Cities
+  if (type === "city" || osmValue === "city") {
+    return { icon: "🏙️", label: "City", category: "city" };
+  }
+  if (type === "town" || osmValue === "town") {
+    return { icon: "🏘️", label: "Town", category: "city" };
+  }
+  if (type === "village" || osmValue === "village") {
+    return { icon: "🏡", label: "Village", category: "city" };
+  }
+  if (type === "locality" || type === "neighbourhood") {
+    return { icon: "📍", label: "Area", category: "city" };
+  }
+
+  // Default
+  return { icon: "📍", label: "Place", category: "custom" };
+}
+
 function resolveHitStateAbbr(hit) {
   const stateCode = String(hit?.address?.state_code || "")
     .toUpperCase()
@@ -197,7 +297,7 @@ export default function CatalogPanel({
 
         const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(
           q
-        )}&limit=15${bboxParam}`;
+        )}&limit=20${bboxParam}`;
         const res = await fetch(url, { signal: controller.signal });
         if (!res.ok) {
           setPlaceResults([]);
@@ -230,6 +330,9 @@ export default function CatalogPanel({
                   }
                 }
 
+                // Get place type info for icon and category
+                const typeInfo = getPlaceTypeInfo(props);
+
                 // Build display name from Photon properties
                 const nameParts = [props.name];
                 if (props.city && props.city !== props.name)
@@ -248,8 +351,14 @@ export default function CatalogPanel({
                 return {
                   id: String(props.osm_id || `${lat},${lon}`),
                   displayName,
+                  name: props.name || "",
                   coordinates: [lat, lon],
                   stateAbbr: resolvedState,
+                  typeInfo,
+                  city: props.city || "",
+                  state: props.state || "",
+                  street: props.street || "",
+                  housenumber: props.housenumber || "",
                 };
               })
               .filter(Boolean)
@@ -264,22 +373,32 @@ export default function CatalogPanel({
             const distKm = placeSearchCenter
               ? haversineKm(placeSearchCenter, r.coordinates)
               : null;
-            return { ...r, _idx: idx, _inAllowed: inAllowed, _distKm: distKm };
+            // Prioritize POIs (restaurants, attractions) over generic places/cities
+            const isPOI = r.typeInfo?.category !== "city";
+            return {
+              ...r,
+              _idx: idx,
+              _inAllowed: inAllowed,
+              _distKm: distKm,
+              _isPOI: isPOI,
+            };
           })
           .sort((a, b) => {
-            // 1) Prefer inferred trip states first
+            // 1) Prefer POIs (restaurants, attractions) over cities
+            if (a._isPOI !== b._isPOI) return a._isPOI ? -1 : 1;
+            // 2) Prefer inferred trip states first
             if (a._inAllowed !== b._inAllowed) return a._inAllowed ? -1 : 1;
-            // 2) Then prefer nearer to the selected day / trip area
+            // 3) Then prefer nearer to the selected day / trip area
             const ad = a._distKm;
             const bd = b._distKm;
             if (ad != null && bd != null && ad !== bd) return ad - bd;
             if (ad != null && bd == null) return -1;
             if (ad == null && bd != null) return 1;
-            // 3) Fall back to original order
+            // 4) Fall back to original order
             return a._idx - b._idx;
           });
 
-        setPlaceResults(ranked.slice(0, 8));
+        setPlaceResults(ranked.slice(0, 10));
       } catch (e) {
         if (e?.name !== "AbortError") {
           setPlaceResults([]);
@@ -668,75 +787,76 @@ export default function CatalogPanel({
       ) : (
         <>
           <div className="custom-place-form">
-            <h4>Add a place</h4>
-            <p>Type a place name and pick a result.</p>
+            <h4>Search places</h4>
+            <p className="place-search-hint">
+              Find restaurants, attractions, hotels, or any place
+            </p>
             <input
               type="text"
-              className="search-input"
-              placeholder="Search places (e.g., Mike's Pastry Boston)"
+              className="search-input place-search-input"
+              placeholder="Try: pizza, coffee shop, museum, hotel..."
               value={placeQuery}
               onChange={(e) => setPlaceQuery(e.target.value)}
             />
-            {placeLoading && <p className="no-results">Searching…</p>}
+            {placeLoading && <p className="place-loading">🔍 Searching…</p>}
             {!placeLoading &&
               placeQuery.trim() &&
               placeResults.length === 0 && (
-                <p className="no-results">No results.</p>
+                <p className="no-results">
+                  No results found. Try a different search.
+                </p>
               )}
             {placeResults.length > 0 && (
-              <div className="catalog-list">
-                {placeResults.map((hit) => (
-                  <div key={hit.id} className="catalog-item custom-item">
+              <div className="place-results-list">
+                {placeResults.map((hit) => {
+                  const placeName =
+                    hit.name ||
+                    normalizePlaceLabel(hit.displayName) ||
+                    placeQuery.trim();
+                  const placeAddr = [hit.street, hit.housenumber]
+                    .filter(Boolean)
+                    .join(" ");
+                  const placeCity = [hit.city, hit.state]
+                    .filter(Boolean)
+                    .join(", ");
+                  const subline =
+                    [placeAddr, placeCity].filter(Boolean).join(" · ") ||
+                    normalizePlaceLocation(hit.displayName);
+
+                  return (
                     <button
+                      key={hit.id}
                       type="button"
-                      className="item-main"
+                      className="place-result-item"
+                      disabled={!canQuickAdd}
                       onClick={() => {
                         if (!canQuickAdd) return;
                         onQuickAddCustomPlace({
                           dayId: selectedDay?.id,
-                          name:
-                            normalizePlaceLabel(hit.displayName) ||
-                            placeQuery.trim(),
-                          location: normalizePlaceLocation(hit.displayName),
+                          name: placeName,
+                          location:
+                            placeCity ||
+                            normalizePlaceLocation(hit.displayName),
                           coordinates: hit.coordinates,
+                          category: hit.typeInfo?.category || "custom",
                         });
                         resetPlaceSearch();
                       }}
                     >
-                      <span className="item-icon">
-                        {categories.custom?.icon || "*"}
+                      <span className="place-icon">
+                        {hit.typeInfo?.icon || "📍"}
                       </span>
-                      <div className="item-info">
-                        <strong>
-                          {normalizePlaceLabel(hit.displayName) ||
-                            placeQuery.trim()}
-                        </strong>
-                        <small>{hit.displayName}</small>
+                      <div className="place-info">
+                        <strong className="place-name">{placeName}</strong>
+                        <span className="place-type-badge">
+                          {hit.typeInfo?.label || "Place"}
+                        </span>
+                        <small className="place-subline">{subline}</small>
                       </div>
+                      <span className="place-add-indicator">+</span>
                     </button>
-                    <div className="item-actions">
-                      <button
-                        className="add-btn"
-                        type="button"
-                        disabled={!canQuickAdd}
-                        onClick={() => {
-                          if (!canQuickAdd) return;
-                          onQuickAddCustomPlace({
-                            dayId: selectedDay?.id,
-                            name:
-                              normalizePlaceLabel(hit.displayName) ||
-                              placeQuery.trim(),
-                            location: normalizePlaceLocation(hit.displayName),
-                            coordinates: hit.coordinates,
-                          });
-                          resetPlaceSearch();
-                        }}
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
