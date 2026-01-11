@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { categories, regions } from "../data/catalog";
 import { formatHours } from "../utils/formatters";
+import { buildViewboxFromStates } from "../utils/usStates";
 
 function normalizePlaceLabel(displayName) {
   if (!displayName) return "";
@@ -29,25 +30,13 @@ function resolveHitStateAbbr(hit) {
   const isoState = maybeIso.startsWith("US-") ? maybeIso.slice(3) : "";
   if (isoState) return isoState;
 
+  // Also handle Canadian provinces
+  const caIsoState = maybeIso.startsWith("CA-") ? maybeIso.slice(3) : "";
+  if (caIsoState) return caIsoState;
+
   const displayUpper = String(hit?.display_name || "").toUpperCase();
   const displayMatch = displayUpper.match(/,\s*([A-Z]{2})\s*(,|$)/);
   return displayMatch?.[1] || "";
-}
-
-function buildNortheastViewbox(allowedStatesUpper) {
-  const allowed = Array.isArray(allowedStatesUpper) ? allowedStatesUpper : [];
-  const set = new Set(allowed);
-  const NE = ["ME", "NH", "VT", "MA", "CT", "RI", "NY"]; // bias toward trip area
-  const hasNE = NE.some((abbr) => set.has(abbr));
-  if (!hasNE) return null;
-
-  // lon_left, lat_top, lon_right, lat_bottom
-  return {
-    left: -73.8,
-    top: 47.6,
-    right: -66.8,
-    bottom: 40.9,
-  };
 }
 
 function haversineKm(a, b) {
@@ -197,18 +186,19 @@ export default function CatalogPanel({
           : [];
         const allowedSet = new Set(allowed);
 
-        const viewbox = buildNortheastViewbox(allowed);
+        // Build viewbox from detected trip states (works for any US state or Canadian province)
+        const viewbox = buildViewboxFromStates(allowed);
         const viewboxParam = viewbox
           ? `&viewbox=${encodeURIComponent(
               `${viewbox.left},${viewbox.top},${viewbox.right},${viewbox.bottom}`
-            )}`
+            )}&bounded=0`
           : "";
 
         const countryCodes = allowCanadaPlaces ? "us,ca" : "us";
 
         const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&countrycodes=${encodeURIComponent(
           countryCodes
-        )}&limit=10${viewboxParam}&q=${encodeURIComponent(
+        )}&limit=15${viewboxParam}&q=${encodeURIComponent(
           q
         )}&email=${encodeURIComponent("mmt-trip-planner@example.com")}`;
         const res = await fetch(url, { signal: controller.signal });

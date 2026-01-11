@@ -134,13 +134,31 @@ export default function TripBuilderView({
       if (day?.notes) texts.push(day.notes);
     });
     const haystack = texts.join(" ").toLowerCase();
+    // Enable Canada search for trips near the border or mentioning Canada
     return (
       haystack.includes("canada") ||
+      haystack.includes("ontario") ||
+      haystack.includes("toronto") ||
       haystack.includes("montreal") ||
       haystack.includes("québec") ||
       haystack.includes("quebec") ||
       haystack.includes(" qc") ||
-      haystack.includes(",qc")
+      haystack.includes(",qc") ||
+      haystack.includes("michigan") || // MI borders Canada
+      haystack.includes("mackinac") ||
+      haystack.includes("sault") ||
+      haystack.includes(" mi,") ||
+      haystack.includes(" mi ") ||
+      haystack.includes("maine") || // ME borders Canada
+      haystack.includes("new york") || // NY borders Canada
+      haystack.includes("vermont") || // VT borders Canada
+      haystack.includes("new hampshire") || // NH near Canada
+      haystack.includes("minnesota") || // MN borders Canada
+      haystack.includes("north dakota") || // ND borders Canada
+      haystack.includes("montana") || // MT borders Canada
+      haystack.includes("washington") || // WA borders Canada
+      haystack.includes("idaho") || // ID borders Canada
+      haystack.includes("alaska") // AK borders Canada
     );
   }, [trip?.startLocation, trip?.endLocation, trip?.days]);
 
