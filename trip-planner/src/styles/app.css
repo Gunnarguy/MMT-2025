@@ -1761,7 +1761,7 @@
 .board-grid {
   display: grid;
   gap: 0.8rem;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
 
 .board-column {
@@ -1769,7 +1769,6 @@
   padding: 0.7rem;
   background: var(--cloud-100);
   min-height: 200px;
-  min-width: 140px;
   border: 2px solid transparent;
 }
 
@@ -1812,18 +1811,20 @@
 }
 .board-column-header h4 {
   margin: 0;
-  white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .board-column-header p {
   margin: 0.2rem 0 0;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--ink-500);
-  white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .board-count {
