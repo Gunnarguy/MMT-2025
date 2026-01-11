@@ -1769,6 +1769,7 @@
   padding: 0.7rem;
   background: var(--cloud-100);
   min-height: 200px;
+  min-width: 140px;
   border: 2px solid transparent;
 }
 
@@ -1779,14 +1780,20 @@
 .board-column-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.6rem;
 }
 
+.board-column-header>div:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
 .board-header-actions {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .column-drag-handle {
@@ -1805,12 +1812,18 @@
 }
 .board-column-header h4 {
   margin: 0;
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .board-column-header p {
   margin: 0.2rem 0 0;
   font-size: 0.75rem;
   color: var(--ink-500);
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .board-count {
