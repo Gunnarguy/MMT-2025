@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { categories, regions } from "../data/catalog";
 import { formatHours } from "../utils/formatters";
-import { buildViewboxFromStates } from "../utils/usStates";
+import { buildViewboxFromStates, stateNameToAbbr } from "../utils/usStates";
 
 function normalizePlaceLabel(displayName) {
   if (!displayName) return "";
@@ -342,11 +342,14 @@ export default function CatalogPanel({
                 if (props.country) nameParts.push(props.country);
                 const displayName = nameParts.filter(Boolean).join(", ");
 
-                const stateAbbr = String(props.state || "")
-                  .toUpperCase()
-                  .trim();
-                // Try to get 2-letter abbreviation from state name
-                const resolvedState = stateAbbr.length === 2 ? stateAbbr : "";
+                // Resolve state abbreviation from full name or 2-letter code
+                const rawState = String(props.state || "").trim();
+                let resolvedState = "";
+                if (rawState.length === 2) {
+                  resolvedState = rawState.toUpperCase();
+                } else if (rawState) {
+                  resolvedState = stateNameToAbbr(rawState) || "";
+                }
 
                 return {
                   id: String(props.osm_id || `${lat},${lon}`),
@@ -828,26 +831,15 @@ export default function CatalogPanel({
                     [placeAddr, placeCity].filter(Boolean).join(" · ") ||
                     normalizePlaceLocation(hit.displayName);
 
+                  const placeData = {
+                    name: placeName,
+                    location: placeCity || normalizePlaceLocation(hit.displayName),
+                    coordinates: hit.coordinates,
+                    category: hit.typeInfo?.category || "custom",
+                  };
+
                   return (
-                    <button
-                      key={hit.id}
-                      type="button"
-                      className="place-result-item"
-                      disabled={!canQuickAdd}
-                      onClick={() => {
-                        if (!canQuickAdd) return;
-                        onQuickAddCustomPlace({
-                          dayId: selectedDay?.id,
-                          name: placeName,
-                          location:
-                            placeCity ||
-                            normalizePlaceLocation(hit.displayName),
-                          coordinates: hit.coordinates,
-                          category: hit.typeInfo?.category || "custom",
-                        });
-                        resetPlaceSearch();
-                      }}
-                    >
+                    <div key={hit.id} className="place-result-item">
                       <span className="place-icon">
                         {hit.typeInfo?.icon || "📍"}
                       </span>
@@ -858,8 +850,33 @@ export default function CatalogPanel({
                         </span>
                         <small className="place-subline">{subline}</small>
                       </div>
-                      <span className="place-add-indicator">+</span>
-                    </button>
+                      <div className="place-actions">
+                        <button
+                          type="button"
+                          className="place-action-btn save"
+                          title="Save to your library"
+                          onClick={() => {
+                            onQuickAddCustomPlace({ ...placeData, dayId: null });
+                            resetPlaceSearch();
+                          }}
+                        >
+                          💾
+                        </button>
+                        <button
+                          type="button"
+                          className="place-action-btn add"
+                          disabled={!selectedDay?.id}
+                          title={selectedDay?.id ? `Add to Day ${selectedDay.dayNumber}` : "Select a day first"}
+                          onClick={() => {
+                            if (!selectedDay?.id) return;
+                            onQuickAddCustomPlace({ ...placeData, dayId: selectedDay.id });
+                            resetPlaceSearch();
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
                   );
                 })}
               </div>

@@ -169,19 +169,28 @@ export default function TripBuilderView({
 
   const filteredCatalog = useMemo(() => {
     // Filter out cities, lodging, and items without coordinates (info/checklist items)
-    let results = activityCatalog.filter(
+    let catalogResults = activityCatalog.filter(
       (activity) =>
         activity.category !== "city" &&
         activity.category !== "lodging" &&
         activity.coordinates // Only show mappable activities
     );
 
-    // Include custom activities (they always have coordinates)
-    const customList = Object.values(customActivities || {}).map((place) => ({
-      ...place,
-      isCustom: true, // Mark as custom for visual distinction
-    }));
-    results = [...results, ...customList];
+    // Custom activities go at the TOP of the list (newest first)
+    const customList = Object.values(customActivities || {})
+      .map((place) => ({
+        ...place,
+        isCustom: true, // Mark as custom for visual distinction
+      }))
+      .sort((a, b) => {
+        // Sort by ID (which contains timestamp) - newest first
+        const aTime = parseInt(a.id?.replace('custom-', '') || '0', 10);
+        const bTime = parseInt(b.id?.replace('custom-', '') || '0', 10);
+        return bTime - aTime;
+      });
+    
+    // Custom items first, then catalog items
+    let results = [...customList, ...catalogResults];
 
     if (catalogFilter !== "all") {
       results = results.filter(
