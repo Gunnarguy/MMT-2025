@@ -538,12 +538,29 @@
   padding: 0.45rem 0.6rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mode-btn:hover:not(.active) {
+  background: #f8fafc;
+  border-color: rgba(27, 36, 48, 0.25);
 }
 
 .mode-btn.active {
   background: var(--sea-500);
   color: #fff;
   border-color: var(--sea-500);
+}
+
+/* Custom place badge */
+.badge-custom {
+  margin-left: 0.3rem;
+  font-size: 0.85em;
+}
+
+.catalog-item.custom-item {
+  background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+  border-left: 3px solid #facc15;
 }
 
 .catalog-search,

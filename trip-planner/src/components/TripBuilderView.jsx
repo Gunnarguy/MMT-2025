@@ -176,13 +176,20 @@ export default function TripBuilderView({
         activity.coordinates // Only show mappable activities
     );
 
+    // Include custom activities (they always have coordinates)
+    const customList = Object.values(customActivities || {}).map((place) => ({
+      ...place,
+      isCustom: true, // Mark as custom for visual distinction
+    }));
+    results = [...results, ...customList];
+
     if (catalogFilter !== "all") {
       results = results.filter(
-        (activity) => activity.category === catalogFilter
+        (activity) => activity.category === catalogFilter || activity.isCustom
       );
     }
     if (regionFilter !== "all") {
-      results = results.filter((activity) => activity.region === regionFilter);
+      results = results.filter((activity) => activity.region === regionFilter || activity.isCustom);
     }
     if (showMomOnly) {
       results = results.filter((activity) => activity.momMentioned);
@@ -198,7 +205,7 @@ export default function TripBuilderView({
       );
     }
     return results;
-  }, [catalogFilter, regionFilter, showMomOnly, searchQuery]);
+  }, [catalogFilter, regionFilter, showMomOnly, searchQuery, customActivities]);
 
   const addActivityToDay = useCallback(
     (dayId, activityId) => {

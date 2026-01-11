@@ -432,21 +432,21 @@ export default function CatalogPanel({
         aria-label="Resize catalog panel"
       />
       <div className="catalog-header">
-        <h2>{searchMode === "catalog" ? "Activities" : "Your Places"}</h2>
+        <h2>{searchMode === "catalog" ? "Browse Places" : "Add New Place"}</h2>
         <div className="search-mode-toggle">
           <button
             className={`mode-btn ${searchMode === "catalog" ? "active" : ""}`}
             onClick={() => onModeChange("catalog")}
             type="button"
           >
-            Catalog
+            Browse
           </button>
           <button
             className={`mode-btn ${searchMode === "custom" ? "active" : ""}`}
             onClick={() => onModeChange("custom")}
             type="button"
           >
-            Custom
+            + Add New
           </button>
         </div>
       </div>
@@ -525,12 +525,12 @@ export default function CatalogPanel({
                 key={activity.id}
                 className={`catalog-item ${
                   showExpandedDetails ? "expanded" : ""
-                }`}
+                } ${activity.isCustom ? "custom-item" : ""}`}
               >
                 {/* Compact header row */}
                 <div className="item-header">
                   <span className="item-icon">
-                    {categories[activity.category]?.icon}
+                    {categories[activity.category]?.icon || "📍"}
                   </span>
                   <div className="item-info">
                     <strong>
@@ -539,6 +539,11 @@ export default function CatalogPanel({
                         <span className="icon-mom" title="Mom Mentioned This!">
                           {" "}
                           ❤️
+                        </span>
+                      )}
+                      {activity.isCustom && (
+                        <span className="badge-custom" title="Your custom place">
+                          ✨
                         </span>
                       )}
                     </strong>
