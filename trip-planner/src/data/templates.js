@@ -508,6 +508,10 @@ export const routeTemplates = [
           "mi-doc-image-01",
           "mi-doc-image-02",
           "mi-avis-canada-insurance-card",
+          "mi-city-chicago",
+          "mi-city-grand-rapids",
+          "mi-town-ludington",
+          "mi-ludington-lighthouse",
         ],
         flexible: true,
       },
@@ -518,7 +522,14 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Sleeping Bear Dunes (~2h). NEED PASS per car ($25).\nFor <3 hour visit: Pierce Stocking Scenic Drive (7-mile), Dune Climb, Glen Haven + Maritime Museum, Loon Lake.\n\nTraverse City (~38m): wineries/distilleries, city trail, tour town, lighthouse, eat well.\nOvernight suggestion: Traverse City.",
-        suggestedActivities: ["mi-sleeping-bear-pass"],
+        suggestedActivities: [
+          "mi-sleeping-bear-pass",
+          "mi-sleeping-bear-dunes",
+          "mi-pierce-stocking-drive",
+          "mi-town-traverse-city",
+          "mi-mission-point-lighthouse",
+          "mi-old-mission-wine-trail",
+        ],
         flexible: true,
       },
       {
@@ -529,7 +540,15 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Torch Lake (~40m): drive around the lake; consider Alden. Clear-bottom kayaks or a boat ride.\n\nPetoskey stone search spots:\n- Bryant Park Beach — 1097 Peninsula Dr, Traverse City, MI 49686\n- Van’s Beach — 205 Cedar St, Leland, MI 49654\n- Peterson Park — 10001 E Peterson Park Rd, Northport, MI 49670\n- Magnus Park — 901 West Lake St, Petoskey, MI 49770\n- Cross Village Beach — 100 Park Ln, Harbor Springs, MI 49740\n\nCharlevoix (~23m): lock, Castle Farms, shop town, lighthouse.\n\nMackinac City (~1h 10m): base for Mackinac Island. Suggest 2 nights.",
-        suggestedActivities: [],
+        suggestedActivities: [
+          "mi-torch-lake",
+          "mi-torch-lake-kayak",
+          "mi-petoskey-bryant-park",
+          "mi-petoskey-magnus-park",
+          "mi-town-charlevoix",
+          "mi-castle-farms",
+          "mi-town-mackinaw-city",
+        ],
         flexible: true,
       },
       {
@@ -539,7 +558,11 @@ export const routeTemplates = [
         type: "explore",
         notes:
           "Target: 7:00 AM.\nPark at ferry dock OR call shuttle if staying within ~1.5 miles of dock.\nIf driving to ferry: arrive 30 min prior to departure (7:30 AM).\nParking: $10. Ferry: $52 per person round trip.\nFerry info: 1-800-638-9892.\n\nRide bikes, tour town, eat well. Return ~4:00–4:30 PM.",
-        suggestedActivities: [],
+        suggestedActivities: [
+          "mi-mackinac-island",
+          "mi-mackinac-bridge",
+          "mi-town-mackinaw-city",
+        ],
         flexible: true,
       },
       {
@@ -549,7 +572,7 @@ export const routeTemplates = [
         type: "explore",
         notes:
           "Second day on the island (flex day). Repeat bikes/town/food, or pick any missed highlights.",
-        suggestedActivities: [],
+        suggestedActivities: ["mi-mackinac-island"],
         flexible: true,
       },
       {
@@ -560,7 +583,7 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Frankenmuth (~2h 50m): Little Bavaria; cute/quaint; good food?\nMidland/Saginaw/Howell (~1h–1h 30m): small livable towns (Howell noted as ‘best overall downtown’).\nOptional: Sarnia, Canada (~2h to border) overnight.",
-        suggestedActivities: [],
+        suggestedActivities: ["mi-town-frankenmuth", "mi-town-howell", "mi-town-sarnia"],
         flexible: true,
       },
       {
@@ -570,7 +593,7 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Optional: Windsor, Canada (~2h to border).\nDetroit: meet Julia downtown? Overnight at Julia’s.",
-        suggestedActivities: [],
+        suggestedActivities: ["mi-town-windsor", "mi-city-detroit"],
         flexible: true,
       },
       {
@@ -580,7 +603,7 @@ export const routeTemplates = [
         type: "drive",
         notes:
           "Ann Arbor stop (optional).\nKalamazoo (~1h 46m) for a driving break.\nHome (~3h).",
-        suggestedActivities: [],
+        suggestedActivities: ["mi-city-ann-arbor", "mi-city-kalamazoo", "mi-city-chicago"],
         flexible: true,
       },
     ],
