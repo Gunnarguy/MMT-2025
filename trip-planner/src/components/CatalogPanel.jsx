@@ -367,6 +367,12 @@ export default function CatalogPanel({
               .filter(Boolean)
           : [];
 
+        // Extract the core search term (without state) for name matching
+        const searchLower = q
+          .toLowerCase()
+          .replace(/,?\s*(mi|michigan|usa?|united states)$/i, "")
+          .trim();
+
         const ranked = [...normalized]
           .map((r, idx) => {
             const inAllowed =
@@ -376,28 +382,46 @@ export default function CatalogPanel({
             const distKm = placeSearchCenter
               ? haversineKm(placeSearchCenter, r.coordinates)
               : null;
+
+            // Check if name is an exact or close match to search query
+            const nameLower = (r.name || "").toLowerCase();
+            const isExactMatch = nameLower === searchLower;
+            const isStartsWithMatch =
+              nameLower.startsWith(searchLower) ||
+              searchLower.startsWith(nameLower);
+
             // Prioritize POIs (restaurants, attractions) over generic places/cities
+            // BUT not if the search closely matches a city name
             const isPOI = r.typeInfo?.category !== "city";
+
             return {
               ...r,
               _idx: idx,
               _inAllowed: inAllowed,
               _distKm: distKm,
               _isPOI: isPOI,
+              _isExactMatch: isExactMatch,
+              _isStartsWithMatch: isStartsWithMatch,
             };
           })
           .sort((a, b) => {
-            // 1) Prefer POIs (restaurants, attractions) over cities
-            if (a._isPOI !== b._isPOI) return a._isPOI ? -1 : 1;
-            // 2) Prefer inferred trip states first
+            // 1) Exact name matches come first (e.g., searching "Cadillac" -> Cadillac city)
+            if (a._isExactMatch !== b._isExactMatch)
+              return a._isExactMatch ? -1 : 1;
+            // 2) Starts-with matches next (e.g., "Cadillac" matches "Cadillac Township")
+            if (a._isStartsWithMatch !== b._isStartsWithMatch)
+              return a._isStartsWithMatch ? -1 : 1;
+            // 3) Prefer inferred trip states
             if (a._inAllowed !== b._inAllowed) return a._inAllowed ? -1 : 1;
-            // 3) Then prefer nearer to the selected day / trip area
+            // 4) Then prefer POIs (restaurants, attractions) over generic cities
+            if (a._isPOI !== b._isPOI) return a._isPOI ? -1 : 1;
+            // 5) Then prefer nearer to the selected day / trip area
             const ad = a._distKm;
             const bd = b._distKm;
             if (ad != null && bd != null && ad !== bd) return ad - bd;
             if (ad != null && bd == null) return -1;
             if (ad == null && bd != null) return 1;
-            // 4) Fall back to original order
+            // 6) Fall back to original order
             return a._idx - b._idx;
           });
 
