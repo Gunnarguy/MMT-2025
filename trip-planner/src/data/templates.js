@@ -479,6 +479,116 @@ export const routeTemplates = [
   },
 
   {
+    id: "girls-michigan",
+    name: "Girls Trip to Michigan",
+    emoji: "🌊",
+    source: "Girls Trip to Michigan.docx",
+    description:
+      "A cohesive Michigan road trip plan (with optional Canada detour) imported from the original planning document.",
+    duration: "8 days",
+    totalMiles: "TBD",
+    driveTime: "TBD",
+    flyIn: "Chicago (meet-up)",
+    flyOut: "Chicago (return) or flexible",
+    vibe: "Lakes, dunes, wineries, and island bikes",
+    bestFor: ["Friends trip", "Scenic drives", "Food + towns"],
+    countries: ["USA", "Canada"],
+    states: ["IL", "MI", "ON"],
+
+    days: [
+      {
+        dayNumber: 1,
+        label: "Chicago → Ludington",
+        location: "Chicago, IL → Grand Rapids → Ludington, MI",
+        type: "drive",
+        notes:
+          "Converge in Chicago (Aug 28/29). Pick up rental car Aug 29; load up and leave by 2:00 PM (earlier preferred).\n\nStops: Grand Rapids (~3h 18m), then Ludington (~1h 45m).\nLudington ideas: climb lighthouse, Pine Village, Port Museum, kayak on the lake.\nOvernight in Ludington is optional depending on departure time.\n\nSee 'Michigan Trip – Logistics & Costs' item for full booking/budget details.",
+        suggestedActivities: [
+          "mi-logistics-costs",
+          "mi-doc-image-01",
+          "mi-doc-image-02",
+          "mi-avis-canada-insurance-card",
+        ],
+        flexible: true,
+      },
+      {
+        dayNumber: 2,
+        label: "Sleeping Bear Dunes → Traverse City",
+        location: "Ludington, MI → Sleeping Bear Dunes → Traverse City, MI",
+        type: "drive",
+        notes:
+          "Sleeping Bear Dunes (~2h). NEED PASS per car ($25).\nFor <3 hour visit: Pierce Stocking Scenic Drive (7-mile), Dune Climb, Glen Haven + Maritime Museum, Loon Lake.\n\nTraverse City (~38m): wineries/distilleries, city trail, tour town, lighthouse, eat well.\nOvernight suggestion: Traverse City.",
+        suggestedActivities: ["mi-sleeping-bear-pass"],
+        flexible: true,
+      },
+      {
+        dayNumber: 3,
+        label: "Torch Lake → Charlevoix → Mackinac City",
+        location:
+          "Traverse City, MI → Torch Lake → Charlevoix → Mackinac City, MI",
+        type: "drive",
+        notes:
+          "Torch Lake (~40m): drive around the lake; consider Alden. Clear-bottom kayaks or a boat ride.\n\nPetoskey stone search spots:\n- Bryant Park Beach — 1097 Peninsula Dr, Traverse City, MI 49686\n- Van’s Beach — 205 Cedar St, Leland, MI 49654\n- Peterson Park — 10001 E Peterson Park Rd, Northport, MI 49670\n- Magnus Park — 901 West Lake St, Petoskey, MI 49770\n- Cross Village Beach — 100 Park Ln, Harbor Springs, MI 49740\n\nCharlevoix (~23m): lock, Castle Farms, shop town, lighthouse.\n\nMackinac City (~1h 10m): base for Mackinac Island. Suggest 2 nights.",
+        suggestedActivities: [],
+        flexible: true,
+      },
+      {
+        dayNumber: 4,
+        label: "Mackinac Island (Day 1)",
+        location: "Mackinac Island, MI",
+        type: "explore",
+        notes:
+          "Target: 7:00 AM.\nPark at ferry dock OR call shuttle if staying within ~1.5 miles of dock.\nIf driving to ferry: arrive 30 min prior to departure (7:30 AM).\nParking: $10. Ferry: $52 per person round trip.\nFerry info: 1-800-638-9892.\n\nRide bikes, tour town, eat well. Return ~4:00–4:30 PM.",
+        suggestedActivities: [],
+        flexible: true,
+      },
+      {
+        dayNumber: 5,
+        label: "Mackinac Island (Day 2)",
+        location: "Mackinac Island, MI",
+        type: "explore",
+        notes:
+          "Second day on the island (flex day). Repeat bikes/town/food, or pick any missed highlights.",
+        suggestedActivities: [],
+        flexible: true,
+      },
+      {
+        dayNumber: 6,
+        label: "Frankenmuth + Small towns (+ Canada option)",
+        location:
+          "Mackinac City → Frankenmuth → Midland/Saginaw/Howell → (Sarnia, Canada)",
+        type: "drive",
+        notes:
+          "Frankenmuth (~2h 50m): Little Bavaria; cute/quaint; good food?\nMidland/Saginaw/Howell (~1h–1h 30m): small livable towns (Howell noted as ‘best overall downtown’).\nOptional: Sarnia, Canada (~2h to border) overnight.",
+        suggestedActivities: [],
+        flexible: true,
+      },
+      {
+        dayNumber: 7,
+        label: "Windsor (optional) → Detroit",
+        location: "(Sarnia) → Windsor, ON → Detroit, MI",
+        type: "drive",
+        notes:
+          "Optional: Windsor, Canada (~2h to border).\nDetroit: meet Julia downtown? Overnight at Julia’s.",
+        suggestedActivities: [],
+        flexible: true,
+      },
+      {
+        dayNumber: 8,
+        label: "Ann Arbor → Kalamazoo → Home",
+        location: "Detroit, MI → Ann Arbor → Kalamazoo → Home",
+        type: "drive",
+        notes:
+          "Ann Arbor stop (optional).\nKalamazoo (~1h 46m) for a driving break.\nHome (~3h).",
+        suggestedActivities: [],
+        flexible: true,
+      },
+    ],
+
+    alternatives: [],
+  },
+
+  {
     id: "blank-canvas",
     name: "Start From Scratch",
     emoji: "✨",

@@ -1,0 +1,19 @@
+{
+  "source": "/Users/gunnarhostetler/Documents/GitHub/MMT-2025/Girls Trip to Michigan.docx",
+  "output_dir": "/Users/gunnarhostetler/Documents/GitHub/MMT-2025/output/michigan_docx_images",
+  "count": 2,
+  "images": [
+    {
+      "index": 1,
+      "rel_id": "rId4",
+      "filename": "img_01.png",
+      "bytes": 226138
+    },
+    {
+      "index": 2,
+      "rel_id": "rId5",
+      "filename": "img_02.png",
+      "bytes": 256466
+    }
+  ]
+}
