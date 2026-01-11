@@ -1756,12 +1756,13 @@
   border-radius: var(--radius-lg);
   padding: 1rem;
   box-shadow: var(--shadow-card);
+  overflow-x: auto;
 }
 
 .board-grid {
-  display: grid;
+  display: flex;
   gap: 0.8rem;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  min-width: min-content;
 }
 
 .board-column {
@@ -1769,6 +1770,9 @@
   padding: 0.7rem;
   background: var(--cloud-100);
   min-height: 200px;
+  min-width: 180px;
+  max-width: 220px;
+  flex: 1 0 180px;
   border: 2px solid transparent;
 }
 
