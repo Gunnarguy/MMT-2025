@@ -101,7 +101,6 @@ export default function App() {
 
 function AuthenticatedApp({ user, onSignOut }) {
   const savedTrip = useMemo(() => loadTrip(STORAGE_KEY), []);
-  const [activeView, setActiveView] = useState("builder");
   const [customActivities, setCustomActivities] = useState(() =>
     loadCustomActivities(CUSTOM_ACTIVITIES_KEY)
   );
@@ -282,8 +281,7 @@ function AuthenticatedApp({ user, onSignOut }) {
   return (
     <div className="app">
       <Header
-        activeView={activeView}
-        onViewChange={setActiveView}
+        tripName={trip.name}
         tripStats={tripStats}
         templates={templates}
         selectedTemplateId={trip.templateId}
@@ -306,10 +304,7 @@ function AuthenticatedApp({ user, onSignOut }) {
       </main>
 
       <footer className="footer">
-        <p>
-          Created with love and a lot of lobster. Build the trip that feels
-          right.
-        </p>
+        <p>Made with 💕 for Mom&#39;s adventures.</p>
       </footer>
     </div>
   );

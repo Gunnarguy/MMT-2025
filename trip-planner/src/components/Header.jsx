@@ -1,8 +1,7 @@
 import { getFamilyMember } from "../lib/supabase";
 
 export default function Header({
-  activeView,
-  onViewChange,
+  tripName,
   tripStats,
   templates,
   selectedTemplateId,
@@ -18,7 +17,7 @@ export default function Header({
       <div className="header-brand">
         <div className="brand-title">
           <h1>MMT 2025</h1>
-          <span className="tagline">Girls Trip to New England</span>
+          <span className="tagline">{tripName || "Trip Planner"}</span>
           {syncStatus && (
             <span
               className={`sync-badge ${syncStatus}`}
@@ -38,12 +37,8 @@ export default function Header({
             </span>
           )}
         </div>
-        <p className="brand-subtitle">
-          Plan, remix, and build the trip that feels perfect.
-        </p>
+        <p className="brand-subtitle">Plan it. Tweak it. Make it yours.</p>
       </div>
-
-      {/* Single view - no nav needed */}
 
       <div className="header-actions">
         <select

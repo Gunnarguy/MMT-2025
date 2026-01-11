@@ -504,11 +504,6 @@ export const routeTemplates = [
         notes:
           "Converge in Chicago (Aug 28/29). Pick up rental car Aug 29; load up and leave by 2:00 PM (earlier preferred).\n\nStops: Grand Rapids (~3h 18m), then Ludington (~1h 45m).\nLudington ideas: climb lighthouse, Pine Village, Port Museum, kayak on the lake.\nOvernight in Ludington is optional depending on departure time.\n\nSee 'Michigan Trip – Logistics & Costs' item for full booking/budget details.",
         suggestedActivities: [
-          "mi-logistics-costs",
-          "mi-doc-image-01",
-          "mi-doc-image-02",
-          "mi-avis-canada-insurance-card",
-          "mi-badger-ferry-note",
           "mi-city-chicago",
           "mi-city-grand-rapids",
           "mi-town-ludington",
@@ -530,9 +525,6 @@ export const routeTemplates = [
           "mi-glen-haven",
           "mi-loon-lake",
           "mi-city-traverse-city",
-          "mi-mission-point-lighthouse",
-          "mi-old-mission-wine-trail",
-          "mi-traverse-city-wineries",
         ],
         flexible: true,
       },
