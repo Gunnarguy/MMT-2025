@@ -1778,16 +1778,17 @@
 
 .board-column-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 0.6rem;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
-.board-column-header>div:first-child {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
+.board-column-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
 }
+
 .board-header-actions {
   display: inline-flex;
   align-items: center;
@@ -1809,21 +1810,22 @@
 .column-drag-handle:active {
   cursor: grabbing;
 }
+
 .board-column-header h4 {
   margin: 0;
-  font-size: 0.9rem;
-    font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .board-column-header p {
-  margin: 0.2rem 0 0;
-  font-size: 0.72rem;
+  margin: 0;
+  font-size: 0.7rem;
   color: var(--ink-500);
-  line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   word-break: break-word;
 }
 

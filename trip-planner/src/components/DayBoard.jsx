@@ -82,14 +82,14 @@ function DayColumn({
       onClick={() => onSelectDay(day.id)}
     >
       <header className="board-column-header">
-        <div>
+        <div className="board-column-header-top">
           <h4>Day {day.dayNumber}</h4>
-          <p>{day.location || day.label}</p>
+          <div className="board-header-actions">
+            {columnDragHandle}
+            <span className="board-count">{activities.length}</span>
+          </div>
         </div>
-        <div className="board-header-actions">
-          {columnDragHandle}
-          <span className="board-count">{activities.length}</span>
-        </div>
+        <p>{day.location || day.label}</p>
       </header>
 
       <div className="board-list" ref={setNodeRef}>
