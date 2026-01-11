@@ -125,73 +125,9 @@ export const regions = {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // THE UNIFIED ACTIVITY CATALOG
-// All pickable experiences for the trip
+// All pickable experiences for the trip - only items with coordinates are mappable
 // ═══════════════════════════════════════════════════════════════════════════════
 export const activityCatalog = [
-  // ═══════════════════════════════════════════════════════════════════════════
-  // 🗺️ MICHIGAN (Trip document resources)
-  // These are "private" so the modal hides maps/review/photo search links.
-  // They exist so the Michigan itinerary template can include clickable links
-  // and the two images extracted from the original DOCX.
-  // ═══════════════════════════════════════════════════════════════════════════
-  {
-    id: "mi-doc-image-01",
-    category: "landmark",
-    name: "Michigan Trip Doc – Image 1",
-    location: "From ‘Girls Trip to Michigan’ planning doc",
-    description: "Reference image extracted from the original DOCX.",
-    website: "/michigan/img_01.png",
-    private: true,
-    momMentioned: true,
-    tags: ["michigan", "doc"],
-  },
-  {
-    id: "mi-doc-image-02",
-    category: "landmark",
-    name: "Michigan Trip Doc – Image 2",
-    location: "From ‘Girls Trip to Michigan’ planning doc",
-    description: "Reference image extracted from the original DOCX.",
-    website: "/michigan/img_02.png",
-    private: true,
-    momMentioned: true,
-    tags: ["michigan", "doc"],
-  },
-  {
-    id: "mi-sleeping-bear-pass",
-    category: "landmark",
-    name: "Sleeping Bear Dunes – Vehicle Pass",
-    location: "Sleeping Bear Dunes National Lakeshore, MI",
-    description: "$25 per car. Buy/confirm passes here.",
-    website: "https://www.recreation.gov/sitepass/74294",
-    private: true,
-    momMentioned: true,
-    tags: ["michigan", "pass"],
-  },
-  {
-    id: "mi-avis-canada-insurance-card",
-    category: "landmark",
-    name: "Avis Canada – Non-Resident Insurance Card",
-    location: "For driving a US rental into Canada",
-    description:
-      "Notify the rental counter at pickup; this PDF is the Canadian Non-Resident Insurance Card reference.",
-    website:
-      "https://www.avis.ca/content/dam/avis/na/ca/common/pdf-files/abg__canada_non_resident_card.pdf",
-    private: true,
-    momMentioned: true,
-    tags: ["canada", "rental", "insurance"],
-  },
-  {
-    id: "mi-logistics-costs",
-    category: "landmark",
-    name: "Michigan Trip – Logistics & Costs",
-    location: "Budget / Booking / Rental details",
-    description:
-      "Rental Booking:\n• Budget Confirmation Number: 38128110US6\n• Pick-up: August 28\n• Return: September 7\n• Rental fee: $570 (Costco/Budget)\n• One additional driver fee waived for Costco members\n\nCanada Driving:\n• Notify rental counter at pickup to get Canadian Non-Resident Insurance Card\n• Vehicles allowed into Canada with no restrictions\n\nRough Per-Person Cost Estimate (÷ 3):\n• Hotels/Airbnbs: ~$540 (8 nights @ $200–250/night)\n• Meals: ~$520 ($65/day)\n• Gas: ~$80 ($240 total)\n• Car rental: ~$190 ($570 total)\n• Ferry/parking/entry fees: ~$35 ($100 total)\n• Activities: kayak rentals, boat tours, misc (variable)\n\nApprox Total: ~$1,300 each (not including airfare)\n\nFerry to Mackinac Island:\n• Parking: $10\n• Ferry: $52 per person round trip\n• Phone: 1-800-638-9892",
-    private: true,
-    momMentioned: true,
-    tags: ["michigan", "budget", "booking", "costs"],
-  },
-
   // ═══════════════════════════════════════════════════════════════════════════
   // 🌊 MICHIGAN - CITIES & TOWNS (with coordinates for mapping)
   // ═══════════════════════════════════════════════════════════════════════════

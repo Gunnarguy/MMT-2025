@@ -150,9 +150,12 @@ export default function TripBuilderView({
   );
 
   const filteredCatalog = useMemo(() => {
+    // Filter out cities, lodging, and items without coordinates (info/checklist items)
     let results = activityCatalog.filter(
       (activity) =>
-        activity.category !== "city" && activity.category !== "lodging"
+        activity.category !== "city" &&
+        activity.category !== "lodging" &&
+        activity.coordinates // Only show mappable activities
     );
 
     if (catalogFilter !== "all") {
