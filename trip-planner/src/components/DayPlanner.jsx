@@ -1,6 +1,7 @@
 import {
   DndContext,
   PointerSensor,
+  TouchSensor,
   closestCenter,
   useSensor,
   useSensors,
@@ -148,7 +149,8 @@ export default function DayPlanner({
   onOpenDetails,
 }) {
   const dayTabSensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
   );
 
   return (
@@ -253,6 +255,7 @@ export default function DayPlanner({
               </p>
             ) : (
               <DndContext
+                sensors={dayTabSensors}
                 collisionDetection={closestCenter}
                 onDragEnd={({ active, over }) => {
                   if (!over || active.id === over.id) return;

@@ -1,6 +1,7 @@
 import {
   DndContext,
   PointerSensor,
+  TouchSensor,
   closestCenter,
   useDroppable,
   useSensor,
@@ -171,7 +172,8 @@ export default function DayBoard({
   onOpenDetails,
 }) {
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
   );
 
   const itemsByDay = useMemo(() => {
