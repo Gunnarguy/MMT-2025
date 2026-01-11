@@ -121,7 +121,9 @@ function SortableDayTab({ day, isActive, onSelect }) {
       aria-label={`Day ${day.dayNumber}: drag to reorder`}
     >
       <span className="day-num">D{day.dayNumber}</span>
-      <span className="day-loc">{day.location || "..."}</span>
+      <span className="day-loc" title={day.location || ""}>
+        {day.location || "..."}
+      </span>
       <span className="day-count">{day.activities.length}</span>
     </button>
   );

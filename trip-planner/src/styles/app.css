@@ -1225,16 +1225,15 @@
 .day-tab {
   border: 1px solid rgba(27, 36, 48, 0.2);
   background: #fff;
-  padding: 0.4rem 0.6rem;
+  padding: 0.5rem 0.6rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  width: 90px;
-    max-width: 90px;
-    overflow: hidden;
+  width: 110px;
+    min-height: 70px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.15rem;
+  gap: 0.2rem;
 }
 
 .day-tab.active {
@@ -1246,17 +1245,20 @@
 .day-num {
   font-weight: 700;
   font-size: 0.85rem;
+  flex-shrink: 0;
 }
 
 .day-loc {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   opacity: 0.7;
   width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   text-align: center;
-  display: block;
+  display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+    word-break: break-word;
 }
 
 .day-count {
