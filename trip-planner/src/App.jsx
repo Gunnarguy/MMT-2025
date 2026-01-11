@@ -138,6 +138,7 @@ function AuthenticatedApp({ user, onSignOut }) {
   const initialTripRef = useRef(trip);
   const initialCustomActivitiesRef = useRef(customActivities);
   const initialCustomTemplatesRef = useRef(customTemplates);
+  const isApplyingRemoteRef = useRef(false);
   const lastSyncedRef = useRef(null);
 
   useEffect(() => {
