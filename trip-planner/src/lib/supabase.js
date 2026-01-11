@@ -23,8 +23,26 @@ const ALLOWED_EMAILS = [
   "gunnarguy@me.com", // Adding you too!
 ];
 
+// Friendly names for family members
+const FAMILY_MEMBERS = {
+  "italgalpal@gmail.com": { name: "Mom", emoji: "👩‍🦳", color: "#e91e63" },
+  "mikaelahostetler@gmail.com": { name: "Mikaela", emoji: "💕", color: "#9c27b0" },
+  "gunnarguy@me.com": { name: "Gunnar", emoji: "🦞", color: "#2196f3" },
+};
+
 export function isEmailAllowed(email) {
   return ALLOWED_EMAILS.includes(email?.toLowerCase());
+}
+
+export function getFamilyMember(email) {
+  const normalized = email?.toLowerCase();
+  return (
+    FAMILY_MEMBERS[normalized] || {
+      name: email?.split("@")[0] || "Guest",
+      emoji: "👤",
+      color: "#757575",
+    }
+  );
 }
 
 // Auth functions

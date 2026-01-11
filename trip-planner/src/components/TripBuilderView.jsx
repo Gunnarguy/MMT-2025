@@ -77,6 +77,12 @@ export default function TripBuilderView({
     }
   }, [trip.days, selectedDayId]);
 
+  // Reset region filter to "all" when a different template is loaded
+  // This ensures Michigan activities show when Michigan template is selected
+  useEffect(() => {
+    setRegionFilter("all");
+  }, [trip.templateId]);
+
   const selectedDay = useMemo(
     () => trip.days.find((day) => day.id === selectedDayId) || trip.days[0],
     [trip.days, selectedDayId]

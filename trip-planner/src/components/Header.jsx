@@ -1,3 +1,5 @@
+import { getFamilyMember } from "../lib/supabase";
+
 export default function Header({
   activeView,
   onViewChange,
@@ -8,8 +10,9 @@ export default function Header({
   onSaveTemplate,
   syncStatus,
   user,
-  onSignOut
+  onSignOut,
 }) {
+  const familyMember = user ? getFamilyMember(user.email) : null;
   return (
     <header className="header">
       <div className="header-brand">
@@ -88,10 +91,14 @@ export default function Header({
         <span className="stat-chip">{tripStats.activities} activities</span>
       </div>
 
-      {user && (
+      {user && familyMember && (
         <div className="header-user">
-          <span className="user-email" title={user.email}>
-            👤 {user.email.split("@")[0]}
+          <span
+            className="user-name"
+            title={user.email}
+            style={{ color: familyMember.color }}
+          >
+            {familyMember.emoji} {familyMember.name}
           </span>
           <button
             type="button"

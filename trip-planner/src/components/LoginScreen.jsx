@@ -1,10 +1,17 @@
-import { useState } from 'react'
-import { isEmailAllowed, signInWithEmail } from "../lib/supabase";
+import { useState } from "react";
+import {
+  getFamilyMember,
+  isEmailAllowed,
+  signInWithEmail,
+} from "../lib/supabase";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState('idle') // idle, sending, sent, error
-  const [errorMessage, setErrorMessage] = useState('')
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle"); // idle, sending, sent, error
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Check if current email belongs to a family member for personalized greeting
+  const familyMember = isEmailAllowed(email) ? getFamilyMember(email) : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,8 +46,8 @@ export default function LoginScreen() {
 
         {status === "sent" ? (
           <div className="login-success">
-            <span className="success-emoji">✉️</span>
-            <h2>Check your email!</h2>
+            <span className="success-emoji">{familyMember?.emoji || "✉️"}</span>
+            <h2>Hey {familyMember?.name || "there"}! Check your email!</h2>
             <p>
               We sent a magic link to <strong>{email}</strong>
             </p>
@@ -77,12 +84,17 @@ export default function LoginScreen() {
               className="btn-primary login-btn"
               disabled={status === "sending"}
             >
-              {status === "sending" ? "⏳ Sending..." : "🔐 Send Magic Link"}
+              {status === "sending"
+                ? "⏳ Sending..."
+                : familyMember
+                ? `${familyMember.emoji} Send Link to ${familyMember.name}`
+                : "🔐 Send Magic Link"}
             </button>
 
             <p className="login-hint">
-              Only family members can access this trip planner. If you're not on
-              the list, ask Gunnar!
+              {familyMember
+                ? `Welcome back, ${familyMember.name}! Click above to get your login link.`
+                : "Only family members can access this trip planner. If you're not on the list, ask Gunnar!"}
             </p>
           </form>
         )}
