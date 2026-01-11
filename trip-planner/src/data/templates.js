@@ -539,15 +539,8 @@ export const routeTemplates = [
         suggestedActivities: [
           "mi-torch-lake",
           "mi-torch-lake-kayak",
-          "mi-town-alden",
           "mi-petoskey-stones-bryant",
-          "mi-petoskey-stones-vans",
-          "mi-petoskey-stones-peterson",
-          "mi-petoskey-stones-magnus",
-          "mi-petoskey-stones-cross-village",
           "mi-town-charlevoix",
-          "mi-castle-farms",
-          "mi-charlevoix-lighthouse",
           "mi-city-mackinaw-city",
         ],
         flexible: true,
@@ -559,12 +552,7 @@ export const routeTemplates = [
         type: "explore",
         notes:
           "Target: 7:00 AM.\nPark at ferry dock OR call shuttle if staying within ~1.5 miles of dock.\nIf driving to ferry: arrive 30 min prior to departure (7:30 AM).\nParking: $10. Ferry: $52 per person round trip.\nFerry info: 1-800-638-9892.\n\nRide bikes, tour town, eat well. Return ~4:00–4:30 PM.",
-        suggestedActivities: [
-          "mi-mackinac-island",
-          "mi-mackinac-ferry",
-          "mi-mackinac-bridge",
-          "mi-city-mackinaw-city",
-        ],
+        suggestedActivities: ["mi-mackinac-island"],
         flexible: true,
       },
       {
@@ -574,7 +562,7 @@ export const routeTemplates = [
         type: "explore",
         notes:
           "Second day on the island (flex day). Repeat bikes/town/food, or pick any missed highlights.",
-        suggestedActivities: ["mi-mackinac-island", "mi-mackinac-ferry"],
+        suggestedActivities: ["mi-mackinac-island"],
         flexible: true,
       },
       {
