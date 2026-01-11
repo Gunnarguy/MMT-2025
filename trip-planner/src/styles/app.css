@@ -1502,15 +1502,29 @@
   color: inherit;
   cursor: pointer;
   flex: 1;
+  min-width: 0;
+  }
+  
+  .activity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
 }
 
 .activity-info strong {
   font-size: 0.95rem;
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .activity-info small {
   color: var(--ink-500);
   font-size: 0.8rem;
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .mom-badge {
