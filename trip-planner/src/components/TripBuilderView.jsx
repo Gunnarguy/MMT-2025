@@ -188,7 +188,7 @@ export default function TripBuilderView({
         const bTime = parseInt(b.id?.replace('custom-', '') || '0', 10);
         return bTime - aTime;
       });
-    
+
     // Custom items first, then catalog items
     let results = [...customList, ...catalogResults];
 
