@@ -459,21 +459,23 @@ export default function CatalogPanel({
         aria-label="Resize catalog panel"
       />
       <div className="catalog-header">
-        <h2>{searchMode === "catalog" ? "Browse Places" : "Add New Place"}</h2>
+        <h2>{searchMode === "catalog" ? "📚 Mom's Picks" : "🔍 Find New Places"}</h2>
         <div className="search-mode-toggle">
           <button
             className={`mode-btn ${searchMode === "catalog" ? "active" : ""}`}
             onClick={() => onModeChange("catalog")}
             type="button"
+            title="Browse curated spots"
           >
-            Browse
+            📚 Saved Places
           </button>
           <button
             className={`mode-btn ${searchMode === "custom" ? "active" : ""}`}
             onClick={() => onModeChange("custom")}
             type="button"
+            title="Search for any restaurant, shop, or attraction"
           >
-            + Add New
+            🔍 Search Map
           </button>
         </div>
       </div>
@@ -481,13 +483,26 @@ export default function CatalogPanel({
       {searchMode === "catalog" ? (
         <>
           <div className="catalog-search">
-            <input
-              type="text"
-              placeholder="Search activities, tags, or locations"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="search-input"
-            />
+            <div className="search-input-wrapper">
+              <span className="search-icon">🔍</span>
+              <input
+                type="text"
+                placeholder="Filter by name, tag, or location..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="search-input catalog-filter-input"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  className="search-clear-btn"
+                  onClick={() => onSearchChange("")}
+                  title="Clear filter"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="catalog-filters">
@@ -819,17 +834,32 @@ export default function CatalogPanel({
       ) : (
         <>
           <div className="custom-place-form">
-            <h4>Search places</h4>
-            <p className="place-search-hint">
-              Find restaurants, attractions, hotels, or any place
-            </p>
-            <input
-              type="text"
-              className="search-input place-search-input"
-              placeholder="Try: pizza, coffee shop, museum, hotel..."
-              value={placeQuery}
-              onChange={(e) => setPlaceQuery(e.target.value)}
-            />
+            <div className="search-form-header">
+              <h4>🗺️ What are you looking for?</h4>
+              <p className="place-search-hint">
+                Type anything: restaurant names, "coffee near Traverse City", attractions...
+              </p>
+            </div>
+            <div className="search-input-wrapper">
+              <span className="search-icon">🔍</span>
+              <input
+                type="text"
+                className="search-input place-search-input"
+                placeholder="e.g. pizza, Mackinac fudge, museum, ice cream..."
+                value={placeQuery}
+                onChange={(e) => setPlaceQuery(e.target.value)}
+              />
+              {placeQuery && (
+                <button
+                  type="button"
+                  className="search-clear-btn"
+                  onClick={() => setPlaceQuery("")}
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
             {placeLoading && <p className="place-loading">🔍 Searching…</p>}
             {!placeLoading &&
               placeQuery.trim() &&
@@ -839,71 +869,83 @@ export default function CatalogPanel({
                 </p>
               )}
             {placeResults.length > 0 && (
-              <div className="place-results-list">
-                {placeResults.map((hit) => {
-                  const placeName =
-                    hit.name ||
-                    normalizePlaceLabel(hit.displayName) ||
-                    placeQuery.trim();
-                  const placeAddr = [hit.street, hit.housenumber]
-                    .filter(Boolean)
-                    .join(" ");
-                  const placeCity = [hit.city, hit.state]
-                    .filter(Boolean)
-                    .join(", ");
-                  const subline =
-                    [placeAddr, placeCity].filter(Boolean).join(" · ") ||
-                    normalizePlaceLocation(hit.displayName);
+              <>
+                {selectedDay?.id && (
+                  <div className="adding-to-day-indicator">
+                    ✨ Adding to <strong>Day {selectedDay.dayNumber}</strong>
+                  </div>
+                )}
+                {!selectedDay?.id && (
+                  <div className="adding-to-day-indicator warning">
+                    👆 Select a day above to add places
+                  </div>
+                )}
+                <div className="place-results-list">
+                  {placeResults.map((hit) => {
+                    const placeName =
+                      hit.name ||
+                      normalizePlaceLabel(hit.displayName) ||
+                      placeQuery.trim();
+                    const placeAddr = [hit.street, hit.housenumber]
+                      .filter(Boolean)
+                      .join(" ");
+                    const placeCity = [hit.city, hit.state]
+                      .filter(Boolean)
+                      .join(", ");
+                    const subline =
+                      [placeAddr, placeCity].filter(Boolean).join(" · ") ||
+                      normalizePlaceLocation(hit.displayName);
 
-                  const placeData = {
-                    name: placeName,
-                    location: placeCity || normalizePlaceLocation(hit.displayName),
-                    coordinates: hit.coordinates,
-                    category: hit.typeInfo?.category || "custom",
-                  };
+                    const placeData = {
+                      name: placeName,
+                      location: placeCity || normalizePlaceLocation(hit.displayName),
+                      coordinates: hit.coordinates,
+                      category: hit.typeInfo?.category || "custom",
+                    };
 
-                  return (
-                    <div key={hit.id} className="place-result-item">
-                      <span className="place-icon">
-                        {hit.typeInfo?.icon || "📍"}
-                      </span>
-                      <div className="place-info">
-                        <strong className="place-name">{placeName}</strong>
-                        <span className="place-type-badge">
-                          {hit.typeInfo?.label || "Place"}
+                    return (
+                      <div key={hit.id} className="place-result-item">
+                        <span className="place-icon">
+                          {hit.typeInfo?.icon || "📍"}
                         </span>
-                        <small className="place-subline">{subline}</small>
+                        <div className="place-info">
+                          <strong className="place-name">{placeName}</strong>
+                          <span className="place-type-badge">
+                            {hit.typeInfo?.label || "Place"}
+                          </span>
+                          <small className="place-subline">{subline}</small>
+                        </div>
+                        <div className="place-actions">
+                          <button
+                            type="button"
+                            className="place-action-btn add-main"
+                            disabled={!selectedDay?.id}
+                            title={selectedDay?.id ? `Add to Day ${selectedDay.dayNumber}` : "Select a day first"}
+                            onClick={() => {
+                              if (!selectedDay?.id) return;
+                              onQuickAddCustomPlace({ ...placeData, dayId: selectedDay.id });
+                              resetPlaceSearch();
+                            }}
+                          >
+                            {selectedDay?.id ? "+ Add" : "Select Day"}
+                          </button>
+                          <button
+                            type="button"
+                            className="place-action-btn save-secondary"
+                            title="Save for later (don't add to a day yet)"
+                            onClick={() => {
+                              onQuickAddCustomPlace({ ...placeData, dayId: null });
+                              resetPlaceSearch();
+                            }}
+                          >
+                            💾
+                          </button>
+                        </div>
                       </div>
-                      <div className="place-actions">
-                        <button
-                          type="button"
-                          className="place-action-btn save"
-                          title="Save to your library"
-                          onClick={() => {
-                            onQuickAddCustomPlace({ ...placeData, dayId: null });
-                            resetPlaceSearch();
-                          }}
-                        >
-                          💾
-                        </button>
-                        <button
-                          type="button"
-                          className="place-action-btn add"
-                          disabled={!selectedDay?.id}
-                          title={selectedDay?.id ? `Add to Day ${selectedDay.dayNumber}` : "Select a day first"}
-                          onClick={() => {
-                            if (!selectedDay?.id) return;
-                            onQuickAddCustomPlace({ ...placeData, dayId: selectedDay.id });
-                            resetPlaceSearch();
-                          }}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
 

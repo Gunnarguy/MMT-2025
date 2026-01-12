@@ -621,6 +621,25 @@
   padding: 0.4rem 0.7rem;
 }
 
+/* Catalog search with icon wrapper */
+.catalog-search .search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.catalog-search .search-input-wrapper .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.catalog-filter-input {
+  padding-left: 2.3rem !important;
+  padding-right: 2rem !important;
+}
+
 .catalog-list,
 .custom-activities-list {
   flex: 1;
@@ -2203,27 +2222,98 @@
 }
 
 /* ===================================
-   Place Search (Google Maps-like)
+   Place Search (Mom-Friendly UX)
    =================================== */
+.search-form-header {
+  margin-bottom: 0.75rem;
+}
+
 .custom-place-form h4 {
   margin: 0 0 0.25rem;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--ink-800);
 }
 
 .place-search-hint {
-  font-size: 0.8rem;
-  color: var(--ink-500);
-  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--ink-600);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Search input with icon */
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper .search-icon {
+  position: absolute;
+  left: 0.85rem;
+  font-size: 1.1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-input-wrapper .place-search-input {
+  padding-left: 2.5rem !important;
+  padding-right: 2.2rem !important;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: rgba(0,0,0,0.08);
+  border: none;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 0.85rem;
+  color: var(--ink-600);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.search-clear-btn:hover {
+  background: rgba(0,0,0,0.15);
+  color: var(--ink-800);
+}
+
+/* Day indicator - shows which day you're adding to */
+.adding-to-day-indicator {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border: 1px solid #86efac;
+  color: #166534;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  margin: 0.75rem 0;
+  text-align: center;
+}
+
+.adding-to-day-indicator strong {
+  color: #15803d;
+}
+
+.adding-to-day-indicator.warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-color: #fcd34d;
+  color: #92400e;
 }
 
 .place-search-input {
   font-size: 0.95rem !important;
-  padding: 0.7rem 1rem !important;
+  padding: 0.75rem 1rem !important;
   border-radius: var(--radius-lg) !important;
-  border: 2px solid rgba(27, 36, 48, 0.12) !important;
+  border: 2px solid rgba(27, 36, 48, 0.15) !important;
   transition: border-color 0.2s, box-shadow 0.2s !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .place-search-input:focus {
@@ -2314,13 +2404,61 @@
 
 .place-actions {
   display: flex;
-  gap: 0.35rem;
+  gap: 0.4rem;
   flex-shrink: 0;
+  align-items: center;
 }
 
+/* Main "Add" button - prominent and clear */
+.place-action-btn.add-main {
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: var(--primary);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.place-action-btn.add-main:hover:not(:disabled) {
+  background: #e54d00;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(252, 82, 0, 0.25);
+}
+
+.place-action-btn.add-main:disabled {
+  background: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+  font-size: 0.75rem;
+}
+
+/* Secondary "Save for later" button - less prominent */
+.place-action-btn.save-secondary {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(27, 36, 48, 0.12);
+  background: #f8fafc;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.place-action-btn.save-secondary:hover {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  transform: scale(1.1);
+}
+
+/* Legacy button styles for compatibility */
 .place-action-btn {
-  width: 2.2rem;
-  height: 2.2rem;
   border-radius: 50%;
   border: none;
   font-size: 1rem;
@@ -2332,6 +2470,8 @@
 }
 
 .place-action-btn.save {
+  width: 2rem;
+  height: 2rem;
   background: #e0f2fe;
   color: #0284c7;
 }
@@ -2343,6 +2483,8 @@
 }
 
 .place-action-btn.add {
+  width: 2.2rem;
+  height: 2.2rem;
   background: var(--primary);
   color: #fff;
   font-weight: 700;
@@ -2372,6 +2514,7 @@
 .place-result-item:hover:not(:disabled) .place-add-indicator {
   opacity: 1;
 }
+
 /* Responsive */
 @media (max-width: 1200px) {
   .header {
