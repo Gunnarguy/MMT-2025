@@ -811,6 +811,8 @@ export default function TripBuilderView({
             dayRoute={selectedDayRoute}
             dayLoad={dayLoad}
             dayLoadLabel={dayLoadLabel}
+            homeAddress={trip.homeAddress}
+            totalDays={trip.days.length}
             onSelectDay={setSelectedDayId}
             onReorderDays={reorderDays}
             onAddDay={addDay}

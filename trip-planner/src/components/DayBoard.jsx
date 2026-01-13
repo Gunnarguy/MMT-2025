@@ -73,9 +73,23 @@ function DayColumn({
   onSelectDay,
   onOpenDetails,
   columnDragHandle,
+  isFirstDay,
+  isLastDay,
+  homeAddress,
+  prevDayOvernightStay,
 }) {
   const droppableId = `day:${day.id}`;
   const { setNodeRef } = useDroppable({ id: droppableId });
+  
+  // Determine start point for this day
+  const startPoint = isFirstDay && homeAddress 
+    ? homeAddress 
+    : prevDayOvernightStay;
+  
+  // Determine end point for this day  
+  const endPoint = isLastDay && homeAddress
+    ? homeAddress
+    : day.overnightStay;
 
   return (
     <section
@@ -91,8 +105,15 @@ function DayColumn({
           </div>
         </div>
         <p>{day.location || day.label}</p>
-        {day.overnightStay && (
-          <p className="board-overnight">🏨 {day.overnightStay}</p>
+        {startPoint && (
+          <p className="board-endpoint start">
+            {isFirstDay ? '🏠' : '🏨'} From: {startPoint}
+          </p>
+        )}
+        {endPoint && (
+          <p className="board-endpoint end">
+            {isLastDay ? '🏠' : '🏨'} To: {endPoint}
+          </p>
         )}
       </header>
 
@@ -123,6 +144,10 @@ function SortableDayColumn({
   selectedDayId,
   onSelectDay,
   onOpenDetails,
+  isFirstDay,
+  isLastDay,
+  homeAddress,
+  prevDayOvernightStay,
 }) {
   const {
     attributes,
@@ -149,6 +174,10 @@ function SortableDayColumn({
         selectedDayId={selectedDayId}
         onSelectDay={onSelectDay}
         onOpenDetails={onOpenDetails}
+        isFirstDay={isFirstDay}
+        isLastDay={isLastDay}
+        homeAddress={homeAddress}
+        prevDayOvernightStay={prevDayOvernightStay}
         columnDragHandle={
           <button
             type="button"
@@ -271,16 +300,23 @@ export default function DayBoard({
           strategy={rectSortingStrategy}
         >
           <div className="board-grid">
-            {trip.days.map((day) => (
-              <SortableDayColumn
-                key={day.id}
-                day={day}
-                activities={itemsByDay[day.id] || []}
-                selectedDayId={selectedDayId}
-                onSelectDay={onSelectDay}
-                onOpenDetails={onOpenDetails}
-              />
-            ))}
+            {trip.days.map((day, index) => {
+              const prevDay = index > 0 ? trip.days[index - 1] : null;
+              return (
+                <SortableDayColumn
+                  key={day.id}
+                  day={day}
+                  activities={itemsByDay[day.id] || []}
+                  selectedDayId={selectedDayId}
+                  onSelectDay={onSelectDay}
+                  onOpenDetails={onOpenDetails}
+                  isFirstDay={index === 0}
+                  isLastDay={index === trip.days.length - 1}
+                  homeAddress={trip.homeAddress}
+                  prevDayOvernightStay={prevDay?.overnightStay || prevDay?.location || null}
+                />
+              );
+            })}
           </div>
         </SortableContext>
       </DndContext>

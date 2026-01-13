@@ -138,6 +138,8 @@ export default function DayPlanner({
   dayRoute,
   dayLoad,
   dayLoadLabel,
+  homeAddress,
+  totalDays,
   onSelectDay,
   onReorderDays,
   onAddDay,
@@ -148,6 +150,20 @@ export default function DayPlanner({
   onRemoveActivity,
   onOpenDetails,
 }) {
+  const isFirstDay = selectedDay?.dayNumber === 1;
+  const isLastDay = selectedDay?.dayNumber === totalDays;
+  
+  // Determine start point for this day
+  const prevDay = trip.days.find(d => d.dayNumber === selectedDay?.dayNumber - 1);
+  const startPoint = isFirstDay && homeAddress 
+    ? homeAddress 
+    : (prevDay?.overnightStay || prevDay?.location || null);
+  
+  // Determine end point for this day  
+  const endPoint = isLastDay && homeAddress
+    ? homeAddress
+    : (selectedDay?.overnightStay || null);
+
   const dayTabSensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
@@ -259,6 +275,28 @@ export default function DayPlanner({
             placeholder="Notes for this day: reservations, timing, backup options"
             className="day-notes"
           />
+
+          {/* Start/End point indicators */}
+          <div className="day-endpoints">
+            {startPoint && (
+              <div className="endpoint start">
+                <span className="endpoint-icon">{isFirstDay ? '🏠' : '🏨'}</span>
+                <div className="endpoint-info">
+                  <small>Starting from</small>
+                  <strong>{startPoint}</strong>
+                </div>
+              </div>
+            )}
+            {endPoint && (
+              <div className="endpoint end">
+                <span className="endpoint-icon">{isLastDay ? '🏠' : '🏨'}</span>
+                <div className="endpoint-info">
+                  <small>Ending at</small>
+                  <strong>{endPoint}</strong>
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="activities-list">
             <h3>Activities ({selectedDayActivities.length})</h3>

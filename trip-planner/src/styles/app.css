@@ -1417,6 +1417,56 @@
   resize: vertical;
 }
 
+/* Day start/end point indicators */
+.day-endpoints {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.endpoint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--cloud-100);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.endpoint-icon {
+  font-size: 1.25rem;
+}
+
+.endpoint-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.endpoint-info small {
+  font-size: 0.7rem;
+  color: var(--ink-400);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.endpoint-info strong {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-700);
+}
+
+.endpoint.start {
+  border-left: 3px solid var(--sage-500);
+}
+
+.endpoint.end {
+  border-left: 3px solid var(--lavender-500);
+}
+
 .drive-summary {
   background: var(--cloud-100);
   border-radius: var(--radius-sm);
@@ -1951,6 +2001,23 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.board-endpoint {
+  margin: 0.2rem 0 0 0;
+  font-size: 0.6rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.board-endpoint.start {
+  color: var(--sage-600);
+}
+
+.board-endpoint.end {
+  color: var(--lavender-600);
 }
 
 .board-count {
