@@ -1,6 +1,19 @@
 import { useEffect, useState } from 'react';
 import { geocodePlace } from '../utils/geocode';
 
+// Helper to get overnight stay name (handles both string and object format)
+function getOvernightStayName(stay) {
+  if (!stay) return null;
+  if (typeof stay === "object") return stay.name || null;
+  return stay; // legacy string format
+}
+
+// Helper to get overnight stay coordinates (if stored as object)
+function getOvernightStayCoords(stay) {
+  if (!stay || typeof stay !== "object") return null;
+  return stay.coordinates || null;
+}
+
 export function useRoutes({ trip, getActivityWaypoints }) {
   const [dayRoutes, setDayRoutes] = useState({});
   const [routesLoading, setRoutesLoading] = useState(false);
@@ -21,14 +34,29 @@ export function useRoutes({ trip, getActivityWaypoints }) {
 
       (trip.days || []).forEach((d) => {
         const loc = (d.location || "").trim();
-        const overnight = (d.overnightStay || "").trim();
+        const overnightName = getOvernightStayName(d.overnightStay)?.trim();
         if (loc) labels.add(loc);
-        if (overnight) labels.add(overnight);
+        if (overnightName) labels.add(overnightName);
       });
 
       const updates = {};
+
+      // First, add any overnight stays that already have coordinates
+      (trip.days || []).forEach((d) => {
+        const overnightName = getOvernightStayName(d.overnightStay)?.trim();
+        const overnightCoords = getOvernightStayCoords(d.overnightStay);
+        if (
+          overnightName &&
+          overnightCoords &&
+          !baseCoordsByLabel[overnightName]
+        ) {
+          updates[overnightName] = overnightCoords;
+        }
+      });
+
+      // Then geocode any remaining labels
       for (const label of labels) {
-        if (baseCoordsByLabel[label]) continue;
+        if (baseCoordsByLabel[label] || updates[label]) continue;
         try {
           const coords = await geocodePlace(label, {
             signal: controller.signal,
@@ -75,7 +103,8 @@ export function useRoutes({ trip, getActivityWaypoints }) {
 
         // Previous day's overnight stay or location (where we're starting from)
         const prevDay = i > 0 ? trip.days[i - 1] : null;
-        const prevOvernightStay = (prevDay?.overnightStay || "").trim() || null;
+        const prevOvernightStay =
+          getOvernightStayName(prevDay?.overnightStay)?.trim() || null;
         const prevLocation = (prevDay?.location || "").trim() || null;
 
         // Day 1 starts from home, otherwise from previous night's stay
@@ -85,7 +114,8 @@ export function useRoutes({ trip, getActivityWaypoints }) {
             : prevOvernightStay || prevLocation || dayLocation;
 
         // This day's overnight stay (where we're ending/sleeping)
-        const overnightStay = (day?.overnightStay || "").trim() || null;
+        const overnightStay =
+          getOvernightStayName(day?.overnightStay)?.trim() || null;
 
         // Last day ends at home, otherwise at tonight's overnight stay
         const endBaseLabel =

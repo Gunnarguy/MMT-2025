@@ -20,6 +20,13 @@ import { categories } from "../data/catalog";
 
 const dayColumnId = (dayId) => `col:${dayId}`;
 
+// Helper to get overnight stay name (handles both string and object format)
+function getOvernightStayName(stay) {
+  if (!stay) return null;
+  if (typeof stay === "object") return stay.name || null;
+  return stay; // legacy string format
+}
+
 function BoardActivityCard({ activity, onOpenDetails }) {
   const {
     attributes,
@@ -81,12 +88,13 @@ function DayColumn({
   const droppableId = `day:${day.id}`;
   const { setNodeRef } = useDroppable({ id: droppableId });
 
-  // Determine start point for this day
+  // Determine start point for this day (prevDayOvernightStay is already processed)
   const startPoint =
     isFirstDay && homeAddress ? homeAddress : prevDayOvernightStay;
 
   // Determine end point for this day
-  const endPoint = isLastDay && homeAddress ? homeAddress : day.overnightStay;
+  const currentDayStay = getOvernightStayName(day.overnightStay);
+  const endPoint = isLastDay && homeAddress ? homeAddress : currentDayStay;
 
   return (
     <section
@@ -202,7 +210,9 @@ export default function DayBoard({
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
+    })
   );
 
   const itemsByDay = useMemo(() => {
@@ -299,6 +309,10 @@ export default function DayBoard({
           <div className="board-grid">
             {trip.days.map((day, index) => {
               const prevDay = index > 0 ? trip.days[index - 1] : null;
+              const prevDayStay =
+                getOvernightStayName(prevDay?.overnightStay) ||
+                prevDay?.location ||
+                null;
               return (
                 <SortableDayColumn
                   key={day.id}
@@ -310,7 +324,7 @@ export default function DayBoard({
                   isFirstDay={index === 0}
                   isLastDay={index === trip.days.length - 1}
                   homeAddress={trip.homeAddress}
-                  prevDayOvernightStay={prevDay?.overnightStay || prevDay?.location || null}
+                  prevDayOvernightStay={prevDayStay}
                 />
               );
             })}

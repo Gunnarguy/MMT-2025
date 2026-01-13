@@ -625,6 +625,19 @@ export default function TripBuilderView({
       ? baseCoordsByLabel[trip.homeAddress]
       : null;
 
+    // Helper to get overnight stay data
+    const getOvernightStayData = (stay) => {
+      if (!stay) return null;
+      if (typeof stay === "object") {
+        return {
+          name: stay.name || null,
+          coordinates: stay.coordinates || null,
+        };
+      }
+      // Legacy string format - look up in baseCoordsByLabel
+      return { name: stay, coordinates: baseCoordsByLabel[stay] || null };
+    };
+
     // Add HOME as the first point (Day 0 / Start)
     if (homeCoords) {
       activities.push({
@@ -638,14 +651,33 @@ export default function TripBuilderView({
       });
     }
 
-    // Add all day activities
-    trip.days.forEach((day) => {
+    // Add all day activities and overnight stays
+    trip.days.forEach((day, index) => {
+      const isLastDay = index === trip.days.length - 1;
+
+      // Add day's activities
       day.activities.forEach((id) => {
         const activity = getAnyActivity(id);
         if (activity?.coordinates && activity?.category !== "city") {
           activities.push({ ...activity, dayNumber: day.dayNumber });
         }
       });
+
+      // Add overnight stay as a point (if not last day, which ends at home)
+      if (!isLastDay) {
+        const stayData = getOvernightStayData(day.overnightStay);
+        if (stayData?.name && stayData?.coordinates) {
+          activities.push({
+            id: `overnight-${day.id}`,
+            name: `🏨 ${stayData.name}`,
+            location: stayData.name,
+            coordinates: stayData.coordinates,
+            dayNumber: day.dayNumber,
+            category: "lodging",
+            isOvernightStay: true,
+          });
+        }
+      }
     });
 
     // Add HOME as the last point (after last day)
@@ -866,6 +898,8 @@ export default function TripBuilderView({
             dayLoadLabel={dayLoadLabel}
             homeAddress={trip.homeAddress}
             totalDays={trip.days.length}
+            allowedStateAbbrs={allowedPlaceStateAbbrs}
+            allowCanadaPlaces={allowCanadaPlaces}
             onSelectDay={setSelectedDayId}
             onReorderDays={reorderDays}
             onAddDay={addDay}
@@ -900,7 +934,9 @@ export default function TripBuilderView({
         viewMode={plannerView}
         totalDays={trip.days.length}
         homeAddress={trip.homeAddress}
-        homeCoordinates={trip.homeAddress ? baseCoordsByLabel[trip.homeAddress] : null}
+        homeCoordinates={
+          trip.homeAddress ? baseCoordsByLabel[trip.homeAddress] : null
+        }
         routesLoading={routesLoading}
         routesError={routesError}
         gasPricePerGallon={gasPricePerGallon}

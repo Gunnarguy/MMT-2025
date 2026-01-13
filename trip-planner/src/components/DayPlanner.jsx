@@ -15,6 +15,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { categories } from "../data/catalog";
 import { formatDuration, formatMiles } from "../utils/formatters";
+import OvernightStayPicker from "./OvernightStayPicker";
 
 const dayTypes = [
   { value: "arrival", label: "Arrival" },
@@ -140,6 +141,8 @@ export default function DayPlanner({
   dayLoadLabel,
   homeAddress,
   totalDays,
+  allowedStateAbbrs,
+  allowCanadaPlaces,
   onSelectDay,
   onReorderDays,
   onAddDay,
@@ -153,18 +156,27 @@ export default function DayPlanner({
   const isFirstDay = selectedDay?.dayNumber === 1;
   const isLastDay = selectedDay?.dayNumber === totalDays;
 
+  // Helper to get overnight stay name (handles both string and object format)
+  const getOvernightStayName = (stay) => {
+    if (!stay) return null;
+    if (typeof stay === "object") return stay.name || null;
+    return stay; // legacy string format
+  };
+
   // Determine start point for this day
   const prevDay = trip.days.find(
     (d) => d.dayNumber === selectedDay?.dayNumber - 1
   );
+  const prevDayStay = getOvernightStayName(prevDay?.overnightStay);
   const startPoint =
     isFirstDay && homeAddress
       ? homeAddress
-      : prevDay?.overnightStay || prevDay?.location || null;
+      : prevDayStay || prevDay?.location || null;
 
   // Determine end point for this day
+  const currentDayStay = getOvernightStayName(selectedDay?.overnightStay);
   const endPoint =
-    isLastDay && homeAddress ? homeAddress : selectedDay?.overnightStay || null;
+    isLastDay && homeAddress ? homeAddress : currentDayStay || null;
 
   const dayTabSensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -260,14 +272,14 @@ export default function DayPlanner({
 
           <label className="field">
             🏨 Overnight stay (where you're sleeping)
-            <input
-              type="text"
-              value={selectedDay.overnightStay || ""}
-              onChange={(e) =>
-                onUpdateDay(selectedDay.id, { overnightStay: e.target.value })
+            <OvernightStayPicker
+              value={selectedDay.overnightStay}
+              onChange={(stayData) =>
+                onUpdateDay(selectedDay.id, { overnightStay: stayData })
               }
-              placeholder="Airbnb, hotel, or address (e.g., Airbnb in Traverse City)"
-              className="location-input"
+              allowedStateAbbrs={allowedStateAbbrs}
+              allowCanadaPlaces={allowCanadaPlaces}
+              placeholder="Search for hotel, Airbnb, or address..."
             />
           </label>
 
