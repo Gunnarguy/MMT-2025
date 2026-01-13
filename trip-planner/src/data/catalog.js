@@ -139,17 +139,6 @@ export const activityCatalog = [
   // 🌊 MICHIGAN - CITIES & TOWNS (with coordinates for mapping)
   // ═══════════════════════════════════════════════════════════════════════════
   {
-    id: "mi-city-chicago",
-    category: "city",
-    name: "Chicago",
-    region: "chicago",
-    location: "Chicago, IL",
-    coordinates: [41.8781, -87.6298],
-    description: "Meeting point for the trip. Pick up rental car here.",
-    momMentioned: true,
-    tags: ["michigan-trip", "start"],
-  },
-  {
     id: "mi-city-grand-rapids",
     category: "town",
     name: "Grand Rapids",
