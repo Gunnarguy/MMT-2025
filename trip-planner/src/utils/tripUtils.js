@@ -1,6 +1,11 @@
 // Default home address for the trip (Mom's house in Palatine)
 export const DEFAULT_HOME_ADDRESS = "2020 Crestwood Lane, Palatine, IL";
 
+// Activity IDs that have been removed and should be cleaned up from saved trips
+const REMOVED_ACTIVITY_IDS = new Set([
+  "mi-city-chicago", // Removed - home address covers start/end point
+]);
+
 /**
  * Migrate trip data to ensure all required fields are present.
  * This handles trips loaded from storage/Supabase that predate new fields.
@@ -13,10 +18,14 @@ export function migrateTrip(trip) {
     ...trip,
     // Ensure homeAddress is always set
     homeAddress: trip.homeAddress || DEFAULT_HOME_ADDRESS,
-    // Ensure each day has overnightStay field (empty string if not set)
+    // Ensure each day has overnightStay field and clean up removed activities
     days: (trip.days || []).map((day) => ({
       ...day,
       overnightStay: day.overnightStay ?? "",
+      // Remove any activity IDs that no longer exist
+      activities: (day.activities || []).filter(
+        (id) => !REMOVED_ACTIVITY_IDS.has(id)
+      ),
     })),
   };
 }
