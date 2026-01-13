@@ -492,8 +492,8 @@ export const routeTemplates = [
     duration: "8 days",
     totalMiles: "TBD",
     driveTime: "TBD",
-    flyIn: "Chicago (meet-up)",
-    flyOut: "Chicago (return) or flexible",
+    flyIn: "Meet in Palatine (home)",
+    flyOut: "Return to Palatine (home)",
     vibe: "Lakes, dunes, wineries, and island bikes",
     bestFor: ["Friends trip", "Scenic drives", "Food + towns"],
     countries: ["USA", "Canada"],
@@ -502,12 +502,12 @@ export const routeTemplates = [
     days: [
       {
         dayNumber: 1,
-        label: "Chicago → Ludington",
-        location: "Chicago, IL → Grand Rapids → Ludington, MI",
+        label: "Home → Ludington",
+        location: "Palatine, IL → Grand Rapids → Ludington, MI",
         type: "drive",
         overnightStay: "Ludington, MI",
         notes:
-          "Converge in Chicago (Aug 28/29). Pick up rental car Aug 29; load up and leave by 2:00 PM (earlier preferred).\n\nStops: Grand Rapids (~3h 18m), then Ludington (~1h 45m).\nLudington ideas: climb lighthouse, Pine Village, Port Museum, kayak on the lake.\nOvernight in Ludington is optional depending on departure time.\n\nSee 'Michigan Trip – Logistics & Costs' item for full booking/budget details.",
+          "Pick up rental car; load up and leave by 2:00 PM (earlier preferred).\n\nStops: Grand Rapids (~3h 18m), then Ludington (~1h 45m).\nLudington ideas: climb lighthouse, Pine Village, Port Museum, kayak on the lake.\nOvernight in Ludington is optional depending on departure time.\n\nSee 'Michigan Trip – Logistics & Costs' item for full booking/budget details.",
         suggestedActivities: [
           "mi-city-grand-rapids",
           "mi-town-ludington",
