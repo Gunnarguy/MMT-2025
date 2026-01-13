@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { geocodePlace } from '../utils/geocode';
 
+// Known coordinates for frequently used addresses (avoids slow geocoding)
+const KNOWN_COORDINATES = {
+  "2020 Crestwood Lane, Palatine, IL": [42.1139, -88.0345],
+  "2020 crestwood lane, palatine, il": [42.1139, -88.0345],
+};
+
 // Helper to get overnight stay name (handles both string and object format)
 function getOvernightStayName(stay) {
   if (!stay) return null;
@@ -12,6 +18,13 @@ function getOvernightStayName(stay) {
 function getOvernightStayCoords(stay) {
   if (!stay || typeof stay !== "object") return null;
   return stay.coordinates || null;
+}
+
+// Check if we have known coordinates for an address
+function getKnownCoords(label) {
+  if (!label) return null;
+  const normalized = label.toLowerCase().trim();
+  return KNOWN_COORDINATES[normalized] || KNOWN_COORDINATES[label] || null;
 }
 
 export function useRoutes({ trip, getActivityWaypoints }) {
@@ -41,35 +54,51 @@ export function useRoutes({ trip, getActivityWaypoints }) {
 
       const updates = {};
 
-      // First, add any overnight stays that already have coordinates
+      // First, add any known coordinates (instant, no API call)
+      for (const label of labels) {
+        if (baseCoordsByLabel[label]) continue;
+        const knownCoords = getKnownCoords(label);
+        if (knownCoords) {
+          updates[label] = knownCoords;
+        }
+      }
+
+      // Add any overnight stays that already have coordinates
       (trip.days || []).forEach((d) => {
         const overnightName = getOvernightStayName(d.overnightStay)?.trim();
         const overnightCoords = getOvernightStayCoords(d.overnightStay);
         if (
           overnightName &&
           overnightCoords &&
-          !baseCoordsByLabel[overnightName]
+          !baseCoordsByLabel[overnightName] &&
+          !updates[overnightName]
         ) {
           updates[overnightName] = overnightCoords;
         }
       });
 
-      // Then geocode any remaining labels
-      for (const label of labels) {
-        if (baseCoordsByLabel[label] || updates[label]) continue;
+      // Apply known coordinates immediately so routes can start calculating
+      if (Object.keys(updates).length) {
+        setBaseCoordsByLabel((prev) => ({ ...prev, ...updates }));
+      }
+
+      // Then geocode any remaining labels that need API calls
+      const needsGeocoding = [...labels].filter(
+        (label) => !baseCoordsByLabel[label] && !updates[label]
+      );
+
+      for (const label of needsGeocoding) {
+        if (cancelled) return;
         try {
           const coords = await geocodePlace(label, {
             signal: controller.signal,
           });
-          if (coords) updates[label] = coords;
+          if (coords && !cancelled) {
+            setBaseCoordsByLabel((prev) => ({ ...prev, [label]: coords }));
+          }
         } catch (e) {
           if (e?.name === "AbortError") return;
         }
-      }
-
-      if (cancelled) return;
-      if (Object.keys(updates).length) {
-        setBaseCoordsByLabel((prev) => ({ ...prev, ...updates }));
       }
     }
 
