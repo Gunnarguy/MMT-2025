@@ -846,6 +846,8 @@ export default function TripBuilderView({
         selectedDayStats={selectedDayStats}
         viewMode={plannerView}
         totalDays={trip.days.length}
+        homeAddress={trip.homeAddress}
+        homeCoordinates={trip.homeAddress ? baseCoordsByLabel[trip.homeAddress] : null}
         routesLoading={routesLoading}
         routesError={routesError}
         gasPricePerGallon={gasPricePerGallon}

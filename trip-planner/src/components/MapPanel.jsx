@@ -73,6 +73,8 @@ export default function MapPanel({
   selectedDayStats,
   viewMode,
   totalDays,
+  homeAddress,
+  homeCoordinates,
   routesLoading,
   routesError,
   gasPricePerGallon,
@@ -501,6 +503,22 @@ export default function MapPanel({
                 </Popup>
               </Marker>
             ))}
+
+          {/* Home marker - shows start/end point for the entire trip */}
+          {homeCoordinates && (
+            <Marker 
+              key="home-marker" 
+              position={homeCoordinates}
+            >
+              <Popup>
+                <strong>🏠 Home Base</strong>
+                <br />
+                {homeAddress}
+                <br />
+                <em style={{ fontSize: '0.85em', color: '#666' }}>Trip starts & ends here</em>
+              </Popup>
+            </Marker>
+          )}
         </MapContainer>
       </div>
     </aside>
