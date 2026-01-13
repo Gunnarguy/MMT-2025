@@ -1,8 +1,11 @@
+// Default home address for the trip (Mom's house in Palatine)
+export const DEFAULT_HOME_ADDRESS = "2020 Crestwood Lane, Palatine, IL";
+
 export function isValidTripState(state) {
-  if (!state || typeof state !== 'object') return false;
+  if (!state || typeof state !== "object") return false;
   if (!Array.isArray(state.days)) return false;
   return state.days.every(
-    (day) => day && typeof day.id === 'string' && Array.isArray(day.activities)
+    (day) => day && typeof day.id === "string" && Array.isArray(day.activities)
   );
 }
 
@@ -10,44 +13,47 @@ export function buildTripFromTemplate(template) {
   if (!template) return null;
   return {
     name: template.name,
+    homeAddress: template.homeAddress || DEFAULT_HOME_ADDRESS,
     days: template.days.map((tDay, i) => ({
       id: `day-${i + 1}`,
       dayNumber: tDay.dayNumber ?? i + 1,
       label: tDay.label ?? `Day ${i + 1}`,
-      location: tDay.location ?? '',
+      location: tDay.location ?? "",
       activities: tDay.suggestedActivities || [],
-      notes: tDay.notes || '',
-      type: tDay.type || 'custom',
+      notes: tDay.notes || "",
+      type: tDay.type || "custom",
       lodging: tDay.lodging || null,
-      startTime: '09:00',
-      schedule: {}
+      overnightStay: tDay.overnightStay || "",
+      startTime: "09:00",
+      schedule: {},
     })),
     createdAt: new Date().toISOString(),
-    templateId: template.id
+    templateId: template.id,
   };
 }
 
 export function buildBlankTrip({
   dayCount = 5,
-  name = 'My New England Trip',
-  defaultLabel = 'Day'
+  name = "My New England Trip",
+  defaultLabel = "Day",
 } = {}) {
   return {
     name,
+    homeAddress: DEFAULT_HOME_ADDRESS,
     days: Array.from({ length: dayCount }, (_, i) => ({
       id: `day-${i + 1}`,
       dayNumber: i + 1,
       label: `${defaultLabel} ${i + 1}`,
-      location: '',
+      location: "",
       activities: [],
-      notes: '',
-      type: 'custom',
+      notes: "",
+      type: "custom",
       lodging: null,
-      startTime: '09:00',
-      schedule: {}
+      startTime: "09:00",
+      schedule: {},
     })),
     createdAt: new Date().toISOString(),
-    templateId: null
+    templateId: null,
   };
 }
 
@@ -56,7 +62,7 @@ export function normalizeTripDays(days) {
     ...day,
     dayNumber: i + 1,
     id: `day-${i + 1}`,
-    label: day.label || `Day ${i + 1}`
+    label: day.label || `Day ${i + 1}`,
   }));
 }
 
@@ -72,7 +78,9 @@ export function getTripStats(days) {
 }
 
 export function hasAnyActivities(days) {
-  return days.some((day) => day.activities.length > 0 || (day.notes && day.notes.trim()));
+  return days.some(
+    (day) => day.activities.length > 0 || (day.notes && day.notes.trim())
+  );
 }
 
 export function buildTripSkeleton({
@@ -80,32 +88,32 @@ export function buildTripSkeleton({
   startLocation,
   endLocation,
   dayCount,
-  style = 'balanced'
+  style = "balanced",
 }) {
   const safeDayCount = Math.max(1, Number(dayCount) || 1);
   const days = Array.from({ length: safeDayCount }, (_, i) => {
     const isFirst = i === 0;
     const isLast = i === safeDayCount - 1;
-    const midType = style === 'hustle' ? 'drive' : 'explore';
-    const type = isFirst ? 'arrival' : isLast ? 'departure' : midType;
+    const midType = style === "hustle" ? "drive" : "explore";
+    const type = isFirst ? "arrival" : isLast ? "departure" : midType;
     return {
       id: `day-${i + 1}`,
       dayNumber: i + 1,
-      label: isFirst ? 'Arrival' : isLast ? 'Departure' : `Day ${i + 1}`,
-      location: isFirst ? startLocation || '' : isLast ? endLocation || '' : '',
+      label: isFirst ? "Arrival" : isLast ? "Departure" : `Day ${i + 1}`,
+      location: isFirst ? startLocation || "" : isLast ? endLocation || "" : "",
       activities: [],
-      notes: '',
+      notes: "",
       type,
       lodging: null,
-      startTime: '09:00',
-      schedule: {}
+      startTime: "09:00",
+      schedule: {},
     };
   });
 
   return {
-    name: name || 'My Custom Trip',
+    name: name || "My Custom Trip",
     days,
     createdAt: new Date().toISOString(),
-    templateId: null
+    templateId: null,
   };
 }

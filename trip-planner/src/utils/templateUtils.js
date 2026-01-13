@@ -1,18 +1,24 @@
-export function buildTemplateFromTrip(trip, { name, emoji = '+', source = 'custom' } = {}) {
-  const templateName = name || trip.name || 'Custom Trip';
+import { DEFAULT_HOME_ADDRESS } from "./tripUtils";
+
+export function buildTemplateFromTrip(
+  trip,
+  { name, emoji = "+", source = "custom" } = {}
+) {
+  const templateName = name || trip.name || "Custom Trip";
   return {
     id: `custom-${Date.now()}`,
     name: templateName,
     emoji,
     source,
+    homeAddress: trip.homeAddress || DEFAULT_HOME_ADDRESS,
     description: `Saved from ${new Date().toLocaleDateString()}`,
     duration: `${trip.days.length} days`,
-    totalMiles: 'TBD',
-    driveTime: 'TBD',
-    flyIn: '',
-    flyOut: '',
-    vibe: 'Personalized plan',
-    bestFor: ['Custom'],
+    totalMiles: "TBD",
+    driveTime: "TBD",
+    flyIn: "",
+    flyOut: "",
+    vibe: "Personalized plan",
+    bestFor: ["Custom"],
     countries: [],
     states: [],
     days: trip.days.map((day) => ({
@@ -23,9 +29,10 @@ export function buildTemplateFromTrip(trip, { name, emoji = '+', source = 'custo
       notes: day.notes,
       suggestedActivities: day.activities,
       lodging: day.lodging || null,
-      flexible: true
+      overnightStay: day.overnightStay || "",
+      flexible: true,
     })),
-    alternatives: []
+    alternatives: [],
   };
 }
 
