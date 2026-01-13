@@ -531,6 +531,14 @@ export default function MapPanel({
                         {activity.id === 'home-start' ? 'Trip starts here!' : 'Trip ends here!'}
                       </em>
                     </>
+                  ) : activity.isOvernightStay ? (
+                    <>
+                      <strong>{activity.name}</strong>
+                      <br />
+                      <em style={{ fontSize: "0.85em", color: "#666" }}>
+                        Overnight stay after Day {activity.dayNumber}
+                      </em>
+                    </>
                   ) : (
                     <>
                       <strong>
