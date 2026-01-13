@@ -31,7 +31,7 @@ export function useRoutes({ trip, getActivityWaypoints }) {
   const [dayRoutes, setDayRoutes] = useState({});
   const [routesLoading, setRoutesLoading] = useState(false);
   const [routesError, setRoutesError] = useState(null);
-  
+
   // Initialize with known coordinates immediately (no waiting for effects)
   const [baseCoordsByLabel, setBaseCoordsByLabel] = useState(() => {
     const initial = {};
