@@ -475,7 +475,9 @@ export default function MapPanel({
           {/* In "day" view: show only the selected day's route prominently */}
           {/* In "board" view: show all routes */}
           {Object.values(dayRoutes)
-            .filter((route) => viewMode === "board" || route.dayId === selectedDayId)
+            .filter(
+              (route) => viewMode === "board" || route.dayId === selectedDayId
+            )
             .map((route) => (
               <Polyline
                 key={`route-${route.dayId}`}
@@ -491,9 +493,16 @@ export default function MapPanel({
           {/* In "day" view: show only the selected day's markers */}
           {/* In "board" view: show all markers */}
           {mapActivities
-            .filter((activity) => viewMode === "board" || activity.dayNumber === selectedDayStats?.dayNumber)
+            .filter(
+              (activity) =>
+                viewMode === "board" ||
+                activity.dayNumber === selectedDayStats?.dayNumber
+            )
             .map((activity, i) => (
-              <Marker key={`${activity.id}-${i}`} position={activity.coordinates}>
+              <Marker
+                key={`${activity.id}-${i}`}
+                position={activity.coordinates}
+              >
                 <Popup>
                   <strong>
                     Day {activity.dayNumber}: {activity.name}
@@ -506,16 +515,15 @@ export default function MapPanel({
 
           {/* Home marker - shows start/end point for the entire trip */}
           {homeCoordinates && (
-            <Marker 
-              key="home-marker" 
-              position={homeCoordinates}
-            >
+            <Marker key="home-marker" position={homeCoordinates}>
               <Popup>
                 <strong>🏠 Home Base</strong>
                 <br />
                 {homeAddress}
                 <br />
-                <em style={{ fontSize: '0.85em', color: '#666' }}>Trip starts & ends here</em>
+                <em style={{ fontSize: "0.85em", color: "#666" }}>
+                  Trip starts & ends here
+                </em>
               </Popup>
             </Marker>
           )}
