@@ -254,7 +254,10 @@ export default function OvernightStayPicker({
                 key={result.id}
                 type="button"
                 className="stay-result-item"
-                onClick={() => handleSelect(result)}
+                onMouseDown={(e) => {
+                  e.preventDefault(); // Prevent blur before click
+                  handleSelect(result);
+                }}
               >
                 <span className="result-icon">{result.icon}</span>
                 <div className="result-info">
