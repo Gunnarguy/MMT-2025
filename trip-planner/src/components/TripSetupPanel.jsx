@@ -48,7 +48,11 @@ export default function TripSetupPanel({ trip, onNameChange, onApplySkeleton, on
       <div className="setup-grid">
         <label>
           Start date
-          <input type="date" value={trip.startDate || ''} onChange={(e) => onStartDateChange(e.target.value)} />
+          <input
+            type="date"
+            value={trip.startDate || ""}
+            onChange={(e) => onStartDateChange(e.target.value)}
+          />
         </label>
         <label>
           End date (auto)
@@ -56,19 +60,27 @@ export default function TripSetupPanel({ trip, onNameChange, onApplySkeleton, on
         </label>
         <label className="home-address-label">
           🏠 Home address (trip start & end)
-          <input 
-            value={trip.homeAddress || ''} 
-            onChange={(e) => onHomeAddressChange(e.target.value)} 
-            placeholder="2020 Crestwood Lane, Palatine, IL" 
+          <input
+            value={trip.homeAddress || ""}
+            onChange={(e) => onHomeAddressChange(e.target.value)}
+            placeholder="2020 Crestwood Lane, Palatine, IL"
           />
         </label>
         <label>
           Start location
-          <input value={form.startLocation} onChange={updateField('startLocation')} placeholder="Boston, MA" />
+          <input
+            value={form.startLocation}
+            onChange={updateField("startLocation")}
+            placeholder="Boston, MA"
+          />
         </label>
         <label>
           End location
-          <input value={form.endLocation} onChange={updateField('endLocation')} placeholder="Albany, NY" />
+          <input
+            value={form.endLocation}
+            onChange={updateField("endLocation")}
+            placeholder="Albany, NY"
+          />
         </label>
         <label>
           Days
@@ -77,12 +89,12 @@ export default function TripSetupPanel({ trip, onNameChange, onApplySkeleton, on
             min="1"
             max="20"
             value={form.dayCount}
-            onChange={updateField('dayCount')}
+            onChange={updateField("dayCount")}
           />
         </label>
         <label>
           Travel style
-          <select value={form.style} onChange={updateField('style')}>
+          <select value={form.style} onChange={updateField("style")}>
             <option value="relaxed">Relaxed</option>
             <option value="balanced">Balanced</option>
             <option value="hustle">Hustle</option>
@@ -91,7 +103,11 @@ export default function TripSetupPanel({ trip, onNameChange, onApplySkeleton, on
       </div>
 
       <div className="setup-actions">
-        <button type="button" className="btn-outline" onClick={() => onApplySkeleton(form)}>
+        <button
+          type="button"
+          className="btn-outline"
+          onClick={() => onApplySkeleton(form)}
+        >
           Generate skeleton
         </button>
       </div>
