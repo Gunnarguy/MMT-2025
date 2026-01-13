@@ -613,10 +613,7 @@ export const routeTemplates = [
         overnightStay: "", // Ends at home (uses homeAddress)
         notes:
           "Ann Arbor stop (optional).\nKalamazoo (~1h 46m) for a driving break.\nHome (~3h).",
-        suggestedActivities: [
-          "mi-city-ann-arbor",
-          "mi-city-kalamazoo",
-        ],
+        suggestedActivities: ["mi-city-ann-arbor", "mi-city-kalamazoo"],
         flexible: true,
       },
     ],
