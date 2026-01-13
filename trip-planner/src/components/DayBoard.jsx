@@ -80,16 +80,13 @@ function DayColumn({
 }) {
   const droppableId = `day:${day.id}`;
   const { setNodeRef } = useDroppable({ id: droppableId });
-  
+
   // Determine start point for this day
-  const startPoint = isFirstDay && homeAddress 
-    ? homeAddress 
-    : prevDayOvernightStay;
-  
-  // Determine end point for this day  
-  const endPoint = isLastDay && homeAddress
-    ? homeAddress
-    : day.overnightStay;
+  const startPoint =
+    isFirstDay && homeAddress ? homeAddress : prevDayOvernightStay;
+
+  // Determine end point for this day
+  const endPoint = isLastDay && homeAddress ? homeAddress : day.overnightStay;
 
   return (
     <section
@@ -107,12 +104,12 @@ function DayColumn({
         <p>{day.location || day.label}</p>
         {startPoint && (
           <p className="board-endpoint start">
-            {isFirstDay ? '🏠' : '🏨'} From: {startPoint}
+            {isFirstDay ? "🏠" : "🏨"} From: {startPoint}
           </p>
         )}
         {endPoint && (
           <p className="board-endpoint end">
-            {isLastDay ? '🏠' : '🏨'} To: {endPoint}
+            {isLastDay ? "🏠" : "🏨"} To: {endPoint}
           </p>
         )}
       </header>
