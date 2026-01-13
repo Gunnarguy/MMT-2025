@@ -111,12 +111,12 @@ function AuthenticatedApp({ user, onSignOut }) {
     supabaseEnabled ? "syncing" : "offline"
   );
 
-  // Only show Mom's trips + any custom templates the user saved
-  const momsTripIds = ["moms-original", "girls-michigan"];
+  // Only show built-in trips + any custom templates the user saved
+  const builtInTripIds = ["moms-original", "girls-michigan"];
   const templates = useMemo(
     () =>
       mergeTemplates(
-        routeTemplates.filter((t) => momsTripIds.includes(t.id)),
+        routeTemplates.filter((t) => builtInTripIds.includes(t.id)),
         customTemplates
       ),
     [customTemplates]
@@ -310,7 +310,19 @@ function AuthenticatedApp({ user, onSignOut }) {
     }
     const template = templates.find((item) => item.id === templateId);
     if (!template) return;
-    setTrip(buildTripFromTemplate(template));
+
+    // When loading a read-only template, we're working on a copy
+    // The original template stays pristine - changes only affect the working copy
+    const newTrip = buildTripFromTemplate(template);
+
+    // If it's a read-only template, mark it as "based on" but give it a working ID
+    // This ensures any edits don't claim to be the original template
+    if (template.readOnly) {
+      newTrip.basedOnTemplate = template.id;
+      newTrip.templateId = `working-${template.id}`;
+    }
+
+    setTrip(newTrip);
   };
 
   const handleSaveTemplate = () => {
@@ -330,6 +342,7 @@ function AuthenticatedApp({ user, onSignOut }) {
         tripStats={tripStats}
         templates={templates}
         selectedTemplateId={trip.templateId}
+        basedOnTemplate={trip.basedOnTemplate}
         onLoadTemplate={(templateId) => {
           handleLoadTemplate(templateId);
         }}

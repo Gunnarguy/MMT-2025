@@ -14,6 +14,7 @@ export const routeTemplates = [
     name: "Mom's Original Route",
     emoji: "💕",
     source: "MMTrip.txt",
+    readOnly: true, // Built-in template - can't be overwritten, only copied
     description:
       "The full experience—coast, mountains, city, and countryside. Based on Tere's original planning document.",
     duration: "7-9 days",
@@ -483,6 +484,7 @@ export const routeTemplates = [
     name: "Girls Trip to Michigan",
     emoji: "🌊",
     source: "Girls Trip to Michigan.docx",
+    readOnly: true, // Built-in template - can't be overwritten, only copied
     description:
       "A cohesive Michigan road trip plan (with optional Canada detour) imported from the original planning document.",
     duration: "8 days",

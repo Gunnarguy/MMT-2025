@@ -5,6 +5,7 @@ export default function Header({
   tripStats,
   templates,
   selectedTemplateId,
+  basedOnTemplate,
   onLoadTemplate,
   onSaveTemplate,
   syncStatus,
@@ -12,12 +13,28 @@ export default function Header({
   onSignOut,
 }) {
   const familyMember = user ? getFamilyMember(user.email) : null;
+
+  // Check if we're working on a copy of a built-in template
+  const isWorkingCopy = selectedTemplateId?.startsWith("working-");
+  const originalTemplateName =
+    isWorkingCopy && basedOnTemplate
+      ? templates.find((t) => t.id === basedOnTemplate)?.name
+      : null;
+
   return (
     <header className="header">
       <div className="header-brand">
         <div className="brand-title">
           <h1>MMT 2025</h1>
           <span className="tagline">{tripName || "Trip Planner"}</span>
+          {isWorkingCopy && originalTemplateName && (
+            <span
+              className="working-copy-badge"
+              title={`Your changes are saved - the original "${originalTemplateName}" template stays untouched`}
+            >
+              ✏️ Editing copy
+            </span>
+          )}
           {syncStatus && (
             <span
               className={`sync-badge ${syncStatus}`}
@@ -48,11 +65,26 @@ export default function Header({
         >
           <option value="">Load a trip...</option>
           <option value="blank">✨ Start Fresh (Blank Trip)</option>
-          {templates.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.emoji} {t.name}
-            </option>
-          ))}
+          <optgroup label="📌 Built-in Routes (Copy to Edit)">
+            {templates
+              .filter((t) => t.readOnly)
+              .map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.emoji} {t.name}
+                </option>
+              ))}
+          </optgroup>
+          {templates.some((t) => !t.readOnly) && (
+            <optgroup label="✏️ My Custom Trips">
+              {templates
+                .filter((t) => !t.readOnly)
+                .map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.emoji} {t.name}
+                  </option>
+                ))}
+            </optgroup>
+          )}
         </select>
         <button type="button" className="btn-primary" onClick={onSaveTemplate}>
           Save as Template

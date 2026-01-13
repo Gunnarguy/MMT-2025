@@ -291,6 +291,17 @@
   opacity: 0.9;
 }
 
+.working-copy-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  margin-left: 0.5rem;
+  cursor: help;
+}
 .header-nav {
   display: flex;
   gap: 0.5rem;
@@ -337,6 +348,12 @@
   color: #1b2430;
 }
 
+.template-select optgroup {
+  color: #1b2430;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+}
 .header-stats {
   display: flex;
   gap: 0.5rem;
