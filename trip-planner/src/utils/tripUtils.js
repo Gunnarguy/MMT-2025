@@ -1,6 +1,25 @@
 // Default home address for the trip (Mom's house in Palatine)
 export const DEFAULT_HOME_ADDRESS = "2020 Crestwood Lane, Palatine, IL";
 
+/**
+ * Migrate trip data to ensure all required fields are present.
+ * This handles trips loaded from storage/Supabase that predate new fields.
+ */
+export function migrateTrip(trip) {
+  if (!trip || typeof trip !== 'object') return trip;
+  
+  return {
+    ...trip,
+    // Ensure homeAddress is always set
+    homeAddress: trip.homeAddress || DEFAULT_HOME_ADDRESS,
+    // Ensure each day has overnightStay field
+    days: (trip.days || []).map(day => ({
+      ...day,
+      overnightStay: day.overnightStay ?? '',
+    })),
+  };
+}
+
 export function isValidTripState(state) {
   if (!state || typeof state !== "object") return false;
   if (!Array.isArray(state.days)) return false;

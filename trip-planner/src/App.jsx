@@ -33,6 +33,7 @@ import {
   buildTripFromTemplate,
   getTripStats,
   isValidTripState,
+  migrateTrip,
 } from "./utils/tripUtils";
 
 const STORAGE_KEY = "mmt-2025-trip";
@@ -100,7 +101,10 @@ export default function App() {
 }
 
 function AuthenticatedApp({ user, onSignOut }) {
-  const savedTrip = useMemo(() => loadTrip(STORAGE_KEY), []);
+  const savedTrip = useMemo(() => {
+    const loaded = loadTrip(STORAGE_KEY);
+    return loaded ? migrateTrip(loaded) : null;
+  }, []);
   const [customActivities, setCustomActivities] = useState(() =>
     loadCustomActivities(CUSTOM_ACTIVITIES_KEY)
   );
@@ -170,7 +174,7 @@ function AuthenticatedApp({ user, onSignOut }) {
       const remoteCustomTemplates = data?.state?.customTemplates;
 
       if (isValidTripState(remoteTrip) && remoteTrip.days.length) {
-        setTrip(remoteTrip);
+        setTrip(migrateTrip(remoteTrip));
       }
 
       // Load custom activities from remote if they exist
@@ -220,8 +224,9 @@ function AuthenticatedApp({ user, onSignOut }) {
         // Sync trip
         const nextTrip = next?.trip;
         if (isValidTripState(nextTrip) && nextTrip.days.length) {
-          setTrip(nextTrip);
-          saveTrip(STORAGE_KEY, nextTrip);
+          const migrated = migrateTrip(nextTrip);
+          setTrip(migrated);
+          saveTrip(STORAGE_KEY, migrated);
         }
 
         // Sync custom activities
