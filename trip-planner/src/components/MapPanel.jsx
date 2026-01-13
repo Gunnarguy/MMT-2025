@@ -492,41 +492,49 @@ export default function MapPanel({
 
           {/* In "day" view: show only the selected day's markers */}
           {/* In "board" view: show all markers */}
+          {/* Home points (dayNumber 0 or totalDays+1) show on Day 1 / last day or in board view */}
           {mapActivities
-            .filter(
-              (activity) =>
-                viewMode === "board" ||
-                activity.dayNumber === selectedDayStats?.dayNumber
-            )
+            .filter((activity) => {
+              // Always show everything in board view
+              if (viewMode === "board") return true;
+              
+              // Home start point shows on Day 1
+              if (activity.id === 'home-start' && selectedDayStats?.dayNumber === 1) return true;
+              
+              // Home end point shows on last day
+              if (activity.id === 'home-end' && selectedDayStats?.dayNumber === totalDays) return true;
+              
+              // Regular activities show on their day
+              return activity.dayNumber === selectedDayStats?.dayNumber;
+            })
             .map((activity, i) => (
               <Marker
                 key={`${activity.id}-${i}`}
                 position={activity.coordinates}
               >
                 <Popup>
-                  <strong>
-                    Day {activity.dayNumber}: {activity.name}
-                  </strong>
-                  <br />
-                  {activity.location}
+                  {activity.isHomePoint ? (
+                    <>
+                      <strong>{activity.name}</strong>
+                      <br />
+                      {activity.location}
+                      <br />
+                      <em style={{ fontSize: "0.85em", color: "#666" }}>
+                        {activity.id === 'home-start' ? 'Trip starts here!' : 'Trip ends here!'}
+                      </em>
+                    </>
+                  ) : (
+                    <>
+                      <strong>
+                        Day {activity.dayNumber}: {activity.name}
+                      </strong>
+                      <br />
+                      {activity.location}
+                    </>
+                  )}
                 </Popup>
               </Marker>
             ))}
-
-          {/* Home marker - shows start/end point for the entire trip */}
-          {homeCoordinates && (
-            <Marker key="home-marker" position={homeCoordinates}>
-              <Popup>
-                <strong>🏠 Home Base</strong>
-                <br />
-                {homeAddress}
-                <br />
-                <em style={{ fontSize: "0.85em", color: "#666" }}>
-                  Trip starts & ends here
-                </em>
-              </Popup>
-            </Marker>
-          )}
         </MapContainer>
       </div>
     </aside>

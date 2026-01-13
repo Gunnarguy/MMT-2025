@@ -621,6 +621,22 @@ export default function TripBuilderView({
 
   const mapActivities = useMemo(() => {
     const activities = [];
+    const homeCoords = trip.homeAddress ? baseCoordsByLabel[trip.homeAddress] : null;
+    
+    // Add HOME as the first point (Day 0 / Start)
+    if (homeCoords) {
+      activities.push({
+        id: 'home-start',
+        name: '🏠 HOME - Trip Start',
+        location: trip.homeAddress,
+        coordinates: homeCoords,
+        dayNumber: 0, // Before Day 1
+        category: 'home',
+        isHomePoint: true,
+      });
+    }
+    
+    // Add all day activities
     trip.days.forEach((day) => {
       day.activities.forEach((id) => {
         const activity = getAnyActivity(id);
@@ -629,8 +645,22 @@ export default function TripBuilderView({
         }
       });
     });
+    
+    // Add HOME as the last point (after last day)
+    if (homeCoords) {
+      activities.push({
+        id: 'home-end',
+        name: '🏠 HOME - Trip End',
+        location: trip.homeAddress,
+        coordinates: homeCoords,
+        dayNumber: trip.days.length + 1, // After last day
+        category: 'home',
+        isHomePoint: true,
+      });
+    }
+    
     return activities;
-  }, [trip.days, getAnyActivity]);
+  }, [trip.days, trip.homeAddress, getAnyActivity, baseCoordsByLabel]);
 
   const selectedDayIndex = useMemo(
     () => trip.days.findIndex((day) => day.id === selectedDayId),
@@ -640,6 +670,12 @@ export default function TripBuilderView({
   const selectedDayBounds = useMemo(() => {
     if (!selectedDay) return null;
     const isDriveDay = selectedDay?.type === "drive";
+    const isFirstDay = selectedDayIndex === 0;
+    const isLastDay = selectedDayIndex === trip.days.length - 1;
+    
+    // Get home coordinates
+    const homeCoords = trip.homeAddress ? baseCoordsByLabel[trip.homeAddress] : null;
+    
     const endBaseLabel = (selectedDay?.location || "").trim() || null;
     const prevBaseLabel =
       selectedDayIndex > 0
@@ -648,11 +684,18 @@ export default function TripBuilderView({
     const startBaseLabel = isDriveDay ? prevBaseLabel : endBaseLabel;
 
     const coords = [];
-    if (startBaseLabel && baseCoordsByLabel[startBaseLabel])
+    
+    // Day 1 starts from home
+    if (isFirstDay && homeCoords) {
+      coords.push(homeCoords);
+    } else if (startBaseLabel && baseCoordsByLabel[startBaseLabel]) {
       coords.push(baseCoordsByLabel[startBaseLabel]);
+    }
+    
     coords.push(
       ...getActivityWaypoints(selectedDay).map((point) => point.coordinates)
     );
+    
     if (
       isDriveDay &&
       endBaseLabel &&
@@ -661,12 +704,18 @@ export default function TripBuilderView({
     ) {
       coords.push(baseCoordsByLabel[endBaseLabel]);
     }
+    
+    // Last day ends at home
+    if (isLastDay && homeCoords) {
+      coords.push(homeCoords);
+    }
 
     return coords.length ? coords : null;
   }, [
     selectedDay,
     selectedDayIndex,
     trip.days,
+    trip.homeAddress,
     baseCoordsByLabel,
     getActivityWaypoints,
   ]);
