@@ -7,44 +7,44 @@ const supabase = createClient(
 
 async function fixTrip() {
   console.log('Fetching trip from Supabase...');
-  
+
   const { data, error } = await supabase
-    .from('mmt_shared_trip')
-    .select('*')
-    .eq('id', 'mmt-2025-maine')
+    .from("mmt_shared_trip")
+    .select("*")
+    .eq("id", "mmt-2025-maine")
     .single();
-  
+
   if (error) {
-    console.log('Error fetching:', error);
+    console.log("Error fetching:", error);
     return;
   }
-  
+
   // Data is in data.state.trip
   const tripData = data.state.trip;
-  console.log('Trip name:', tripData.name);
-  console.log('Days:', tripData.days.length);
-  
+  console.log("Trip name:", tripData.name);
+  console.log("Days:", tripData.days.length);
+
   let changed = false;
-  
+
   tripData.days.forEach((day, i) => {
     const before = day.activities.length;
-    day.activities = day.activities.filter(id => id !== 'mi-city-chicago');
+    day.activities = day.activities.filter((id) => id !== "mi-city-chicago");
     if (day.activities.length !== before) {
-      console.log('Removed Chicago from Day', i + 1);
+      console.log("Removed Chicago from Day", i + 1);
       changed = true;
     }
   });
-  
+
   if (!changed) {
     console.log('Chicago not found in any day activities');
     return;
   }
-  
+
   const { error: updateError } = await supabase
-    .from('mmt_shared_trip')
+    .from("mmt_shared_trip")
     .update({ state: { ...data.state, trip: tripData } })
-    .eq('id', 'mmt-2025-maine');
-  
+    .eq("id", "mmt-2025-maine");
+
   if (updateError) {
     console.log('Error updating:', updateError);
   } else {
