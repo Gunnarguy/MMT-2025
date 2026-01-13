@@ -497,13 +497,21 @@ export default function MapPanel({
             .filter((activity) => {
               // Always show everything in board view
               if (viewMode === "board") return true;
-              
+
               // Home start point shows on Day 1
-              if (activity.id === 'home-start' && selectedDayStats?.dayNumber === 1) return true;
-              
+              if (
+                activity.id === "home-start" &&
+                selectedDayStats?.dayNumber === 1
+              )
+                return true;
+
               // Home end point shows on last day
-              if (activity.id === 'home-end' && selectedDayStats?.dayNumber === totalDays) return true;
-              
+              if (
+                activity.id === "home-end" &&
+                selectedDayStats?.dayNumber === totalDays
+              )
+                return true;
+
               // Regular activities show on their day
               return activity.dayNumber === selectedDayStats?.dayNumber;
             })
