@@ -7,7 +7,7 @@ export const DEFAULT_HOME_ADDRESS = "2020 Crestwood Lane, Palatine, IL";
  */
 export function migrateTrip(trip) {
   if (!trip || typeof trip !== 'object') return trip;
-  
+
   return {
     ...trip,
     // Ensure homeAddress is always set
