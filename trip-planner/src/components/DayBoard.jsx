@@ -91,6 +91,9 @@ function DayColumn({
           </div>
         </div>
         <p>{day.location || day.label}</p>
+        {day.overnightStay && (
+          <p className="board-overnight">🏨 {day.overnightStay}</p>
+        )}
       </header>
 
       <div className="board-list" ref={setNodeRef}>

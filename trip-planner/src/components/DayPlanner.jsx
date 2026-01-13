@@ -238,6 +238,19 @@ export default function DayPlanner({
             />
           </label>
 
+          <label className="field">
+            🏨 Overnight stay (where you're sleeping)
+            <input
+              type="text"
+              value={selectedDay.overnightStay || ""}
+              onChange={(e) =>
+                onUpdateDay(selectedDay.id, { overnightStay: e.target.value })
+              }
+              placeholder="Airbnb, hotel, or address (e.g., Airbnb in Traverse City)"
+              className="location-input"
+            />
+          </label>
+
           <textarea
             value={selectedDay.notes}
             onChange={(e) =>

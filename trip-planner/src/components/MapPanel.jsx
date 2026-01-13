@@ -470,29 +470,37 @@ export default function MapPanel({
             attribution={TILE_LAYERS[mapStyle].attr}
           />
 
-          {Object.values(dayRoutes).map((route) => (
-            <Polyline
-              key={`route-${route.dayId}`}
-              positions={route.line}
-              pathOptions={{
-                color: getDayColor(route.dayNumber),
-                weight: route.dayId === selectedDayId ? 5 : 3,
-                opacity: route.dayId === selectedDayId ? 0.9 : 0.35,
-              }}
-            />
-          ))}
+          {/* In "day" view: show only the selected day's route prominently */}
+          {/* In "board" view: show all routes */}
+          {Object.values(dayRoutes)
+            .filter((route) => viewMode === "board" || route.dayId === selectedDayId)
+            .map((route) => (
+              <Polyline
+                key={`route-${route.dayId}`}
+                positions={route.line}
+                pathOptions={{
+                  color: getDayColor(route.dayNumber),
+                  weight: route.dayId === selectedDayId ? 5 : 3,
+                  opacity: route.dayId === selectedDayId ? 0.9 : 0.5,
+                }}
+              />
+            ))}
 
-          {mapActivities.map((activity, i) => (
-            <Marker key={`${activity.id}-${i}`} position={activity.coordinates}>
-              <Popup>
-                <strong>
-                  Day {activity.dayNumber}: {activity.name}
-                </strong>
-                <br />
-                {activity.location}
-              </Popup>
-            </Marker>
-          ))}
+          {/* In "day" view: show only the selected day's markers */}
+          {/* In "board" view: show all markers */}
+          {mapActivities
+            .filter((activity) => viewMode === "board" || activity.dayNumber === selectedDayStats?.dayNumber)
+            .map((activity, i) => (
+              <Marker key={`${activity.id}-${i}`} position={activity.coordinates}>
+                <Popup>
+                  <strong>
+                    Day {activity.dayNumber}: {activity.name}
+                  </strong>
+                  <br />
+                  {activity.location}
+                </Popup>
+              </Marker>
+            ))}
         </MapContainer>
       </div>
     </aside>

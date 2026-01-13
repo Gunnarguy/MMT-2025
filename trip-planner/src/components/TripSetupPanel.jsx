@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export default function TripSetupPanel({ trip, onNameChange, onApplySkeleton, onStartDateChange }) {
+export default function TripSetupPanel({ trip, onNameChange, onApplySkeleton, onStartDateChange, onHomeAddressChange }) {
   const [form, setForm] = useState({
     startLocation: '',
     endLocation: '',
@@ -53,6 +53,14 @@ export default function TripSetupPanel({ trip, onNameChange, onApplySkeleton, on
         <label>
           End date (auto)
           <input type="date" value={endDate} readOnly />
+        </label>
+        <label className="home-address-label">
+          🏠 Home address (trip start & end)
+          <input 
+            value={trip.homeAddress || ''} 
+            onChange={(e) => onHomeAddressChange(e.target.value)} 
+            placeholder="2020 Crestwood Lane, Palatine, IL" 
+          />
         </label>
         <label>
           Start location

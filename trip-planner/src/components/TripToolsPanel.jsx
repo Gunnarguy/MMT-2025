@@ -249,6 +249,20 @@ export default function TripToolsPanel({ trip, setTrip, getActivity }) {
         </button>
       </div>
 
+      {/* Home address for trip start/end routing */}
+      <div className="home-address-section">
+        <label className="home-address-label">
+          🏠 Home address
+          <input
+            type="text"
+            value={trip.homeAddress || ''}
+            onChange={(e) => setTrip((prev) => ({ ...prev, homeAddress: e.target.value }))}
+            placeholder="Where the trip starts & ends"
+          />
+        </label>
+        <span className="home-address-hint">Used for Day 1 departure & final day return routing</span>
+      </div>
+
       {activeTab === 'budget' && (
         <div className="tools-body">
           <div className="tools-grid">

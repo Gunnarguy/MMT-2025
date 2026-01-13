@@ -12,13 +12,19 @@ export function useRoutes({ trip, getActivityWaypoints }) {
     let cancelled = false;
 
     async function geocodeBases() {
-      const labels = Array.from(
-        new Set(
-          (trip.days || [])
-            .map((d) => (d.location || '').trim())
-            .filter(Boolean)
-        )
-      );
+      // Collect all location labels AND overnight stays to geocode
+      const labels = new Set();
+      
+      // Include home address if set (for trip start/end)
+      const homeAddr = (trip.homeAddress || '').trim();
+      if (homeAddr) labels.add(homeAddr);
+      
+      (trip.days || []).forEach((d) => {
+        const loc = (d.location || '').trim();
+        const overnight = (d.overnightStay || '').trim();
+        if (loc) labels.add(loc);
+        if (overnight) labels.add(overnight);
+      });
 
       const updates = {};
       for (const label of labels) {
@@ -53,25 +59,57 @@ export function useRoutes({ trip, getActivityWaypoints }) {
       setRoutesError(null);
 
       const next = {};
-      for (let i = 0; i < trip.days.length; i++) {
+      const homeAddress = (trip.homeAddress || '').trim() || null;
+      const totalDays = trip.days.length;
+      
+      for (let i = 0; i < totalDays; i++) {
         const day = trip.days[i];
         const isDriveDay = day?.type === 'drive';
-        const endBaseLabel = (day?.location || '').trim() || null;
-        const prevBaseLabel = i > 0 ? (trip.days[i - 1]?.location || '').trim() : null;
-
-        const startBaseLabel = isDriveDay ? prevBaseLabel : endBaseLabel;
+        const isFirstDay = i === 0;
+        const isLastDay = i === totalDays - 1;
+        
+        // Day's main location
+        const dayLocation = (day?.location || '').trim() || null;
+        
+        // Previous day's overnight stay or location (where we're starting from)
+        const prevDay = i > 0 ? trip.days[i - 1] : null;
+        const prevOvernightStay = (prevDay?.overnightStay || '').trim() || null;
+        const prevLocation = (prevDay?.location || '').trim() || null;
+        
+        // Day 1 starts from home, otherwise from previous night's stay
+        const startBaseLabel = isFirstDay && homeAddress 
+          ? homeAddress 
+          : (prevOvernightStay || prevLocation || dayLocation);
+        
+        // This day's overnight stay (where we're ending/sleeping)
+        const overnightStay = (day?.overnightStay || '').trim() || null;
+        
+        // Last day ends at home, otherwise at tonight's overnight stay
+        const endBaseLabel = isLastDay && homeAddress 
+          ? homeAddress 
+          : (overnightStay || dayLocation);
 
         const points = [];
+        
+        // Start point: home (Day 1) or where we woke up (previous night's stay)
         const startCoord = startBaseLabel ? baseCoordsByLabel[startBaseLabel] : null;
         if (startBaseLabel && startCoord) {
-          points.push({ id: `base-start-${day.id}`, name: startBaseLabel, coordinates: startCoord });
+          const startIcon = isFirstDay && homeAddress ? '🏠' : '🏨';
+          points.push({ id: `base-start-${day.id}`, name: `${startIcon} ${startBaseLabel}`, coordinates: startCoord });
         }
 
+        // All activities for the day
         points.push(...getActivityWaypoints(day));
 
+        // End point: home (last day) or where we're sleeping tonight
         const endCoord = endBaseLabel ? baseCoordsByLabel[endBaseLabel] : null;
-        if (isDriveDay && endBaseLabel && endCoord && endBaseLabel !== startBaseLabel) {
-          points.push({ id: `base-end-${day.id}`, name: endBaseLabel, coordinates: endCoord });
+        if (endBaseLabel && endCoord) {
+          // Only add if it's different from start (otherwise we just return to same place)
+          const isClosedLoop = startBaseLabel === endBaseLabel;
+          if (!isClosedLoop || points.length > 1) {
+            const endIcon = isLastDay && homeAddress ? '🏠' : '🏨';
+            points.push({ id: `base-end-${day.id}`, name: `${endIcon} ${endBaseLabel}`, coordinates: endCoord });
+          }
         }
 
         if (points.length < 2) continue;

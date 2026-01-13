@@ -1105,6 +1105,36 @@
   gap: 0.4rem;
 }
 
+.home-address-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--ink-200);
+  margin-bottom: 0.5rem;
+}
+
+.home-address-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.home-address-label input {
+  border-radius: 999px;
+  border: 1px solid rgba(27, 36, 48, 0.2);
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.home-address-hint {
+  font-size: 0.7rem;
+  color: var(--ink-400);
+  font-style: italic;
+}
+
 .tools-body {
   display: flex;
   flex-direction: column;
@@ -1911,6 +1941,16 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+}
+
+.board-overnight {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.65rem;
+  color: var(--lavender-600);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .board-count {

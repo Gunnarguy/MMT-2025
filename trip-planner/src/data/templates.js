@@ -485,6 +485,7 @@ export const routeTemplates = [
     emoji: "🌊",
     source: "Girls Trip to Michigan.docx",
     readOnly: true, // Built-in template - can't be overwritten, only copied
+    homeAddress: "2020 Crestwood Lane, Palatine, IL", // Starting & ending point for the trip
     description:
       "A cohesive Michigan road trip plan (with optional Canada detour) imported from the original planning document.",
     duration: "8 days",
