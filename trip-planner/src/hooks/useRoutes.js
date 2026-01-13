@@ -31,7 +31,16 @@ export function useRoutes({ trip, getActivityWaypoints }) {
   const [dayRoutes, setDayRoutes] = useState({});
   const [routesLoading, setRoutesLoading] = useState(false);
   const [routesError, setRoutesError] = useState(null);
-  const [baseCoordsByLabel, setBaseCoordsByLabel] = useState({});
+  
+  // Initialize with known coordinates immediately (no waiting for effects)
+  const [baseCoordsByLabel, setBaseCoordsByLabel] = useState(() => {
+    const initial = {};
+    // Pre-populate all known coordinates
+    Object.entries(KNOWN_COORDINATES).forEach(([label, coords]) => {
+      initial[label] = coords;
+    });
+    return initial;
+  });
 
   useEffect(() => {
     const controller = new AbortController();
