@@ -1,19 +1,24 @@
 import "leaflet/dist/leaflet.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./lib/leafletConfig";
 import "./styles/app.css";
 
+import ActivityLog from "./components/ActivityLog";
 import Header from "./components/Header";
 import LoginScreen from "./components/LoginScreen";
 import TripBuilderView from "./components/TripBuilderView";
 
 import { getRouteTemplate, routeTemplates } from "./data/templates";
 import {
+  addActivityLog,
+  fetchActivityLogs,
   fetchSharedTripState,
+  getFamilyMember,
   getSession,
   isEmailAllowed,
   onAuthStateChange,
   signOut,
+  subscribeToActivityLog,
   subscribeToSharedTrip,
   supabaseEnabled,
   upsertSharedTripState,
@@ -115,6 +120,72 @@ function AuthenticatedApp({ user, onSignOut }) {
     supabaseEnabled ? "syncing" : "offline"
   );
 
+  // Activity log state
+  const [activityLogs, setActivityLogs] = useState([]);
+  const [activityLogOpen, setActivityLogOpen] = useState(false);
+
+  // Get family member info for logging
+  const familyMember = useMemo(
+    () => getFamilyMember(user?.email),
+    [user?.email]
+  );
+
+  // Function to log an activity
+  const logActivity = useCallback(
+    async (action, details = {}) => {
+      if (!supabaseEnabled || !user?.email) return;
+
+      const entry = {
+        user_email: user.email,
+        user_name: familyMember?.name || user.email.split("@")[0],
+        action,
+        details: details.details || null,
+        day_label: details.dayLabel || null,
+        activity_name: details.activityName || null,
+      };
+
+      const { data, error } = await addActivityLog(entry);
+      if (error) {
+        console.warn("Failed to log activity:", error);
+      } else if (data) {
+        // Optimistically add to local state
+        setActivityLogs((prev) => [data, ...prev]);
+      }
+    },
+    [user?.email, familyMember?.name]
+  );
+
+  // Fetch activity logs on mount
+  useEffect(() => {
+    if (!supabaseEnabled) return;
+
+    fetchActivityLogs(100).then(({ data, error }) => {
+      if (error) {
+        console.warn("Failed to fetch activity logs:", error);
+      } else {
+        setActivityLogs(data || []);
+      }
+    });
+  }, []);
+
+  // Subscribe to real-time activity log updates
+  useEffect(() => {
+    if (!supabaseEnabled) return;
+
+    const subscription = subscribeToActivityLog((payload) => {
+      const newLog = payload?.new;
+      if (newLog) {
+        // Avoid duplicates (in case we already added optimistically)
+        setActivityLogs((prev) => {
+          if (prev.some((log) => log.id === newLog.id)) return prev;
+          return [newLog, ...prev];
+        });
+      }
+    });
+
+    return () => subscription?.unsubscribe?.();
+  }, []);
+
   // Only show built-in trips + any custom templates the user saved
   const builtInTripIds = ["moms-original", "girls-michigan"];
   const templates = useMemo(
@@ -172,6 +243,15 @@ function AuthenticatedApp({ user, onSignOut }) {
       const remoteTrip = data?.state?.trip;
       const remoteCustomActivities = data?.state?.customActivities;
       const remoteCustomTemplates = data?.state?.customTemplates;
+
+      console.log("[Supabase bootstrap] Loaded remote trip:", {
+        hasTrip: !!remoteTrip,
+        daysCount: remoteTrip?.days?.length,
+        overnightStays: remoteTrip?.days?.map((d) => ({
+          dayId: d.id,
+          stay: d.overnightStay,
+        })),
+      });
 
       if (isValidTripState(remoteTrip) && remoteTrip.days.length) {
         setTrip(migrateTrip(remoteTrip));
@@ -243,10 +323,10 @@ function AuthenticatedApp({ user, onSignOut }) {
           saveCustomTemplates(CUSTOM_TEMPLATES_KEY, nextCustomTemplates);
         }
 
-        // Clear the flag after a tick to allow future local changes to sync
+        // Clear the flag after sync effect debounce to prevent sync-back race condition
         setTimeout(() => {
           isApplyingRemoteRef.current = false;
-        }, 100);
+        }, 750);
       });
 
       setRemoteReady(true);
@@ -294,10 +374,19 @@ function AuthenticatedApp({ user, onSignOut }) {
         updatedAt: Date.now(),
       };
 
+      console.log("[Supabase sync] Upserting trip state...", {
+        daysCount: trip.days?.length,
+        overnightStays: trip.days?.map((d) => ({
+          dayId: d.id,
+          stay: d.overnightStay,
+        })),
+      });
+
       upsertSharedTripState(payload, SHARED_TRIP_ID)
         .then(() => {
           lastSyncedRef.current = stateHash;
           setSyncStatus("synced");
+          console.log("[Supabase sync] Success!");
         })
         .catch((e) => {
           console.warn("Supabase upsert shared trip failed:", e);
@@ -311,6 +400,7 @@ function AuthenticatedApp({ user, onSignOut }) {
   const handleLoadTemplate = (templateId) => {
     if (templateId === "blank") {
       setTrip(buildBlankTrip({ dayCount: 7, name: "My Custom Trip" }));
+      logActivity("load_template", { details: "Started a blank trip" });
       return;
     }
     const template = templates.find((item) => item.id === templateId);
@@ -328,6 +418,7 @@ function AuthenticatedApp({ user, onSignOut }) {
     }
 
     setTrip(newTrip);
+    logActivity("load_template", { details: `Loaded "${template.name}"` });
   };
 
   const handleSaveTemplate = () => {
@@ -363,8 +454,15 @@ function AuthenticatedApp({ user, onSignOut }) {
           setTrip={setTrip}
           customActivities={customActivities}
           setCustomActivities={setCustomActivities}
+          logActivity={logActivity}
         />
       </main>
+
+      <ActivityLog
+        logs={activityLogs}
+        isOpen={activityLogOpen}
+        onToggle={() => setActivityLogOpen((prev) => !prev)}
+      />
 
       <footer className="footer">
         <p>Made with 💕 for Mom&#39;s adventures.</p>

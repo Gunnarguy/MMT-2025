@@ -144,3 +144,57 @@ export function subscribeToSharedTrip(sharedTripId, onChange) {
     },
   };
 }
+
+// ============================================
+// ACTIVITY LOG
+// ============================================
+const ACTIVITY_LOG_TABLE = "mmt_activity_log";
+
+export async function addActivityLog(entry) {
+  if (!supabase) return { data: null, error: new Error("Supabase not configured") };
+
+  const { data, error } = await supabase
+    .from(ACTIVITY_LOG_TABLE)
+    .insert(entry)
+    .select()
+    .single();
+
+  return { data, error };
+}
+
+export async function fetchActivityLogs(limit = 50) {
+  if (!supabase) return { data: [], error: new Error("Supabase not configured") };
+
+  const { data, error } = await supabase
+    .from(ACTIVITY_LOG_TABLE)
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  return { data: data || [], error };
+}
+
+export function subscribeToActivityLog(onChange) {
+  if (!supabase) return { unsubscribe: () => {} };
+
+  const channel = supabase
+    .channel("activity-log-changes")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: ACTIVITY_LOG_TABLE,
+      },
+      (payload) => {
+        onChange?.(payload);
+      }
+    )
+    .subscribe();
+
+  return {
+    unsubscribe: () => {
+      supabase.removeChannel(channel);
+    },
+  };
+}

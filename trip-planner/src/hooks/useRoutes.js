@@ -5,6 +5,11 @@ import { geocodePlace } from '../utils/geocode';
 const KNOWN_COORDINATES = {
   "2020 Crestwood Lane, Palatine, IL": [42.1139, -88.0345],
   "2020 crestwood lane, palatine, il": [42.1139, -88.0345],
+  // Julia's house in Michigan
+  "44134 Harmony Lane, Van Buren Twp, MI 48111": [42.2207, -83.5073],
+  "44134 harmony lane, van buren twp, mi 48111": [42.2207, -83.5073],
+  "Julia's House": [42.2207, -83.5073],
+  "julia's house": [42.2207, -83.5073],
 };
 
 // Helper to get overnight stay name (handles both string and object format)

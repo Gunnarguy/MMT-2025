@@ -512,7 +512,7 @@ export default function MapPanel({
               )
                 return true;
 
-              // Regular activities show on their day
+              // Regular activities and overnight stays show on their day
               return activity.dayNumber === selectedDayStats?.dayNumber;
             })
             .map((activity, i) => (
@@ -528,7 +528,18 @@ export default function MapPanel({
                       {activity.location}
                       <br />
                       <em style={{ fontSize: "0.85em", color: "#666" }}>
-                        {activity.id === 'home-start' ? 'Trip starts here!' : 'Trip ends here!'}
+                        {activity.id === "home-start"
+                          ? "Trip starts here!"
+                          : "Trip ends here!"}
+                      </em>
+                    </>
+                  ) : activity.isStartingPoint ? (
+                    <>
+                      <strong>{activity.name}</strong>
+                      <br />
+                      <em style={{ fontSize: "0.85em", color: "#666" }}>
+                        Day {activity.dayNumber} starts here (stayed overnight
+                        from Day {activity.fromPreviousDay})
                       </em>
                     </>
                   ) : activity.isOvernightStay ? (
@@ -536,7 +547,7 @@ export default function MapPanel({
                       <strong>{activity.name}</strong>
                       <br />
                       <em style={{ fontSize: "0.85em", color: "#666" }}>
-                        Overnight stay after Day {activity.dayNumber}
+                        Day {activity.dayNumber} ends here (overnight stay)
                       </em>
                     </>
                   ) : (

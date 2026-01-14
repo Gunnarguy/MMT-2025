@@ -178,6 +178,53 @@ export default function DayPlanner({
   const endPoint =
     isLastDay && homeAddress ? homeAddress : currentDayStay || null;
 
+  // Auto-generate day notes based on activities, route, and endpoints
+  const generateDayNotes = () => {
+    const lines = [];
+    const dayLabel = selectedDay?.label || `Day ${selectedDay?.dayNumber}`;
+
+    // Add header
+    lines.push(`📅 ${dayLabel} Itinerary`);
+    lines.push("");
+
+    // Add starting point
+    if (startPoint) {
+      const startIcon = isFirstDay ? "🏠" : "🏨";
+      lines.push(`${startIcon} Starting from: ${startPoint}`);
+    }
+
+    // Add activities
+    if (selectedDayActivities.length > 0) {
+      lines.push("");
+      lines.push("📍 Activities:");
+      selectedDayActivities.forEach((activity, i) => {
+        const duration = activity.duration ? ` (${activity.duration}h)` : "";
+        lines.push(`  ${i + 1}. ${activity.name}${duration}`);
+        if (activity.location && activity.location !== activity.name) {
+          lines.push(`     📌 ${activity.location}`);
+        }
+      });
+    }
+
+    // Add route info if available
+    if (dayRoute?.distance_m) {
+      lines.push("");
+      const miles = (dayRoute.distance_m / 1609.34).toFixed(1);
+      const hours = Math.floor(dayRoute.duration_s / 3600);
+      const mins = Math.round((dayRoute.duration_s % 3600) / 60);
+      lines.push(`🚗 Driving: ~${miles} miles, ~${hours}h ${mins}m`);
+    }
+
+    // Add ending point
+    if (endPoint) {
+      lines.push("");
+      const endIcon = isLastDay ? "🏠" : "🏨";
+      lines.push(`${endIcon} Ending at: ${endPoint}`);
+    }
+
+    return lines.join("\n");
+  };
+
   const dayTabSensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, {
@@ -283,14 +330,30 @@ export default function DayPlanner({
             />
           </label>
 
-          <textarea
-            value={selectedDay.notes}
-            onChange={(e) =>
-              onUpdateDay(selectedDay.id, { notes: e.target.value })
-            }
-            placeholder="Notes for this day: reservations, timing, backup options"
-            className="day-notes"
-          />
+          <div className="day-notes-section">
+            <div className="day-notes-header">
+              <span>📝 Day Notes</span>
+              <button
+                type="button"
+                className="auto-generate-btn"
+                onClick={() => {
+                  const notes = generateDayNotes();
+                  onUpdateDay(selectedDay.id, { notes });
+                }}
+                title="Auto-generate notes from today's itinerary"
+              >
+                ✨ Auto-Generate
+              </button>
+            </div>
+            <textarea
+              value={selectedDay.notes}
+              onChange={(e) =>
+                onUpdateDay(selectedDay.id, { notes: e.target.value })
+              }
+              placeholder="Notes for this day: reservations, timing, backup options. Click 'Auto-Generate' to fill from itinerary!"
+              className="day-notes"
+            />
+          </div>
 
           {/* Start/End point indicators */}
           <div className="day-endpoints">

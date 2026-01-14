@@ -25,6 +25,7 @@ export default function TripBuilderView({
   setTrip,
   customActivities,
   setCustomActivities,
+  logActivity,
 }) {
   const [selectedDayId, setSelectedDayId] = useState(
     trip.days[0]?.id || "day-1"
@@ -184,8 +185,8 @@ export default function TripBuilderView({
       }))
       .sort((a, b) => {
         // Sort by ID (which contains timestamp) - newest first
-        const aTime = parseInt(a.id?.replace('custom-', '') || '0', 10);
-        const bTime = parseInt(b.id?.replace('custom-', '') || '0', 10);
+        const aTime = parseInt(a.id?.replace("custom-", "") || "0", 10);
+        const bTime = parseInt(b.id?.replace("custom-", "") || "0", 10);
         return bTime - aTime;
       });
 
@@ -198,7 +199,9 @@ export default function TripBuilderView({
       );
     }
     if (regionFilter !== "all") {
-      results = results.filter((activity) => activity.region === regionFilter || activity.isCustom);
+      results = results.filter(
+        (activity) => activity.region === regionFilter || activity.isCustom
+      );
     }
     if (showMomOnly) {
       results = results.filter((activity) => activity.momMentioned);
@@ -219,64 +222,102 @@ export default function TripBuilderView({
   const addActivityToDay = useCallback(
     (dayId, activityId) => {
       if (!dayId) return;
+      const activity =
+        getActivityById(activityId) || customActivities[activityId];
+      const day = trip.days.find((d) => d.id === dayId);
       setTrip((prev) => ({
         ...prev,
-        days: prev.days.map((day) => {
-          if (day.id !== dayId) return day;
-          if (day.activities.includes(activityId)) return day;
-          return { ...day, activities: [...day.activities, activityId] };
+        days: prev.days.map((d) => {
+          if (d.id !== dayId) return d;
+          if (d.activities.includes(activityId)) return d;
+          return { ...d, activities: [...d.activities, activityId] };
         }),
       }));
+      // Log the activity
+      if (logActivity && activity) {
+        logActivity("add_activity", {
+          activityName: activity.name,
+          dayLabel: day?.label || `Day ${day?.dayNumber || dayId}`,
+        });
+      }
     },
-    [setTrip]
+    [setTrip, trip.days, customActivities, logActivity]
   );
 
   const removeActivityFromDay = useCallback(
     (dayId, activityId) => {
+      const activity =
+        getActivityById(activityId) || customActivities[activityId];
+      const day = trip.days.find((d) => d.id === dayId);
       setTrip((prev) => ({
         ...prev,
-        days: prev.days.map((day) => {
-          if (day.id !== dayId) return day;
-          const schedule = { ...(day.schedule || {}) };
+        days: prev.days.map((d) => {
+          if (d.id !== dayId) return d;
+          const schedule = { ...(d.schedule || {}) };
           delete schedule[activityId];
           return {
-            ...day,
-            activities: day.activities.filter((id) => id !== activityId),
+            ...d,
+            activities: d.activities.filter((id) => id !== activityId),
             schedule,
           };
         }),
       }));
+      // Log the activity
+      if (logActivity && activity) {
+        logActivity("remove_activity", {
+          activityName: activity.name,
+          dayLabel: day?.label || `Day ${day?.dayNumber || dayId}`,
+        });
+      }
     },
-    [setTrip]
+    [setTrip, trip.days, customActivities, logActivity]
   );
 
   const reorderDayActivities = useCallback(
     (dayId, oldIndex, newIndex) => {
       if (oldIndex === newIndex) return;
+      const day = trip.days.find((d) => d.id === dayId);
       setTrip((prev) => ({
         ...prev,
-        days: prev.days.map((day) => {
-          if (day.id !== dayId) return day;
+        days: prev.days.map((d) => {
+          if (d.id !== dayId) return d;
           return {
-            ...day,
-            activities: arrayMove(day.activities, oldIndex, newIndex),
+            ...d,
+            activities: arrayMove(d.activities, oldIndex, newIndex),
           };
         }),
       }));
+      // Log the reorder
+      if (logActivity) {
+        logActivity("reorder_activities", {
+          dayLabel: day?.label || `Day ${day?.dayNumber || dayId}`,
+        });
+      }
     },
-    [setTrip]
+    [setTrip, trip.days, logActivity]
   );
 
   const updateDay = useCallback(
     (dayId, updates) => {
+      console.log("[updateDay] dayId:", dayId, "updates:", updates);
+      const day = trip.days.find((d) => d.id === dayId);
       setTrip((prev) => ({
         ...prev,
-        days: prev.days.map((day) =>
-          day.id === dayId ? { ...day, ...updates } : day
-        ),
+        days: prev.days.map((d) => (d.id === dayId ? { ...d, ...updates } : d)),
       }));
+      // Log overnight stay changes
+      if (logActivity && updates.overnightStay !== undefined) {
+        const stayName =
+          updates.overnightStay?.name || updates.overnightStay?.location;
+        if (stayName) {
+          logActivity("set_overnight", {
+            activityName: stayName,
+            dayLabel: day?.label || `Day ${day?.dayNumber || dayId}`,
+          });
+        }
+      }
     },
-    [setTrip]
+    [setTrip, trip.days, logActivity]
   );
 
   const updateSchedule = useCallback(
@@ -458,8 +499,15 @@ export default function TripBuilderView({
 
       setCustomActivities((prev) => ({ ...prev, [customId]: place }));
       if (dayId) addActivityToDay(dayId, customId);
+
+      // Log adding custom place (addActivityToDay logs when added to day)
+      if (logActivity && !dayId) {
+        logActivity("add_custom_place", {
+          activityName: placeName,
+        });
+      }
     },
-    [addActivityToDay, setCustomActivities]
+    [addActivityToDay, setCustomActivities, logActivity]
   );
 
   const handleDeleteCustom = useCallback(
@@ -654,6 +702,24 @@ export default function TripBuilderView({
     // Add all day activities and overnight stays
     trip.days.forEach((day, index) => {
       const isLastDay = index === trip.days.length - 1;
+      const prevDay = index > 0 ? trip.days[index - 1] : null;
+
+      // Add previous day's overnight stay as THIS day's starting point
+      if (prevDay) {
+        const prevStayData = getOvernightStayData(prevDay.overnightStay);
+        if (prevStayData?.name && prevStayData?.coordinates) {
+          activities.push({
+            id: `start-from-overnight-${day.id}`,
+            name: `🏨 Starting from: ${prevStayData.name}`,
+            location: prevStayData.name,
+            coordinates: prevStayData.coordinates,
+            dayNumber: day.dayNumber,
+            category: "lodging",
+            isStartingPoint: true,
+            fromPreviousDay: prevDay.dayNumber,
+          });
+        }
+      }
 
       // Add day's activities
       day.activities.forEach((id) => {
@@ -663,13 +729,13 @@ export default function TripBuilderView({
         }
       });
 
-      // Add overnight stay as a point (if not last day, which ends at home)
+      // Add overnight stay as end point (if not last day, which ends at home)
       if (!isLastDay) {
         const stayData = getOvernightStayData(day.overnightStay);
         if (stayData?.name && stayData?.coordinates) {
           activities.push({
             id: `overnight-${day.id}`,
-            name: `🏨 ${stayData.name}`,
+            name: `🏨 Ending at: ${stayData.name}`,
             location: stayData.name,
             coordinates: stayData.coordinates,
             dayNumber: day.dayNumber,

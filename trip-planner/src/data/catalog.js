@@ -136,6 +136,27 @@ export const regions = {
 // ═══════════════════════════════════════════════════════════════════════════════
 export const activityCatalog = [
   // ═══════════════════════════════════════════════════════════════════════════
+  // 👨‍👩‍👧‍👦 FAMILY LOCATIONS - Special Places
+  // ═══════════════════════════════════════════════════════════════════════════
+  {
+    id: "mi-julias-house",
+    category: "lodging",
+    name: "Julia's House",
+    region: "southeast_michigan",
+    location: "Van Buren Township, MI",
+    coordinates: [42.2207, -83.5073],
+    description:
+      "Julia's house - 44134 Harmony Lane, Van Buren Twp MI 48111. Family gathering spot!",
+    duration: null,
+    price: "",
+    rating: null,
+    tip: "Great spot for Day 7 of the Michigan trip!",
+    website: "",
+    tags: ["michigan-trip", "family", "lodging"],
+    momMentioned: true,
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // 🌊 MICHIGAN - CITIES & TOWNS (with coordinates for mapping)
   // ═══════════════════════════════════════════════════════════════════════════
   {

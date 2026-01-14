@@ -194,6 +194,12 @@ export default function CatalogPanel({
   const [placeLoading, setPlaceLoading] = useState(false);
   const placeAbortRef = useRef(null);
 
+  // Manual custom place entry
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [manualName, setManualName] = useState("");
+  const [manualAddress, setManualAddress] = useState("");
+  const [manualCategory, setManualCategory] = useState("custom");
+
   const [panelWidth, setPanelWidth] = useState(320);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef(null);
@@ -459,7 +465,9 @@ export default function CatalogPanel({
         aria-label="Resize catalog panel"
       />
       <div className="catalog-header">
-        <h2>{searchMode === "catalog" ? "📚 Mom's Picks" : "🔍 Find New Places"}</h2>
+        <h2>
+          {searchMode === "catalog" ? "📚 Mom's Picks" : "🔍 Find New Places"}
+        </h2>
         <div className="search-mode-toggle">
           <button
             className={`mode-btn ${searchMode === "catalog" ? "active" : ""}`}
@@ -584,7 +592,10 @@ export default function CatalogPanel({
                         </span>
                       )}
                       {activity.isCustom && (
-                        <span className="badge-custom" title="Your custom place">
+                        <span
+                          className="badge-custom"
+                          title="Your custom place"
+                        >
                           ✨
                         </span>
                       )}
@@ -837,9 +848,98 @@ export default function CatalogPanel({
             <div className="search-form-header">
               <h4>🗺️ What are you looking for?</h4>
               <p className="place-search-hint">
-                Type anything: restaurant names, "coffee near Traverse City", attractions...
+                Type anything: restaurant names, "coffee near Traverse City",
+                attractions...
               </p>
             </div>
+
+            {/* Manual Entry Toggle */}
+            <button
+              type="button"
+              className={`manual-entry-toggle ${
+                showManualEntry ? "active" : ""
+              }`}
+              onClick={() => setShowManualEntry(!showManualEntry)}
+            >
+              {showManualEntry
+                ? "📝 Hide Manual Entry"
+                : "📝 Add Custom Place (address, house, etc.)"}
+            </button>
+
+            {/* Manual Entry Form */}
+            {showManualEntry && (
+              <div className="manual-entry-form">
+                <label className="manual-field">
+                  <span>Place Name *</span>
+                  <input
+                    type="text"
+                    value={manualName}
+                    onChange={(e) => setManualName(e.target.value)}
+                    placeholder="e.g. Julia's House, Beach House, Grandma's..."
+                  />
+                </label>
+                <label className="manual-field">
+                  <span>Address / Location</span>
+                  <input
+                    type="text"
+                    value={manualAddress}
+                    onChange={(e) => setManualAddress(e.target.value)}
+                    placeholder="e.g. 123 Main St, City, MI 48111"
+                  />
+                </label>
+                <label className="manual-field">
+                  <span>Category</span>
+                  <select
+                    value={manualCategory}
+                    onChange={(e) => setManualCategory(e.target.value)}
+                  >
+                    <option value="custom">📍 Custom Place</option>
+                    <option value="lodging">🏨 Lodging</option>
+                    <option value="food">🍽️ Food & Dining</option>
+                    <option value="attraction">📸 Attraction</option>
+                    <option value="hike">🥾 Hike / Nature</option>
+                    <option value="shopping">🛍️ Shopping</option>
+                  </select>
+                </label>
+                <div className="manual-entry-actions">
+                  <button
+                    type="button"
+                    className="add-btn"
+                    disabled={!manualName.trim()}
+                    onClick={() => {
+                      if (!manualName.trim()) return;
+                      onQuickAddCustomPlace({
+                        name: manualName.trim(),
+                        location: manualAddress.trim(),
+                        coordinates: null, // will be geocoded
+                        category: manualCategory,
+                        dayId: selectedDay?.id || null,
+                      });
+                      setManualName("");
+                      setManualAddress("");
+                      setManualCategory("custom");
+                      setShowManualEntry(false);
+                    }}
+                  >
+                    {selectedDay?.id
+                      ? `+ Add to Day ${selectedDay.dayNumber}`
+                      : "+ Save to Library"}
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost-btn"
+                    onClick={() => {
+                      setManualName("");
+                      setManualAddress("");
+                      setShowManualEntry(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="search-input-wrapper">
               <span className="search-icon">🔍</span>
               <input
@@ -898,7 +998,8 @@ export default function CatalogPanel({
 
                     const placeData = {
                       name: placeName,
-                      location: placeCity || normalizePlaceLocation(hit.displayName),
+                      location:
+                        placeCity || normalizePlaceLocation(hit.displayName),
                       coordinates: hit.coordinates,
                       category: hit.typeInfo?.category || "custom",
                     };
@@ -920,10 +1021,17 @@ export default function CatalogPanel({
                             type="button"
                             className="place-action-btn add-main"
                             disabled={!selectedDay?.id}
-                            title={selectedDay?.id ? `Add to Day ${selectedDay.dayNumber}` : "Select a day first"}
+                            title={
+                              selectedDay?.id
+                                ? `Add to Day ${selectedDay.dayNumber}`
+                                : "Select a day first"
+                            }
                             onClick={() => {
                               if (!selectedDay?.id) return;
-                              onQuickAddCustomPlace({ ...placeData, dayId: selectedDay.id });
+                              onQuickAddCustomPlace({
+                                ...placeData,
+                                dayId: selectedDay.id,
+                              });
                               resetPlaceSearch();
                             }}
                           >
@@ -934,7 +1042,10 @@ export default function CatalogPanel({
                             className="place-action-btn save-secondary"
                             title="Save for later (don't add to a day yet)"
                             onClick={() => {
-                              onQuickAddCustomPlace({ ...placeData, dayId: null });
+                              onQuickAddCustomPlace({
+                                ...placeData,
+                                dayId: null,
+                              });
                               resetPlaceSearch();
                             }}
                           >

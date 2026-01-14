@@ -14,13 +14,14 @@ const REMOVED_ACTIVITY_IDS = new Set([
 export function migrateTrip(trip) {
   if (!trip || typeof trip !== "object") return trip;
 
-  return {
+  const migrated = {
     ...trip,
     // Ensure homeAddress is always set
     homeAddress: trip.homeAddress || DEFAULT_HOME_ADDRESS,
     // Ensure each day has overnightStay field and clean up removed activities
     days: (trip.days || []).map((day) => ({
       ...day,
+      // Preserve overnightStay exactly as-is (can be object or string)
       overnightStay: day.overnightStay ?? "",
       // Remove any activity IDs that no longer exist
       activities: (day.activities || []).filter(
@@ -28,6 +29,16 @@ export function migrateTrip(trip) {
       ),
     })),
   };
+
+  console.log("[migrateTrip] Result:", {
+    daysCount: migrated.days?.length,
+    overnightStays: migrated.days?.map((d) => ({
+      dayId: d.id,
+      stay: d.overnightStay,
+    })),
+  });
+
+  return migrated;
 }
 
 export function isValidTripState(state) {
