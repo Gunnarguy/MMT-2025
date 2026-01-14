@@ -203,17 +203,17 @@ export default function DayPlanner({
         const stopNum = i + 1;
         const schedule = selectedDay?.schedule?.[activity.id];
         const scheduledTime = schedule?.startTime || null;
-        
+
         // Activity header with number and time
         lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
         const timeStr = scheduledTime ? ` (${scheduledTime})` : "";
         lines.push(`📍 STOP ${stopNum}${timeStr}: ${activity.name}`);
-        
+
         // Location if different from name
         if (activity.location && activity.location !== activity.name) {
           lines.push(`   📌 Location: ${activity.location}`);
         }
-        
+
         // Duration and price
         const infoItems = [];
         if (activity.duration) infoItems.push(`~${activity.duration}h`);
@@ -221,36 +221,36 @@ export default function DayPlanner({
         if (infoItems.length > 0) {
           lines.push(`   ⏱️ ${infoItems.join(" | ")}`);
         }
-        
+
         // Description - the main info
         if (activity.description) {
           lines.push("");
           lines.push(`   ${activity.description}`);
         }
-        
+
         // Must try / highlights
         if (activity.mustTry) {
           lines.push("");
           lines.push(`   ⭐ MUST TRY: ${activity.mustTry}`);
         }
-        
+
         // Tips and practical info
         if (activity.tip) {
           lines.push("");
           lines.push(`   💡 TIP: ${activity.tip}`);
         }
-        
+
         // Website
         if (activity.website) {
           lines.push(`   🔗 ${activity.website}`);
         }
-        
+
         // Notes if any custom notes exist
         if (activity.notes) {
           lines.push("");
           lines.push(`   📝 Notes: ${activity.notes}`);
         }
-        
+
         lines.push("");
       });
     } else {
@@ -273,7 +273,7 @@ export default function DayPlanner({
       lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
       const endIcon = isLastDay ? "🏠" : "🏨";
       lines.push(`${endIcon} ENDING AT: ${endPoint}`);
-      
+
       // If overnight stay has more details
       const overnight = selectedDay?.overnightStay;
       if (overnight && typeof overnight === "object") {
