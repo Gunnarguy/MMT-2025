@@ -1838,13 +1838,13 @@
 .map-panel {
   padding: 0;
   position: relative;
-  min-width: 0;
-    align-self: flex-start;
+  min-width: 320px;
+  height: calc(100vh - 220px);
   max-height: clamp(520px, 78vh, 860px);
   /* Smooth resize with GPU acceleration */
-    will-change: width;
-    contain: layout style;
-  }
+  will-change: width;
+  contain: layout style;
+}
 
   /* Disable transitions during resize for smoothness */
   .map-panel[data-resizing="true"] {
@@ -2805,6 +2805,13 @@
 @media (max-width: 900px) {
   .builder-layout {
     grid-template-columns: 1fr;
+  }
+
+  .map-panel {
+    width: 100% !important;
+    min-width: 0;
+    height: 400px;
+    max-height: 50vh;
   }
 
   .map-container {
