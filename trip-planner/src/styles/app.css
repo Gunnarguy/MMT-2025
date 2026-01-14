@@ -1523,22 +1523,27 @@
   box-shadow: 0 3px 6px rgba(91, 62, 138, 0.3);
   transform: translateY(-1px);
 }
+
 .day-notes {
   width: 100%;
-  min-height: 80px;
+  min-height: 200px;
+  max-height: 500px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(27, 36, 48, 0.2);
   padding: 0.7rem;
   resize: vertical;
-  font-family: inherit;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-  
-  .day-notes:focus {
-    outline: none;
-    border-color: var(--lavender-500);
-    box-shadow: 0 0 0 2px var(--lavender-100);
+  font-family: "SF Mono", "Monaco", "Menlo", "Consolas", monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  background: var(--mist-50);
+}
+
+.day-notes:focus {
+  outline: none;
+  border-color: var(--lavender-500);
+  box-shadow: 0 0 0 2px var(--lavender-100);
+  background: white;
 }
 
 /* Day start/end point indicators */

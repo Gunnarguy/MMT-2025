@@ -178,49 +178,118 @@ export default function DayPlanner({
   const endPoint =
     isLastDay && homeAddress ? homeAddress : currentDayStay || null;
 
-  // Auto-generate day notes based on activities, route, and endpoints
+  // Auto-generate comprehensive day notes based on activities, route, and endpoints
   const generateDayNotes = () => {
     const lines = [];
     const dayLabel = selectedDay?.label || `Day ${selectedDay?.dayNumber}`;
+    const startTime = selectedDay?.startTime || "09:00";
 
-    // Add header
-    lines.push(`📅 ${dayLabel} Itinerary`);
+    // Header with day info
+    lines.push(`📅 ${dayLabel} — Detailed Itinerary`);
+    lines.push(`═══════════════════════════════════════`);
     lines.push("");
 
-    // Add starting point
+    // Starting point and target time
     if (startPoint) {
       const startIcon = isFirstDay ? "🏠" : "🏨";
-      lines.push(`${startIcon} Starting from: ${startPoint}`);
+      lines.push(`${startIcon} STARTING POINT: ${startPoint}`);
+      lines.push(`⏰ Target departure: ${startTime}`);
+      lines.push("");
     }
 
-    // Add activities
+    // Each activity with full details
     if (selectedDayActivities.length > 0) {
-      lines.push("");
-      lines.push("📍 Activities:");
       selectedDayActivities.forEach((activity, i) => {
-        const duration = activity.duration ? ` (${activity.duration}h)` : "";
-        lines.push(`  ${i + 1}. ${activity.name}${duration}`);
+        const stopNum = i + 1;
+        const schedule = selectedDay?.schedule?.[activity.id];
+        const scheduledTime = schedule?.startTime || null;
+        
+        // Activity header with number and time
+        lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+        const timeStr = scheduledTime ? ` (${scheduledTime})` : "";
+        lines.push(`📍 STOP ${stopNum}${timeStr}: ${activity.name}`);
+        
+        // Location if different from name
         if (activity.location && activity.location !== activity.name) {
-          lines.push(`     📌 ${activity.location}`);
+          lines.push(`   📌 Location: ${activity.location}`);
         }
+        
+        // Duration and price
+        const infoItems = [];
+        if (activity.duration) infoItems.push(`~${activity.duration}h`);
+        if (activity.price) infoItems.push(activity.price);
+        if (infoItems.length > 0) {
+          lines.push(`   ⏱️ ${infoItems.join(" | ")}`);
+        }
+        
+        // Description - the main info
+        if (activity.description) {
+          lines.push("");
+          lines.push(`   ${activity.description}`);
+        }
+        
+        // Must try / highlights
+        if (activity.mustTry) {
+          lines.push("");
+          lines.push(`   ⭐ MUST TRY: ${activity.mustTry}`);
+        }
+        
+        // Tips and practical info
+        if (activity.tip) {
+          lines.push("");
+          lines.push(`   💡 TIP: ${activity.tip}`);
+        }
+        
+        // Website
+        if (activity.website) {
+          lines.push(`   🔗 ${activity.website}`);
+        }
+        
+        // Notes if any custom notes exist
+        if (activity.notes) {
+          lines.push("");
+          lines.push(`   📝 Notes: ${activity.notes}`);
+        }
+        
+        lines.push("");
       });
+    } else {
+      lines.push("No activities planned yet. Add some from the catalog!");
+      lines.push("");
     }
 
-    // Add route info if available
+    // Driving summary
     if (dayRoute?.distance_m) {
-      lines.push("");
+      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
       const miles = (dayRoute.distance_m / 1609.34).toFixed(1);
       const hours = Math.floor(dayRoute.duration_s / 3600);
       const mins = Math.round((dayRoute.duration_s % 3600) / 60);
-      lines.push(`🚗 Driving: ~${miles} miles, ~${hours}h ${mins}m`);
+      lines.push(`🚗 TOTAL DRIVING: ~${miles} miles | ~${hours}h ${mins}m`);
+      lines.push("");
     }
 
-    // Add ending point
+    // Ending point / overnight
     if (endPoint) {
-      lines.push("");
+      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
       const endIcon = isLastDay ? "🏠" : "🏨";
-      lines.push(`${endIcon} Ending at: ${endPoint}`);
+      lines.push(`${endIcon} ENDING AT: ${endPoint}`);
+      
+      // If overnight stay has more details
+      const overnight = selectedDay?.overnightStay;
+      if (overnight && typeof overnight === "object") {
+        if (overnight.location && overnight.location !== overnight.name) {
+          lines.push(`   📌 ${overnight.location}`);
+        }
+        if (overnight.notes) {
+          lines.push(`   📝 ${overnight.notes}`);
+        }
+      }
     }
+
+    // Footer
+    lines.push("");
+    lines.push(`═══════════════════════════════════════`);
+    lines.push(`Generated ${new Date().toLocaleTimeString()}`);
 
     return lines.join("\n");
   };

@@ -207,6 +207,7 @@ export default function DayBoard({
   getActivity,
   onUpdateTripDays,
   onOpenDetails,
+  logActivity,
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -244,6 +245,8 @@ export default function DayBoard({
               return;
             const activeDayId = active.id.replace("col:", "");
             const overDayId = over.id.replace("col:", "");
+            const activeDay = trip.days.find((d) => d.id === activeDayId);
+            const overDay = trip.days.find((d) => d.id === overDayId);
             onUpdateTripDays((prev) => {
               const oldIndex = prev.days.findIndex((d) => d.id === activeDayId);
               const newIndex = prev.days.findIndex((d) => d.id === overDayId);
@@ -255,8 +258,24 @@ export default function DayBoard({
               }));
               return { ...prev, days: renumbered };
             });
+            // Log day column reorder
+            if (logActivity) {
+              logActivity("drag_day_column", {
+                dayLabel: activeDay?.label || `Day ${activeDay?.dayNumber}`,
+                details: `Moved ${activeDay?.label || activeDayId} ${
+                  activeDay?.dayNumber < overDay?.dayNumber ? "after" : "before"
+                } ${overDay?.label || overDayId}`,
+              });
+            }
             return;
           }
+
+          // Activity drag
+          const activeDayId = findContainer(active.id, trip.days);
+          const overDayId = findContainer(over.id, trip.days);
+          const activity = getActivity(active.id);
+          const fromDay = trip.days.find((d) => d.id === activeDayId);
+          const toDay = trip.days.find((d) => d.id === overDayId);
 
           onUpdateTripDays((prev) => {
             const days = prev.days.map((day) => ({
@@ -264,19 +283,19 @@ export default function DayBoard({
               activities: [...day.activities],
               schedule: day.schedule ? { ...day.schedule } : {},
             }));
-            const activeDayId = findContainer(active.id, days);
-            const overDayId = findContainer(over.id, days);
+            const srcDayId = findContainer(active.id, days);
+            const dstDayId = findContainer(over.id, days);
 
-            if (!activeDayId || !overDayId) return prev;
+            if (!srcDayId || !dstDayId) return prev;
 
-            const activeDay = days.find((day) => day.id === activeDayId);
-            const overDay = days.find((day) => day.id === overDayId);
+            const activeDay = days.find((day) => day.id === srcDayId);
+            const overDay = days.find((day) => day.id === dstDayId);
             if (!activeDay || !overDay) return prev;
 
             const activeIndex = activeDay.activities.indexOf(active.id);
             if (activeIndex < 0) return prev;
 
-            if (activeDayId === overDayId) {
+            if (srcDayId === dstDayId) {
               const overIndex = overDay.activities.indexOf(over.id);
               if (overIndex < 0) return prev;
               activeDay.activities = arrayMove(
@@ -300,6 +319,24 @@ export default function DayBoard({
 
             return { ...prev, days };
           });
+
+          // Log the activity drag
+          if (logActivity && activity) {
+            if (activeDayId === overDayId) {
+              logActivity("drag_reorder_activity", {
+                activityName: activity.name,
+                dayLabel: fromDay?.label || `Day ${fromDay?.dayNumber}`,
+              });
+            } else {
+              logActivity("drag_move_activity", {
+                activityName: activity.name,
+                dayLabel: toDay?.label || `Day ${toDay?.dayNumber}`,
+                details: `Moved from ${fromDay?.label || activeDayId} to ${
+                  toDay?.label || overDayId
+                }`,
+              });
+            }
+          }
         }}
       >
         <SortableContext

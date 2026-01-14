@@ -24,19 +24,33 @@ function getActionIcon(action) {
     case "remove_activity":
       return "➖";
     case "reorder_activities":
+    case "drag_reorder_activity":
       return "↕️";
+    case "drag_move_activity":
+      return "↔️";
     case "update_day":
       return "📝";
     case "set_overnight":
       return "🏨";
     case "update_schedule":
       return "⏰";
+    case "auto_schedule":
+      return "🪄";
     case "add_custom_place":
       return "📍";
     case "load_template":
       return "📋";
     case "update_trip":
       return "✏️";
+    case "add_day":
+      return "📅";
+    case "remove_day":
+      return "🗑️";
+    case "duplicate_day":
+      return "📋";
+    case "reorder_days":
+    case "drag_day_column":
+      return "🔀";
     default:
       return "📌";
   }
@@ -50,18 +64,33 @@ function getActionLabel(action) {
       return "removed activity";
     case "reorder_activities":
       return "reordered activities";
+    case "drag_reorder_activity":
+      return "dragged activity";
+    case "drag_move_activity":
+      return "moved activity";
     case "update_day":
       return "updated day";
     case "set_overnight":
       return "set overnight stay";
     case "update_schedule":
       return "updated schedule";
+    case "auto_schedule":
+      return "auto-scheduled";
     case "add_custom_place":
       return "added custom place";
     case "load_template":
       return "loaded template";
     case "update_trip":
       return "updated trip";
+    case "add_day":
+      return "added";
+    case "remove_day":
+      return "removed";
+    case "duplicate_day":
+      return "duplicated";
+    case "reorder_days":
+    case "drag_day_column":
+      return "reordered days";
     default:
       return action.replace(/_/g, " ");
   }
