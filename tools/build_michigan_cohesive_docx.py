@@ -48,7 +48,7 @@ def main() -> int:
         doc,
         [
             "Dates: Converge in Chicago on Aug 28–29; road trip begins Aug 29",
-            "Primary loop: Chicago → Grand Rapids → Ludington → Sleeping Bear Dunes → Traverse City → Torch Lake → Charlevoix → Mackinac City / Mackinac Island → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia/Windsor, Canada) → Detroit → Ann Arbor → Kalamazoo → Home",
+            "Primary loop: Chicago → Grand Rapids → Ludington → Sleeping Bear Dunes → Traverse City → Torch Lake → Charlevoix → Mackinaw City / Mackinac Island → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia/Windsor, Canada) → Detroit → Ann Arbor → Kalamazoo → Home",
         ],
     )
 
@@ -113,7 +113,7 @@ def main() -> int:
     )
 
     doc.add_heading(
-        "Aug 31 — Traverse City → Torch Lake → Charlevoix → Mackinac City", level=2
+        "Aug 31 — Traverse City → Torch Lake → Charlevoix → Mackinaw City", level=2
     )
     doc.add_paragraph("Torch Lake (approx. 40 min)")
     add_bullets(
@@ -137,12 +137,12 @@ def main() -> int:
     )
     doc.add_paragraph("Charlevoix (approx. 23 min)")
     add_bullets(doc, ["Lock", "Castle Farms", "Shop the town", "Lighthouse"])
-    doc.add_paragraph("Mackinac City (approx. 1 hr 10)")
+    doc.add_paragraph("Mackinaw City (approx. 1 hr 10)")
     add_bullets(
         doc,
         [
             "Base for Mackinac Island",
-            "Overnight: Mackinac City (2 nights suggested)",
+            "Overnight: Mackinaw City (2 nights suggested)",
         ],
     )
 
@@ -162,7 +162,7 @@ def main() -> int:
     )
 
     doc.add_heading(
-        "Sep 3 — Mackinac City → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia, Canada)",
+        "Sep 3 — Mackinaw City → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia, Canada)",
         level=2,
     )
     doc.add_paragraph("Frankenmuth (approx. 2 hr 50)")

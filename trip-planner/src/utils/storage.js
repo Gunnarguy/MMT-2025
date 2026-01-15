@@ -71,3 +71,23 @@ export function saveCustomTemplates(key, templates) {
     // ignore storage write failures
   }
 }
+
+export function loadLastUpdatedAt(key) {
+  try {
+    const saved = localStorage.getItem(key);
+    const parsed = Number(saved);
+    return Number.isFinite(parsed) ? parsed : 0;
+  } catch {
+    return 0;
+  }
+}
+
+export function saveLastUpdatedAt(key, value) {
+  try {
+    const next = Number(value);
+    if (!Number.isFinite(next)) return;
+    localStorage.setItem(key, String(next));
+  } catch {
+    // ignore storage write failures
+  }
+}

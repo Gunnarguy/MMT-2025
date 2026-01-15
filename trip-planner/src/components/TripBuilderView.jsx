@@ -507,7 +507,7 @@ export default function TripBuilderView({
   }, [setTrip]);
 
   const handleQuickAddCustomPlace = useCallback(
-    async ({ dayId, name, location, coordinates }) => {
+    async ({ dayId, name, location, coordinates, category }) => {
       const placeName = String(name || "").trim();
       if (!placeName) return;
 
@@ -528,7 +528,7 @@ export default function TripBuilderView({
         id: customId,
         name: placeName,
         location: placeLocation,
-        category: "custom",
+        category: category || "custom",
         description: "",
         duration: null,
         price: "",
@@ -540,6 +540,7 @@ export default function TripBuilderView({
         isCustom: true,
         source: "custom",
         coordinates: resolvedCoordinates,
+        pinned: true,
         googleMapsUrl: `https://www.google.com/maps/search/${encodeURIComponent(
           query
         )}`,
@@ -578,6 +579,23 @@ export default function TripBuilderView({
       }
     },
     [detailActivity, setCustomActivities, setTrip]
+  );
+
+  const handleToggleCustomPin = useCallback(
+    (activityId) => {
+      setCustomActivities((prev) => {
+        const target = prev?.[activityId];
+        if (!target) return prev;
+        return {
+          ...prev,
+          [activityId]: {
+            ...target,
+            pinned: !target.pinned,
+          },
+        };
+      });
+    },
+    [setCustomActivities]
   );
 
   // Handle editing an activity (custom or private catalog item)
@@ -721,6 +739,11 @@ export default function TripBuilderView({
       ? baseCoordsByLabel[trip.homeAddress]
       : null;
 
+    const dayActivityIds = new Set();
+    trip.days.forEach((day) => {
+      day.activities.forEach((id) => dayActivityIds.add(id));
+    });
+
     // Helper to get overnight stay data
     const getOvernightStayData = (stay) => {
       if (!stay) return null;
@@ -794,6 +817,18 @@ export default function TripBuilderView({
       }
     });
 
+    // Add pinned custom places (not already on a day)
+    Object.values(customActivities || {}).forEach((place) => {
+      if (!place?.pinned) return;
+      if (!place?.coordinates || !Array.isArray(place.coordinates)) return;
+      if (dayActivityIds.has(place.id)) return;
+      activities.push({
+        ...place,
+        dayNumber: 0,
+        isPinned: true,
+      });
+    });
+
     // Add HOME as the last point (after last day)
     if (homeCoords) {
       activities.push({
@@ -808,7 +843,7 @@ export default function TripBuilderView({
     }
 
     return activities;
-  }, [trip.days, trip.homeAddress, getAnyActivity, baseCoordsByLabel]);
+  }, [trip.days, trip.homeAddress, getAnyActivity, baseCoordsByLabel, customActivities]);
 
   const selectedDayIndex = useMemo(
     () => trip.days.findIndex((day) => day.id === selectedDayId),
@@ -981,6 +1016,7 @@ export default function TripBuilderView({
         allowCanadaPlaces={allowCanadaPlaces}
         placeSearchCenter={customPlaceSearchCenter}
         onDeleteCustom={handleDeleteCustom}
+        onToggleCustomPin={handleToggleCustomPin}
       />
 
       <div className="planner-column">

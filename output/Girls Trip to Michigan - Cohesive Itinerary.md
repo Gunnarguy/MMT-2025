@@ -2,7 +2,7 @@
 
 ## Trip overview
 - **Dates:** Converge in Chicago on **Aug 28–29**; road trip begins **Aug 29**
-- **Primary loop:** Chicago → Grand Rapids → Ludington → Sleeping Bear Dunes → Traverse City → Torch Lake → Charlevoix → Mackinac City / Mackinac Island → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia/Windsor, Canada) → Detroit → Ann Arbor → Kalamazoo → Home
+- **Primary loop:** Chicago → Grand Rapids → Ludington → Sleeping Bear Dunes → Traverse City → Torch Lake → Charlevoix → Mackinaw City / Mackinac Island → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia/Windsor, Canada) → Detroit → Ann Arbor → Kalamazoo → Home
 
 ---
 
@@ -44,7 +44,7 @@
      - Eat well
    - **Overnight:** Traverse City *suggested*
 
-### Aug 31 — Traverse City → Torch Lake → Charlevoix → Mackinac City
+### Aug 31 — Traverse City → Torch Lake → Charlevoix → Mackinaw City
 5. **Torch Lake** (approx. 40 min)
    - Drive around the lake; consider touring **Alden**
    - Clear-bottom kayaks or a boat ride down the lake
@@ -59,9 +59,9 @@
    - Castle Farms
    - Shop the town
    - Lighthouse
-7. **Mackinac City** (approx. 1 hr 10)
+7. **Mackinaw City** (approx. 1 hr 10)
    - Base for **Mackinac Island**
-   - **Overnight:** Mackinac City (2 nights suggested)
+   - **Overnight:** Mackinaw City (2 nights suggested)
 
 ### Sep 1–2 — Mackinac Island (day trips)
 **Mackinac Island day plan**
@@ -76,7 +76,7 @@
 - **On-island:** ride bikes, tour town, eat well
 - **Return:** around **4:00–4:30 PM**
 
-### Sep 3 — Mackinac City → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia, Canada)
+### Sep 3 — Mackinaw City → Frankenmuth → (Midland/Saginaw/Howell) → (Sarnia, Canada)
 8. **Frankenmuth** (approx. 2 hr 50)
    - “Little Bavaria”
    - Cute / quaint

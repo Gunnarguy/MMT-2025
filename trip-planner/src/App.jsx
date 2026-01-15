@@ -27,9 +27,11 @@ import {
   getClientId,
   loadCustomActivities,
   loadCustomTemplates,
+  loadLastUpdatedAt,
   loadTrip,
   saveCustomActivities,
   saveCustomTemplates,
+  saveLastUpdatedAt,
   saveTrip,
 } from "./utils/storage";
 import { buildTemplateFromTrip, mergeTemplates } from "./utils/templateUtils";
@@ -45,6 +47,7 @@ const STORAGE_KEY = "mmt-2025-trip";
 const CUSTOM_ACTIVITIES_KEY = "mmt-custom-activities";
 const CUSTOM_TEMPLATES_KEY = "mmt-custom-templates";
 const CLIENT_ID_KEY = "mmt-2025-client-id";
+const LAST_UPDATED_AT_KEY = "mmt-2025-last-updated";
 const SHARED_TRIP_ID = "mmt-2025-maine";
 
 export default function App() {
@@ -215,6 +218,7 @@ function AuthenticatedApp({ user, onSignOut }) {
   const initialCustomTemplatesRef = useRef(customTemplates);
   const isApplyingRemoteRef = useRef(false);
   const lastSyncedRef = useRef(null);
+  const lastLocalUpdatedAtRef = useRef(loadLastUpdatedAt(LAST_UPDATED_AT_KEY));
 
   useEffect(() => {
     if (!remoteReady) {
@@ -240,9 +244,21 @@ function AuthenticatedApp({ user, onSignOut }) {
         return;
       }
 
-      const remoteTrip = data?.state?.trip;
-      const remoteCustomActivities = data?.state?.customActivities;
-      const remoteCustomTemplates = data?.state?.customTemplates;
+      const remoteState = data?.state || null;
+      const remoteTrip = remoteState?.trip;
+      const remoteCustomActivities = remoteState?.customActivities;
+      const remoteCustomTemplates = remoteState?.customTemplates;
+      const remoteUpdatedAt = Number(
+        remoteState?.updatedAt || data?.updated_at || 0
+      );
+      const localUpdatedAt = Number(lastLocalUpdatedAtRef.current || 0);
+      const hasRemoteTrip =
+        isValidTripState(remoteTrip) && remoteTrip.days.length;
+      const shouldPreferRemote = hasRemoteTrip
+        ? remoteUpdatedAt > 0
+          ? remoteUpdatedAt >= localUpdatedAt
+          : localUpdatedAt === 0
+        : false;
 
       console.log("[Supabase bootstrap] Loaded remote trip:", {
         hasTrip: !!remoteTrip,
@@ -253,33 +269,38 @@ function AuthenticatedApp({ user, onSignOut }) {
         })),
       });
 
-      if (isValidTripState(remoteTrip) && remoteTrip.days.length) {
-        setTrip(migrateTrip(remoteTrip));
-      }
+      if (shouldPreferRemote) {
+        if (isValidTripState(remoteTrip) && remoteTrip.days.length) {
+          setTrip(migrateTrip(remoteTrip));
+        }
 
-      // Load custom activities from remote if they exist
-      if (
-        remoteCustomActivities &&
-        typeof remoteCustomActivities === "object"
-      ) {
-        setCustomActivities((prev) => ({ ...prev, ...remoteCustomActivities }));
-      }
+        // Load custom activities from remote if they exist
+        if (
+          remoteCustomActivities &&
+          typeof remoteCustomActivities === "object"
+        ) {
+          setCustomActivities((prev) => ({
+            ...prev,
+            ...remoteCustomActivities,
+          }));
+        }
 
-      // Load custom templates from remote if they exist (merge with local)
-      if (
-        Array.isArray(remoteCustomTemplates) &&
-        remoteCustomTemplates.length
-      ) {
-        setCustomTemplates((prev) => {
-          // Merge: keep all remote templates, add any local ones not already present
-          const remoteIds = new Set(remoteCustomTemplates.map((t) => t.id));
-          const uniqueLocal = prev.filter((t) => !remoteIds.has(t.id));
-          return [...remoteCustomTemplates, ...uniqueLocal];
-        });
+        // Load custom templates from remote if they exist (merge with local)
+        if (
+          Array.isArray(remoteCustomTemplates) &&
+          remoteCustomTemplates.length
+        ) {
+          setCustomTemplates((prev) => {
+            // Merge: keep all remote templates, add any local ones not already present
+            const remoteIds = new Set(remoteCustomTemplates.map((t) => t.id));
+            const uniqueLocal = prev.filter((t) => !remoteIds.has(t.id));
+            return [...remoteCustomTemplates, ...uniqueLocal];
+          });
+        }
       }
 
       // If no remote state, push current local state
-      if (!data?.state?.initialized) {
+      if (!data?.state?.initialized || !shouldPreferRemote) {
         await upsertSharedTripState(
           {
             initialized: true,
@@ -346,6 +367,13 @@ function AuthenticatedApp({ user, onSignOut }) {
     saveTrip(STORAGE_KEY, trip);
     saveCustomActivities(CUSTOM_ACTIVITIES_KEY, customActivities);
     saveCustomTemplates(CUSTOM_TEMPLATES_KEY, customTemplates);
+    const shouldUpdateLocalTimestamp =
+      remoteReady || lastLocalUpdatedAtRef.current > 0;
+    if (shouldUpdateLocalTimestamp) {
+      const localUpdatedAt = Date.now();
+      lastLocalUpdatedAtRef.current = localUpdatedAt;
+      saveLastUpdatedAt(LAST_UPDATED_AT_KEY, localUpdatedAt);
+    }
 
     if (!supabaseEnabled || !remoteReady) return;
 

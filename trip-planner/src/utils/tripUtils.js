@@ -6,6 +6,23 @@ const REMOVED_ACTIVITY_IDS = new Set([
   "mi-city-chicago", // Removed - home address covers start/end point
 ]);
 
+function normalizeMackinawCity(value) {
+  if (!value || typeof value !== "string") return value;
+  return value.replace(/\bMackinac City\b/g, "Mackinaw City");
+}
+
+function normalizeOvernightStay(stay) {
+  if (!stay) return stay;
+  if (typeof stay === "string") return normalizeMackinawCity(stay);
+  if (typeof stay === "object") {
+    return {
+      ...stay,
+      name: normalizeMackinawCity(stay.name || ""),
+    };
+  }
+  return stay;
+}
+
 /**
  * Migrate trip data to ensure all required fields are present.
  * This handles trips loaded from storage/Supabase that predate new fields.
@@ -21,8 +38,10 @@ export function migrateTrip(trip) {
     // Ensure each day has overnightStay field and clean up removed activities
     days: (trip.days || []).map((day) => ({
       ...day,
+      label: normalizeMackinawCity(day.label || ""),
+      location: normalizeMackinawCity(day.location || ""),
       // Preserve overnightStay exactly as-is (can be object or string)
-      overnightStay: day.overnightStay ?? "",
+      overnightStay: normalizeOvernightStay(day.overnightStay ?? ""),
       // Remove any activity IDs that no longer exist
       activities: (day.activities || []).filter(
         (id) => !REMOVED_ACTIVITY_IDS.has(id)

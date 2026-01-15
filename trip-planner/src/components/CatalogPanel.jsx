@@ -186,6 +186,7 @@ export default function CatalogPanel({
   allowCanadaPlaces,
   placeSearchCenter,
   onDeleteCustom,
+  onToggleCustomPin,
 }) {
   const customList = Object.values(customActivities || {});
 
@@ -1081,6 +1082,14 @@ export default function CatalogPanel({
                   </div>
                 </button>
                 <div className="item-actions">
+                  <button
+                    type="button"
+                    className="ghost-btn"
+                    title={place.pinned ? "Unpin from map" : "Pin on map"}
+                    onClick={() => onToggleCustomPin?.(place.id)}
+                  >
+                    {place.pinned ? "📍 Unpin" : "📌 Pin"}
+                  </button>
                   <button
                     className="add-btn"
                     onClick={() => onAddActivity(selectedDay?.id, place.id)}

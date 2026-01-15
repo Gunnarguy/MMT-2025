@@ -498,6 +498,9 @@ export default function MapPanel({
               // Always show everything in board view
               if (viewMode === "board") return true;
 
+              // Always show pinned custom places in day view
+              if (activity.isPinned) return true;
+
               // Home start point shows on Day 1
               if (
                 activity.id === "home-start" &&
@@ -548,6 +551,16 @@ export default function MapPanel({
                       <br />
                       <em style={{ fontSize: "0.85em", color: "#666" }}>
                         Day {activity.dayNumber} ends here (overnight stay)
+                      </em>
+                    </>
+                  ) : activity.isPinned ? (
+                    <>
+                      <strong>{activity.name}</strong>
+                      <br />
+                      {activity.location}
+                      <br />
+                      <em style={{ fontSize: "0.85em", color: "#666" }}>
+                        Pinned custom place
                       </em>
                     </>
                   ) : (
