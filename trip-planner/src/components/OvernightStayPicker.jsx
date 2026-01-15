@@ -16,6 +16,7 @@ export default function OvernightStayPicker({
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const abortRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -188,11 +189,13 @@ export default function OvernightStayPicker({
     setQuery("");
     setResults([]);
     setIsOpen(false);
+    setIsEditing(false);
   };
 
   const handleClear = () => {
     onChange({ name: "", coordinates: null });
     setQuery("");
+    setIsEditing(false);
   };
 
   const handleInputChange = (e) => {
@@ -209,12 +212,55 @@ export default function OvernightStayPicker({
     typeof value === "object" ? value?.name || "" : value || "";
   const hasValue = Boolean(displayValue);
 
+  useEffect(() => {
+    if (!hasValue) {
+      setIsEditing(false);
+    }
+  }, [hasValue]);
+
+  const handleStartEdit = () => {
+    if (!displayValue) return;
+    setQuery(displayValue);
+    setIsEditing(true);
+    setIsOpen(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setQuery("");
+    setResults([]);
+    setIsOpen(false);
+  };
+
+  const handleManualSave = () => {
+    const nextName = query.trim();
+    if (!nextName) {
+      handleCancelEdit();
+      return;
+    }
+    const nextCoordinates =
+      typeof value === "object" ? value?.coordinates || null : null;
+    onChange({ name: nextName, coordinates: nextCoordinates });
+    setIsEditing(false);
+    setQuery("");
+    setResults([]);
+    setIsOpen(false);
+  };
+
   return (
     <div className="overnight-stay-picker" ref={containerRef}>
-      {hasValue ? (
+      {hasValue && !isEditing ? (
         <div className="selected-stay">
           <span className="stay-icon">🏨</span>
           <span className="stay-name">{displayValue}</span>
+          <button
+            type="button"
+            className="edit-stay-btn"
+            onClick={handleStartEdit}
+            title="Edit overnight stay"
+          >
+            ✏️
+          </button>
           <button
             type="button"
             className="clear-stay-btn"
@@ -231,14 +277,33 @@ export default function OvernightStayPicker({
             value={query}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleManualSave();
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                handleCancelEdit();
+              }
+            }}
             placeholder={placeholder}
             className="stay-search-input"
           />
+          {isEditing && (
+            <button
+              type="button"
+              className="cancel-edit-btn"
+              onClick={handleCancelEdit}
+              title="Cancel edit"
+            >
+              ✕
+            </button>
+          )}
           {loading && <span className="stay-loading">...</span>}
         </div>
       )}
 
-      {isOpen && results.length > 0 && !hasValue && (
+      {isOpen && results.length > 0 && (!hasValue || isEditing) && (
         <div className="stay-results-dropdown">
           {results.map((result) => {
             const address = [result.street, result.housenumber]
