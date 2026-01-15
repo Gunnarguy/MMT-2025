@@ -537,13 +537,13 @@ export const routeTemplates = [
       },
       {
         dayNumber: 3,
-        label: "Torch Lake → Charlevoix → Mackinac City",
+        label: "Torch Lake → Charlevoix → Mackinaw City",
         location:
-          "Traverse City, MI → Torch Lake → Charlevoix → Mackinac City, MI",
+          "Traverse City, MI → Torch Lake → Charlevoix → Mackinaw City, MI",
         type: "drive",
         overnightStay: "Mackinaw City, MI",
         notes:
-          "Torch Lake (~40m): drive around the lake; consider Alden. Clear-bottom kayaks or a boat ride.\n\nPetoskey stone search spots:\n- Bryant Park Beach — 1097 Peninsula Dr, Traverse City, MI 49686\n- Van’s Beach — 205 Cedar St, Leland, MI 49654\n- Peterson Park — 10001 E Peterson Park Rd, Northport, MI 49670\n- Magnus Park — 901 West Lake St, Petoskey, MI 49770\n- Cross Village Beach — 100 Park Ln, Harbor Springs, MI 49740\n\nCharlevoix (~23m): lock, Castle Farms, shop town, lighthouse.\n\nMackinac City (~1h 10m): base for Mackinac Island. Suggest 2 nights.",
+          "Torch Lake (~40m): drive around the lake; consider Alden. Clear-bottom kayaks or a boat ride.\n\nPetoskey stone search spots:\n- Bryant Park Beach — 1097 Peninsula Dr, Traverse City, MI 49686\n- Van’s Beach — 205 Cedar St, Leland, MI 49654\n- Peterson Park — 10001 E Peterson Park Rd, Northport, MI 49670\n- Magnus Park — 901 West Lake St, Petoskey, MI 49770\n- Cross Village Beach — 100 Park Ln, Harbor Springs, MI 49740\n\nCharlevoix (~23m): lock, Castle Farms, shop town, lighthouse.\n\nMackinaw City (~1h 10m): base for Mackinac Island. Suggest 2 nights.",
         suggestedActivities: [
           "mi-torch-lake",
           "mi-torch-lake-kayak",
@@ -582,7 +582,7 @@ export const routeTemplates = [
         dayNumber: 6,
         label: "Frankenmuth + Small towns (+ Canada option)",
         location:
-          "Mackinac City → Frankenmuth → Midland/Saginaw/Howell → (Sarnia, Canada)",
+          "Mackinaw City → Frankenmuth → Midland/Saginaw/Howell → (Sarnia, Canada)",
         type: "drive",
         overnightStay: "Sarnia, ON, Canada (or Frankenmuth, MI)",
         notes:
