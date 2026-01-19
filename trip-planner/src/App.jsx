@@ -114,13 +114,13 @@ function AuthenticatedApp({ user, onSignOut }) {
     return loaded ? migrateTrip(loaded) : null;
   }, []);
   const [customActivities, setCustomActivities] = useState(() =>
-    loadCustomActivities(CUSTOM_ACTIVITIES_KEY)
+    loadCustomActivities(CUSTOM_ACTIVITIES_KEY),
   );
   const [customTemplates, setCustomTemplates] = useState(() =>
-    loadCustomTemplates(CUSTOM_TEMPLATES_KEY)
+    loadCustomTemplates(CUSTOM_TEMPLATES_KEY),
   );
   const [syncStatus, setSyncStatus] = useState(
-    supabaseEnabled ? "syncing" : "offline"
+    supabaseEnabled ? "syncing" : "offline",
   );
 
   // Activity log state
@@ -130,7 +130,7 @@ function AuthenticatedApp({ user, onSignOut }) {
   // Get family member info for logging
   const familyMember = useMemo(
     () => getFamilyMember(user?.email),
-    [user?.email]
+    [user?.email],
   );
 
   // Function to log an activity
@@ -155,7 +155,7 @@ function AuthenticatedApp({ user, onSignOut }) {
         setActivityLogs((prev) => [data, ...prev]);
       }
     },
-    [user?.email, familyMember?.name]
+    [user?.email, familyMember?.name],
   );
 
   // Fetch activity logs on mount
@@ -195,9 +195,9 @@ function AuthenticatedApp({ user, onSignOut }) {
     () =>
       mergeTemplates(
         routeTemplates.filter((t) => builtInTripIds.includes(t.id)),
-        customTemplates
+        customTemplates,
       ),
-    [customTemplates]
+    [customTemplates],
   );
 
   const [trip, setTrip] = useState(() => {
@@ -249,7 +249,7 @@ function AuthenticatedApp({ user, onSignOut }) {
       const remoteCustomActivities = remoteState?.customActivities;
       const remoteCustomTemplates = remoteState?.customTemplates;
       const remoteUpdatedAt = Number(
-        remoteState?.updatedAt || data?.updated_at || 0
+        remoteState?.updatedAt || data?.updated_at || 0,
       );
       const localUpdatedAt = Number(lastLocalUpdatedAtRef.current || 0);
       const hasRemoteTrip =
@@ -310,7 +310,7 @@ function AuthenticatedApp({ user, onSignOut }) {
             updatedBy: clientId,
             updatedAt: Date.now(),
           },
-          SHARED_TRIP_ID
+          SHARED_TRIP_ID,
         );
       }
 
@@ -446,17 +446,22 @@ function AuthenticatedApp({ user, onSignOut }) {
     }
 
     setTrip(newTrip);
-    logActivity("load_template", { details: `Loaded "${template.name}"` });
+    logActivity("load_template", {
+      details: `Loaded "${template.name}" (${newTrip.days.length} days)`,
+    });
   };
 
   const handleSaveTemplate = () => {
     const name = window.prompt(
       "Name this template",
-      trip.name || "Custom Trip"
+      trip.name || "Custom Trip",
     );
     if (!name) return;
     const next = buildTemplateFromTrip(trip, { name });
     setCustomTemplates((prev) => [...prev, next]);
+    logActivity("load_template", {
+      details: `Saved template "${name}" (${trip.days.length} days)`,
+    });
   };
 
   return (

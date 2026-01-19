@@ -28,7 +28,7 @@ export default function TripBuilderView({
   logActivity,
 }) {
   const [selectedDayId, setSelectedDayId] = useState(
-    trip.days[0]?.id || "day-1"
+    trip.days[0]?.id || "day-1",
   );
   const [searchMode, setSearchMode] = useState("catalog");
   const [catalogFilter, setCatalogFilter] = useState("all");
@@ -86,12 +86,12 @@ export default function TripBuilderView({
 
   const selectedDay = useMemo(
     () => trip.days.find((day) => day.id === selectedDayId) || trip.days[0],
-    [trip.days, selectedDayId]
+    [trip.days, selectedDayId],
   );
 
   const getAnyActivity = useCallback(
     (id) => getActivityById(id) || customActivities[id] || null,
-    [customActivities]
+    [customActivities],
   );
 
   const selectedDayActivities = useMemo(() => {
@@ -165,7 +165,7 @@ export default function TripBuilderView({
 
   const selectedDayActivityIds = useMemo(
     () => selectedDay?.activities || [],
-    [selectedDay]
+    [selectedDay],
   );
 
   const filteredCatalog = useMemo(() => {
@@ -174,7 +174,7 @@ export default function TripBuilderView({
       (activity) =>
         activity.category !== "city" &&
         activity.category !== "lodging" &&
-        activity.coordinates // Only show mappable activities
+        activity.coordinates, // Only show mappable activities
     );
 
     // Custom activities go at the TOP of the list (newest first)
@@ -195,12 +195,12 @@ export default function TripBuilderView({
 
     if (catalogFilter !== "all") {
       results = results.filter(
-        (activity) => activity.category === catalogFilter || activity.isCustom
+        (activity) => activity.category === catalogFilter || activity.isCustom,
       );
     }
     if (regionFilter !== "all") {
       results = results.filter(
-        (activity) => activity.region === regionFilter || activity.isCustom
+        (activity) => activity.region === regionFilter || activity.isCustom,
       );
     }
     if (showMomOnly) {
@@ -213,7 +213,7 @@ export default function TripBuilderView({
           activity.name.toLowerCase().includes(query) ||
           activity.location?.toLowerCase().includes(query) ||
           activity.description?.toLowerCase().includes(query) ||
-          activity.tags?.some((tag) => tag.toLowerCase().includes(query))
+          activity.tags?.some((tag) => tag.toLowerCase().includes(query)),
       );
     }
     return results;
@@ -241,7 +241,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [setTrip, trip.days, customActivities, logActivity]
+    [setTrip, trip.days, customActivities, logActivity],
   );
 
   const removeActivityFromDay = useCallback(
@@ -270,7 +270,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [setTrip, trip.days, customActivities, logActivity]
+    [setTrip, trip.days, customActivities, logActivity],
   );
 
   const reorderDayActivities = useCallback(
@@ -294,7 +294,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [setTrip, trip.days, logActivity]
+    [setTrip, trip.days, logActivity],
   );
 
   const updateDay = useCallback(
@@ -317,7 +317,7 @@ export default function TripBuilderView({
         }
       }
     },
-    [setTrip, trip.days, logActivity]
+    [setTrip, trip.days, logActivity],
   );
 
   const updateSchedule = useCallback(
@@ -353,7 +353,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [setTrip, trip.days, getAnyActivity, logActivity]
+    [setTrip, trip.days, getAnyActivity, logActivity],
   );
 
   const autoScheduleDay = useCallback(
@@ -382,7 +382,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [getAnyActivity, setTrip, trip.days, logActivity]
+    [getAnyActivity, setTrip, trip.days, logActivity],
   );
 
   const addDay = useCallback(() => {
@@ -430,7 +430,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [trip.days, setTrip, logActivity]
+    [trip.days, setTrip, logActivity],
   );
 
   const reorderDays = useCallback(
@@ -459,7 +459,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [setTrip, trip.days, logActivity]
+    [setTrip, trip.days, logActivity],
   );
 
   const duplicateDay = useCallback(
@@ -489,7 +489,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [setTrip, trip.days, logActivity]
+    [setTrip, trip.days, logActivity],
   );
 
   const clearTrip = useCallback(() => {
@@ -501,7 +501,7 @@ export default function TripBuilderView({
         endLocation: "",
         dayCount: 5,
         style: "balanced",
-      })
+      }),
     );
     setSelectedDayId("day-1");
   }, [setTrip]);
@@ -542,7 +542,7 @@ export default function TripBuilderView({
         coordinates: resolvedCoordinates,
         pinned: true,
         googleMapsUrl: `https://www.google.com/maps/search/${encodeURIComponent(
-          query
+          query,
         )}`,
       };
 
@@ -556,7 +556,7 @@ export default function TripBuilderView({
         });
       }
     },
-    [addActivityToDay, setCustomActivities, logActivity]
+    [addActivityToDay, setCustomActivities, logActivity],
   );
 
   const handleDeleteCustom = useCallback(
@@ -577,8 +577,16 @@ export default function TripBuilderView({
       if (detailActivity?.id === activity.id) {
         setDetailActivity(null);
       }
-    },
-    [detailActivity, setCustomActivities, setTrip]
+
+      // Log deletion
+      if (logActivity) {
+        logActivity("remove_activity", {
+          activityName: activity.name,
+          details: "Deleted custom place from everywhere",
+        });
+      }
+    };,
+    [detailActivity, setCustomActivities, setTrip, logActivity],
   );
 
   const handleToggleCustomPin = useCallback(
@@ -595,7 +603,7 @@ export default function TripBuilderView({
         };
       });
     },
-    [setCustomActivities]
+    [setCustomActivities],
   );
 
   // Handle editing an activity (custom or private catalog item)
@@ -638,15 +646,23 @@ export default function TripBuilderView({
           days: prev.days.map((day) => ({
             ...day,
             activities: day.activities.map((id) =>
-              id === originalActivity.id ? activityId : id
+              id === originalActivity.id ? activityId : id,
             ),
           })),
         }));
       }
 
+      // Log the edit
+      if (logActivity) {
+        logActivity("add_custom_place", {
+          activityName: updatedActivity.name,
+          details: "Edited activity details",
+        });
+      }
+
       setEditingActivity(null);
-    },
-    [editingActivity, setCustomActivities, setTrip]
+    };,
+    [editingActivity, setCustomActivities, setTrip, logActivity],
   );
 
   const getActivityWaypoints = useCallback(
@@ -656,7 +672,7 @@ export default function TripBuilderView({
         .filter((activity) => activity?.category !== "city")
         .filter(
           (activity) =>
-            activity?.coordinates && Array.isArray(activity.coordinates)
+            activity?.coordinates && Array.isArray(activity.coordinates),
         )
         .map((activity) => ({
           id: activity.id,
@@ -664,7 +680,7 @@ export default function TripBuilderView({
           coordinates: activity.coordinates,
         }));
     },
-    [getAnyActivity]
+    [getAnyActivity],
   );
 
   const { dayRoutes, routesLoading, routesError, baseCoordsByLabel } =
@@ -843,11 +859,17 @@ export default function TripBuilderView({
     }
 
     return activities;
-  }, [trip.days, trip.homeAddress, getAnyActivity, baseCoordsByLabel, customActivities]);
+  }, [
+    trip.days,
+    trip.homeAddress,
+    getAnyActivity,
+    baseCoordsByLabel,
+    customActivities,
+  ]);
 
   const selectedDayIndex = useMemo(
     () => trip.days.findIndex((day) => day.id === selectedDayId),
-    [trip.days, selectedDayId]
+    [trip.days, selectedDayId],
   );
 
   const selectedDayBounds = useMemo(() => {
@@ -878,7 +900,7 @@ export default function TripBuilderView({
     }
 
     coords.push(
-      ...getActivityWaypoints(selectedDay).map((point) => point.coordinates)
+      ...getActivityWaypoints(selectedDay).map((point) => point.coordinates),
     );
 
     if (
@@ -971,7 +993,7 @@ export default function TripBuilderView({
   const weatherUrl = useMemo(() => {
     if (!selectedDay?.location) return null;
     return `https://www.google.com/search?q=${encodeURIComponent(
-      `weather ${selectedDay.location}`
+      `weather ${selectedDay.location}`,
     )}`;
   }, [selectedDay]);
 
