@@ -585,7 +585,7 @@ export default function TripBuilderView({
           details: "Deleted custom place from everywhere",
         });
       }
-    };,
+    },
     [detailActivity, setCustomActivities, setTrip, logActivity],
   );
 
@@ -661,7 +661,7 @@ export default function TripBuilderView({
       }
 
       setEditingActivity(null);
-    };,
+    },
     [editingActivity, setCustomActivities, setTrip, logActivity],
   );
 
