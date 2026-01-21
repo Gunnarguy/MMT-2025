@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
   line-height: 1.6;
   font-weight: 400;
 
@@ -10,7 +10,7 @@
   --ink-700: #2c3e50;
   --ink-600: #3d4a5c;
   --ink-500: #526177;
-/* Deep lavenders - for headers/areas with white text */
+  /* Deep lavenders - for headers/areas with white text */
   --lavender-900: #5b3e8a;
   --lavender-800: #6b4d9a;
   --lavender-700: #7b5caa;
@@ -44,8 +44,9 @@
   --mist-200: #e9e3ff;
   --cloud-100: #f5f3ff;
   --card-bg: #ffffff;
-/* Text shadow for white text on gradients */
-  --text-glow: 0 1px 2px rgba(91, 62, 138, 0.3), 0 2px 8px rgba(91, 62, 138, 0.15);
+  /* Text shadow for white text on gradients */
+  --text-glow:
+      0 1px 2px rgba(91, 62, 138, 0.3), 0 2px 8px rgba(91, 62, 138, 0.15);
   --shadow-soft: 0 12px 30px rgba(24, 32, 45, 0.08);
   --shadow-card: 0 6px 18px rgba(24, 32, 45, 0.08);
   --radius-lg: 20px;
@@ -80,7 +81,8 @@ html {
   scroll-padding-top: calc(70px + env(safe-area-inset-top, 0));
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -110,6 +112,44 @@ input[type="button"] {
   user-select: none;
 }
 
+/* Prevent iOS input zoom on focus */
+@media screen and (max-width: 768px) {
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Ensure all interactive elements have touch-friendly sizing */
+  button,
+  .btn-primary,
+  .btn-outline,
+  a[role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Smooth momentum scrolling */
+  .catalog-list,
+  .catalog-filters,
+  .day-tabs,
+  .board-grid,
+  .modal,
+  .place-results-list,
+  .overnight-stay-picker .stay-results-dropdown {
+    -webkit-overflow-scrolling: touch;
+  }
+}
 /* Better focus states for accessibility */
 :focus-visible {
   outline: 3px solid rgba(211, 84, 0, 0.5);
@@ -124,8 +164,10 @@ input[type="button"] {
   scroll-snap-type: y proximity;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   line-height: 1.2;
   color: var(--sunset-600);
-  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-family: "Fraunces", "Times New Roman", serif;
 }

@@ -25,34 +25,39 @@
   padding: 2rem;
   border-radius: 28px;
   /* Deep-to-lighter gradient with text anchored on the darker side */
-    background: linear-gradient(145deg,
+  background: linear-gradient(145deg,
         var(--lavender-800) 0%,
         var(--lavender-700) 25%,
         var(--lavender-500) 60%,
-        var(--lavender-400) 100%);
+    var(--lavender-400) 100%);
   color: #fff;
   text-shadow: var(--text-glow);
-    box-shadow: 0 30px 60px rgba(91, 62, 138, 0.25);
+  box-shadow: 0 30px 60px rgba(91, 62, 138, 0.25);
   position: relative;
   overflow: hidden;
   animation: riseIn 0.6s ease both;
 }
 
 .route-hero::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   /* Subtle shimmer overlay that doesn't wash out the colors */
-  background: radial-gradient(ellipse at 100% 0%, rgba(255, 255, 255, 0.15), transparent 50%),
-    radial-gradient(ellipse at 0% 100%, rgba(255, 255, 255, 0.08), transparent 40%);
+  background:
+      radial-gradient(ellipse at 100% 0%,
+        rgba(255, 255, 255, 0.15),
+        transparent 50%),
+      radial-gradient(ellipse at 0% 100%,
+        rgba(255, 255, 255, 0.08),
+        transparent 40%);
   pointer-events: none;
 }
 .route-hero::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   /* Slight noise texture for depth */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
     opacity: 0.5;
     pointer-events: none;
 }
@@ -221,7 +226,9 @@
   border-radius: 24px;
   padding: 1.5rem;
   box-shadow: var(--shadow-card);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
 }
 
 .stop-card.active,
@@ -447,11 +454,214 @@
 
 @media (max-width: 768px) {
   .moms-route {
-    padding: 1.5rem 1rem 2rem;
+    padding: 1rem 0.75rem 2rem;
+      gap: 1.25rem;
+    }
+    
+    /* Hero Section */
+    .route-hero {
+      padding: 1.25rem;
+      border-radius: 20px;
+      gap: 1rem;
+    }
+    
+    .route-hero h2 {
+      font-size: 1.4rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 0.9rem;
   }
 
   .hero-actions {
     flex-direction: column;
+    align-items: stretch;
+      gap: 0.75rem;
+    }
+    
+    .hero-stats {
+      gap: 0.5rem;
+    }
+    
+    .stat-card {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.85rem;
+    }
+    
+    /* Stop Cards */
+    .stop-card {
+      padding: 1rem;
+      border-radius: 18px;
+    }
+    
+    .stop-card-header {
+      flex-direction: column;
     align-items: flex-start;
+    gap: 0.5rem;
+    }
+    
+    .stop-meta {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .stop-highlights {
+      gap: 0.35rem;
+    }
+    
+    .stop-activity-grid {
+      gap: 0.6rem;
+    }
+    
+    .stop-activity {
+      padding: 0.6rem;
+      border-radius: 12px;
+    }
+    
+    /* Ribbon */
+    .route-ribbon {
+      gap: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    
+    .ribbon-stop {
+      min-width: 160px;
+      padding: 0.6rem;
+      border-radius: 12px;
+    }
+    
+    .ribbon-emoji {
+      font-size: 1.3rem;
+    }
+    
+    /* Grid Panels */
+    .route-grid {
+      gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+    
+    .route-panel {
+      padding: 1rem;
+      border-radius: 16px;
+    }
+    
+    /* Warnings */
+    .route-warnings {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    
+    .warning-card {
+      padding: 0.75rem;
+      border-radius: 12px;
+    }
+    
+    /* Featured Cards */
+    .featured-moments {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    
+    .featured-card {
+      padding: 1rem;
+      border-radius: 14px;
+    }
+    
+    /* Budget & Packing */
+    .budget-grid {
+      gap: 0.5rem;
+    }
+    
+    .budget-card {
+      padding: 0.6rem;
+      border-radius: 10px;
+    }
+    
+    .packing-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    
+    /* Alternatives */
+    .alt-grid {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+    
+    .alt-card {
+      padding: 0.75rem;
+      border-radius: 12px;
+    }
+    
+    /* CTA */
+    .route-cta {
+      padding: 1.25rem;
+      border-radius: 18px;
+    }
+    }
+    
+    /* iPhone Pro / Pro Max specific */
+    @media (max-width: 430px) {
+      .moms-route {
+        padding: 0.75rem 0.5rem 1.5rem;
+        gap: 1rem;
+      }
+    
+      .route-hero {
+        padding: 1rem;
+        border-radius: 16px;
+      }
+    
+      .route-hero h2 {
+        font-size: 1.2rem;
+      }
+    
+      .hero-eyebrow {
+        font-size: 0.65rem;
+      }
+    
+      .hero-subtitle {
+        font-size: 0.85rem;
+      }
+    
+      .hero-theme,
+      .hero-window {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+      }
+    
+      .stat-card {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.8rem;
+        border-radius: 12px;
+      }
+    
+      .stop-card {
+        padding: 0.75rem;
+        border-radius: 14px;
+      }
+    
+      .stop-day {
+        font-size: 0.65rem;
+      }
+    
+      .stop-card-header h3 {
+        font-size: 1.05rem;
+      }
+    
+      .ribbon-stop {
+        min-width: 140px;
+        padding: 0.5rem;
+      }
+    
+      .route-panel {
+        padding: 0.75rem;
+        border-radius: 12px;
+      }
+    
+      .route-cta {
+        padding: 1rem;
+        border-radius: 14px;
   }
 }
