@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import BorderView from "./components/BorderView";
 import DayPanel from "./components/DayPanel";
+import DayRail from "./components/DayRail";
 import ItineraryView from "./components/ItineraryView";
 import MoneyView from "./components/MoneyView";
 import OverviewView from "./components/OverviewView";
@@ -108,42 +109,49 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="topbar">
-        <div className="topbar-inner">
-          <button className="wordmark" type="button" onClick={() => go("overview")}>
-            <span>Michigan</span>
-            <span>&rsquo;26</span>
-          </button>
-          <div className="topbar-spacer" />
-          <div className="topbar-actions">
-            <span className={`countdown-pill${countdown.live ? " is-live" : ""}`}>
-              {countdown.value != null && <b>{countdown.value}</b>}
-              {countdown.text}
-            </span>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      <nav className="tabrail" aria-label="Sections">
-        <div className="tabrail-inner" role="tablist">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              role="tab"
-              type="button"
-              aria-selected={route.tab === t.id}
-              className="tab"
-              onClick={() => go(t.id)}
-            >
-              <span className="tab-icon" aria-hidden="true">
-                {t.icon}
-              </span>
-              {t.label}
+      {/* Top bar, section tabs and (in the Days section) the date strip travel
+          together as one sticky unit, so navigation never scrolls out of
+          reach on a long day page. */}
+      <div className="chrome">
+        <header className="topbar">
+          <div className="topbar-inner">
+            <button className="wordmark" type="button" onClick={() => go("overview")}>
+              <span>Michigan</span>
+              <span>&rsquo;26</span>
             </button>
-          ))}
-        </div>
-      </nav>
+            <div className="topbar-spacer" />
+            <div className="topbar-actions">
+              <span className={`countdown-pill${countdown.live ? " is-live" : ""}`}>
+                {countdown.value != null && <b>{countdown.value}</b>}
+                {countdown.text}
+              </span>
+              <ThemeToggle />
+            </div>
+          </div>
+        </header>
+
+        <nav className="tabrail" aria-label="Sections">
+          <div className="tabrail-inner" role="tablist">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                role="tab"
+                type="button"
+                aria-selected={route.tab === t.id}
+                className="tab"
+                onClick={() => go(t.id)}
+              >
+                <span className="tab-icon" aria-hidden="true">
+                  {t.icon}
+                </span>
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </nav>
+
+        {route.tab === "days" && <DayRail activeId={route.dayId} onGo={go} />}
+      </div>
 
       <main className="page">
         {route.tab === "overview" && <OverviewView onGo={go} />}

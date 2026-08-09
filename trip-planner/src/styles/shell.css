@@ -8,9 +8,14 @@
   flex-direction: column;
 }
 
-/* ── Top bar ────────────────────────────────────────────────────────────── */
+/* ── Sticky chrome ──────────────────────────────────────────────────────────
+   Top bar, section tabs and the day strip stick as ONE unit. They used to be
+   separate `position: sticky; top: 0` elements, which meant the tab rail simply
+   slid underneath the taller top bar and disappeared — so scrolling down a long
+   day page left no navigation on screen at all.
+   ────────────────────────────────────────────────────────────────────────── */
 
-.topbar {
+.chrome {
   position: sticky;
   top: 0;
   z-index: 60;
@@ -19,6 +24,12 @@
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   border-bottom: 1px solid var(--line);
   padding-top: env(safe-area-inset-top);
+}
+
+/* ── Top bar ────────────────────────────────────────────────────────────── */
+
+.topbar {
+  border-bottom: 1px solid var(--line);
 }
 
 .topbar-inner {
@@ -108,13 +119,8 @@
 /* ── Tab rail ───────────────────────────────────────────────────────────── */
 
 .tabrail {
-  position: sticky;
-  top: 0;
-  z-index: 55;
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border-bottom: 1px solid var(--line);
+  /* Positioning is handled by .chrome — this is just the row. */
+  background: transparent;
 }
 
 .tabrail-inner {

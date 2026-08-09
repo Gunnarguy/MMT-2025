@@ -502,9 +502,7 @@
 /* ── Print ──────────────────────────────────────────────────────────────── */
 
 @media print {
-  .topbar,
-  .tabrail,
-  .dayrail,
+  .chrome,
   .daynav,
   .footer,
   .mapwrap {

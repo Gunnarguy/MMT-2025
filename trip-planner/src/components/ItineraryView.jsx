@@ -9,9 +9,11 @@ import {
 import { Chip } from "./bits";
 
 /**
- * How many things on a day want attention. A count beats a label here: every
- * day but the last has at least one red flag, so "Needs a decision" on all of
- * them carries no information, whereas "3 red flags" does.
+ * How many things on a day want attention. A count beats a label: every day but
+ * the last has at least one, so a single word on all of them says nothing.
+ *
+ * Wording matters here — Mom planned this trip and will read this page. "To
+ * know" is a heads-up, not a verdict on her plan.
  */
 function flagCounts(day) {
   const levels = (day.flags || []).map((f) => f.level);
@@ -21,7 +23,6 @@ function flagCounts(day) {
   };
 }
 
-const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 export default function ItineraryView({ onGo }) {
   const totalMiles = DAYS.reduce((n, d) => n + (d.miles || 0), 0);
@@ -75,12 +76,8 @@ export default function ItineraryView({ onGo }) {
                   >
                     {day.index === 0 ? "Eve" : `Day ${day.index}`}
                   </span>
-                  {flags.stop > 0 && (
-                    <Chip tone="stop">{plural(flags.stop, "red flag")}</Chip>
-                  )}
-                  {flags.warn > 0 && (
-                    <Chip tone="warn">{plural(flags.warn, "thing")} to check</Chip>
-                  )}
+                  {flags.stop > 0 && <Chip tone="stop">{flags.stop} to know</Chip>}
+                  {flags.warn > 0 && <Chip tone="warn">{flags.warn} to check</Chip>}
                 </div>
                 <h3
                   style={{
