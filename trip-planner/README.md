@@ -1,57 +1,69 @@
-# MMT-2025: New England Trip Planner
+# Michigan '26 — Field Guide
 
-A curated trip deck plus a hands-on builder for Mom and Renee's fall 2025 New England adventure. Built with React + Vite, with optional real-time sync via Supabase.
+A read-first travel guide for one specific trip: **Palatine, Illinois → the Lake
+Michigan shore → Mackinac Island → Ontario → Detroit → home, September 14–21, 2026.**
+Three travellers, one rented car, seven nights.
 
-**Live Site:** https://gunnarhostetler.github.io/MMT-2025/
+**Live:** https://gunnarhostetler.github.io/MMT-2025/
 
-## Features
+## What this is
 
-- **Mom's Route Deck:** A narrative, scannable view based on `MMTrip.txt` (warnings, highlights, packing, budgets, alternatives).
-- **DIY Trip Builder:** Build from scratch or remix templates with day-by-day planning.
-- **Custom Places Library:** Add, edit, and reuse your own places with notes, tags, and links.
-- **Activity Detail Drawer:** See tips, must-try items, ratings, and tags without leaving the planner.
-- **Scheduling + Day Board:** Time-block activities or drag them across days in a board view.
-- **Trip Tools:** Budgets, reservations, and checklist tracking built into the planner.
-- **Smart Routing:** OSRM driving routes + total distance/time estimates.
-- **Live Cost Estimator:** Optional $/mile calculator on the map panel.
-- **Exports + Links:** Calendar export, Google Maps routing, and quick weather lookup.
-- **Realtime Sync:** Supabase integration for shared planning (optional).
+Mom wrote a planning document. This is that document, verified and turned into
+something you can actually use from the passenger seat: tap-to-call hotels,
+tap-to-navigate addresses, real drive times, and — most usefully — a running list
+of the places that are **closed on the day you planned to be there**.
 
-## Quick Start
+Every non-obvious claim carries a source link. Where the app and the original
+document disagree, the app says so out loud and shows Mom's original wording
+verbatim in a "From Mom's document" block. It never silently overwrites her.
+
+## What this deliberately is not
+
+The previous version of this repo was a general-purpose trip *builder* —
+drag-and-drop days, a 2,000-line place catalog, saved templates, Supabase
+realtime sync, and an email login wall. Nobody used it. The itinerary was
+already settled; the machinery was solving a problem that didn't exist.
+
+So: no accounts, no database, no sync, no backend. The only state that persists
+is which checkboxes you've ticked, in `localStorage`. The itinerary lives in
+`src/data/` as plain JavaScript — to change the trip, edit the data file.
+
+## Running it
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Project Structure
+## Layout
 
 ```
-trip-planner/
-├── src/
-│   ├── components/         # UI building blocks
-│   ├── data/               # Catalogs + Mom's Route data
-│   ├── hooks/              # Custom hooks (routes, etc.)
-│   ├── lib/                # Supabase + Leaflet config
-│   ├── styles/             # App + Mom's Route styles
-│   ├── utils/              # Formatting + trip helpers
-│   ├── App.jsx             # App shell and view switcher
-│   └── main.jsx            # Entry point
-├── supabase/               # Database migrations
-└── public/
+src/
+├── data/
+│   ├── trip.js              # Days, stops, drive legs, flags — the itinerary
+│   ├── lodging.js           # The five booked properties
+│   ├── budget.js            # Every known and estimated cost
+│   ├── border.js            # Canada crossing brief
+│   ├── pack.js              # Weather normals, prep tasks, packing list
+│   └── routeGeometry.json   # GENERATED — road-following map lines
+├── components/              # One file per view, plus shared bits.jsx
+├── styles/                  # tokens → base → shell → components → itinerary → views
+├── hooks/useLocalState.js   # localStorage-backed state + checklists
+└── lib/format.js            # Dates, durations, money, tel:/maps: links
 ```
 
-## Supabase Setup (Optional)
+## Regenerating the map lines
 
-1. Run `supabase/migrations/001_mmt_tables.sql` in Supabase SQL Editor.
-2. Add GitHub Secrets:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+`src/data/routeGeometry.json` holds the real driving geometry for each day so the
+map doesn't draw straight lines between towns. It's committed, so the published
+site needs no routing service. Re-run only if the waypoints change:
 
-## Notes
+```bash
+node scripts/build-route-geometry.mjs
+```
 
-- `MMTrip.txt` remains the authoritative route inspiration.
-- Templates live in `src/data/templates.js` and can be saved locally.
+## Source
 
----
-Built with love, lobster rolls, and leaf-peeping dreams.
+`Trip to Michigan (2026 source).docx` in the repo root is Mom's original document
+and is the authority on intent. This app is the authority on hours, prices, and
+whether a thing is open.

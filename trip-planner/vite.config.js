@@ -4,7 +4,7 @@ import { defineConfig } from "vite";
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  // Use root for dev, and explicit repo path for production
+  // Root during `vite dev`; the repo path once it's on GitHub Pages.
   base: command === "serve" ? "/" : "/MMT-2025/",
   server: {
     port: 5174,
@@ -12,19 +12,13 @@ export default defineConfig(({ command }) => ({
   build: {
     rollupOptions: {
       output: {
+        // Leaflet is only needed on the Map tab, so it gets its own chunk.
+        // React and its whole runtime stay together: splitting react from
+        // react-dom or scheduler just creates circular chunk references.
         manualChunks(id) {
           if (!id.includes("node_modules")) return;
-
-          // Keep common heavy deps in their own chunks to reduce the main bundle size.
-          if (id.includes("/react-dom/")) return "react-dom";
-          if (id.includes("/react/")) return "react";
-
-          if (id.includes("/leaflet/")) return "leaflet";
-          if (id.includes("/react-leaflet/")) return "react-leaflet";
-
-          if (id.includes("/@dnd-kit/")) return "dnd-kit";
-          if (id.includes("/@supabase/")) return "supabase";
-
+          if (/node_modules\/(@react-)?leaflet/.test(id)) return "leaflet";
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react";
           return "vendor";
         },
       },

@@ -1,504 +1,210 @@
 import "leaflet/dist/leaflet.css";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import "./lib/leafletConfig";
-import "./styles/app.css";
+import "./styles/tokens.css";
+import "./styles/base.css";
+import "./styles/shell.css";
+import "./styles/components.css";
+import "./styles/itinerary.css";
+import "./styles/views.css";
 
-import ActivityLog from "./components/ActivityLog";
-import Header from "./components/Header";
-import LoginScreen from "./components/LoginScreen";
-import TripBuilderView from "./components/TripBuilderView";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { getRouteTemplate, routeTemplates } from "./data/templates";
-import {
-  addActivityLog,
-  fetchActivityLogs,
-  fetchSharedTripState,
-  getFamilyMember,
-  getSession,
-  isEmailAllowed,
-  onAuthStateChange,
-  signOut,
-  subscribeToActivityLog,
-  subscribeToSharedTrip,
-  supabaseEnabled,
-  upsertSharedTripState,
-} from "./lib/supabase";
-import {
-  getClientId,
-  loadCustomActivities,
-  loadCustomTemplates,
-  loadLastUpdatedAt,
-  loadTrip,
-  saveCustomActivities,
-  saveCustomTemplates,
-  saveLastUpdatedAt,
-  saveTrip,
-} from "./utils/storage";
-import { buildTemplateFromTrip, mergeTemplates } from "./utils/templateUtils";
-import {
-  buildBlankTrip,
-  buildTripFromTemplate,
-  getTripStats,
-  isValidTripState,
-  migrateTrip,
-} from "./utils/tripUtils";
+import BorderView from "./components/BorderView";
+import DayPanel from "./components/DayPanel";
+import ItineraryView from "./components/ItineraryView";
+import MoneyView from "./components/MoneyView";
+import OverviewView from "./components/OverviewView";
+import PackView from "./components/PackView";
+import RouteMap from "./components/RouteMap";
+import StaysView from "./components/StaysView";
+import { DAYS, TRIP } from "./data/trip";
+import { useLocalState } from "./hooks/useLocalState";
+import { daysUntil } from "./lib/format";
 
-const STORAGE_KEY = "mmt-2025-trip";
-const CUSTOM_ACTIVITIES_KEY = "mmt-custom-activities";
-const CUSTOM_TEMPLATES_KEY = "mmt-custom-templates";
-const CLIENT_ID_KEY = "mmt-2025-client-id";
-const LAST_UPDATED_AT_KEY = "mmt-2025-last-updated";
-const SHARED_TRIP_ID = "mmt-2025-maine";
+const TABS = [
+  { id: "overview", label: "Overview", icon: "◆" },
+  { id: "days", label: "Day by day", icon: "▤" },
+  { id: "map", label: "Map", icon: "◎" },
+  { id: "stays", label: "Stays", icon: "▮" },
+  { id: "money", label: "Money", icon: "$" },
+  { id: "border", label: "Border", icon: "⚑" },
+  { id: "pack", label: "Pack", icon: "✓" },
+];
 
-export default function App() {
-  // Auth state
-  const [authLoading, setAuthLoading] = useState(true);
-  const [user, setUser] = useState(null);
-
-  // Check auth on mount and listen for changes
-  useEffect(() => {
-    // Check initial session
-    getSession().then(({ data }) => {
-      const session = data?.session;
-      if (session?.user && isEmailAllowed(session.user.email)) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-      }
-      setAuthLoading(false);
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = onAuthStateChange((event, session) => {
-      if (session?.user && isEmailAllowed(session.user.email)) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => subscription?.unsubscribe?.();
-  }, []);
-
-  const handleSignOut = async () => {
-    await signOut();
-    setUser(null);
+/**
+ * Hash routing, hand-rolled.
+ *
+ * `#/days`, `#/day/d4`, `#/money`. A router library would be four times the
+ * code of this function for a seven-tab static site, and GitHub Pages serves
+ * the same index.html for every path anyway.
+ */
+function useHashRoute() {
+  const read = () => {
+    const raw = window.location.hash.replace(/^#\/?/, "");
+    const [head, param] = raw.split("/");
+    if (head === "day" && param) return { tab: "days", dayId: param };
+    if (TABS.some((t) => t.id === head)) return { tab: head, dayId: null };
+    return { tab: "overview", dayId: null };
   };
 
-  // Show loading state
-  if (authLoading) {
-    return (
-      <div className="login-screen">
-        <div className="login-card" style={{ textAlign: "center" }}>
-          <span style={{ fontSize: "2rem" }}>🦞</span>
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  const [route, setRoute] = useState(read);
 
-  // Show login if not authenticated
-  if (!user) {
-    return <LoginScreen />;
-  }
+  useEffect(() => {
+    const onChange = () => {
+      setRoute(read());
+      window.scrollTo({ top: 0, behavior: "instant" });
+    };
+    window.addEventListener("hashchange", onChange);
+    return () => window.removeEventListener("hashchange", onChange);
+  }, []);
 
-  // User is authenticated - render the app
-  return <AuthenticatedApp user={user} onSignOut={handleSignOut} />;
+  const go = useCallback((tab, dayId) => {
+    window.location.hash = dayId ? `#/day/${dayId}` : `#/${tab}`;
+  }, []);
+
+  return [route, go];
 }
 
-function AuthenticatedApp({ user, onSignOut }) {
-  const savedTrip = useMemo(() => {
-    const loaded = loadTrip(STORAGE_KEY);
-    return loaded ? migrateTrip(loaded) : null;
-  }, []);
-  const [customActivities, setCustomActivities] = useState(() =>
-    loadCustomActivities(CUSTOM_ACTIVITIES_KEY),
-  );
-  const [customTemplates, setCustomTemplates] = useState(() =>
-    loadCustomTemplates(CUSTOM_TEMPLATES_KEY),
-  );
-  const [syncStatus, setSyncStatus] = useState(
-    supabaseEnabled ? "syncing" : "offline",
-  );
-
-  // Activity log state
-  const [activityLogs, setActivityLogs] = useState([]);
-  const [activityLogOpen, setActivityLogOpen] = useState(false);
-
-  // Get family member info for logging
-  const familyMember = useMemo(
-    () => getFamilyMember(user?.email),
-    [user?.email],
-  );
-
-  // Function to log an activity
-  const logActivity = useCallback(
-    async (action, details = {}) => {
-      if (!supabaseEnabled || !user?.email) return;
-
-      const entry = {
-        user_email: user.email,
-        user_name: familyMember?.name || user.email.split("@")[0],
-        action,
-        details: details.details || null,
-        day_label: details.dayLabel || null,
-        activity_name: details.activityName || null,
-      };
-
-      const { data, error } = await addActivityLog(entry);
-      if (error) {
-        console.warn("Failed to log activity:", error);
-      } else if (data) {
-        // Optimistically add to local state
-        setActivityLogs((prev) => [data, ...prev]);
-      }
-    },
-    [user?.email, familyMember?.name],
-  );
-
-  // Fetch activity logs on mount
-  useEffect(() => {
-    if (!supabaseEnabled) return;
-
-    fetchActivityLogs(100).then(({ data, error }) => {
-      if (error) {
-        console.warn("Failed to fetch activity logs:", error);
-      } else {
-        setActivityLogs(data || []);
-      }
-    });
-  }, []);
-
-  // Subscribe to real-time activity log updates
-  useEffect(() => {
-    if (!supabaseEnabled) return;
-
-    const subscription = subscribeToActivityLog((payload) => {
-      const newLog = payload?.new;
-      if (newLog) {
-        // Avoid duplicates (in case we already added optimistically)
-        setActivityLogs((prev) => {
-          if (prev.some((log) => log.id === newLog.id)) return prev;
-          return [newLog, ...prev];
-        });
-      }
-    });
-
-    return () => subscription?.unsubscribe?.();
-  }, []);
-
-  // Only show built-in trips + any custom templates the user saved
-  const builtInTripIds = ["moms-original", "girls-michigan"];
-  const templates = useMemo(
-    () =>
-      mergeTemplates(
-        routeTemplates.filter((t) => builtInTripIds.includes(t.id)),
-        customTemplates,
-      ),
-    [customTemplates],
-  );
-
-  const [trip, setTrip] = useState(() => {
-    if (savedTrip) return savedTrip;
-    const momsTemplate = getRouteTemplate("moms-original");
-    const seeded = buildTripFromTemplate(momsTemplate);
-    return (
-      seeded || buildBlankTrip({ dayCount: 7, name: "My New England Trip" })
-    );
-  });
-
-  const tripStats = useMemo(() => getTripStats(trip.days), [trip.days]);
-
-  const clientId = useMemo(() => getClientId(CLIENT_ID_KEY), []);
-  const [remoteReady, setRemoteReady] = useState(false);
-  const initialTripRef = useRef(trip);
-  const initialCustomActivitiesRef = useRef(customActivities);
-  const initialCustomTemplatesRef = useRef(customTemplates);
-  const isApplyingRemoteRef = useRef(false);
-  const lastSyncedRef = useRef(null);
-  const lastLocalUpdatedAtRef = useRef(loadLastUpdatedAt(LAST_UPDATED_AT_KEY));
+function ThemeToggle() {
+  const [theme, setTheme] = useLocalState("mi26.theme", "auto");
 
   useEffect(() => {
-    if (!remoteReady) {
-      initialTripRef.current = trip;
-      initialCustomActivitiesRef.current = customActivities;
-      initialCustomTemplatesRef.current = customTemplates;
-    }
-  }, [trip, customActivities, customTemplates, remoteReady]);
+    const root = document.documentElement;
+    if (theme === "auto") root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", theme);
+  }, [theme]);
 
-  useEffect(() => {
-    if (!supabaseEnabled) return;
+  const next = { auto: "light", light: "dark", dark: "auto" }[theme];
+  const icon = { auto: "◐", light: "☀", dark: "☾" }[theme];
 
-    let cancelled = false;
-    let subscription = null;
+  return (
+    <button
+      type="button"
+      className="icon-btn"
+      onClick={() => setTheme(next)}
+      title={`Theme: ${theme} — switch to ${next}`}
+      aria-label={`Theme: ${theme}. Switch to ${next}.`}
+    >
+      {icon}
+    </button>
+  );
+}
 
-    async function bootstrapFromSupabase() {
-      const { data, error } = await fetchSharedTripState(SHARED_TRIP_ID);
-      if (cancelled) return;
+export default function App() {
+  const [route, go] = useHashRoute();
+  const out = useMemo(() => daysUntil(TRIP.start), []);
+  const home = useMemo(() => daysUntil(TRIP.end), []);
+  const activeDay = route.dayId ? DAYS.find((d) => d.id === route.dayId) : null;
+  const totalMiles = useMemo(
+    () => DAYS.reduce((n, d) => n + (d.miles || 0), 0),
+    [],
+  );
 
-      if (error) {
-        console.warn("Supabase fetch shared trip failed:", error);
-        setRemoteReady(true);
-        return;
-      }
-
-      const remoteState = data?.state || null;
-      const remoteTrip = remoteState?.trip;
-      const remoteCustomActivities = remoteState?.customActivities;
-      const remoteCustomTemplates = remoteState?.customTemplates;
-      const remoteUpdatedAt = Number(
-        remoteState?.updatedAt || data?.updated_at || 0,
-      );
-      const localUpdatedAt = Number(lastLocalUpdatedAtRef.current || 0);
-      const hasRemoteTrip =
-        isValidTripState(remoteTrip) && remoteTrip.days.length;
-      const shouldPreferRemote = hasRemoteTrip
-        ? remoteUpdatedAt > 0
-          ? remoteUpdatedAt >= localUpdatedAt
-          : localUpdatedAt === 0
-        : false;
-
-      console.log("[Supabase bootstrap] Loaded remote trip:", {
-        hasTrip: !!remoteTrip,
-        daysCount: remoteTrip?.days?.length,
-        overnightStays: remoteTrip?.days?.map((d) => ({
-          dayId: d.id,
-          stay: d.overnightStay,
-        })),
-      });
-
-      if (shouldPreferRemote) {
-        if (isValidTripState(remoteTrip) && remoteTrip.days.length) {
-          setTrip(migrateTrip(remoteTrip));
-        }
-
-        // Load custom activities from remote if they exist
-        if (
-          remoteCustomActivities &&
-          typeof remoteCustomActivities === "object"
-        ) {
-          setCustomActivities((prev) => ({
-            ...prev,
-            ...remoteCustomActivities,
-          }));
-        }
-
-        // Load custom templates from remote if they exist (merge with local)
-        if (
-          Array.isArray(remoteCustomTemplates) &&
-          remoteCustomTemplates.length
-        ) {
-          setCustomTemplates((prev) => {
-            // Merge: keep all remote templates, add any local ones not already present
-            const remoteIds = new Set(remoteCustomTemplates.map((t) => t.id));
-            const uniqueLocal = prev.filter((t) => !remoteIds.has(t.id));
-            return [...remoteCustomTemplates, ...uniqueLocal];
-          });
-        }
-      }
-
-      // If no remote state, push current local state
-      if (!data?.state?.initialized || !shouldPreferRemote) {
-        await upsertSharedTripState(
-          {
-            initialized: true,
-            trip: initialTripRef.current,
-            customActivities: initialCustomActivitiesRef.current,
-            customTemplates: initialCustomTemplatesRef.current,
-            updatedBy: clientId,
-            updatedAt: Date.now(),
-          },
-          SHARED_TRIP_ID,
-        );
-      }
-
-      subscription = subscribeToSharedTrip(SHARED_TRIP_ID, (payload) => {
-        const next = payload?.new?.state;
-        if (!next) return;
-        if (next?.updatedBy && next.updatedBy === clientId) return;
-
-        // Mark that we're applying remote updates (skip sync-back)
-        isApplyingRemoteRef.current = true;
-
-        // Sync trip
-        const nextTrip = next?.trip;
-        if (isValidTripState(nextTrip) && nextTrip.days.length) {
-          const migrated = migrateTrip(nextTrip);
-          setTrip(migrated);
-          saveTrip(STORAGE_KEY, migrated);
-        }
-
-        // Sync custom activities
-        const nextCustomActivities = next?.customActivities;
-        if (nextCustomActivities && typeof nextCustomActivities === "object") {
-          setCustomActivities(nextCustomActivities);
-          saveCustomActivities(CUSTOM_ACTIVITIES_KEY, nextCustomActivities);
-        }
-
-        // Sync custom templates
-        const nextCustomTemplates = next?.customTemplates;
-        if (Array.isArray(nextCustomTemplates)) {
-          setCustomTemplates(nextCustomTemplates);
-          saveCustomTemplates(CUSTOM_TEMPLATES_KEY, nextCustomTemplates);
-        }
-
-        // Clear the flag after sync effect debounce to prevent sync-back race condition
-        setTimeout(() => {
-          isApplyingRemoteRef.current = false;
-        }, 750);
-      });
-
-      setRemoteReady(true);
-      setSyncStatus("synced");
-    }
-
-    bootstrapFromSupabase();
-
-    return () => {
-      cancelled = true;
-      subscription?.unsubscribe?.();
-    };
-  }, [clientId]);
-
-  // Sync trip, customActivities, AND customTemplates to Supabase whenever any changes
-  useEffect(() => {
-    saveTrip(STORAGE_KEY, trip);
-    saveCustomActivities(CUSTOM_ACTIVITIES_KEY, customActivities);
-    saveCustomTemplates(CUSTOM_TEMPLATES_KEY, customTemplates);
-    const shouldUpdateLocalTimestamp =
-      remoteReady || lastLocalUpdatedAtRef.current > 0;
-    if (shouldUpdateLocalTimestamp) {
-      const localUpdatedAt = Date.now();
-      lastLocalUpdatedAtRef.current = localUpdatedAt;
-      saveLastUpdatedAt(LAST_UPDATED_AT_KEY, localUpdatedAt);
-    }
-
-    if (!supabaseEnabled || !remoteReady) return;
-
-    // Skip sync if we're just applying remote updates
-    if (isApplyingRemoteRef.current) return;
-
-    // Create a hash to compare and avoid duplicate syncs
-    const stateHash = JSON.stringify({
-      trip,
-      customActivities,
-      customTemplates,
-    });
-    if (lastSyncedRef.current === stateHash) {
-      return; // Already synced this exact state
-    }
-
-    setSyncStatus("syncing");
-
-    const t = setTimeout(() => {
-      const payload = {
-        initialized: true,
-        trip,
-        customActivities,
-        customTemplates,
-        updatedBy: clientId,
-        updatedAt: Date.now(),
-      };
-
-      console.log("[Supabase sync] Upserting trip state...", {
-        daysCount: trip.days?.length,
-        overnightStays: trip.days?.map((d) => ({
-          dayId: d.id,
-          stay: d.overnightStay,
-        })),
-      });
-
-      upsertSharedTripState(payload, SHARED_TRIP_ID)
-        .then(() => {
-          lastSyncedRef.current = stateHash;
-          setSyncStatus("synced");
-          console.log("[Supabase sync] Success!");
-        })
-        .catch((e) => {
-          console.warn("Supabase upsert shared trip failed:", e);
-          setSyncStatus("offline");
-        });
-    }, 600);
-
-    return () => clearTimeout(t);
-  }, [trip, customActivities, customTemplates, remoteReady, clientId]);
-
-  const handleLoadTemplate = (templateId) => {
-    if (templateId === "blank") {
-      setTrip(buildBlankTrip({ dayCount: 7, name: "My Custom Trip" }));
-      logActivity("load_template", { details: "Started a blank trip" });
-      return;
-    }
-    const template = templates.find((item) => item.id === templateId);
-    if (!template) return;
-
-    // When loading a read-only template, we're working on a copy
-    // The original template stays pristine - changes only affect the working copy
-    const newTrip = buildTripFromTemplate(template);
-
-    // If it's a read-only template, mark it as "based on" but give it a working ID
-    // This ensures any edits don't claim to be the original template
-    if (template.readOnly) {
-      newTrip.basedOnTemplate = template.id;
-      newTrip.templateId = `working-${template.id}`;
-    }
-
-    setTrip(newTrip);
-    logActivity("load_template", {
-      details: `Loaded "${template.name}" (${newTrip.days.length} days)`,
-    });
-  };
-
-  const handleSaveTemplate = () => {
-    const name = window.prompt(
-      "Name this template",
-      trip.name || "Custom Trip",
-    );
-    if (!name) return;
-    const next = buildTemplateFromTrip(trip, { name });
-    setCustomTemplates((prev) => [...prev, next]);
-    logActivity("load_template", {
-      details: `Saved template "${name}" (${trip.days.length} days)`,
-    });
-  };
+  const countdown =
+    out > 0
+      ? { text: "days out", value: out, live: false }
+      : home >= 0
+        ? { text: "on the road", value: null, live: true }
+        : { text: "home", value: null, live: false };
 
   return (
     <div className="app">
-      <Header
-        tripName={trip.name}
-        tripStats={tripStats}
-        templates={templates}
-        selectedTemplateId={trip.templateId}
-        basedOnTemplate={trip.basedOnTemplate}
-        onLoadTemplate={(templateId) => {
-          handleLoadTemplate(templateId);
-        }}
-        onSaveTemplate={handleSaveTemplate}
-        syncStatus={syncStatus}
-        user={user}
-        onSignOut={onSignOut}
-      />
+      <header className="topbar">
+        <div className="topbar-inner">
+          <button className="wordmark" type="button" onClick={() => go("overview")}>
+            <span>Michigan</span>
+            <span>&rsquo;26</span>
+          </button>
+          <div className="topbar-spacer" />
+          <div className="topbar-actions">
+            <span className={`countdown-pill${countdown.live ? " is-live" : ""}`}>
+              {countdown.value != null && <b>{countdown.value}</b>}
+              {countdown.text}
+            </span>
+            <ThemeToggle />
+          </div>
+        </div>
+      </header>
 
-      <main className="main">
-        <TripBuilderView
-          trip={trip}
-          setTrip={setTrip}
-          customActivities={customActivities}
-          setCustomActivities={setCustomActivities}
-          logActivity={logActivity}
-        />
+      <nav className="tabrail" aria-label="Sections">
+        <div className="tabrail-inner" role="tablist">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              role="tab"
+              type="button"
+              aria-selected={route.tab === t.id}
+              className="tab"
+              onClick={() => go(t.id)}
+            >
+              <span className="tab-icon" aria-hidden="true">
+                {t.icon}
+              </span>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <main className="page">
+        {route.tab === "overview" && <OverviewView onGo={go} />}
+        {route.tab === "days" &&
+          (activeDay ? <DayPanel day={activeDay} /> : <ItineraryView onGo={go} />)}
+        {route.tab === "map" && (
+          <>
+            <div className="page-head">
+              <div className="eyebrow">The whole line</div>
+              <h1>{totalMiles.toLocaleString()} miles, drawn to the road</h1>
+              <p>
+                Every segment below is the actual driving route, not a straight line
+                between towns. Tap a date in the key to isolate one day.
+              </p>
+            </div>
+            <RouteMap />
+          </>
+        )}
+        {route.tab === "stays" && <StaysView />}
+        {route.tab === "money" && <MoneyView />}
+        {route.tab === "border" && <BorderView />}
+        {route.tab === "pack" && <PackView />}
       </main>
 
-      <ActivityLog
-        logs={activityLogs}
-        isOpen={activityLogOpen}
-        onToggle={() => setActivityLogOpen((prev) => !prev)}
-      />
-
       <footer className="footer">
-        <p>Made with 💕 for Mom&#39;s adventures.</p>
+        <div className="footer-inner">
+          <div>
+            <h3>The trip</h3>
+            <p>
+              {TRIP.subtitle}
+              <br />
+              September 14&ndash;21, 2026.
+            </p>
+          </div>
+          <div>
+            <h3>Source</h3>
+            <p>
+              Built from Mom&rsquo;s <em>Trip to Michigan</em> document, then
+              fact-checked against the venues&rsquo; own sites. Where this app and the
+              document disagree, the app says so out loud.
+            </p>
+          </div>
+          <div>
+            <h3>Jump</h3>
+            <ul>
+              {TABS.map((t) => (
+                <li key={t.id}>
+                  <a
+                    href={`#/${t.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      go(t.id);
+                    }}
+                  >
+                    {t.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </footer>
     </div>
   );

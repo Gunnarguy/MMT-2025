@@ -1,18 +1,11 @@
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
-import "./index.css"
-import App from "./App.jsx"
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-try {
-  const rootElement = document.getElementById("root");
-  if (!rootElement) throw new Error("Root element not found");
+import "./lib/leafletConfig";
+import App from "./App.jsx";
 
-  createRoot(rootElement).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  )
-} catch (e) {
-  console.error("Failed to mount React app:", e);
-  document.body.innerHTML += `<div style="color: red; padding: 20px;">Mount Error: ${e.message}</div>`;
-}
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);

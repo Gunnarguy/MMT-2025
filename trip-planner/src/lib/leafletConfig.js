@@ -1,9 +1,17 @@
-import L from 'leaflet';
+import L from "leaflet";
 
-// Fix Leaflet icon paths when using bundlers.
+/**
+ * The map draws every marker with `L.divIcon` (see RouteMap), so Leaflet's
+ * bundled PNG marker is never used. Point its icon URLs at a 1x1 transparent
+ * data URI so a stray default marker can't fire a request at a CDN — this site
+ * is otherwise fully self-contained.
+ */
+const BLANK =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png'
+  iconUrl: BLANK,
+  iconRetinaUrl: BLANK,
+  shadowUrl: BLANK,
 });
