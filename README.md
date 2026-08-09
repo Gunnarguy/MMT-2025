@@ -4,7 +4,7 @@ Trip guides for Mom's road trips. The live site is the **Michigan '26 Field
 Guide** — Palatine, Illinois to the Straits of Mackinac and back by way of
 Ontario, September 14–21, 2026.
 
-**→ https://gunnarhostetler.github.io/MMT-2025/**
+**→ https://gunnarguy.github.io/MMT-2025/**
 
 ```
 Trip to Michigan (2026 source).docx   Mom's planning document — the authority on intent
