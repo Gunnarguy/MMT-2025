@@ -344,14 +344,28 @@ export const LOOSE_ENDS = [
     kind: "call",
     dayId: "d0",
     when: "Before 9/14",
-    title: "Get a second name on the rental",
+    title: "Name everyone who might take the wheel",
     problem:
-      "There are two 300-mile days on this trip and exactly one named driver. That's the single largest avoidable risk in the plan, and it's a five-minute phone call.",
+      "Gunnar is driving most of this trip — but not all of it, and there are two 300-mile days in it. Whoever takes the other stretches has to be on the agreement. An unlisted driver is a breach of the rental contract, and it can take the damage waiver down with it — including the Canadian coverage you collect at the same counter.",
     answer:
-      "Ring Budget and ask to add Mikaela as an additional driver. Costco members get the additional-driver fee waived at participating locations — worth asking about by name.",
-    ask: "“I'd like to add a second driver to this reservation. I'm a Costco member — is the additional driver fee waived at this location?”",
+      "Ring Budget and add anyone who might drive, even for an hour. Costco members get the additional-driver fee waived at participating locations — worth asking about by name. It's a five-minute call and it's the cheapest insurance on the trip.",
+    ask: "“I'd like to add an additional driver to this reservation. I'm a Costco member — is the additional driver fee waived at this location?”",
     phone: "800-218-7992",
     deadline: "Before pickup on the 14th",
+  },
+  {
+    id: "flights",
+    kind: "book",
+    dayId: null,
+    when: "Bookending the trip",
+    title: "Flights in and out for Gunnar and Mikaela",
+    problem:
+      "Not booked. Two fixed times bracket them and both are tighter than they look: the rental counter at 7:00pm on Monday the 14th, and a mid-afternoon Central arrival back in Palatine on Monday the 21st after 297 miles.",
+    answer:
+      "Fly into O'Hare — it's about 35 minutes from Palatine, against 55–70 from Midway. Land by mid-afternoon on the 14th so the 7:00pm counter appointment isn't a sprint, since that's where the Canadian insurance card gets handed over. Going home, the 22nd is the honest answer; a same-day departure on the 21st only works late evening and only if Monday runs clean. The Car & flights page holds the details and checks whatever you enter against both anchors.",
+    deadline: "Fares to Chicago won't improve from here",
+    url: "#/ride",
+    urlLabel: "Open Car & flights",
   },
   {
     id: "schnitz",
@@ -420,8 +434,10 @@ export const LOOSE_ENDS = [
     problem:
       "Budget has to be told at pickup — five days before you actually cross. Without that conversation you may have an insurance gap at the Blue Water Bridge on the 19th, and the rental counter will be long closed by then.",
     answer:
-      "Ask for the Canadian Non-Resident Insurance Card by name and confirm the card is physically in your hand before you leave the lot. It's free. Print backup copies from the avis.ca link in Mom's document — it's live and it does cover Budget vehicles. While you're there: photograph the existing damage.",
+      "Ask for the Canadian Non-Resident Insurance Card by name and confirm it's physically in your hand before you leave the lot. It's free. Print backup copies from the avis.ca link in Mom's document — it's live and it does cover Budget vehicles. Two more minutes while you're standing there: photograph every panel and the fuel gauge, and write the car's year, make, model, plate and combined mpg onto the Car & flights page. The mpg isn't trivia — the fuel line on the Money page is computed from it.",
     deadline: "At the counter, Monday 7pm",
+    url: "#/ride",
+    urlLabel: "Car & flights",
   },
   {
     id: "gummies",

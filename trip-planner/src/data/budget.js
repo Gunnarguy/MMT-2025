@@ -64,6 +64,8 @@ export const BUDGET = {
       payer: "mom",
     },
     {
+      // `id` so budgetTotals can recompute this line once the car is known.
+      id: "fuel",
       label: "Fuel",
       note: "≈1,430 miles at ~28 mpg and a blended $4.10/gal. An SUV at 24 mpg pushes this to ~$245",
       category: "Transport",
@@ -199,11 +201,47 @@ export const BUDGET = {
 };
 
 /**
+ * Fuel is the one budget line that depends on a fact nobody has yet: which car
+ * Budget actually hands over. The basis below reproduces the figures quoted in
+ * the Fuel item's note — 28 mpg gives $209, 24 mpg gives $244 — so the estimate
+ * stays honest whichever way the car goes.
+ *
+ * The mileage is higher than the 1,214 the route map draws, because a route
+ * line doesn't include the winery run, the drive out to the stone beach, or
+ * circling Frankenmuth for a parking space on Oktoberfest Saturday.
+ */
+export const FUEL_BASIS = {
+  miles: 1430,
+  pricePerGallon: 4.1,
+  assumedMpg: 28,
+};
+
+export function fuelEstimate(mpg) {
+  const useMpg = Number(mpg) > 0 ? Number(mpg) : FUEL_BASIS.assumedMpg;
+  return Math.round((FUEL_BASIS.miles / useMpg) * FUEL_BASIS.pricePerGallon);
+}
+
+/**
  * The one place trip totals are computed. Both the Money page and the Overview
  * headline read from here, so the two can't drift apart.
+ *
+ * Pass `mpg` once the car is known and the Fuel line recomputes — it stops
+ * being flagged as an estimate at that point, because the only guess left in it
+ * is the pump price.
  */
-export function budgetTotals({ includeProvisional = false } = {}) {
-  const items = BUDGET.items.filter((i) => includeProvisional || !i.provisional);
+export function budgetTotals({ includeProvisional = false, mpg } = {}) {
+  const known = Number(mpg) > 0;
+  const items = BUDGET.items
+    .filter((i) => includeProvisional || !i.provisional)
+    .map((i) =>
+      i.id === "fuel" && known
+        ? {
+            ...i,
+            total: fuelEstimate(mpg),
+            note: `≈${FUEL_BASIS.miles.toLocaleString()} miles at the car's ${mpg} mpg and a blended $${FUEL_BASIS.pricePerGallon.toFixed(2)}/gal`,
+          }
+        : i,
+    );
   const total = items.reduce((n, i) => n + i.total, 0);
   const momOnly = items
     .filter((i) => i.payer === "mom")

@@ -103,12 +103,19 @@ function ItemCard({ item, done, onToggle }) {
                 {item.phone}
               </a>
             )}
-            {item.url && (
-              <a className="action" href={item.url} target="_blank" rel="noreferrer">
-                <span aria-hidden="true">🔗</span>
-                {item.urlLabel || "Open"}
-              </a>
-            )}
+            {item.url &&
+              // In-app hash links must not open a new tab.
+              (item.url.startsWith("#") ? (
+                <a className="action" href={item.url}>
+                  <span aria-hidden="true">→</span>
+                  {item.urlLabel || "Open"}
+                </a>
+              ) : (
+                <a className="action" href={item.url} target="_blank" rel="noreferrer">
+                  <span aria-hidden="true">🔗</span>
+                  {item.urlLabel || "Open"}
+                </a>
+              ))}
           </div>
         )}
 

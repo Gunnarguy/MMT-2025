@@ -6,6 +6,7 @@ import "./styles/components.css";
 import "./styles/itinerary.css";
 import "./styles/views.css";
 import "./styles/looseends.css";
+import "./styles/ride.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -17,6 +18,7 @@ import LooseEndsView from "./components/LooseEndsView";
 import MoneyView from "./components/MoneyView";
 import OverviewView from "./components/OverviewView";
 import PackView from "./components/PackView";
+import RideView from "./components/RideView";
 import RouteMap from "./components/RouteMap";
 import StaysView from "./components/StaysView";
 import { DAYS, TRIP } from "./data/trip";
@@ -29,6 +31,7 @@ const TABS = [
   { id: "days", label: "Day by day", icon: "▤" },
   { id: "map", label: "Map", icon: "◎" },
   { id: "stays", label: "Stays", icon: "▮" },
+  { id: "ride", label: "Car & flights", icon: "✈" },
   { id: "money", label: "Money", icon: "$" },
   { id: "border", label: "Border", icon: "⚑" },
   { id: "pack", label: "Pack", icon: "✓" },
@@ -175,6 +178,7 @@ export default function App() {
           </>
         )}
         {route.tab === "stays" && <StaysView />}
+        {route.tab === "ride" && <RideView />}
         {route.tab === "money" && <MoneyView />}
         {route.tab === "border" && <BorderView />}
         {route.tab === "pack" && <PackView />}

@@ -1,0 +1,344 @@
+/* ── Car & flights ────────────────────────────────────────────────────────
+ *
+ * The only page in the app with form controls, so it's the only place that
+ * needs input styling. Kept deliberately plain — these are fields you fill in
+ * once, standing at a rental counter or reading a confirmation email, not a
+ * product surface.
+ */
+
+/* Known facts strip -------------------------------------------------------- */
+
+.ride-known {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.ride-known > div {
+  display: grid;
+  gap: 0.15rem;
+  padding: var(--s-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-size: var(--t-sm);
+}
+
+.ride-known b {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+/* Editable cards ----------------------------------------------------------- */
+
+.ride-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--s-4);
+}
+
+.ride-card + .ride-card {
+  margin-top: var(--s-3);
+}
+
+.ride-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.ride-card-head h3 {
+  font-size: var(--t-lg);
+  margin: 0;
+}
+
+.ride-colour {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  padding: 0.14rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--ink-2);
+}
+
+.ride-who {
+  margin-left: auto;
+  max-width: 15rem;
+  font-size: var(--t-xs);
+  text-align: right;
+  border: none;
+  border-bottom: 1px dotted var(--line-2);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-3);
+  padding: 0.15rem 0;
+}
+
+.ride-remove {
+  font-size: var(--t-xs);
+  color: var(--ink-4);
+  text-decoration: underline;
+}
+
+.ride-remove:hover {
+  color: var(--stop);
+}
+
+/* Fields ------------------------------------------------------------------- */
+
+.fld-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s-3);
+  align-items: start;
+}
+
+.fld {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.fld--sm {
+  grid-column: span 1;
+}
+
+.fld--lg {
+  grid-column: 1 / -1;
+}
+
+.fld-label {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.fld-why {
+  font-size: var(--t-xs);
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+.ride-card input,
+.ride-who {
+  font-family: inherit;
+}
+
+.fld input {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--t-sm);
+  /* 16px on iOS or Safari zooms the whole page on focus. */
+  min-height: 2.4rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.fld input::placeholder {
+  color: var(--ink-4);
+}
+
+.fld input:focus,
+.ride-who:focus {
+  outline: none;
+  border-color: var(--brand-2);
+  background: var(--surface);
+}
+
+@media (max-width: 640px) {
+  .fld input {
+    font-size: 16px;
+  }
+}
+
+/* Fuel readout ------------------------------------------------------------- */
+
+.ride-fuel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+  padding: var(--s-4);
+  border-radius: var(--radius);
+  border: 1px dashed var(--line-2);
+  background: var(--surface-2);
+}
+
+.ride-fuel.is-known {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+  background: color-mix(in srgb, var(--ok) 7%, var(--surface-2));
+}
+
+.ride-fuel-figure {
+  display: grid;
+  gap: 0.1rem;
+  flex: none;
+}
+
+.ride-fuel-figure b {
+  font-family: var(--font-display);
+  font-size: var(--t-2xl);
+  line-height: 1;
+}
+
+.ride-fuel-figure span {
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.ride-fuel p {
+  flex: 1 1 18rem;
+  margin: 0;
+  font-size: var(--t-sm);
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* Flight anchors and airports ---------------------------------------------- */
+
+.ride-anchors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.ride-anchor {
+  padding: var(--s-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  background: var(--surface);
+}
+
+.ride-anchor b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--t-base);
+  margin: 0.2rem 0 0.4rem;
+}
+
+.ride-anchor p {
+  margin: 0;
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  color: var(--ink-3);
+}
+
+.ride-airports {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s-3);
+  margin-bottom: var(--s-5);
+}
+
+.ride-airport {
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.ride-airport.is-best {
+  border-color: color-mix(in srgb, var(--ok) 40%, transparent);
+  background: color-mix(in srgb, var(--ok) 6%, var(--surface-2));
+}
+
+.ride-airport-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6ch;
+  margin-bottom: 0.2rem;
+}
+
+.ride-airport-head b {
+  font-family: var(--font-mono);
+  font-size: var(--t-lg);
+}
+
+.ride-airport-head span {
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+}
+
+.ride-airport-head i {
+  margin-left: auto;
+  font-style: normal;
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.ride-airport p {
+  margin: 0;
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  color: var(--ink-3);
+}
+
+/* Slots, verdicts, add button ---------------------------------------------- */
+
+.ride-slot {
+  margin-bottom: var(--s-4);
+}
+
+.ride-verdict {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  border: 1px solid;
+}
+
+.ride-verdict--stop {
+  background: var(--stop-bg);
+  border-color: color-mix(in srgb, var(--stop) 30%, transparent);
+  color: var(--stop);
+}
+
+.ride-verdict--warn {
+  background: var(--warn-bg);
+  border-color: color-mix(in srgb, var(--warn) 30%, transparent);
+  color: var(--warn);
+}
+
+.ride-verdict--ok {
+  background: var(--ok-bg);
+  border-color: color-mix(in srgb, var(--ok) 30%, transparent);
+  color: var(--ok);
+}
+
+.ride-add {
+  width: 100%;
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--radius);
+  border: 1px dashed var(--line-2);
+  background: transparent;
+  color: var(--ink-3);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.ride-add:hover {
+  border-color: var(--brand-2);
+  color: var(--brand-2);
+}

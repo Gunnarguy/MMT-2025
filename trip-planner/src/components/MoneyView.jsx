@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { BUDGET, budgetTotals, FX, SPLIT_NOTE } from "../data/budget";
+import { useLocalState } from "../hooks/useLocalState";
 import { money } from "../lib/format";
 import { Chip, Flag, Source } from "./bits";
 
@@ -14,13 +15,20 @@ const CATEGORY_COLOR = {
 
 export default function MoneyView() {
   const [includeProvisional, setIncludeProvisional] = useState(false);
+  // The car isn't assigned yet. If its mpg has been entered on the Car &
+  // flights page, the Fuel line below is computed from it rather than guessed.
+  const [vehicle] = useLocalState("mi26.vehicle", {});
+  const mpg = vehicle?.mpg;
 
   const {
     items: rows,
     total,
     momOnly,
     perPerson: perPersonShared,
-  } = useMemo(() => budgetTotals({ includeProvisional }), [includeProvisional]);
+  } = useMemo(
+    () => budgetTotals({ includeProvisional, mpg }),
+    [includeProvisional, mpg],
+  );
 
   const byCategory = useMemo(() => {
     const map = new Map();
