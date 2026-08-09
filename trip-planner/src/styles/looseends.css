@@ -1,0 +1,482 @@
+/* ── Loose ends ───────────────────────────────────────────────────────────
+ *
+ * The consolidated "what's still open" screen. Everything here keys off the
+ * same tone tokens the flags use (--stop / --warn / --info / --ok), so a card
+ * inherits light and dark automatically and nothing needs a media query of its
+ * own.
+ *
+ * The one deliberate hierarchy choice: `.le-answer` — the workaround — is the
+ * loudest thing in every card. The problem statement above it is set quieter on
+ * purpose. You come to this page for the fix, not the diagnosis.
+ */
+
+/* Progress ---------------------------------------------------------------- */
+
+.le-progress-wrap {
+  margin-top: calc(var(--s-5) * -1);
+}
+
+.le-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  margin-bottom: var(--s-2);
+}
+
+.le-reset {
+  color: var(--ink-4);
+  text-decoration: underline;
+  font-size: var(--t-xs);
+}
+
+/* Filter rail ------------------------------------------------------------- */
+
+.le-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.le-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.le-filter b {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-xs);
+  padding: 0 0.4ch;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--ink-3);
+  min-width: 1.6ch;
+  text-align: center;
+}
+
+.le-filter:hover {
+  border-color: var(--line-2);
+}
+
+.le-filter.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.le-filter.is-on b {
+  background: color-mix(in srgb, var(--bg) 25%, transparent);
+  color: var(--bg);
+}
+
+/* Group headings ---------------------------------------------------------- */
+
+.le-group + .le-group {
+  margin-top: var(--s-6);
+}
+
+.le-group-head {
+  border-left: 3px solid var(--tone, var(--line-2));
+  padding-left: var(--s-4);
+  margin-bottom: var(--s-4);
+}
+
+.le-group-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6ch;
+  font-size: var(--t-xl);
+  margin: 0;
+}
+
+.le-group-head p {
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  margin: 0.25rem 0 0;
+  max-width: var(--measure);
+}
+
+.le-group-count {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--ink-3);
+}
+
+.le-group-head--stop {
+  --tone: var(--stop);
+}
+.le-group-head--warn {
+  --tone: var(--warn);
+}
+.le-group-head--info {
+  --tone: var(--info);
+}
+.le-group-head--ok {
+  --tone: var(--ok);
+}
+
+/* Cards ------------------------------------------------------------------- */
+
+.le-stack {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.le-card {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--tone, var(--line-2));
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--s-4);
+  transition: opacity 0.2s;
+}
+
+.le-card--stop {
+  --tone: var(--stop);
+}
+.le-card--warn {
+  --tone: var(--warn);
+}
+.le-card--info {
+  --tone: var(--info);
+}
+.le-card--ok {
+  --tone: var(--ok);
+}
+
+.le-card.is-done {
+  opacity: 0.5;
+}
+
+.le-card.is-done .le-card-heading h3 {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.le-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+
+.le-tick {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 0.2rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--line-2);
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  color: transparent;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.le-tick[aria-pressed="true"] {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+
+.le-card-heading h3 {
+  font-size: var(--t-lg);
+  line-height: 1.3;
+  margin: 0.15rem 0 0;
+}
+
+.le-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.le-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4ch;
+  padding: 0.14rem 0.5rem;
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.le-badge--stop {
+  background: var(--stop-bg);
+  color: var(--stop);
+}
+.le-badge--warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.le-badge--info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+.le-badge--ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.le-daylink,
+.le-when {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.le-daylink {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--line-2);
+}
+
+.le-daylink:hover {
+  color: var(--brand-2);
+  border-bottom-color: currentColor;
+}
+
+/* Card body --------------------------------------------------------------- */
+
+.le-card-body {
+  /* Line the body up under the heading, past the tick box. */
+  padding-left: calc(22px + var(--s-3));
+  margin-top: var(--s-3);
+}
+
+.le-problem {
+  font-size: var(--t-sm);
+  line-height: 1.6;
+  color: var(--ink-3);
+  margin: 0;
+  max-width: var(--measure);
+}
+
+.le-answer {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--tone) 7%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--tone) 18%, transparent);
+}
+
+.le-answer-label {
+  display: block;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tone);
+  margin-bottom: 0.3rem;
+}
+
+.le-answer p {
+  margin: 0;
+  font-size: var(--t-sm);
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: var(--measure);
+}
+
+.le-options {
+  list-style: none;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.le-options li {
+  display: grid;
+  gap: 0.15rem;
+  padding: var(--s-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.le-options b {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tone, var(--ink-2));
+}
+
+.le-options span {
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.le-ask {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border-left: 2px solid var(--line-2);
+}
+
+.le-ask-label {
+  display: block;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 0.25rem;
+}
+
+.le-ask p {
+  margin: 0;
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  color: var(--ink-2);
+  font-style: italic;
+}
+
+.le-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  margin-top: var(--s-3);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.le-facts b {
+  font-weight: 700;
+  color: var(--ink-4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.5ch;
+}
+
+.le-actions {
+  margin-top: var(--s-3);
+}
+
+.le-verified {
+  margin: var(--s-3) 0 0;
+  font-size: var(--t-xs);
+  line-height: 1.55;
+  color: var(--ink-3);
+  max-width: var(--measure);
+}
+
+.le-verified b {
+  color: var(--ink-4);
+}
+
+/* Disclosure -------------------------------------------------------------- */
+
+.le-disclose {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  border: 1px dashed var(--line-2);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  text-align: left;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.le-disclose:hover {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+@media (max-width: 560px) {
+  .le-card-body {
+    padding-left: 0;
+  }
+}
+
+/* Day-page pointer ---------------------------------------------------------
+ *
+ * Sits above the day's flags and says how much of this day is genuinely still
+ * open. The flags themselves are mostly green now, so without this the day page
+ * reads as "all sorted" even when a decision is outstanding.
+ */
+
+.daylooseends {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--day, var(--brand)) 35%, transparent);
+  background: color-mix(in srgb, var(--day, var(--brand)) 8%, var(--surface));
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.daylooseends:hover {
+  border-color: var(--day, var(--brand));
+  background: color-mix(in srgb, var(--day, var(--brand)) 14%, var(--surface));
+}
+
+.dle-count {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--day, var(--brand));
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  font-weight: 700;
+}
+
+.dle-text {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.dle-text b {
+  font-size: var(--t-sm);
+  font-weight: 700;
+}
+
+.dle-text small {
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dle-go {
+  margin-left: auto;
+  flex: none;
+  color: var(--day, var(--brand));
+  font-size: var(--t-lg);
+}

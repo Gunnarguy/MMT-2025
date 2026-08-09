@@ -15,7 +15,16 @@ export function Chip({ tone = "ghost", children, title }) {
   );
 }
 
-/** A callout: something that will bite you, or something already handled. */
+/**
+ * A callout: something that will bite you, or something already handled.
+ *
+ * An `ok` flag is a finding that has been chased down and closed — so its
+ * follow-up line is phrased as an outcome ("Where it lands") rather than an
+ * instruction. Reading "Do this:" under a green tick is the small kind of wrong
+ * that makes people stop trusting the colours.
+ */
+const FIX_LABEL = { ok: "Where it lands:", info: "Worth knowing:" };
+
 export function Flag({ level = "info", title, children, fix }) {
   return (
     <div className={`flag flag--${level}`}>
@@ -27,7 +36,7 @@ export function Flag({ level = "info", title, children, fix }) {
         {children && <div className="flag-body">{children}</div>}
         {fix && (
           <div className="flag-fix">
-            <b>Do this:</b> {fix}
+            <b>{FIX_LABEL[level] || "Do this:"}</b> {fix}
           </div>
         )}
       </div>

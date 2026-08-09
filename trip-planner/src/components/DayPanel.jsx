@@ -1,3 +1,4 @@
+import { LOOSE_ENDS } from "../data/looseEnds";
 import { DAYS } from "../data/trip";
 import { duration, longDate } from "../lib/format";
 import RouteMap from "./RouteMap";
@@ -37,6 +38,9 @@ export default function DayPanel({ day }) {
   const style = { "--day": `var(--day-${day.index})` };
   const prev = DAYS[DAYS.indexOf(day) - 1];
   const next = DAYS[DAYS.indexOf(day) + 1];
+  // Anything on this day still waiting on a human, so the day page can point at
+  // it without repeating the whole card.
+  const open = LOOSE_ENDS.filter((e) => e.dayId === day.id && e.kind !== "done");
 
   return (
     <div style={style}>
@@ -72,6 +76,21 @@ export default function DayPanel({ day }) {
           )}
         </div>
       </header>
+
+      {open.length > 0 && (
+        <a className="daylooseends" href="#/loose">
+          {/* The badge carries the number, so the sentence doesn't repeat it —
+              and stays grammatical whether there's one or five. */}
+          <span className="dle-count">{open.length}</span>
+          <span className="dle-text">
+            <b>{open.length === 1 ? "Loose end on this day" : "Loose ends on this day"}</b>
+            <small>{open.map((e) => e.title).join(" · ")}</small>
+          </span>
+          <span className="dle-go" aria-hidden="true">
+            &rarr;
+          </span>
+        </a>
+      )}
 
       {day.flags?.length > 0 && (
         <div style={{ marginTop: "var(--s-5)" }}>

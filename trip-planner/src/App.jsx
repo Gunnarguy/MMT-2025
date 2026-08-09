@@ -5,6 +5,7 @@ import "./styles/shell.css";
 import "./styles/components.css";
 import "./styles/itinerary.css";
 import "./styles/views.css";
+import "./styles/looseends.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -12,6 +13,7 @@ import BorderView from "./components/BorderView";
 import DayPanel from "./components/DayPanel";
 import DayRail from "./components/DayRail";
 import ItineraryView from "./components/ItineraryView";
+import LooseEndsView from "./components/LooseEndsView";
 import MoneyView from "./components/MoneyView";
 import OverviewView from "./components/OverviewView";
 import PackView from "./components/PackView";
@@ -23,6 +25,7 @@ import { daysUntil } from "./lib/format";
 
 const TABS = [
   { id: "overview", label: "Overview", icon: "◆" },
+  { id: "loose", label: "Loose ends", icon: "◈" },
   { id: "days", label: "Day by day", icon: "▤" },
   { id: "map", label: "Map", icon: "◎" },
   { id: "stays", label: "Stays", icon: "▮" },
@@ -155,6 +158,7 @@ export default function App() {
 
       <main className="page">
         {route.tab === "overview" && <OverviewView onGo={go} />}
+        {route.tab === "loose" && <LooseEndsView />}
         {route.tab === "days" &&
           (activeDay ? <DayPanel day={activeDay} /> : <ItineraryView onGo={go} />)}
         {route.tab === "map" && (
