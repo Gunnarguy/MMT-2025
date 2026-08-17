@@ -491,6 +491,40 @@ export const LOOSE_ENDS = [
 
   // ────────────────────────────── WATCH ─────────────────────────────
   {
+    id: "i94-marshall",
+    kind: "watch",
+    dayId: "d7",
+    when: "Mon 9/21",
+    title: "I-94 at Marshall is a work zone on the day with the flight",
+    problem:
+      "The Marshall Modernization project has I-94, I-69 and the interchange between them under reconstruction in Calhoun County through 2026 — barrier walls moved, markings shifted, lanes in temporary configurations. It sits between Ann Arbor and Kalamazoo, in the middle of the run home. Any other day it's an annoyance; this day has AA 1253 at 3:20pm behind it.",
+    answer:
+      "It's the reason to leave Belleville at 8:00am rather than 9:00, independent of everything else. Check MiDrive from the hotel before you pull out. If it's backed up, I-96 to I-69 south is the long way round but it exists. Don't plan to make up time here — you can't.",
+    deadline: "Check MiDrive that morning",
+    url: "https://mdotnetpublic.state.mi.us/drive/",
+    urlLabel: "MDOT MiDrive",
+    verified:
+      "Confirmed August 2026: I-94/I-69 interchange ramps rebuilt through mid-September, with major traffic shifts on I-94 continuing. MDOT advising alternate routes.",
+    source: { name: "MDOT — Marshall Modernization", url: "https://www.michigan.gov/mdot/projects-studies/marshall-modernization" },
+  },
+  {
+    id: "i75-gaylord",
+    kind: "watch",
+    dayId: "d5",
+    when: "Sat 9/19",
+    title: "I-75 at Gaylord starts rebuilding the week before you drive it",
+    problem:
+      "MDOT replaces both I-75 bridges over M-32 in Gaylord starting immediately after Labor Day 2026 — a $54 million, three-year job, and Gaylord is directly on the run south from Mackinaw City. Traffic is kept moving on temporary widening and crossovers, which means narrow lanes and a speed drop, with staged ramp closures.",
+    answer:
+      "Add 20 minutes to the Mackinaw–Frankenmuth leg rather than hoping. Saturday is already the longest driving day, with a festival window and a border crossing stacked behind it, so it has the least room to absorb a surprise. If the crossover looks bad, the I-75 Business Loop through Gaylord is the signed alternative.",
+    deadline: "Check MiDrive Friday night",
+    url: "https://mdotnetpublic.state.mi.us/drive/",
+    urlLabel: "MDOT MiDrive",
+    verified:
+      "Confirmed August 2026: work scheduled to begin after Labor Day 2026, running to fall 2029. I-75 through traffic maintained via temporary pavement widening and crossovers.",
+    source: { name: "MDOT — I-75/M-32 interchange", url: "https://www.michigan.gov/mdot/projects-studies/i75-m32-interchange-otsego-county" },
+  },
+  {
     id: "tunnel-of-trees",
     kind: "watch",
     dayId: "d3",
@@ -536,6 +570,32 @@ export const LOOSE_ENDS = [
   },
 
   // ────────────────────────────── DONE ──────────────────────────────
+  {
+    id: "artprize",
+    kind: "done",
+    dayId: "d1",
+    when: "Tue 9/15",
+    title: "You've landed in ArtPrize Preview Week",
+    problem:
+      "Nobody planned this and Mom's document doesn't mention it. ArtPrize 2026 runs September 18 to October 3, with Preview Week on the 12th to the 17th — so your Tuesday in Grand Rapids sits inside it.",
+    answer:
+      "Between 70 and 80 per cent of the thousand-plus entries are already installed across downtown venues, and the crowds that come with the voting don't arrive until Friday. It's free, it's in the same blocks you're parking in for Meyer May and Heritage Hill, and it costs nothing to walk through between them. It also strengthens the case for the short day: skip Meijer Gardens, spend the afternoon downtown on foot, be in Ludington by four.",
+    url: "https://www.artprize.org/",
+    urlLabel: "ArtPrize",
+    source: { name: "ArtPrize", url: "https://www.artprize.org/" },
+  },
+  {
+    id: "detroit-clear",
+    kind: "done",
+    dayId: "d6",
+    when: "Sun 9/20",
+    title: "No stadium traffic in Detroit that Sunday — checked",
+    problem:
+      "A home game would have changed Plan A entirely: the tunnel exit, Hart Plaza and every downtown structure sit inside the Ford Field and Comerica Park footprint, and a Sunday afternoon kickoff would have made parking downtown a different proposition.",
+    answer:
+      "Both venues are dark. The Lions are away at Buffalo on the 17th and don't play at Ford Field again until the 27th. The Tigers are in Chicago that afternoon, at the White Sox at 2:10. Park downtown without the usual Sunday anxiety — though note it cuts both ways, since Standby in The Belt doesn't open until 5:00pm on Sundays.",
+    source: { name: "Baseball-Reference / NFL 2026 schedules", url: "https://www.nfl.com/schedules/2026/by-team/detroit-lions" },
+  },
   {
     id: "ludington-lights",
     kind: "done",

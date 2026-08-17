@@ -133,9 +133,9 @@ export const BUDGET = {
     },
     {
       label: "Michigan Recreation Passport, non-resident",
-      note: "$12 per day pass on an out-of-state plate. Needed for Belle Isle on 9/20, and again for any state park along the way",
+      note: "$12 daily on an out-of-state plate — confirmed against the DNR's own non-resident table, and it covers entry and re-entry to any state park all day. One day only: Belle Isle on 9/20, and only if Sunday goes to Detroit rather than Dearborn. Big Sable was the other state park and it's dropped",
       category: "Tickets & entry",
-      total: 24,
+      total: 12,
       estimate: true,
     },
     {

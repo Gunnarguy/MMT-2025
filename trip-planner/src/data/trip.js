@@ -162,6 +162,14 @@ export const DAYS = [
         fix:
           "This is a yes/no you have to make in Grand Rapids that morning, not “see if we have time.” If you want it, drive straight there by 2:30pm and check in at the inn afterwards — check-in runs to 9pm.",
       },
+      {
+        level: "ok",
+        title: "You've landed in ArtPrize Preview Week, by accident",
+        body:
+          "ArtPrize 2026 runs September 18 to October 3, and Preview Week is September 12–17 — so your Tuesday sits inside it. Somewhere between 70 and 80 per cent of the thousand-plus entries are already installed across downtown venues, and the crowds that arrive with the voting don't turn up until the Friday. Nobody planned this and nothing in Mom's document mentions it.",
+        fix:
+          "It's free and it's outdoors and indoors both, concentrated in the same downtown blocks you're already parking in for Meyer May and Heritage Hill. It costs nothing to walk through on the way between them. It also quietly strengthens the case for THE SHORT DAY: skip Meijer Gardens, spend the afternoon on foot downtown, and be in Ludington by four.",
+      },
     ],
     legs: [
       {
@@ -973,6 +981,14 @@ All Day--Mackinac Island—7:00 AM Park at the Ferry dock -OR call shuttle and i
         body:
           "Mom's document frames the whole stop as if it might be a detour worth questioning. It isn't — the scarce resource on Saturday is hours in Frankenmuth, not miles. Budget four hours there, roughly 11:00 to 3:30, and protect the window by cutting Stop 2.",
       },
+      {
+        level: "warn",
+        title: "I-75 at Gaylord is a building site from the week you arrive",
+        body:
+          "MDOT starts replacing both I-75 bridges over M-32 in Gaylord immediately after Labor Day 2026 — a $54 million, three-year job. Gaylord sits directly on today's run south from Mackinaw City. Through traffic is being kept moving on temporary pavement widening and crossovers, but crossovers mean narrow lanes and a speed drop, and ramp closures are staged through the build.",
+        fix:
+          "Add 20 minutes to the Mackinaw–Frankenmuth leg rather than hoping. It's already the longest driving day of the trip with a festival window and a border crossing stacked behind it, so this is the leg with the least room to absorb a surprise. Check MDOT's MiDrive map the night before — if the crossover is bad, the I-75 Business Loop through Gaylord is the signed alternative.",
+      },
     ],
     legs: [
       {
@@ -1147,6 +1163,14 @@ SLEEP HERE: Sheraton Four Points 1498 Venetian Boulevard Pt Edward, Ph 519.336.4
         body:
           "Card only. Make sure at least two of you have a chip credit card that works internationally and hasn't been flagged after two days of Canadian charges. If you specifically want to dump leftover Canadian cash, the Ambassador Bridge takes CAD at $14 — but it's dearer and drops you on I-75 instead of downtown.",
       },
+      {
+        level: "ok",
+        title: "Downtown Detroit is empty that afternoon — checked",
+        body:
+          "Worth knowing before you commit to Plan A, because a home game would have made the tunnel exit, Hart Plaza and every downtown parking structure a different proposition entirely. The Lions are away at Buffalo on the 17th and don't play at Ford Field again until the 27th. The Tigers are in Chicago that afternoon, playing the White Sox at 2:10. Comerica Park and Ford Field are both dark.",
+        fix:
+          "Nothing to do. Park downtown without the usual Sunday anxiety, and The Belt will be quiet — bear in mind that cuts both ways, since Standby doesn't open until 5:00pm on a Sunday.",
+      },
     ],
     legs: [
       {
@@ -1293,6 +1317,14 @@ SLEEP at Hampton Inn Detroit/Belleville, 46280 N I-94 Service Dr, Bellville, MI 
           "Fifty minutes between a contracted car return and a departure is not enough at O'Hare. You have to drop the car at the Multi-Modal Facility, ride the ATS back to Terminal 3, check bags and clear security — and before any of that you have to deliver Mom and her luggage to Palatine, which is 35 minutes the wrong way. Mom's document plans Ann Arbor and Kalamazoo on this day and has no idea a flight exists.",
         fix:
           "Leave Belleville by 8:00am Eastern — 7:30 if you want Ann Arbor — and have the car back at O'Hare by 1:00pm rather than the 2:30 on the paperwork. Kalamazoo is cut. Full timetable is on the Car & flights page.",
+      },
+      {
+        level: "warn",
+        title: "I-94 through Marshall is torn up, on the day you can least afford it",
+        body:
+          "The Marshall Modernization project has I-94, I-69 and the interchange between them under reconstruction in Calhoun County through 2026 — barrier walls moved, pavement markings shifted, lanes running in temporary configurations. It sits between Ann Arbor and Kalamazoo, right in the middle of today's drive. On any other day it's an annoyance; today there's a 3:20pm flight behind it.",
+        fix:
+          "This is the reason to leave Belleville at 8:00am rather than 9:00, independent of everything else. Check MiDrive before you pull out of the hotel, and if the work zone is backed up, I-96 to I-69 south is the long way round but it exists. Do not plan to make up time on this stretch — you can't.",
       },
       {
         level: "warn",

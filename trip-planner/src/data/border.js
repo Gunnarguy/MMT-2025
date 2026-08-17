@@ -42,11 +42,11 @@ export const BORDER = {
       name: "Blue Water Bridge",
       from: "Port Huron, Michigan",
       to: "Point Edward / Sarnia, Ontario",
-      toll: "≈ USD $4 car",
+      toll: "USD $5 car",
       wait: "10–30 min, Saturday evening",
       tags: ["Cashless since 2025", "Card in hand"],
       notes:
-        "Michigan collects the westbound-to-Canada toll on the US side, roughly $4 for a two-axle car; coming back the Canadian authority charges CA$7 by card. Fully cashless since April 1, 2025 — no attendant will take your cash in either direction. Have a credit card in the driver's door pocket on approach, and make sure your bank won't decline it as suspicious foreign activity. Check live waits from the car about 45 minutes out on the CBSA and CBP wait-time pages, and build a 45-minute buffer into the Sarnia arrival rather than the 15 minutes the itinerary implies. Don't book a hard-time dinner in Sarnia before 7:30pm.",
+        "Michigan collects the toll into Canada on the US side — $5 flat for a car, confirmed against MDOT's own rate table; coming back, the Federal Bridge Corporation charges CA$7 by card. Fully cashless since April 1, 2025 — no attendant will take your cash in either direction. Have a credit card in the driver's door pocket on approach, and make sure your bank won't decline it as suspicious foreign activity. Check live waits from the car about 45 minutes out on the CBSA and CBP wait-time pages, and build a 45-minute buffer into the Sarnia arrival rather than the 15 minutes the itinerary implies. Don't book a hard-time dinner in Sarnia before 7:30pm.",
       source: "Blue Water Bridge (Federal Bridge Corporation) — toll rates",
       sourceUrl: "https://bluewaterbridge.ca/toll-rates/",
     },
@@ -116,11 +116,11 @@ export const BORDER = {
 
   rental: [
     {
-      title: "Tell Budget at pickup — Monday 9/14, 7pm",
+      title: "Tell Budget at pickup — Monday 9/14, 9pm, at O'Hare",
       status: "Do this first",
       statusTone: "stop",
       body:
-        "This is five days before you cross, and it's the step people forget. At the counter, say the words “we are driving this into Ontario” and physically confirm the Canadian Non-Resident Insurance Card is in your hand before you leave the lot. Before 9/14, open the Palatine-area Budget location's page, expand Terms & Conditions and click “Travel Into Other Countries” to confirm that branch permits it — or call Budget's cross-border line at 800-218-7992.",
+        "This is five days before you cross, and it's the step people forget — now made worse by the flights, because pickup is a 9pm airport counter after six hours in the air rather than a quiet suburban branch at seven. Say the words “we are driving this into Ontario” before they start typing, and physically confirm the Canadian Non-Resident Insurance Card is in your hand before you leave the garage. Before the 14th, open the O'Hare Budget location's page, expand Terms & Conditions and click “Travel Into Other Countries” to confirm that branch permits it — or call Budget's cross-border line at 800-218-7992. Do that call in daylight, not at the desk.",
       source: "Budget — Travel Into Other Countries terms",
       sourceUrl: "https://www.budget.com/en/help/usa-faqs/cross-into-canada",
     },
