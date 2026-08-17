@@ -58,20 +58,16 @@ export const BUDGET = {
     // ── Transport ──────────────────────────────────────────────────────────
     {
       label: "Budget rental car, 8 days",
-      note: "Reserved through Costco Travel — Mazda CX-50 or similar, $10 off plus member savings. Pick-up Monday 9/14 9pm at O'Hare, back Monday 9/21 2:30pm. $35 under the figure Mom's document carried",
+      note: "Booked. Pick-up Monday 9/14, 7pm",
       category: "Transport",
-      total: 332.92,
+      total: 368,
       payer: "mom",
     },
     {
-      // `id` so budgetTotals can recompute this line once the car is known.
-      id: "fuel",
       label: "Fuel",
-      note: "≈1,430 miles at the CX-50's EPA-combined 26 mpg and a blended $4.10/gal. Its 15.9-gallon tank goes about 410 miles, so each of the two long days needs one stop",
+      note: "≈1,430 miles at ~28 mpg and a blended $4.10/gal. An SUV at 24 mpg pushes this to ~$245",
       category: "Transport",
-      // Always overwritten by budgetTotals(); kept in sync for anyone reading
-      // this file directly.
-      total: 225,
+      total: 210,
       estimate: true,
       payer: "mom",
     },
@@ -203,53 +199,11 @@ export const BUDGET = {
 };
 
 /**
- * Fuel is the one budget line that depends on a fact nobody has yet: which car
- * Budget actually hands over. The basis below reproduces the figures quoted in
- * the Fuel item's note — 28 mpg gives $209, 24 mpg gives $244 — so the estimate
- * stays honest whichever way the car goes.
- *
- * The mileage is higher than the 1,214 the route map draws, because a route
- * line doesn't include the winery run, the drive out to the stone beach, or
- * circling Frankenmuth for a parking space on Oktoberfest Saturday.
- */
-export const FUEL_BASIS = {
-  miles: 1430,
-  pricePerGallon: 4.1,
-  // The booked class is a Mazda CX-50 or similar: EPA 24 city / 30 highway /
-  // 26 combined. Overridden the moment a real car is entered on the Car page.
-  assumedMpg: 26,
-};
-
-export function fuelEstimate(mpg) {
-  const useMpg = Number(mpg) > 0 ? Number(mpg) : FUEL_BASIS.assumedMpg;
-  return Math.round((FUEL_BASIS.miles / useMpg) * FUEL_BASIS.pricePerGallon);
-}
-
-/**
  * The one place trip totals are computed. Both the Money page and the Overview
  * headline read from here, so the two can't drift apart.
- *
- * Pass `mpg` once the car is known and the Fuel line recomputes — it stops
- * being flagged as an estimate at that point, because the only guess left in it
- * is the pump price.
  */
-export function budgetTotals({ includeProvisional = false, mpg } = {}) {
-  const known = Number(mpg) > 0;
-  const items = BUDGET.items
-    .filter((i) => includeProvisional || !i.provisional)
-    .map((i) =>
-      // Always recompute, so the figure can never drift from FUEL_BASIS the way
-      // it did when the assumed mpg changed and the literal below didn't.
-      i.id === "fuel"
-        ? {
-            ...i,
-            total: fuelEstimate(mpg),
-            note: known
-              ? `≈${FUEL_BASIS.miles.toLocaleString()} miles at the car's ${mpg} mpg and a blended $${FUEL_BASIS.pricePerGallon.toFixed(2)}/gal`
-              : i.note,
-          }
-        : i,
-    );
+export function budgetTotals({ includeProvisional = false } = {}) {
+  const items = BUDGET.items.filter((i) => includeProvisional || !i.provisional);
   const total = items.reduce((n, i) => n + i.total, 0);
   const momOnly = items
     .filter((i) => i.payer === "mom")

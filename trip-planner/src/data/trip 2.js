@@ -50,63 +50,43 @@ export const DAYS = [
     id: "d0",
     index: 0,
     date: "2026-09-14",
-    title: "Fly in, collect the car",
-    route: "San Francisco → O'Hare → Palatine",
+    title: "Pick up the car",
+    route: "Palatine, Illinois",
     mapped: false,
     miles: 0,
     driveMinutes: 0,
     sleep: null,
     lede:
-      "Not the empty errand day Mom's document imagined. Gunnar and Mikaela are on AA 2358 out of San Francisco, wheels down at 8:21pm, and the car is collected at O'Hare at nine — so the trip really starts at ten at night, and Tuesday morning has to be gentler than originally planned.",
+      "Nothing happens today except one errand — and one sentence at the rental counter that the entire Canada leg depends on.",
     flags: [
       {
         level: "stop",
         title: "Say the words “we are driving this into Ontario”",
         body:
-          "Budget has to be told at pickup, five days before you actually cross. They'll hand over the Canadian Non-Resident Insurance Card, which is free. Without that conversation you may have an insurance gap at the Blue Water Bridge on the 19th, and there's no fixing it from the road.",
-        fix:
-          "This now happens at nine at night, at an airport counter, after six hours in the air — the worst possible moment to remember paperwork, and the only one you get. Say it before they start typing, and confirm the card is physically in your hand before you leave the garage. Print backup copies from the avis.ca link in Mom's document beforehand; it's live and it does cover Budget vehicles.",
+          "Budget has to be told at pickup, five days before you actually cross. They'll hand over the Canadian Non-Resident Insurance Card, which is free. Without that conversation you may have an insurance gap at the Blue Water Bridge on the 19th, and the counter will be closed by then.",
+        fix: "Confirm the yellow card is physically in your hand before you leave the lot. Print backup copies from the avis.ca link in Mom's document — it's live and it does cover Budget vehicles.",
       },
       {
         level: "warn",
-        title: "A 10pm arrival makes the old dawn start unrealistic",
+        title: "Load tonight, leave before dawn tomorrow",
         body:
-          "The plan was a 6:00am Central departure on Tuesday, with 5:30 as the stretch goal. Landing at 8:21pm, clearing bags and the ATS ride out to the rental facility, then driving 35 minutes to Palatine, puts you at Mom's front door around ten. A 5:30am start off the back of that is how the longest driving day of the trip goes wrong.",
-        fix:
-          "Book the 11:30am Meyer May tour rather than the 11:00, and leave Palatine at 6:45am Central. Seven hours of sleep instead of five, and Grand Rapids still works in full.",
+          "Tuesday is the longest day of the trip and it starts with the Borman Expressway through Hammond and Gary, which routinely adds 30–60 minutes if you hit it during the eastbound peak. A 6:00am Central departure is the target; 5:30am is better.",
       },
     ],
     stops: [
       {
-        id: "d0-flight",
-        kind: "admin",
-        name: "AA 2358 — San Francisco to Chicago",
-        where: "SFO 1:29 PM → ORD 8:21 PM",
-        status: "booked",
-        blurb:
-          "Gunnar in 18D on record QPJBXO, Mikaela in 19D on YBEEOU — same flight, separate bookings, which matters only if there's a schedule change, because it can hit one record and not the other.",
-        tips: [
-          "American lands domestic at Terminal 3; the rental facility is the far end of the ATS people-mover.",
-          "Set both records to alert on schedule changes, since they won't move together.",
-        ],
-      },
-      {
         id: "d0-rental",
         kind: "admin",
         name: "Budget rental pickup",
-        where: "9:00 PM · O'Hare, 10255 W Zemke Blvd",
-        address: "10255 W Zemke Blvd, Chicago, IL 60666",
-        coords: [41.9786, -87.8892],
+        where: "7:00 PM · Palatine area",
         status: "booked",
-        cost: "$332.92 total",
-        phone: "773-825-4600",
+        cost: "$368 total",
         blurb:
-          "Mazda CX-50 or similar, reserved through Costco Travel with $10 off and member savings already applied — $35 less than the figure Mom's document carried. Reserve Now, Pay Later, no cancellation fees. The counter runs 24 hours, so the 39 minutes between wheels-down and the booking time is not the problem it looks like.",
+          "Mom's covering the rental outright. Costco members get one additional driver fee waived at participating locations — worth confirming, because there are two 300-mile days on this trip and only one named driver so far.",
         tips: [
-          "Ask for the Canadian Non-Resident Insurance Card by name, before anything else.",
-          "Costco rentals normally include one additional driver free — get Mikaela named while you're standing there.",
-          "Photograph every panel and the fuel gauge in the garage. It's well lit at 9pm.",
-          "Write the car's plate and mpg onto the Car & flights page; the fuel budget reads it.",
+          "Ask for the Canadian Non-Resident Insurance Card by name.",
+          "Check the car's height if you're planning the Detroit–Windsor Tunnel — it has a restriction.",
+          "Photograph the car's existing damage before you leave the lot.",
         ],
         source: "Budget — cross-border travel policy",
         sourceUrl: "https://www.budget.com/en/customer-care/policies",
@@ -134,20 +114,20 @@ export const DAYS = [
         level: "stop",
         title: "The Grand Rapids stop does not fit as written",
         body:
-          "Meijer Gardens plus the Meyer May House plus a sit-down lunch plus a neighbourhood drive is a full day, not an afternoon — and after a 10pm Monday arrival you're leaving Palatine at 6:45 and reaching Grand Rapids just after 11:00am Eastern, with Ludington still to come. Something has to go.",
+          "Meijer Gardens plus the Meyer May House plus a sit-down lunch plus a neighbourhood drive is a full day, not an afternoon — and you're arriving around 11:00am Eastern and need to be in Ludington by evening. Something has to go.",
         fix:
-          "Two clean versions. THE FULL DAY: Meyer May tour at 11:30 → Heritage Hill walk from the same parking spot → fast lunch at Schnitz Deli (closes 3pm) → Meijer Gardens 2:00–4:45pm → leave 4:45, in Ludington ~6:30pm, ahead of the 7:57 sunset. THE SHORT DAY: skip Meijer Gardens entirely and be in Ludington by 4pm. The outdoor Chihuly runs to Nov 1 and the indoor gallery to Jan 2027, so it survives a future trip — the free Meyer May tour only happens Tuesday, Thursday and Sunday.",
+          "Two clean versions. THE FULL DAY: Meyer May tour at 11am → Heritage Hill walk from the same parking spot → fast lunch at Schnitz Deli (closes 3pm) → Meijer Gardens 2:00–4:45pm → leave 4:45, in Ludington ~6:30pm, ahead of the 7:57 sunset. THE SHORT DAY: skip Meijer Gardens entirely and be in Ludington by 4pm. The outdoor Chihuly runs to Nov 1 and the indoor gallery to Jan 2027, so it survives a future trip — the free Meyer May tour only happens Tuesday, Thursday and Sunday.",
       },
       {
-        level: "warn",
+        level: "stop",
         title: "Book the Meyer May House today",
         body:
           "Mom's document calls it “a drive-by.” It's a free 90-minute interior tour of a fully restored 1909 Frank Lloyd Wright Prairie house — and it runs only three days a week, one of which is your Tuesday. Several September 2026 slots already show zero tickets.",
         fix:
-          "Reserve at meyermayhouse.steelcase.com for Tuesday 9/15. Tuesday tours run 10:00am to 1:00pm and take 90 minutes, so 11:30 is the latest start that fits — and with the flight landing at 8:21pm on Monday, that extra half hour is the difference between a seven-hour night and a five-hour one. There is no noon slot, whatever an earlier draft of this page said. If Tuesday's gone, call the visitor centre at 616-246-4821 and ask about cancellations; they answer 10am–2pm on Tuesdays and Thursdays.",
+          "Reserve at meyermayhouse.steelcase.com for Tuesday 9/15. Target the 11:00am or 12:00pm slot so it absorbs drive-time slippage. If Tuesday's gone, call the visitor centre at 616-246-4821 and ask about cancellations.",
       },
       {
-        level: "ok",
+        level: "stop",
         title: "Both Ludington lighthouses are closed on a Tuesday",
         body:
           "Mom flagged “closed M-W” herself and then the itinerary still arrives on a Tuesday. Fall 2026 hours for the North Breakwater Light (Sept 10–27) and Big Sable Point (Sept 10–Oct 25) are Thursday–Sunday only. Neither tower can be climbed.",
@@ -155,7 +135,7 @@ export const DAYS = [
           "Accept it — you can't open a lighthouse on a Tuesday. Walk the north breakwall anyway: it's free, public, open with the tower closed, and it is the view. Drop Big Sable from this trip entirely; it's closed, it's 3.6 miles round trip rather than the 1.5 in the document, and it needs a state park pass.",
       },
       {
-        level: "ok",
+        level: "warn",
         title: "White Pine Village stops selling tickets at 3:30pm",
         body:
           "Mom guessed it might be seasonally closed. It isn't — it's open Tuesdays through October 17. The problem is the clock: last admission 3:30pm, closes at 5, and they recommend two hours. It's also three miles south of the inn, so it's a drive.",
@@ -169,7 +149,7 @@ export const DAYS = [
         at: 0,
         minutes: 200,
         miles: 210,
-        note: "I-90 to I-94 around the bottom of the lake, then I-196. You lose an hour to Eastern time — leave 6:45am CT after a 10pm Monday arrival, in Grand Rapids just after 11:00am ET",
+        note: "I-90 to I-94 around the bottom of the lake, then I-196. You lose an hour to Eastern time — leave 6:00am CT, arrive ~11:00am ET",
       },
       {
         label: "Grand Rapids → Ludington",
@@ -189,7 +169,7 @@ export const DAYS = [
         coords: [42.9542, -85.6559],
         status: "free",
         cost: "Free",
-        hours: "Tue & Thu 10 AM–1 PM · Sun 1–4 PM — reserve ahead",
+        hours: "Tours Tue, Thu, Sun — reserve ahead",
         duration: "90 minutes",
         phone: "616-246-4821",
         url: "https://meyermayhouse.steelcase.com/",
@@ -246,8 +226,8 @@ export const DAYS = [
         address: "1000 E Beltline Ave NE, Grand Rapids, MI 49525",
         coords: [42.9878, -85.5906],
         status: "check",
-        cost: "$25 adult · $20 senior 65+ · $19 student, plus the gallery ticket",
-        hours: "Tuesdays 9 AM–9 PM — the only late night of the week",
+        cost: "≈$88–93 for three",
+        hours: "Tuesdays until 9 PM — the only late night of the week",
         duration: "2–3 hours",
         url: "https://www.meijergardens.org/",
         blurb:
@@ -255,7 +235,7 @@ export const DAYS = [
         tips: [
           "Buy general admission and the Radiant Forms timed slot online, 15–20 minutes after your planned arrival.",
           "Tuesday's 9pm close is genuine luck — no other day runs late.",
-          "Check whether Mom qualifies for the 65+ rate — it's $5 off.",
+          "Check whether Mom qualifies for the 65+ rate; it changes the total by about $15.",
         ],
         source: "Frederik Meijer Gardens & Sculpture Park",
         sourceUrl: "https://www.meijergardens.org/",
@@ -304,15 +284,13 @@ export const DAYS = [
         where: "217 S Lakeshore Dr, Ludington",
         address: "217 S Lakeshore Dr, Ludington, MI 49431",
         coords: [43.9518, -86.4586],
-        status: "confirmed",
-        hours: "Tue–Sat 10 AM–5 PM · last admission 4:30",
+        status: "check",
+        hours: "Sources conflict — call before you count on it",
         blurb:
-          "The conflict is settled. The operator is right and the secondary listing claiming 12–7 is wrong: Tuesday 10 to 5, last admission 4:30, April through November. That makes it the one indoor thing that genuinely works on a Tuesday — but only on the Short Day plan, where you reach Ludington by 4:00. Arrive at 6:30 and it's shut.",
+          "Worth one phone call, because the answer decides the evening. The operator's own site says Tuesday 10am–5pm with last tickets at 4:30, but a secondary listing claims 12pm–7pm. If it's 12–7, this becomes the one indoor thing that actually works on a Tuesday and the whole Ludington stop is salvaged.",
         tips: [
-          "A five-minute walk from Stearns Park, so it pairs with the breakwall rather than competing with it.",
+          "Ask the Mason County Historical Society specifically: “What time do you close on Tuesday, September 15, and when is last ticket sale?”",
         ],
-        source: "Port of Ludington Maritime Museum",
-        sourceUrl: "https://ludingtonmaritimemuseum.org/",
       },
     ],
     images: [
@@ -363,7 +341,7 @@ TRY:  White Pine Village, Port Museum, Check out dock`,
       "The shortest driving day and the best-value one — barely two and a half hours in the car, with the most spectacular stretch of Lake Michigan shoreline in the middle of it. The catch is that Mom budgeted two hours for a park that needs closer to four.",
     flags: [
       {
-        level: "ok",
+        level: "warn",
         title: "Two hours at Sleeping Bear isn't survivable",
         body:
           "The Pierce Stocking Scenic Drive alone takes about two hours with all twelve stops; the park's own FAQ puts it at a 1.5–2 hour minimum. Add the Dune Climb, Glen Haven and Loon Lake and the real number is over four. Mom's document contradicts itself here — the header says 2 hours, the subhead says “for less than 3 hour visit.”",
@@ -371,7 +349,7 @@ TRY:  White Pine Village, Port Museum, Check out dock`,
           "Budget 3.5 hours on the ground. It absorbs easily: Traverse City is only 36 minutes away, so arriving 9:30am and leaving 1:30pm still gets you checked in mid-afternoon. Cut Loon Lake, skip Pierce Stocking stops 4–8 and 12.",
       },
       {
-        level: "warn",
+        level: "stop",
         title: "Agree the Dune Climb turnaround before anyone starts walking",
         body:
           "The full Dunes Trail to Lake Michigan is 3.5 miles round trip, rated strenuous, 3–4 hours, over nine unshaded sand hills. The Park Service says outright that it “has worn out the most experienced hikers” and runs searches every summer for people who underestimated it. From the top of the first hill you see Little Glen Lake, not Lake Michigan — which is exactly what pulls people into one more dune.",
@@ -379,7 +357,7 @@ TRY:  White Pine Village, Port Museum, Check out dock`,
           "First hill only, then turn around. It's 15–25 minutes up and gravity handles the descent. Mom can stay at the picnic tables at the base with a full view of the climb. Two litres of water each even for the short version, and closed shoes — buried dune-grass shoots will stab bare feet.",
       },
       {
-        level: "ok",
+        level: "warn",
         title: "Glen Haven's museums closed for the season on Labor Day",
         body:
           "The Sleeping Bear Point Coast Guard Station Maritime Museum and all the Glen Haven interiors — general store, cannery, blacksmith — run Memorial Day to Labor Day only. You're nine days past. The 3pm breeches-buoy rescue re-enactment, which is the best thing there, is summer-only too.",
@@ -553,7 +531,7 @@ SLEEP HERE:  Brio Beach Inn, 1465 US 31 N, Traverse City, MI 49686  Ph 231/946.6
       "The messiest day in Mom's document, and the one that gets much better once you untangle it. She merged two separate places into one stop and listed five beaches, three of which are behind you. Straightened out, this is a genuinely lovely drive up the shore.",
     flags: [
       {
-        level: "warn",
+        level: "stop",
         title: "Torch Lake and Charlevoix are not the same stop",
         body:
           "Mom's earlier draft had them separate — Torch Lake with Alden and the clear-bottom kayaks, then Charlevoix with the lock, Castle Farms and the lighthouse. The current version merges them under “Charlevoix,” but they're 30–40 minutes apart in different directions. Doing both costs you Mackinaw City.",
@@ -561,7 +539,7 @@ SLEEP HERE:  Brio Beach Inn, 1465 US 31 N, Traverse City, MI 49686  Ph 231/946.6
           "Cut Torch Lake and Alden from Thursday. Drive Traverse City to Charlevoix straight up US-31. The corridor is already full without them: Charlevoix town, the Mushroom Houses and the pier light, then Petoskey for lunch and stones. If Mom really wants Torch Lake, the honest slot is a short detour on Wednesday between Sleeping Bear and Traverse City.",
       },
       {
-        level: "ok",
+        level: "stop",
         title: "Three of the five stone beaches are the wrong direction",
         body:
           "Bryant Park (Traverse City), Van's Beach (Leland) and Peterson Park (Northport) are all on the Leelanau Peninsula — west and south of where you start, which is backwards on a day heading north. Only Magnus Park and Cross Village are on the route.",
@@ -569,7 +547,7 @@ SLEEP HERE:  Brio Beach Inn, 1465 US 31 N, Traverse City, MI 49686  Ph 231/946.6
           "Magnus Park, 901 W Lake St, Petoskey. Free, city-run so no state park pass needed, a thousand feet of rocky Little Traverse Bay shoreline, and a five-minute drive from where you'll eat lunch. One stop, zero detour.",
       },
       {
-        level: "warn",
+        level: "stop",
         title: "The Tunnel of Trees is closed",
         body:
           "M-119 between Harbor Springs and Cross Village — one of the best fall drives in the country, and the road that would have connected Mom's Cross Village Beach to Mackinaw City — is closed in two segments with no announced reopening date. The map on this page routes you up US-31 and I-75 instead, because that's the road that exists.",
@@ -585,7 +563,7 @@ SLEEP HERE:  Brio Beach Inn, 1465 US 31 N, Traverse City, MI 49686  Ph 231/946.6
           "Drop them from Thursday. If Mom is set on it, call Clear Water Kayaks at 231-632-6583 and move it to Wednesday afternoon out of Traverse City, where the day has slack.",
       },
       {
-        level: "ok",
+        level: "warn",
         title: "Thursday evening in Mackinaw City can't include the fort",
         body:
           "Colonial Michilimackinac and the Old Mackinac Point Lighthouse both stop admitting in the late afternoon. Arriving around 4:15pm means you're not getting into either properly.",
@@ -657,15 +635,13 @@ SLEEP HERE:  Brio Beach Inn, 1465 US 31 N, Traverse City, MI 49686  Ph 231/946.6
         where: "5052 M-66, Charlevoix",
         address: "5052 M-66 N, Charlevoix, MI 49720",
         coords: [45.2938, -85.2416],
-        status: "confirmed",
-        cost: "$8 adult · $7 senior 65+ · $5 child",
-        hours: "September: 10 AM–5 PM",
+        status: "check",
+        cost: "≈$8–10 self-guided",
+        hours: "Closes 4 PM — official pages disagree",
         duration: "90 minutes minimum",
         phone: "231-237-0884",
         blurb:
-          "A 1918 stone dairy-barn complex turned garden and event venue, with a large model railroad. An earlier draft of this app said its official pages disagreed on closing time and told you to be through the gate by 2:30. They don't disagree — September is 10 to 5, so 3:30 is the real cutoff and the day has an hour more slack than assumed.",
-        source: "Visit Charlevoix",
-        sourceUrl: "https://www.visitcharlevoix.com/CastleFarms/",
+          "A 1918 stone dairy-barn complex turned garden and event venue, with a large model railroad. Its own two official pages give different closing times, so call. Be through the gate by 2:30 at the latest.",
       },
       {
         id: "d3-petoskey-lunch",
@@ -750,15 +726,15 @@ SLEEP HERE 2 nights: Lighthouse View Hotel, 699 N Huron Ave, Mackinaw City, MI 4
       "The centrepiece, and the only day with tickets already bought. An island with no cars, one 8.2-mile road around the edge of it, a fort on the bluff, and more fudge shops per capita than anywhere on earth.",
     flags: [
       {
-        level: "ok",
+        level: "stop",
         title: "The ferry phone number in Mom's document is the competitor",
         body:
           "800-638-9892 belongs to Arnold Transit / Mackinac Island Ferry Company — Shepler's direct rival. Calling it to ask about your Shepler's booking or the Shepler's shuttle will get you nowhere.",
         fix:
-          "Shepler's Mackinaw City is 231-436-5023. Easier still: ask the motel front desk to call the shuttle the night before and book a pickup around 6:20am — they do it routinely. Dock parking is $15, not $10, and can't be prepaid — but there's a free day lot at 311 S. Nicolet St with a tram, which is $15 back in your pocket.",
+          "Shepler's Mackinaw City is 231-436-5023. Easier still: ask the motel front desk to call the shuttle the night before and book a pickup around 6:20am — they do it routinely. Parking is $15, not $10, and can't be prepaid.",
       },
       {
-        level: "ok",
+        level: "warn",
         title: "Fort Mackinac's last admission is 4:00 PM, not evening",
         body:
           "Three hours earlier than the summer schedule most people remember. Putting the fort late in the day, as the shape of Mom's plan implies, means missing it.",
@@ -805,15 +781,14 @@ SLEEP HERE 2 nights: Lighthouse View Hotel, 699 N Huron Ave, Mackinaw City, MI 4
         address: "556 E Central Ave, Mackinaw City, MI 49701",
         coords: [45.7826, -84.7213],
         status: "purchased",
-        cost: "≈$108–123 for three, depending on where you park",
+        cost: "≈$123 for three, all in",
         phone: "231-436-5023",
-        url: "https://www.sheplersferry.com/mackinaw-city-schedule/",
+        url: "https://www.sheplersferry.com/",
         blurb:
-          "Tickets already bought. September 8 to October 4 the boats leave Mackinaw City at 7:00, 7:30, 8:00, 8:30, 9:00 and 9:30, then half-hourly — so Mom's 7:30 exists. Last return from the island is 7:00pm.",
+          "Tickets already bought. The real outlay is a little above Mom's figure once the $2-per-ticket booking fee and $15 parking are counted — about $123 rather than $117.",
         tips: [
           "Shepler's recommends 45 minutes before departure, not the 30 in the document.",
-          "Free day lot at 311 S. Nicolet St (across from I-75 Exit 338) with a tram to the dock — or $15 at the dock itself.",
-          "If you use the dock lot you pay on exit, by QR code on the gate ticket or at the office. Keep the ticket.",
+          "You pay for parking on exit, by QR code on the gate ticket or at the office. Keep the ticket.",
           "Arnold Transit is the alternative, docking at 801 S Huron Ave, about 1.1 miles from the motel.",
         ],
         source: "Shepler's Mackinac Island Ferry",
@@ -944,7 +919,7 @@ All Day--Mackinac Island—7:00 AM Park at the Ferry dock -OR call shuttle and i
           "Commit either way, now. IN: reserve an 11:15–11:45am chicken dinner, walk the covered bridge to Heritage Park when the gates open at noon, give the festival 2–2.5 hours, leave by 3:30pm. OUT: arrive 10:30am, do Bronner's and Main Street before the noon gates, early lunch, gone by 1:30pm.",
       },
       {
-        level: "ok",
+        level: "stop",
         title: "Cut the Midland / Saginaw / Flint / Howell stop",
         body:
           "This is what actually breaks the day, not the base route. And Howell isn't on the way in any sense — it's down near Brighton, a long way south of the line to Sarnia.",
@@ -1011,7 +986,7 @@ All Day--Mackinac Island—7:00 AM Park at the Ferry dock -OR call shuttle and i
           "A reconstructed 1715 French fur-trading village and British fort under the south end of the Mackinac Bridge, with an active archaeological dig that's been running since 1959. If you bought the combo ticket for Fort Mackinac on Friday, this is already covered.",
         tips: [
           "Open at 9:30, out by 11:15, on the road — you still reach Frankenmuth about 2:15.",
-          "Historic Mill Creek — rebranded Dousman's Mill — doesn't open at all in 2026; construction on the new visitor centre pushed it to May 2027. Don't buy a ticket from a reseller.",
+          "Historic Mill Creek is closed for the entire 2026 season. Don't buy a ticket for it from a reseller.",
         ],
       },
       {
@@ -1039,12 +1014,9 @@ All Day--Mackinac Island—7:00 AM Park at the Ferry dock -OR call shuttle and i
         address: "Heritage Park, Frankenmuth, MI 48734",
         coords: [43.3336, -83.7379],
         status: "confirmed",
-        cost: "$10 per person at the gate · 15 and under free",
         hours: "Sat 9/19: noon to midnight — the busiest day",
         blurb:
-          "One of the few Oktoberfests outside Bavaria sanctioned by the city of Munich. Gates at noon, and the crowd builds all afternoon, which is exactly why a 3:30 departure is not negotiable if you also want to be in Ontario at a civilised hour. Note the $30 gate cost for the three of you — Mom's document doesn't mention the festival at all, so it doesn't budget for it either.",
-        source: "Frankenmuth CVB",
-        sourceUrl: "https://www.frankenmuth.org/events/frankenmuth-oktoberfest1/",
+          "One of the few Oktoberfests outside Bavaria sanctioned by the city of Munich. Gates at noon, and the crowd builds all afternoon, which is exactly why a 3:30 departure is not negotiable if you also want to be in Ontario at a civilised hour.",
       },
       {
         id: "d5-bronners",
@@ -1118,7 +1090,7 @@ SLEEP HERE: Sheraton Four Points 1498 Venetian Boulevard Pt Edward, Ph 519.336.4
           "PLAN A — CANADA DAY: drop Stones 'N Bones, leave Sarnia 7:30am, Windsor riverfront 9:15–10:15, tunnel by 10:45, Belle Isle 11:00–1:00, late lunch downtown, The Belt at 2:30, one afternoon anchor, Belleville by 6. Henry Ford is cut. PLAN B — HENRY FORD DAY: cut Windsor, cross at the Blue Water Bridge around 8:00am, I-94 down the US side in 1h21m, Dearborn by 10:30, five real hours at the museum, The Belt and dinner after, Belleville by 7. Belle Isle is cut.",
       },
       {
-        level: "ok",
+        level: "warn",
         title: "Stones 'N Bones is what breaks the day",
         body:
           "It's a $7 CAD local rock-and-fossil museum that can't be entered before 11:00am, and its website looks like it hasn't been updated in years. Skipping it buys back about three and a half hours — enough to turn Sunday from impossible into comfortable.",
@@ -1126,7 +1098,7 @@ SLEEP HERE: Sheraton Four Points 1498 Venetian Boulevard Pt Edward, Ph 519.336.4
           "If Mom wants it, that's a real reason to keep it — but she should make the trade knowingly, because it costs Windsor or Detroit. Call (519) 336-2100 a few days out either way.",
       },
       {
-        level: "ok",
+        level: "warn",
         title: "Belle Isle needs a Recreation Passport the rental won't have",
         body:
           "Belle Isle is a Michigan state park. Vehicle entry requires the Recreation Passport, and on Illinois plates that's the non-resident day rate — about $12. Mom's document never mentions it.",
@@ -1134,7 +1106,7 @@ SLEEP HERE: Sheraton Four Points 1498 Venetian Boulevard Pt Edward, Ph 519.336.4
           "Budget $12 and have a card ready at the entrance booth. The aquarium itself is free, and the Conservatory next door and the Scott Fountain are worth the same trip.",
       },
       {
-        level: "ok",
+        level: "warn",
         title: "“Follow M1 to take the Tunnel” is wrong",
         body:
           "M-1 is Woodward Avenue, in Detroit — it's not how you get to the tunnel from the Ontario side, and following it could put you at the wrong crossing entirely.",
@@ -1278,35 +1250,27 @@ SLEEP at Hampton Inn Detroit/Belleville, 46280 N I-94 Service Dr, Bellville, MI 
     index: 7,
     date: "2026-09-21",
     title: "Home, and an hour back",
-    route: "Belleville → Ann Arbor → Palatine → O'Hare",
+    route: "Belleville → Ann Arbor → Kalamazoo → Palatine, IL",
     miles: 297,
     driveMinutes: 285,
     sleep: null,
     legFrom: "Belleville, MI",
     lede:
-      "This day changed completely when the flights were booked. It is no longer a leisurely drive home that happens to end in Palatine — it ends at an airport gate at 3:20pm, and everything before that is working backwards from it.",
+      "Nearly 300 miles, but you gain back the hour you lost on day one — leave at nine Eastern and you're home mid-afternoon Central. The only real hazard is Chicago, and it's avoidable if you time it right.",
     flags: [
       {
-        level: "stop",
-        title: "AA 1253 leaves at 3:20pm, and the car is due back at 2:30",
-        body:
-          "Fifty minutes between a contracted car return and a departure is not enough at O'Hare. You have to drop the car at the Multi-Modal Facility, ride the ATS back to Terminal 3, check bags and clear security — and before any of that you have to deliver Mom and her luggage to Palatine, which is 35 minutes the wrong way. Mom's document plans Ann Arbor and Kalamazoo on this day and has no idea a flight exists.",
-        fix:
-          "Leave Belleville by 8:00am Eastern — 7:30 if you want Ann Arbor — and have the car back at O'Hare by 1:00pm rather than the 2:30 on the paperwork. Kalamazoo is cut. Full timetable is on the Car & flights page.",
-      },
-      {
         level: "warn",
-        title: "Kalamazoo is the stop that doesn't survive",
+        title: "Time the Borman, or it will cost you an hour",
         body:
-          "Ann Arbor is 25 minutes off the line and can be done in 45 without hurting anything. Kalamazoo sits 99 miles further west, and by then you're spending time you need at the other end of the day.",
+          "The I-94/I-80/I-294 corridor through Gary and Hammond is the worst stretch of the whole trip and it's the last one. Hitting it during the Monday evening peak turns a pleasant drive home into a grim one.",
         fix:
-          "Take the break at a service plaza instead. If someone badly wants a real stop on the west half, New Buffalo is right off I-94 near the state line and costs ten minutes rather than an hour.",
+          "Leave Belleville by 9:00am Eastern. That puts you through NW Indiana early-to-mid afternoon Central, ahead of the worst of it. The Indiana Toll Road is the alternative if live traffic looks bad — worth the toll on a bad day.",
       },
       {
         level: "info",
         title: "You gain the hour back today",
         body:
-          "Michigan is Eastern, Illinois is Central. The hour you lost driving east on the 15th comes back driving west on the 21st — which is the only reason a 3:20pm flight is achievable at all.",
+          "Michigan is Eastern, Illinois is Central. The hour you lost driving east on the 15th comes back driving west on the 21st — so a nine-hour clock day is really eight.",
       },
     ],
     legs: [
@@ -1340,14 +1304,13 @@ SLEEP at Hampton Inn Detroit/Belleville, 46280 N I-94 Service Dr, Bellville, MI 
         where: "Kerrytown and the Diag",
         address: "Ann Arbor, MI 48104",
         coords: [42.2808, -83.743],
-        status: "check",
-        duration: "45 minutes, and only if you left on time",
+        status: "confirmed",
+        duration: "60–90 minutes",
         blurb:
-          "Mom's document has this as “Ann Arbor?” — worth removing the question mark, but it's now conditional. It's 25 minutes off the line, so a 45-minute stop is affordable if you cleared Belleville by 7:30am Eastern. If you're running later than that, drive past it: the flight doesn't move.",
+          "Mom's document has this as “Ann Arbor?” — worth removing the question mark. Zingerman's Delicatessen in Kerrytown is the obvious anchor, and the walk from there through the University of Michigan campus to the Diag and Nickels Arcade fills a tight ninety minutes nicely.",
         tips: [
-          "Zingerman's Delicatessen in Kerrytown is the anchor — check the opening hour before counting on breakfast there.",
+          "Zingerman's queue moves faster than it looks. Sandwiches are enormous and expensive and worth it once.",
           "Free two-hour parking in the Kerrytown structure.",
-          "This is a coffee-and-a-sandwich stop now, not the campus walk it used to be.",
         ],
       },
       {
@@ -1357,13 +1320,12 @@ SLEEP at Hampton Inn Detroit/Belleville, 46280 N I-94 Service Dr, Bellville, MI 
         where: "Halfway, roughly",
         address: "Kalamazoo, MI 49007",
         coords: [42.2917, -85.5872],
-        status: "closed",
-        duration: "Cut — the flight took it",
+        status: "check",
+        duration: "45 minutes",
         blurb:
-          "Mom's framing — “to take a driving break?” — was exactly right, and Kalamazoo sits right on I-94 at about the halfway point. It doesn't survive a 3:20pm departure from O'Hare. Keeping it means arriving at the rental return with no margin on the last day of the trip, which is the wrong place to spend your luck.",
+          "Mom's framing — “to take a driving break?” — is exactly right, and Kalamazoo is well positioned for it, sitting right on I-94 at about the halfway point. Bell's Eccentric Café is the destination if it's open on a Monday; the Kalamazoo Mall pedestrian street is the low-commitment version.",
         tips: [
-          "Break at a service plaza instead — you need fuel on this leg anyway.",
-          "If it helps: nothing here is seasonal or closing. Kalamazoo will still be there.",
+          "If you'd rather break on the lakeshore, St. Joseph is 45 minutes further west and right off I-94 with a beach and a bluff-top downtown.",
         ],
       },
       {
@@ -1386,13 +1348,58 @@ Stop 3—Home (3 hrs)`,
   },
 ];
 
-/*
- * `HEADLINES` used to live here — a duplicate list of the scariest findings,
- * rendered as a wall of red on the Overview. It has been replaced by
- * `src/data/looseEnds.js`, which carries the same findings plus every other
- * open question, sorted by what each one asks of you rather than by how
- * alarming it is. One list, one source of truth.
+/**
+ * The handful of findings that change what you actually do. Surfaced on the
+ * Overview so nobody has to read eight day pages to hit them.
  */
+export const HEADLINES = [
+  {
+    level: "stop",
+    title: "Sunday 9/20 does not fit — Windsor or the Henry Ford, not both",
+    body:
+      "The Henry Ford Museum is in Dearborn and needs four hours minimum. Belle Isle Aquarium closes at 4. Stones 'N Bones can't be entered before 11am. Stacked behind a Sarnia departure, the day collapses.",
+    fix: "Pick a shape before you leave Ontario. Both versions are laid out on the Sunday page.",
+  },
+  {
+    level: "stop",
+    title: "Frankenmuth Oktoberfest lands on your Saturday",
+    body:
+      "September 17–20, and the 19th is the busiest day of it. Not in Mom's document at all. Either commit to it or route around it, but don't arrive mid-afternoon without a reservation.",
+    fix: "Book an 11:15–11:45 chicken dinner at the Bavarian Inn, or be gone by 1:30pm.",
+  },
+  {
+    level: "stop",
+    title: "Book the Meyer May House now — it's free and it sells out",
+    body:
+      "Mom's document calls it a drive-by. It's a free 90-minute interior tour of one of the most complete Frank Lloyd Wright restorations anywhere, and it runs only three days a week — one of which is your Tuesday. September slots are already going.",
+    fix: "Reserve at meyermayhouse.steelcase.com for 9/15, ideally the 11am or noon slot.",
+  },
+  {
+    level: "stop",
+    title: "Settle what “gummies” means before you leave",
+    body:
+      "Mom's packing note lists “sleep aids (earplugs, gummies…)”. If those are THC, carrying them across either border is a federal offence in both directions regardless of what's legal on either side. It's the one thing on this trip that ends badly rather than just inconveniently.",
+    fix: "Melatonin only, in the labelled bottle. Search the bags and the car before the bridge.",
+  },
+  {
+    level: "warn",
+    title: "Both Ludington lighthouses are closed on Tuesday",
+    body:
+      "Mom flagged “closed M-W” herself, and the itinerary still arrives on a Tuesday. Fall hours for both are Thursday–Sunday. Walk the breakwall anyway — it's free and open, and the 7:57 sunset is the actual reason to be there.",
+  },
+  {
+    level: "warn",
+    title: "The Tunnel of Trees is closed",
+    body:
+      "M-119 between Harbor Springs and Cross Village is shut in two segments with no announced reopening. It would have been the best drive on the trip. Re-check in early September; the map here already routes you up US-31 and I-75.",
+  },
+  {
+    level: "info",
+    title: "The ferry number in the document is the competitor's",
+    body:
+      "800-638-9892 is Arnold Transit, not Shepler's. Shepler's Mackinaw City is 231-436-5023. Parking is $15, not $10.",
+  },
+];
 
 /** Overview cards — the emotional pitch, linked to the day pages. */
 export const HIGHLIGHTS = [

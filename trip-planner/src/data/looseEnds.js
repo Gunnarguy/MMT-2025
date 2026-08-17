@@ -348,24 +348,37 @@ export const LOOSE_ENDS = [
     problem:
       "Gunnar is driving most of this trip — but not all of it, and there are two 300-mile days in it. Whoever takes the other stretches has to be on the agreement. An unlisted driver is a breach of the rental contract, and it can take the damage waiver down with it — including the Canadian coverage you collect at the same counter.",
     answer:
-      "Ring Budget and add anyone who might drive, even for an hour. Costco members get the additional-driver fee waived at participating locations — worth asking about by name. It's a five-minute call and it's the cheapest insurance on the trip.",
-    ask: "“I'd like to add an additional driver to this reservation. I'm a Costco member — is the additional driver fee waived at this location?”",
+      "The booking came through Costco Travel, and Costco rentals normally include one additional driver at no charge — so this is likely free, but it still has to be done, and a name that isn't on the agreement isn't covered no matter who paid. Easiest is to add Mikaela at the counter on the 14th while you're already doing the Canada paperwork. If you'd rather not gamble on a 9pm desk being helpful, ring ahead.",
+    ask: "“I'd like to add an additional driver to this reservation. It was booked through Costco Travel — is the additional driver included?”",
     phone: "800-218-7992",
-    deadline: "Before pickup on the 14th",
+    deadline: "At the counter on the 14th, or ring before",
+  },
+  {
+    id: "monday-home",
+    kind: "decide",
+    dayId: "d7",
+    when: "Mon 9/21",
+    title: "Monday now ends at a gate, not a driveway",
+    problem:
+      "AA 1253 leaves O'Hare at 3:20pm and the car is contracted back at 2:30pm. Fifty minutes is not enough to return a car at the Multi-Modal Facility, ride the ATS to Terminal 3, drop bags and clear security — and Mom and her luggage have to reach Palatine first, which is 35 minutes the wrong way. Her document has Ann Arbor and Kalamazoo on this day and no idea a flight exists.",
+    answer:
+      "Leave Belleville by 8:00am Eastern and have the car back by 1:00pm, not 2:30. Kalamazoo is cut. Ann Arbor survives only if you cleared Belleville by 7:30 — it's 25 minutes off the line and worth 45 minutes, but the flight doesn't move for a sandwich. Decide which of those two you're doing before Sunday night, because it changes what time you set the alarm.",
+    deadline: "Settle it Sunday night in Belleville",
+    url: "#/ride",
+    urlLabel: "Full timetable",
   },
   {
     id: "flights",
-    kind: "book",
+    kind: "done",
     dayId: null,
-    when: "Bookending the trip",
-    title: "Flights in and out for Gunnar and Mikaela",
+    when: "Booked 16 Aug",
+    title: "Flights are booked — both of you, both directions",
     problem:
-      "Not booked. Two fixed times bracket them and both are tighter than they look: the rental counter at 7:00pm on Monday the 14th, and a mid-afternoon Central arrival back in Palatine on Monday the 21st after 297 miles.",
+      "This used to be an open item with two anchors to satisfy. It's closed, and the answers landed differently from the guesses: the car moved to O'Hare, and the trip home got a hard deadline.",
     answer:
-      "Fly into O'Hare — it's about 35 minutes from Palatine, against 55–70 from Midway. Land by mid-afternoon on the 14th so the 7:00pm counter appointment isn't a sprint, since that's where the Canadian insurance card gets handed over. Going home, the 22nd is the honest answer; a same-day departure on the 21st only works late evening and only if Monday runs clean. The Car & flights page holds the details and checks whatever you enter against both anchors.",
-    deadline: "Fares to Chicago won't improve from here",
+      "Out: AA 2358, SFO 1:29pm → ORD 8:21pm on Monday 9/14. Gunnar 18D on QPJBXO, Mikaela 19D on YBEEOU. Back: AA 1253, ORD 3:20pm → SFO 6:09pm on Monday 9/21, seats 22E and 22D. Same flights, separate records — set both to alert on schedule changes, because a change can hit one and not the other.",
     url: "#/ride",
-    urlLabel: "Open Car & flights",
+    urlLabel: "Car & flights",
   },
   {
     id: "schnitz",
@@ -429,13 +442,13 @@ export const LOOSE_ENDS = [
     id: "canada-card",
     kind: "do",
     dayId: "d0",
-    when: "Mon 9/14, 7:00 PM",
+    when: "Mon 9/14, 9:00 PM",
     title: "Say the words “we are driving this into Ontario”",
     problem:
-      "Budget has to be told at pickup — five days before you actually cross. Without that conversation you may have an insurance gap at the Blue Water Bridge on the 19th, and the rental counter will be long closed by then.",
+      "Budget has to be told at pickup — five days before you actually cross. Without that conversation you may have an insurance gap at the Blue Water Bridge on the 19th, and there's no fixing it from the road. Worse now that the flights are booked: this happens at nine at night, at an airport counter, after six hours in the air.",
     answer:
-      "Ask for the Canadian Non-Resident Insurance Card by name and confirm it's physically in your hand before you leave the lot. It's free. Print backup copies from the avis.ca link in Mom's document — it's live and it does cover Budget vehicles. Two more minutes while you're standing there: photograph every panel and the fuel gauge, and write the car's year, make, model, plate and combined mpg onto the Car & flights page. The mpg isn't trivia — the fuel line on the Money page is computed from it.",
-    deadline: "At the counter, Monday 7pm",
+      "Say it before they start typing. Ask for the Canadian Non-Resident Insurance Card by name and confirm it's physically in your hand before you leave the garage. It's free. Print backup copies from the avis.ca link in Mom's document beforehand — it's live and it does cover Budget vehicles. Two more minutes while you're standing there: photograph every panel and the fuel gauge, and write the car's plate and combined mpg onto the Car & flights page. The mpg isn't trivia — the fuel line on the Money page is computed from it.",
+    deadline: "At the O'Hare counter, Monday 9pm",
     url: "#/ride",
     urlLabel: "Car & flights",
   },
@@ -468,11 +481,11 @@ export const LOOSE_ENDS = [
     kind: "do",
     dayId: "d1",
     when: "Tue 9/15, dawn",
-    title: "Load Monday night, leave before dawn Tuesday",
+    title: "Leave Palatine at 6:45 Tuesday — not 5:30",
     problem:
-      "Tuesday is the longest driving day and it opens with the Borman Expressway through Hammond and Gary, which routinely adds 30–60 minutes at the eastbound peak. You also lose an hour to Eastern time before lunch.",
+      "Tuesday is the longest driving day, it opens with the Borman Expressway through Hammond and Gary, and you lose an hour to Eastern time before lunch. The old advice was a 6:00am start with 5:30 as the stretch goal — written before the flights were booked. AA 2358 doesn't land until 8:21pm Monday, and Palatine is a 9pm rental counter plus 35 minutes away.",
     answer:
-      "Target a 6:00am Central departure; 5:30 is better. Load the car Monday night after the rental pickup so the morning is just coffee and go.",
+      "6:45am Central, against an 11:30 Meyer May tour. That's roughly seven hours in bed instead of five, still clears the Borman ahead of the worst of the eastbound peak, and puts you in Grand Rapids just after 11:00 Eastern. Pack the car when you get in Monday night, so the morning is coffee and go.",
     deadline: "Monday night",
   },
 

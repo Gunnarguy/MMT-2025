@@ -6,7 +6,9 @@ import {
   ANCHORS,
   DEFAULT_FLIGHTS,
   FLIGHT_FIELDS,
+  PASSENGER_FIELDS,
   RENTAL,
+  RUN_HOME,
   VEHICLE_FIELDS,
   VEHICLE_NOTES,
 } from "../data/logistics";
@@ -15,15 +17,16 @@ import { money, telHref } from "../lib/format";
 import { Flag } from "./bits";
 
 /**
- * The two unsettled things: which car, and which flights.
+ * The car and the flights.
  *
- * This is the only page in the app that takes input. Everything else is
- * researched, committed and read-only — but the car isn't assigned yet and the
- * flights aren't booked, so there is nothing to commit. What gets typed here
- * lives in localStorage on this device, which the page says plainly rather than
- * letting anyone assume Mom can see it.
+ * Both are booked now, so most of this page is fact. It still takes input,
+ * because the specific car isn't assigned until the counter and seats can move
+ * — and that input lives in localStorage on one device, which the page says
+ * out loud rather than letting anyone assume Mom can see it.
  *
- * The mpg field is the one with teeth: the Money page's fuel line reads it.
+ * Two things here have teeth. The mpg field feeds the Money page's fuel line.
+ * And the return flight drives `check()`, which is the only place in the app
+ * that knows Monday the 21st now has a hard 3:20pm deadline on it.
  */
 
 /** "17:30" → minutes since midnight, or null. */
@@ -42,73 +45,47 @@ function pretty(hhmm) {
 }
 
 /**
- * Check a flight against the itinerary's hard anchors — the 7pm Monday rental
- * counter on the way in, and a mid-afternoon Monday arrival home on the way
- * out. Returns null when there's nothing to say, which is most of the time.
+ * Check a flight against the car. Both crossings happen at O'Hare, so the
+ * question on the way in is "can you reach the counter" and on the way out
+ * it's "can you get the car back and still make the gate".
  */
 function check(flight) {
   const { slot, date } = flight;
 
   if (slot === "arrive") {
-    if (!date) return null;
-    if (date > ANCHORS.arrive.date) {
-      return {
-        tone: "stop",
-        text: `This lands after the ${ANCHORS.arrive.when} rental pickup. The car — and the Canadian insurance card that comes with it — is collected that evening.`,
-      };
-    }
-    if (date < ANCHORS.arrive.date) {
-      return {
-        tone: "ok",
-        text: "In a day early, so the Monday pickup has all the slack it needs.",
-      };
-    }
+    if (!date || date !== ANCHORS.arrive.date) return null;
     const arr = minutes(flight.arrTime);
+    const desk = minutes(ANCHORS.arrive.time);
     if (arr == null) return null;
-    if (arr > minutes(ANCHORS.arrive.comfortableBy)) {
-      const gap = minutes(ANCHORS.arrive.time) - arr;
+    if (arr > desk) {
       return {
-        tone: gap < 60 ? "stop" : "warn",
-        text: `Landing at ${pretty(flight.arrTime)} leaves ${gap} minutes before the 7:00pm counter appointment — and the drive from the airport to Palatine is 35 of them, before bags. ${
-          gap < 60
-            ? "That doesn't work. Take an earlier flight, or ring Budget and move the pickup."
-            : "Tight but doable. Ring Budget if you slip."
-        }`,
+        tone: "warn",
+        text: `Lands ${pretty(
+          flight.arrTime,
+        )}, after the ${pretty(ANCHORS.arrive.time)} counter slot. Not fatal — Budget's O'Hare desk runs 24 hours and this booking has no cancellation fee — but it pushes Palatine past 11pm and Tuesday starts early.`,
       };
     }
+    const gap = desk - arr;
     return {
       tone: "ok",
-      text: `Lands ${pretty(flight.arrTime)}, which clears the 7:00pm pickup comfortably.`,
+      text: `Lands ${pretty(
+        flight.arrTime,
+      )}, ${gap} minutes before the ${pretty(ANCHORS.arrive.time)} counter slot — and bags plus the ATS ride out to the rental facility is about 45. The desk is open 24 hours, so arriving a little after nine is fine. Reckon on Mom's front door around 10:00pm.`,
     };
   }
 
   if (slot === "depart") {
-    if (!date) return null;
-    if (date < ANCHORS.depart.date) {
-      return {
-        tone: "stop",
-        text: "This leaves before the road trip ends. The last day is Monday the 21st.",
-      };
-    }
-    if (date > ANCHORS.depart.date) {
-      return {
-        tone: "ok",
-        text: "Flying out the day after you get back — the relaxed version, and the one worth paying for.",
-      };
-    }
+    if (!date || date !== ANCHORS.depart.date) return null;
     const dep = minutes(flight.depTime);
-    if (dep == null) return null;
-    if (dep < minutes(ANCHORS.depart.notBefore)) {
-      return {
-        tone: "stop",
-        text: `A ${pretty(
-          flight.depTime,
-        )} departure on the 21st doesn't work. You reach Palatine around 3pm Central after 297 miles, and that's before bag drop and security.`,
-      };
-    }
+    const due = minutes(ANCHORS.depart.carDue);
+    if (dep == null || due == null) return null;
     return {
       tone: "warn",
-      text: `Same-day departures work only if Monday runs clean. Leave Belleville by 9:00am Eastern, and treat Ann Arbor and Kalamazoo as droppable.`,
+      text: `This is the tightest thing on the trip. A ${pretty(
+        flight.depTime,
+      )} departure against a ${pretty(ANCHORS.depart.carDue)} car return leaves ${
+        dep - due
+      } minutes — and you need the car returned, the ATS ridden to Terminal 3, bags dropped and security cleared inside it. Get the car back by 1:00pm instead and Monday is calm, which means leaving Belleville by 8:00am Eastern and cutting Kalamazoo.`,
     };
   }
 
@@ -133,7 +110,9 @@ function Field({ def, value, onChange }) {
 
 export default function RideView() {
   const [vehicle, setVehicle] = useLocalState("mi26.vehicle", {});
-  const [flights, setFlights] = useLocalState("mi26.flights", DEFAULT_FLIGHTS);
+  // Key is versioned: the defaults changed from blanks to the real bookings,
+  // and a stored v1 would otherwise shadow them forever.
+  const [flights, setFlights] = useLocalState("mi26.flights.v2", DEFAULT_FLIGHTS);
   const [copied, setCopied] = useState(false);
 
   const setV = useCallback(
@@ -147,29 +126,20 @@ export default function RideView() {
     [setFlights],
   );
 
-  const addLeg = useCallback(
-    (slot) =>
-      setFlights((p) => {
-        // Derive the id from the highest suffix in use, not the array length —
-        // add two legs, remove the first, add another, and a length-based id
-        // would collide with the leg that's still there.
-        let n = 2;
-        while (p.some((f) => f.id === `${slot}-${n}`)) n += 1;
-        return [
-          ...p,
-          {
-            id: `${slot}-${n}`,
-            slot,
-            label: slot === "arrive" ? "Out — connecting leg" : "Back — connecting leg",
-            who: "Gunnar + Mikaela",
-          },
-        ];
-      }),
-    [setFlights],
-  );
-
-  const removeLeg = useCallback(
-    (id) => setFlights((p) => p.filter((f) => f.id !== id)),
+  const setP = useCallback(
+    (id, index, key, value) =>
+      setFlights((p) =>
+        p.map((f) =>
+          f.id === id
+            ? {
+                ...f,
+                passengers: (f.passengers || []).map((pax, i) =>
+                  i === index ? { ...pax, [key]: value } : pax,
+                ),
+              }
+            : f,
+        ),
+      ),
     [setFlights],
   );
 
@@ -183,24 +153,26 @@ export default function RideView() {
     const lines = [
       "MICHIGAN '26 — CAR & FLIGHTS",
       "",
-      `Car: ${named || "not yet assigned"}${vehicle.colour ? `, ${vehicle.colour}` : ""}`,
+      `Car: ${RENTAL.vehicle}${named ? ` (booked as ${named})` : ""}`,
+      `Pick up: ${RENTAL.pickup}`,
+      `Drop off: ${RENTAL.dropoff}`,
+      `${RENTAL.location} · ${RENTAL.desk}`,
       vehicle.plate ? `Plate: ${vehicle.plate}` : null,
-      vehicle.confirmation ? `Budget confirmation: ${vehicle.confirmation}` : null,
       vehicle.drivers ? `Named drivers: ${vehicle.drivers}` : null,
-      `Pickup: ${RENTAL.pickup}`,
       "",
       ...flights.flatMap((f) => [
-        `${f.label} — ${f.who || ""}`.trim(),
+        f.label,
         [
           [f.airline, f.number].filter(Boolean).join(" "),
           f.date,
-          f.from && f.to ? `${f.from} → ${f.to}` : f.from || f.to,
-          f.depTime && f.arrTime ? `${pretty(f.depTime)}–${pretty(f.arrTime)}` : "",
-          f.confirmation ? `conf ${f.confirmation}` : "",
-          f.seats ? `seats ${f.seats}` : "",
+          f.from && f.to ? `${f.from} → ${f.to}` : "",
+          f.depTime && f.arrTime ? `${pretty(f.depTime)} – ${pretty(f.arrTime)}` : "",
         ]
           .filter(Boolean)
-          .join(" · ") || "  (not booked yet)",
+          .join(" · "),
+        ...(f.passengers || []).map(
+          (p) => `  ${p.name} · ${p.record || "—"} · seat ${p.seat || "—"}`,
+        ),
         "",
       ]),
     ].filter((l) => l !== null);
@@ -214,30 +186,31 @@ export default function RideView() {
     );
   }, [named, vehicle, flights]);
 
-  const group = (slot) => flights.filter((f) => f.slot === slot);
-
   return (
     <>
       <div className="page-head">
-        <div className="eyebrow">The two unsettled things</div>
+        <div className="eyebrow">Booked 16 August</div>
         <h1>
           The car and <em>the flights</em>
         </h1>
         <p>
-          Everything else in this guide is researched and fixed. These two
-          aren&rsquo;t knowable yet &mdash; so this page holds the blanks, the deadlines
-          they have to clear, and the reason each one matters. Fill them in as they
-          land.
+          Both are now real, and both are different from what the rest of the
+          itinerary assumed. The car is collected at O&rsquo;Hare at nine on Monday
+          night rather than in Palatine at seven &mdash; and the flight home leaves
+          before Mom&rsquo;s Monday plan finishes.
         </p>
       </div>
 
       <section className="section">
-        <Flag level="info" title="This page is stored on your device only">
-          Everything you type here goes into this browser&rsquo;s local storage. It
-          does not sync, and it will not appear on Mom&rsquo;s phone or on any other
-          device you open this site with. Use <b>Copy as text</b> below to send the
-          details on &mdash; or once they&rsquo;re final, hand them over and they can be
-          baked into the site properly.
+        <Flag
+          level="stop"
+          title="Monday 9/21 is now the tightest day of the trip"
+          fix="Leave Belleville by 8:00am Eastern, cut Kalamazoo, and have the car back at O'Hare by 1:00pm rather than the 2:30 on the paperwork."
+        >
+          AA 1253 leaves at 3:20pm and the car is contracted back at 2:30pm. Fifty
+          minutes is not enough at O&rsquo;Hare to return a car, ride the ATS to
+          Terminal 3, drop bags and clear security. Mom&rsquo;s document has Ann Arbor
+          and Kalamazoo on this day and no idea that a flight exists.
         </Flag>
       </section>
 
@@ -245,15 +218,10 @@ export default function RideView() {
       <section className="section">
         <h2>The car</h2>
         <p className="section-lede">
-          Booked and paid, {money(RENTAL.cost)} for eight days &mdash; but Budget
-          hasn&rsquo;t said what you&rsquo;re actually getting. {RENTAL.costNote}
+          {RENTAL.vehicle} &mdash; {RENTAL.costExact} all in. {RENTAL.costNote}
         </p>
 
         <div className="ride-known">
-          <div>
-            <b>Company</b>
-            {RENTAL.company}
-          </div>
           <div>
             <b>Pick up</b>
             {RENTAL.pickup}
@@ -263,14 +231,19 @@ export default function RideView() {
             {RENTAL.dropoff}
           </div>
           <div>
-            <b>Reservations</b>
-            <a href={telHref(RENTAL.phone)}>{RENTAL.phone}</a>
+            <b>Where</b>
+            {RENTAL.location}
+          </div>
+          <div>
+            <b>Counter</b>
+            <a href={telHref(RENTAL.desk)}>{RENTAL.desk}</a>
+            <small className="muted">{RENTAL.deskNote}</small>
           </div>
         </div>
 
         <div className="ride-card">
           <div className="ride-card-head">
-            <h3>{named || "Make, model and year — to be assigned"}</h3>
+            <h3>{named || `${RENTAL.vehicle} — actual car assigned at the counter`}</h3>
             {vehicle.colour && <span className="ride-colour">{vehicle.colour}</span>}
           </div>
 
@@ -290,28 +263,27 @@ export default function RideView() {
             {mpg ? (
               <>
                 At the {mpg} mpg you entered, across {FUEL_BASIS.miles.toLocaleString()}{" "}
-                miles at ${FUEL_BASIS.pricePerGallon.toFixed(2)} a gallon. That&rsquo;s{" "}
+                miles at ${FUEL_BASIS.pricePerGallon.toFixed(2)} a gallon &mdash;{" "}
                 {delta === 0 ? (
-                  "exactly the placeholder this trip was budgeted at"
+                  "exactly what the CX-50's EPA figure predicted"
                 ) : (
                   <>
                     <b>
                       {delta > 0 ? "+" : "−"}
                       {money(Math.abs(delta))}
                     </b>{" "}
-                    against the {FUEL_BASIS.assumedMpg} mpg placeholder
+                    against the CX-50&rsquo;s {FUEL_BASIS.assumedMpg} mpg
                   </>
                 )}
-                . The Money page is already using this number.
+                . The Money page is using this number.
               </>
             ) : (
               <>
-                A placeholder, assuming {FUEL_BASIS.assumedMpg} mpg across{" "}
+                Using the CX-50&rsquo;s EPA-combined {FUEL_BASIS.assumedMpg} mpg across{" "}
                 {FUEL_BASIS.miles.toLocaleString()} miles at $
-                {FUEL_BASIS.pricePerGallon.toFixed(2)} a gallon. Enter the car&rsquo;s
-                combined mpg above and both this and the Money page recalculate. A
-                mid-size SUV at 24 mpg costs about {money(fuelEstimate(24) - baseline)}{" "}
-                more than the placeholder.
+                {FUEL_BASIS.pricePerGallon.toFixed(2)} a gallon. If they hand you
+                something else at the counter, put its mpg above and both this and the
+                Money page follow.
               </>
             )}
           </p>
@@ -330,19 +302,19 @@ export default function RideView() {
       <section className="section">
         <h2>The flights</h2>
         <p className="section-lede">
-          You and Mikaela fly into Chicago and the driving starts from Palatine. Two
-          fixed times bracket the booking, and they&rsquo;re both tighter than they
-          look.
+          Both of you on the same two American flights, booked on separate records.
+          Everything happens at O&rsquo;Hare, which removes a whole category of problem
+          &mdash; you never have to cross town between an airport and a rental counter.
         </p>
 
         <div className="ride-anchors">
           <div className="ride-anchor">
-            <span className="eyebrow">Land before</span>
+            <span className="eyebrow">{ANCHORS.arrive.label}</span>
             <b>{ANCHORS.arrive.when}</b>
             <p>{ANCHORS.arrive.why}</p>
           </div>
           <div className="ride-anchor">
-            <span className="eyebrow">Don&rsquo;t leave before</span>
+            <span className="eyebrow">{ANCHORS.depart.label}</span>
             <b>{ANCHORS.depart.when}</b>
             <p>{ANCHORS.depart.why}</p>
           </div>
@@ -361,61 +333,68 @@ export default function RideView() {
           ))}
         </div>
 
-        {["arrive", "depart"].map((slot) => (
-          <div key={slot} className="ride-slot">
-            {group(slot).map((f) => {
-              const verdict = check(f);
-              return (
-                <div className="ride-card" key={f.id}>
-                  <div className="ride-card-head">
-                    <h3>{f.label}</h3>
-                    <input
-                      className="ride-who"
-                      value={f.who || ""}
-                      placeholder="Who's on it"
-                      onChange={(e) => setF(f.id, "who", e.target.value)}
+        {flights.map((f) => {
+          const verdict = check(f);
+          return (
+            <div className="ride-card" key={f.id}>
+              <div className="ride-card-head">
+                <h3>{f.label}</h3>
+              </div>
+
+              <div className="fld-grid">
+                {FLIGHT_FIELDS.map((def) => (
+                  <Field
+                    key={def.key}
+                    def={def}
+                    value={f[def.key]}
+                    onChange={(k, v) => setF(f.id, k, v)}
+                  />
+                ))}
+              </div>
+
+              {(f.passengers || []).map((pax, i) => (
+                <div className={`ride-pax${i === 0 ? " is-first" : ""}`} key={pax.name || i}>
+                  {PASSENGER_FIELDS.map((def) => (
+                    <Field
+                      key={def.key}
+                      def={def}
+                      value={pax[def.key]}
+                      onChange={(k, v) => setP(f.id, i, k, v)}
                     />
-                    {!DEFAULT_FLIGHTS.some((d) => d.id === f.id) && (
-                      <button
-                        type="button"
-                        className="ride-remove"
-                        onClick={() => removeLeg(f.id)}
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="fld-grid">
-                    {FLIGHT_FIELDS.map((def) => (
-                      <Field
-                        key={def.key}
-                        def={def}
-                        value={f[def.key]}
-                        onChange={(k, v) => setF(f.id, k, v)}
-                      />
-                    ))}
-                  </div>
-
-                  {verdict && (
-                    <div className={`ride-verdict ride-verdict--${verdict.tone}`}>
-                      {verdict.text}
-                    </div>
-                  )}
+                  ))}
                 </div>
-              );
-            })}
+              ))}
 
-            <button type="button" className="ride-add" onClick={() => addLeg(slot)}>
-              + Add a connecting leg {slot === "arrive" ? "on the way in" : "on the way home"}
-            </button>
-          </div>
-        ))}
+              {verdict && (
+                <div className={`ride-verdict ride-verdict--${verdict.tone}`}>
+                  {verdict.text}
+                </div>
+              )}
+            </div>
+          );
+        })}
 
         <button type="button" className="le-disclose" onClick={copy}>
           {copied ? "Copied to the clipboard" : "Copy the car and flights as text"}
           <span aria-hidden="true">{copied ? "✓" : "⧉"}</span>
         </button>
+      </section>
+
+      {/* ── Monday, backwards from the gate ─────────────────────────────── */}
+      <section className="section">
+        <h2>Monday, backwards from the gate</h2>
+        <p className="section-lede">
+          The schedule the return flight actually imposes. It is not the one on the
+          day page, and Ann Arbor is the only stop that survives it.
+        </p>
+        <ol className="ride-run">
+          {RUN_HOME.map((r) => (
+            <li key={r.at}>
+              <b>{r.at}</b>
+              <span>{r.what}</span>
+            </li>
+          ))}
+        </ol>
       </section>
     </>
   );

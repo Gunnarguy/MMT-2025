@@ -342,3 +342,90 @@
   border-color: var(--brand-2);
   color: var(--brand-2);
 }
+
+/* Per-passenger rows on a flight card --------------------------------------- */
+
+.ride-pax {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+  padding-top: var(--s-3);
+  border-top: 1px dotted var(--line);
+}
+
+.ride-pax .fld-label {
+  /* The labels repeat per passenger; show them once, on the first row. */
+  display: none;
+}
+
+/* `:first-of-type` would match the card header, not the first passenger row,
+ * so the component tags the first one explicitly. */
+.ride-pax.is-first .fld-label {
+  display: block;
+}
+
+@media (max-width: 560px) {
+  .ride-pax {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ride-pax .fld:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .ride-pax .fld-label {
+    display: block;
+  }
+}
+
+/* Monday, backwards from the gate ------------------------------------------- */
+
+.ride-run {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 2px solid var(--line-2);
+}
+
+.ride-run li {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, auto) 1fr;
+  gap: var(--s-3);
+  padding: var(--s-3) 0 var(--s-3) var(--s-4);
+  position: relative;
+}
+
+.ride-run li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: calc(var(--s-3) + 0.45rem);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.ride-run li:last-child::before {
+  background: var(--stop);
+}
+
+.ride-run b {
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+}
+
+.ride-run span {
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  color: var(--ink-3);
+}
+
+@media (max-width: 560px) {
+  .ride-run li {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}

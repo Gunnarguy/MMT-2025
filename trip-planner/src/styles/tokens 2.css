@@ -1,0 +1,196 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Design tokens — "Great Lakes field guide"
+   Warm paper ground, deep lake teal, sunset copper. Dark mode is a real theme,
+   not an inversion: it reads like the dashboard glow on a night drive.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ── Type ─────────────────────────────────────────────────────────────── */
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Fluid type scale. Clamps so a phone and a 27" monitor both look deliberate. */
+  --t-xs: clamp(0.69rem, 0.66rem + 0.14vw, 0.75rem);
+  --t-sm: clamp(0.8rem, 0.77rem + 0.16vw, 0.875rem);
+  --t-base: clamp(0.94rem, 0.9rem + 0.2vw, 1rem);
+  --t-lg: clamp(1.06rem, 1rem + 0.3vw, 1.19rem);
+  --t-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --t-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --t-3xl: clamp(1.95rem, 1.5rem + 2.2vw, 3rem);
+  --t-4xl: clamp(2.5rem, 1.7rem + 4vw, 4.5rem);
+
+  /* ── Space ────────────────────────────────────────────────────────────── */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+
+  --gutter: clamp(1rem, 3.5vw, 2.5rem);
+  --measure: 68ch;
+  --shell: 1180px;
+
+  /* ── Route palette ────────────────────────────────────────────────────── */
+  /* One hue per travel day, walking the route south→north→south. Used for the
+     map, the day rail, and the day chips so a color always means one day. */
+  --day-0: #6b7a86; /* 9/14 — staging day, muted */
+  --day-1: #1f7a8c; /* 9/15 — Grand Rapids / Ludington */
+  --day-2: #2e9e8f; /* 9/16 — Sleeping Bear / Traverse City */
+  --day-3: #56a24a; /* 9/17 — Charlevoix / Tunnel of Trees */
+  --day-4: #c08a1e; /* 9/18 — Mackinac Island */
+  --day-5: #c2622d; /* 9/19 — Frankenmuth / Sarnia */
+  --day-6: #b5322e; /* 9/20 — Windsor / Detroit */
+  --day-7: #8a4f8f; /* 9/21 — the drive home */
+
+  /* ── Semantic status ──────────────────────────────────────────────────── */
+  --ok: #2f7d54;
+  --ok-bg: #e6f3ec;
+  --warn: #a8690a;
+  --warn-bg: #fbf0dc;
+  --stop: #b03024;
+  --stop-bg: #fbe9e7;
+  --info: #1f6b8c;
+  --info-bg: #e4f0f6;
+  --locked: #5b4b8a;
+  --locked-bg: #ece8f7;
+}
+
+/* ── Light theme (default) ──────────────────────────────────────────────── */
+:root,
+:root[data-theme="light"] {
+  --bg: #f7f3ec;
+  --bg-sunk: #efe9df;
+  --surface: #fffdfa;
+  --surface-2: #f6f1e8;
+  --surface-3: #ece5d8;
+
+  --ink: #16242c;
+  --ink-2: #3a4c56;
+  --ink-3: #67787f;
+  --ink-4: #93a1a6;
+
+  --line: #ddd3c4;
+  --line-2: #c9bda9;
+
+  --brand: #0d4f60;
+  --brand-2: #12697f;
+  --brand-ink: #ffffff;
+  --accent: #c2622d;
+  --accent-soft: #f6e3d6;
+
+  --shadow-sm: 0 1px 2px rgb(22 36 44 / 0.06), 0 1px 3px rgb(22 36 44 / 0.05);
+  --shadow: 0 2px 4px rgb(22 36 44 / 0.05), 0 8px 20px -6px rgb(22 36 44 / 0.13);
+  --shadow-lg: 0 4px 8px rgb(22 36 44 / 0.06), 0 22px 48px -12px rgb(22 36 44 / 0.22);
+
+  --map-filter: none;
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1c23;
+    --bg-sunk: #091419;
+    --surface: #142831;
+    --surface-2: #1a323d;
+    --surface-3: #224050;
+
+    --ink: #e8f0f2;
+    --ink-2: #b3c6cd;
+    --ink-3: #859aa3;
+    --ink-4: #5f757f;
+
+    --line: #24404d;
+    --line-2: #33586a;
+
+    --brand: #58b6cc;
+    --brand-2: #7fcedf;
+    --brand-ink: #06222b;
+    --accent: #e8935c;
+    --accent-soft: #33241b;
+
+    --ok: #62c68d;
+    --ok-bg: #113526;
+    --warn: #e0aa4c;
+    --warn-bg: #37290f;
+    --stop: #f0796b;
+    --stop-bg: #3a1613;
+    --info: #6ab8d8;
+    --info-bg: #102c38;
+    --locked: #a99ae0;
+    --locked-bg: #221d3a;
+
+    --day-0: #8496a3;
+    --day-1: #4bb3c9;
+    --day-2: #43c4b1;
+    --day-3: #7cc96e;
+    --day-4: #e2b447;
+    --day-5: #ee9160;
+    --day-6: #ef7268;
+    --day-7: #bd8ac2;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 10px 26px -8px rgb(0 0 0 / 0.55);
+    --shadow-lg: 0 6px 14px rgb(0 0 0 / 0.4), 0 28px 60px -14px rgb(0 0 0 / 0.7);
+
+    --map-filter: saturate(0.72) brightness(0.74) contrast(1.08) hue-rotate(-6deg);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0d1c23;
+  --bg-sunk: #091419;
+  --surface: #142831;
+  --surface-2: #1a323d;
+  --surface-3: #224050;
+
+  --ink: #e8f0f2;
+  --ink-2: #b3c6cd;
+  --ink-3: #859aa3;
+  --ink-4: #5f757f;
+
+  --line: #24404d;
+  --line-2: #33586a;
+
+  --brand: #58b6cc;
+  --brand-2: #7fcedf;
+  --brand-ink: #06222b;
+  --accent: #e8935c;
+  --accent-soft: #33241b;
+
+  --ok: #62c68d;
+  --ok-bg: #113526;
+  --warn: #e0aa4c;
+  --warn-bg: #37290f;
+  --stop: #f0796b;
+  --stop-bg: #3a1613;
+  --info: #6ab8d8;
+  --info-bg: #102c38;
+  --locked: #a99ae0;
+  --locked-bg: #221d3a;
+
+  --day-0: #8496a3;
+  --day-1: #4bb3c9;
+  --day-2: #43c4b1;
+  --day-3: #7cc96e;
+  --day-4: #e2b447;
+  --day-5: #ee9160;
+  --day-6: #ef7268;
+  --day-7: #bd8ac2;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 10px 26px -8px rgb(0 0 0 / 0.55);
+  --shadow-lg: 0 6px 14px rgb(0 0 0 / 0.4), 0 28px 60px -14px rgb(0 0 0 / 0.7);
+
+  --map-filter: saturate(0.72) brightness(0.74) contrast(1.08) hue-rotate(-6deg);
+}
