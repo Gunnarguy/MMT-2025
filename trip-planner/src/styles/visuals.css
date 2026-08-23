@@ -52,20 +52,26 @@
   font-weight: 600;
 }
 
+/* ── 10x Web Level Daylight Ribbon ─────────────────────────────────── */
+.ribbon-track-wrapper {
+  position: relative;
+  margin-top: var(--s-1);
+  margin-bottom: var(--s-2);
+}
+
 .ribbon-track {
   position: relative;
-  height: 20px;
+  height: 32px;
   background: var(--bg-sun-track, #e2e8f0);
   border-radius: 999px;
   overflow: hidden;
   display: flex;
-  margin-bottom: var(--s-2);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] .ribbon-track {
   background: #1e293b;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .ribbon-block {
@@ -73,95 +79,185 @@
   position: absolute;
   top: 0;
   border: none;
-  padding: 0;
-  border-right: 1.5px solid rgba(255, 255, 255, 0.35);
+  padding: 0 4px;
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s ease,
+              filter 0.2s ease,
+              box-shadow 0.2s ease;
+  user-select: none;
+}
+
+.ribbon-block-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.ribbon-block-icon {
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.ribbon-block-short {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10.5px;
+  letter-spacing: -0.01em;
+}
+
+/* Category Gradients */
+.ribbon-block--drive {
+  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.ribbon-block--anchor {
+  background: linear-gradient(180deg, #14b8a6 0%, #0f766e 100%);
+}
+
+.ribbon-block--food {
+  background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+}
+
+.ribbon-block--flight {
+  background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+.ribbon-block--sunset {
+  background: linear-gradient(180deg, #f97316 0%, #c2410c 100%);
+}
+
+.ribbon-block--stay {
+  background: linear-gradient(180deg, #64748b 0%, #334155 100%);
 }
 
 .ribbon-block:hover,
 .ribbon-block.is-active {
-  filter: brightness(1.2);
-  z-index: 5;
-  box-shadow: 0 0 0 2px #ffffff, 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  transform: scaleY(1.12);
+  filter: brightness(1.15);
+  box-shadow: 0 0 0 2px #ffffff, 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.ribbon-block--drive {
-  background: #2563eb;
+.ribbon-block.is-dimmed {
+  opacity: 0.55;
 }
 
-.ribbon-block--anchor {
-  background: #0d9488;
-}
-
-.ribbon-block--food {
-  background: #d97706;
-}
-
-.ribbon-block--flight {
-  background: #7c3aed;
-}
-
-.ribbon-block--sunset {
-  background: #ea580c;
-}
-
-.ribbon-block--stay {
-  background: #475569;
-}
-
-/* Active Hover Toast */
-.ribbon-active-card {
-  margin-top: var(--s-2);
-  margin-bottom: var(--s-3);
+/* Floating Glassmorphic Inspection Popover — Zero Layout Shift */
+.ribbon-glass-popover {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  transform: translate(-50%, 6px) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.22s;
+  z-index: 50;
+  width: max-content;
+  max-width: 290px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.15));
+  border-radius: 10px;
   padding: 8px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
-  animation: fadeInToast 0.15s ease-out;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
 }
 
-.ribbon-active-head {
+[data-theme="dark"] .ribbon-glass-popover {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+.ribbon-glass-popover.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.ribbon-popover-header {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
-  flex-wrap: wrap;
+  gap: 6px;
   font-size: var(--t-xs);
-}
-
-.ribbon-active-icon {
-  font-size: 14px;
-}
-
-.ribbon-active-title {
+  font-weight: 700;
   color: var(--fg);
 }
 
-.ribbon-active-duration {
-  font-size: 11px;
-  color: var(--ink-3);
+.ribbon-popover-icon {
+  font-size: 14px;
 }
 
-.ribbon-active-time {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 11px;
+.ribbon-popover-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ribbon-popover-badge {
+  font-size: 10px;
+  background: var(--bg-subtle, rgba(0, 0, 0, 0.06));
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--ink-3);
   font-weight: 600;
-  color: var(--ink-3);
 }
 
-.ribbon-active-detail {
-  font-size: var(--t-xs);
+.ribbon-popover-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+.ribbon-popover-time {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--brand, #2563eb);
+}
+
+.ribbon-popover-detail {
   color: var(--ink-2);
-  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.ribbon-popover-arrow {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border-right: 1px solid var(--border, rgba(0, 0, 0, 0.15));
+  border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.15));
 }
 
 /* 100% Unclipped Chronological Milestones Grid */
 .ribbon-milestones-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: var(--s-2);
+  gap: 8px;
   margin-top: var(--s-3);
   margin-bottom: var(--s-3);
 }
@@ -169,21 +265,23 @@
 .ribbon-milestone-card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-left: 3px solid var(--line-2);
+  border-left: 3.5px solid var(--line-2);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
+  padding: 9px 11px;
   display: grid;
   gap: 3px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  outline: none;
+  transition: border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ribbon-milestone-card:hover,
 .ribbon-milestone-card.is-active {
   border-color: var(--brand);
   background: var(--bg-subtle, rgba(0, 0, 0, 0.03));
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .ribbon-milestone-card--drive {
