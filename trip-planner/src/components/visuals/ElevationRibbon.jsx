@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ELEVATION_PROFILE } from "../../data/mapOverlays";
 
-export default function ElevationRibbon({ onHoverPoint, activeDayId = null }) {
+export default function ElevationRibbon({ onHoverPoint, activeDayId = null, onClose }) {
   const [hoverIdx, setHoverIdx] = useState(null);
 
   const filtered = useMemo(() => {
@@ -32,13 +32,26 @@ export default function ElevationRibbon({ onHoverPoint, activeDayId = null }) {
       <div className="elevation-ribbon-head">
         <div className="elevation-title">
           <span>📈 Topographic Elevation Profile</span>
-          <small className="muted">575 ft (Lake Michigan shore) → 1,348 ft (I-75 Gaylord Moraine)</small>
+          <small className="muted">575 ft (Lake Shore) → 1,348 ft (Gaylord Moraine)</small>
         </div>
-        {activePoint && (
-          <div className="elevation-live-badge">
-            <b>{activePoint.label}</b> · {activePoint.elev} ft ASL · Mile {activePoint.mile}
-          </div>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {activePoint && (
+            <div className="elevation-live-badge">
+              <b>{activePoint.label}</b> · {activePoint.elev} ft ASL · Mile {activePoint.mile}
+            </div>
+          )}
+          {onClose && (
+            <button
+              type="button"
+              className="map-overlay-close-btn"
+              onClick={onClose}
+              title="Close Elevation Profile"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="elevation-svg-wrap">

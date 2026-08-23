@@ -853,6 +853,121 @@
   border-color: rgba(245, 158, 11, 0.4);
 }
 
+/* Map Floating Overlays & Drawer */
+.map-floating-drawer {
+  position: absolute;
+  bottom: 56px;
+  left: 14px;
+  right: 14px;
+  max-width: 860px;
+  margin: 0 auto;
+  z-index: 700;
+  pointer-events: auto;
+  animation: slideUpElevation 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpElevation {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.map-floating-drawer .elevation-ribbon-card,
+.map-floating-drawer .sun-tracker-card {
+  margin-top: 0;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme="dark"] .map-floating-drawer .elevation-ribbon-card,
+[data-theme="dark"] .map-floating-drawer .sun-tracker-card {
+  background: rgba(15, 23, 42, 0.94);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+}
+
+.map-overlay-close-btn {
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.map-overlay-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="dark"] .map-overlay-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Elevation Hover Marker On Map */
+.elevation-hover-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.elev-pulse-circle {
+  width: 14px;
+  height: 14px;
+  background: #f59e0b;
+  border: 2.5px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.45), 0 3px 8px rgba(0, 0, 0, 0.4);
+  animation: pulseElev 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseElev {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+}
+
+.elev-tooltip-pill {
+  margin-top: 4px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
 /* 6. Route Playback Floating Console */
 .playback-console-bar {
   position: absolute;

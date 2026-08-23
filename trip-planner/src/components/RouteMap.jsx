@@ -156,6 +156,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   const [showElevation, setShowElevation] = useState(false);
   const [showSunTracker, setShowSunTracker] = useState(false);
   const [simHour, setSimHour] = useState(19.25); // 7:15 PM Golden hour default
+  const [hoverElevationPoint, setHoverElevationPoint] = useState(null);
 
   // Layer filters
   const [layerFilter, setLayerFilter] = useState({
@@ -381,7 +382,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   const solarData = useMemo(() => calculateSunPosition(simHour), [simHour]);
 
   return (
-    <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
+    <>
+      <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
       {/* Floating HUD & Map Controls Overlay */}
       <div className="map-hud-bar">
         {hudStats && (
@@ -779,6 +781,19 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             </CircleMarker>
           </>
         )}
+
+        {/* Hover Elevation Milestone Marker */}
+        {hoverElevationPoint && hoverElevationPoint.coords && (
+          <Marker
+            position={hoverElevationPoint.coords}
+            icon={L.divIcon({
+              className: "elevation-hover-marker",
+              html: `<div class="elev-pulse-circle"></div><div class="elev-tooltip-pill">📈 <b>${hoverElevationPoint.label}</b> · ${hoverElevationPoint.elev} ft ASL</div>`,
+              iconSize: [160, 44],
+              iconAnchor: [80, 22],
+            })}
+          />
+        )}
       </MapContainer>
 
       {/* Floating Playback Console */}
@@ -825,6 +840,29 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           {Math.round(playProgress)}% ({Math.round((playProgress / 100) * 1430)} mi)
         </span>
       </div>
+
+      {/* Floating Interactive Drawer for Elevation & Sun Tracker Over Map */}
+      {!compact && (showElevation || showSunTracker) && (
+        <div className="map-floating-drawer">
+          {showElevation && (
+            <ElevationRibbon
+              activeDayId={visible.size === 1 ? [...visible][0] : null}
+              onHoverPoint={setHoverElevationPoint}
+              onClose={() => {
+                setShowElevation(false);
+                setHoverElevationPoint(null);
+              }}
+            />
+          )}
+          {showSunTracker && (
+            <SunTracker
+              hour={simHour}
+              onHourChange={setSimHour}
+              onClose={() => setShowSunTracker(false)}
+            />
+          )}
+        </div>
+      )}
 
       {/* Layer Filter Pills */}
       {!compact && (
@@ -927,48 +965,39 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           </button>
         </div>
       )}
-
-      {/* Synchronized Sun & Golden Hour Simulator */}
-      {showSunTracker && !compact && (
-        <SunTracker hour={simHour} onHourChange={setSimHour} />
-      )}
-
-      {/* Synchronized Topographic Elevation Ribbon */}
-      {showElevation && !compact && (
-        <ElevationRibbon activeDayId={visible.size === 1 ? [...visible][0] : null} />
-      )}
-
-      {/* When a day is isolated on the map, show that day's featured infographics below the map */}
-      {!compact && visible.size === 1 && (
-        <div style={{ marginTop: "var(--s-4)" }}>
-          <DaylightRibbon dayId={[...visible][0]} />
-          {visible.has("d2") && (
-            <>
-              <DuneCrossSection />
-              <FuelPlanner dayId="d2" />
-            </>
-          )}
-          {visible.has("d4") && <MackinacTrack />}
-          {visible.has("d5") && (
-            <>
-              <BlueWaterBridgeSteps />
-              <FuelPlanner dayId="d5" />
-            </>
-          )}
-          {visible.has("d6") && (
-            <>
-              <DetroitTunnelSteps />
-              <SundayComparator />
-            </>
-          )}
-          {visible.has("d7") && (
-            <>
-              <FlightRunway />
-              <FuelPlanner dayId="d7" />
-            </>
-          )}
-        </div>
-      )}
     </div>
+
+    {/* When a day is isolated on the map, show that day's featured infographics below the map */}
+    {!compact && visible.size === 1 && (
+      <div style={{ marginTop: "var(--s-5)" }}>
+        <DaylightRibbon dayId={[...visible][0]} />
+        {visible.has("d2") && (
+          <>
+            <DuneCrossSection />
+            <FuelPlanner dayId="d2" />
+          </>
+        )}
+        {visible.has("d4") && <MackinacTrack />}
+        {visible.has("d5") && (
+          <>
+            <BlueWaterBridgeSteps />
+            <FuelPlanner dayId="d5" />
+          </>
+        )}
+        {visible.has("d6") && (
+          <>
+            <DetroitTunnelSteps />
+            <SundayComparator />
+          </>
+        )}
+        {visible.has("d7") && (
+          <>
+            <FlightRunway />
+            <FuelPlanner dayId="d7" />
+          </>
+        )}
+      </div>
+    )}
+  </>
   );
 }

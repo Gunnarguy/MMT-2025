@@ -10,7 +10,7 @@ function formatTime(decimalHour) {
   return `${displayH}:${displayM} ${ampm} EDT`;
 }
 
-export default function SunTracker({ hour, onHourChange }) {
+export default function SunTracker({ hour, onHourChange, onClose }) {
   const solar = useMemo(() => calculateSunPosition(hour), [hour]);
 
   return (
@@ -22,9 +22,22 @@ export default function SunTracker({ hour, onHourChange }) {
             <b>{formatTime(hour)}</b>
           </span>
         </div>
-        <div className="sun-status-badge">
-          {solar.isGoldenHour ? "✨ " : "☀️ "}
-          <b>{solar.label}</b> · Altitude: {solar.altitudeDeg}° · Azimuth: {solar.azimuthDeg}°
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div className="sun-status-badge">
+            {solar.isGoldenHour ? "✨ " : "☀️ "}
+            <b>{solar.label}</b> · Altitude: {solar.altitudeDeg}° · Azimuth: {solar.azimuthDeg}°
+          </div>
+          {onClose && (
+            <button
+              type="button"
+              className="map-overlay-close-btn"
+              onClick={onClose}
+              title="Close Sun Tracker"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
