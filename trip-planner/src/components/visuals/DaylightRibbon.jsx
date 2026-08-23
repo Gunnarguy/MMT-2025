@@ -227,7 +227,7 @@ export default function DaylightRibbon({ dayId }) {
             const l = leftPct(b.start);
             const w = widthPct(b.start, b.end);
             const isSelected = activeIdx === i;
-            const hasEnoughWidth = w >= 12;
+            const hasEnoughWidth = w >= 9;
 
             return (
               <button
