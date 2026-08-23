@@ -41,11 +41,9 @@ export default function MoneyView() {
     <>
       <div className="page-head">
         <div className="eyebrow">What it costs</div>
-        <h1>The money</h1>
+        <h1>Trip Budget &amp; Expenses</h1>
         <p>
-          Mom&rsquo;s document listed what she had already paid and left the rest as
-          &ldquo;???&rdquo;. This fills in the ???. Fixed costs are real, quoted
-          numbers; the variable ones are estimates and labelled as such.
+          Complete breakdown of confirmed lodging, transport, activities, and food estimates for all three travelers.
         </p>
       </div>
 

@@ -59,7 +59,7 @@ export function Stat({ value, unit, label, note }) {
 }
 
 /** Verbatim text lifted out of Mom's document. Never paraphrase inside this. */
-export function MomSaid({ children, label = "From Mom's document" }) {
+export function MomSaid({ children, label = "Mom's Itinerary Notes" }) {
   return (
     <div className="momsaid">
       <span className="momsaid-label">{label}</span>

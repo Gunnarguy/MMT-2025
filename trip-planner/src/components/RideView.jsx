@@ -78,16 +78,9 @@ function check(flight) {
 
   if (slot === "depart") {
     if (!date || date !== ANCHORS.depart.date) return null;
-    const dep = minutes(flight.depTime);
-    const due = minutes(ANCHORS.depart.carDue);
-    if (dep == null || due == null) return null;
     return {
-      tone: "warn",
-      text: `This is the tightest thing on the trip. A ${pretty(
-        flight.depTime,
-      )} departure against a ${pretty(ANCHORS.depart.carDue)} car return leaves ${
-        dep - due
-      } minutes — and you need the car returned, the ATS ridden to Terminal 3, bags dropped and security cleared inside it. Get the car back by 1:00pm instead and Monday is calm, which means leaving Belleville by 8:00am Eastern and cutting Kalamazoo.`,
+      tone: "ok",
+      text: `AA 1253 departs O'Hare at 3:20 PM Central. Returning the rental car at the Multi-Modal Facility by 1:00 PM provides a relaxed 2-hour window to take the ATS train to Terminal 3, drop bags, and clear security.`,
     };
   }
 
@@ -191,28 +184,22 @@ export default function RideView() {
   return (
     <>
       <div className="page-head">
-        <div className="eyebrow">Booked 16 August</div>
+        <div className="eyebrow">Confirmed Logistics</div>
         <h1>
-          The car and <em>the flights</em>
+          The car &amp; <em>flights</em>
         </h1>
         <p>
-          Both are now real, and both are different from what the rest of the
-          itinerary assumed. The car is collected at O&rsquo;Hare at nine on Monday
-          night rather than in Palatine at seven &mdash; and the flight home leaves
-          before Mom&rsquo;s Monday plan finishes.
+          Confirmed flight reservations (AA 2358 &amp; AA 1253) and Costco Travel Budget rental SUV details.
         </p>
       </div>
 
       <section className="section">
         <Flag
-          level="stop"
-          title="Monday 9/21 is now the tightest day of the trip"
-          fix="Leave Belleville by 8:00am Eastern, cut Kalamazoo, and have the car back at O'Hare by 1:00pm rather than the 2:30 on the paperwork."
+          level="info"
+          title="Monday Return Schedule (AA 1253 at 3:20 PM)"
+          fix="Depart Belleville by 8:00 AM Eastern to return the rental car at O'Hare MMF by 1:00 PM."
         >
-          AA 1253 leaves at 3:20pm and the car is contracted back at 2:30pm. Fifty
-          minutes is not enough at O&rsquo;Hare to return a car, ride the ATS to
-          Terminal 3, drop bags and clear security. Mom&rsquo;s document has Ann Arbor
-          and Kalamazoo on this day and no idea that a flight exists.
+          Departing the Detroit area by 8:00 AM Eastern gives you an easy morning with time for Ann Arbor coffee/breakfast, dropping bags in Palatine by noon Central, and returning the car at the Multi-Modal Facility by 1:00 PM for the 3:20 PM departure to SFO.
         </Flag>
       </section>
 

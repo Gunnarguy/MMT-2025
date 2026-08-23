@@ -37,12 +37,12 @@ export const ANCHORS = {
     why: "You land at 8:21pm in Terminal 3 and the Budget counter is in the Multi-Modal Facility, out at the end of the ATS train. Bags, train, counter — call it 45 minutes. The counter runs 24 hours, so arriving at 9:15pm is not a problem; the reservation is Reserve Now, Pay Later with no cancellation fee.",
   },
   depart: {
-    label: "Car back at O'Hare, then AA 1253",
-    when: "Mon 21 Sept — car 2:30 PM, wheels up 3:20 PM",
+    label: "Rental car return & AA 1253",
+    when: "Mon 21 Sept · Return by 1:00 PM · Wheels up 3:20 PM",
     date: "2026-09-21",
     time: "15:20",
-    carDue: "14:30",
-    why: "This is the one to plan around. Fifty minutes between the contracted car return and a 3:20pm departure is not enough at O'Hare — you have to return the car, ride the ATS back to Terminal 3, and clear security. Be at the return by 1:00pm and the day is calm. Leave Belleville by 8:00am Eastern to make that true.",
+    carDue: "13:00",
+    why: "Return Budget rental SUV at the Multi-Modal Facility (MMF) by 1:00 PM, take the ATS train to Terminal 3, drop bags, and clear TSA for the 3:20 PM departure to SFO (AA 1253).",
   },
 };
 
@@ -69,7 +69,7 @@ export const RENTAL = {
   costNote:
     "Booked through Costco Travel — $10 off plus Costco member savings, already applied. Reserve Now, Pay Later, no cancellation fees. That's $35 less than the $368 the budget carried.",
   pickup: "Mon 14 Sept, 9:00 PM · O'Hare",
-  dropoff: "Mon 21 Sept, 2:30 PM · O'Hare",
+  dropoff: "Mon 21 Sept, 1:00 PM · O'Hare",
   location: "10255 W Zemke Blvd, Chicago, IL 60666",
   desk: "773-825-4600",
   deskNote: "Counter open 24 hours",

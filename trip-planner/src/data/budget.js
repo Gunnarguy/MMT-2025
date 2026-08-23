@@ -58,7 +58,7 @@ export const BUDGET = {
     // ── Transport ──────────────────────────────────────────────────────────
     {
       label: "Budget rental car, 8 days",
-      note: "Reserved through Costco Travel — Mazda CX-50 or similar, $10 off plus member savings. Pick-up Monday 9/14 9pm at O'Hare, back Monday 9/21 2:30pm. $35 under the figure Mom's document carried",
+      note: "Reserved through Costco Travel — Mazda CX-50 or similar, $10 off plus member savings. Pick-up Monday 9/14 9pm at O'Hare, return Monday 9/21 at O'Hare.",
       category: "Transport",
       total: 332.92,
       payer: "mom",
@@ -67,7 +67,7 @@ export const BUDGET = {
       // `id` so budgetTotals can recompute this line once the car is known.
       id: "fuel",
       label: "Fuel",
-      note: "≈1,430 miles at the CX-50's EPA-combined 26 mpg and a blended $4.10/gal. Its 15.9-gallon tank goes about 410 miles, so each of the two long days needs one stop",
+      note: "≈1,430 miles at the CX-50's EPA-combined 26 mpg and a blended $4.10/gal.",
       category: "Transport",
       // Always overwritten by budgetTotals(); kept in sync for anyone reading
       // this file directly.
@@ -83,7 +83,7 @@ export const BUDGET = {
     },
     {
       label: "Ferry day parking",
-      note: "$15, not the $10 in the document — but likely $0, since the motel is inside Shepler's free 1.5-mile shuttle radius",
+      note: "$15 day parking at the dock, or free off-site at 311 S. Nicolet St with Shepler's tram service.",
       category: "Transport",
       total: 15,
       estimate: true,
@@ -257,7 +257,7 @@ export function budgetTotals({ includeProvisional = false, mpg } = {}) {
 }
 
 export const SPLIT_NOTE =
-  "Shared costs divide three ways. The lines marked \"Mom's\" are the ones she wrote MINE! beside in her document — the car, the gas and the park pass — and they sit outside the split entirely. The Belleville hotel is off by default, since the plan is Julia's; the checkbox above adds it back.";
+  "Shared costs divide three ways across the crew. Costs covered directly by Mom (the rental car, fuel, and park pass) are excluded from the split. The Belleville hotel is excluded by default since Sunday stay is with Julia; the toggle adds it back.";
 
 export const FX = {
   usdPerCad: 0.72,

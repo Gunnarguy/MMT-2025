@@ -186,11 +186,11 @@ export const DAYS = [
         phone: "616-246-4821",
         url: "https://meyermayhouse.steelcase.com/",
         blurb:
-          "A 1909 Prairie house that Steelcase restored down to the original Wright-designed furniture, textiles and art glass — widely considered one of the most complete Wright restorations anywhere. Mom's document has it as a drive-by, which is the single biggest missed opportunity in the whole plan.",
+          "A 1909 Prairie house that Steelcase restored down to the original Wright-designed furniture, textiles, and art glass — widely considered one of the most complete Wright restorations anywhere. Free 90-minute guided tour.",
         tips: [
           "Free street parking on Logan St and Madison Ave.",
           "Arrive no more than ten minutes early — they specifically ask you not to come sooner.",
-          "It sits inside Heritage Hill, so it doubles as the neighbourhood stop Mom wanted.",
+          "Located inside Heritage Hill, making it easy to combine with a historic neighborhood stroll.",
         ],
         source: "Meyer May House (Steelcase)",
         sourceUrl: "https://meyermayhouse.steelcase.com/",
@@ -206,10 +206,10 @@ export const DAYS = [
         cost: "Free",
         duration: "25 minutes",
         blurb:
-          "One of the largest urban historic districts in the country — roughly 1,300 houses across sixty-odd architectural styles, all within a few blocks of where you've already parked. Mom's document lists a “neighborhood drive thru,” but this is much better walked than driven.",
+          "One of the largest urban historic districts in the country — roughly 1,300 houses across sixty-odd architectural styles, located right in the neighborhood.",
         tips: [
           "Loop north on Madison, east on Cherry, back down College — about 25 minutes.",
-          "The map in Mom's document shows the whole neighbourhood grid; Heritage Hill is the one immediately east of downtown.",
+          "Heritage Hill is situated immediately east of downtown Grand Rapids.",
         ],
       },
       {
@@ -223,11 +223,9 @@ export const DAYS = [
         hours: "Closes 3:00 PM",
         phone: "616-451-4444",
         blurb:
-          "Note the name: Schnitz Deli, not Schnitzelbank — those are two different Grand Rapids restaurants and searching the wrong one will send you across town. Its 3pm close is the tightest window of Mom's four options, so eat between 12:30 and 2:00, before Meijer Gardens rather than after.",
+          "Schnitz Deli offers classic sandwiches, deli sides, and drinks in Grand Rapids. Open until 3:00 PM; great lunch spot before heading to Meijer Gardens.",
         tips: [
-          "Blue Dog Tavern opens at 11am and serves no brunch, despite being on the brunch list.",
-          "Tupelo Honey and Social Misfits both open at 8am — but you won't be in town that early.",
-          "Hours aren't published on their own site; call to confirm.",
+          "Located in Eastown Grand Rapids with street parking nearby.",
         ],
       },
       {
@@ -243,7 +241,7 @@ export const DAYS = [
         duration: "2–3 hours",
         url: "https://www.meijergardens.org/",
         blurb:
-          "Two different things share the Chihuly name here: large glass installations sited outdoors through the 158-acre sculpture park, and Radiant Forms, the indoor gallery show, which needs its own timed ticket and can sell out. The banner in Mom's document is the real exhibition and it is running.",
+          "Frederik Meijer Gardens features outdoor glass sculptures across the 158-acre park and the indoor Radiant Forms exhibition. Open until 9:00 PM on Tuesdays.",
         tips: [
           "Buy general admission and the Radiant Forms timed slot online, 15–20 minutes after your planned arrival.",
           "Tuesday's 9pm close is genuine luck — no other day runs late.",
@@ -266,7 +264,7 @@ export const DAYS = [
         blurb:
           "Half a mile straight out into Lake Michigan on a concrete breakwall to a squat white 1924 tower. You can't climb it on a Tuesday, but climbing it was never the point — the point is standing at the end of it as the sun goes into the lake at 7:57.",
         tips: [
-          "Mom's document says North Breakwater but the embedded map is labelled the SOUTH light. You want the NORTH one, reached from Stearns Park.",
+          "Head to the North Breakwater light, accessible directly from Stearns Park Beach.",
           "It's exposed and it will be windy. Take a real jacket.",
           "An American flag flying on the tower means it's open — it won't be flying Tuesday.",
         ],
@@ -285,7 +283,7 @@ export const DAYS = [
         duration: "2 hours",
         url: "https://historicwhitepinevillage.org/",
         blurb:
-          "Not closed for the season, as Mom feared — open Tuesdays through October 17. But a 3:30pm ticket cutoff against a two-hour visit makes it an either/or with Grand Rapids, not a bonus.",
+          "Historic outdoor village open Tuesdays through October 17 (last ticket sales 3:30 PM).",
         source: "Historic White Pine Village",
         sourceUrl: "https://historicwhitepinevillage.org/",
       },
@@ -299,7 +297,7 @@ export const DAYS = [
         status: "confirmed",
         hours: "Tue–Sat 10 AM–5 PM · last admission 4:30",
         blurb:
-          "The conflict is settled. The operator is right and the secondary listing claiming 12–7 is wrong: Tuesday 10 to 5, last admission 4:30, April through November. That makes it the one indoor thing that genuinely works on a Tuesday — but only on the Short Day plan, where you reach Ludington by 4:00. Arrive at 6:30 and it's shut.",
+          "Maritime museum located near Stearns Park, open Tuesday–Saturday 10:00 AM–5:00 PM (last admission 4:30 PM).",
         tips: [
           "A five-minute walk from Stearns Park, so it pairs with the breakwall rather than competing with it.",
         ],
@@ -317,13 +315,12 @@ export const DAYS = [
       {
         src: "img/doc-grand-rapids-neighborhoods.png",
         alt: "Map of Grand Rapids neighbourhoods from Mom's document",
-        caption: "Mom's neighbourhood map. Heritage Hill is the one just east of downtown.",
+        caption: "Map of Grand Rapids historic districts, with Heritage Hill east of downtown.",
       },
       {
         src: "img/doc-ludington-breakwater-walk.png",
         alt: "Satellite map of the walk out the Ludington breakwater",
-        caption:
-          "Mom's map of the breakwater walk — note it's labelled the SOUTH light; you want the north one.",
+        caption: "Map of the breakwater walk out to the North Breakwater light at Stearns Park.",
       },
     ],
     momSaid: `Tuesday  9/15—leave early AM
@@ -515,7 +512,7 @@ TRY:  White Pine Village, Port Museum, Check out dock`,
         cost: "Free to drive or walk",
         duration: "45 minutes",
         blurb:
-          "Thirty-odd houses built between 1918 and 1970 out of local boulders and glacial stone, with swooping cedar-shake roofs that sag to the ground. They look like something out of a storybook and there is nothing else like them anywhere. Mom's earlier draft had Charlevoix; this is the thing in Charlevoix, and the current document drops it.",
+          "Thirty-odd whimsical stone houses built between 1918 and 1970 out of local boulders and glacial stone, with swooping cedar-shake roofs.",
         tips: [
           "Pick up a self-guided map at the Charlevoix Historical Society or the visitor centre on Bridge St.",
           "The densest cluster is Boulder Park, off Park Ave on the west side of Round Lake.",
@@ -550,7 +547,7 @@ TRY:  White Pine Village, Port Museum, Check out dock`,
         duration: "90 minutes minimum",
         phone: "231-237-0884",
         blurb:
-          "A 1918 stone dairy-barn complex turned garden and event venue, with a large model railroad. An earlier draft of this app said its official pages disagreed on closing time and told you to be through the gate by 2:30. They don't disagree — September is 10 to 5, so 3:30 is the real cutoff and the day has an hour more slack than assumed.",
+          "A 1918 stone dairy-barn complex turned garden and event venue, featuring expansive outdoor gardens and a large model railroad. Open 10:00 AM to 5:00 PM in September.",
         source: "Visit Charlevoix",
         sourceUrl: "https://www.visitcharlevoix.com/CastleFarms/",
       },
@@ -605,7 +602,7 @@ TRY:  White Pine Village, Port Museum, Check out dock`,
       {
         src: "img/doc-petoskey-stones.png",
         alt: "Petoskey stones on sand, from Mom's document",
-        caption: "From Mom's document — the hexagonal coral pattern only shows when they're wet.",
+        caption: "Petoskey stones — the hexagonal coral pattern appears clearly when wet.",
       },
     ],
     momSaid: `Thursday 9/17
@@ -848,7 +845,7 @@ SLEEP HERE 2 nights: Lighthouse View Hotel, 699 N Huron Ave, Mackinaw City, MI 4
         cost: "$10 per person at the gate · 15 and under free",
         hours: "Sat 9/19: noon to midnight — the busiest day",
         blurb:
-          "One of the few Oktoberfests outside Bavaria sanctioned by the city of Munich. Gates at noon, and the crowd builds all afternoon, which is exactly why a 3:30 departure is not negotiable if you also want to be in Ontario at a civilised hour. Note the $30 gate cost for the three of you — Mom's document doesn't mention the festival at all, so it doesn't budget for it either.",
+          "One of the premier Bavarian celebrations in the Midwest. Heritage Park gates open at noon on Saturday with live music, dancing, and Bavarian food tents.",
         source: "Frankenmuth CVB",
         sourceUrl: "https://www.frankenmuth.org/events/frankenmuth-oktoberfest1/",
       },
