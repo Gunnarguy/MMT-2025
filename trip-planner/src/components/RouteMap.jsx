@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CircleMarker,
   MapContainer,
@@ -13,7 +13,7 @@ import {
 import { DAYS, HOME } from "../data/trip";
 import geometry from "../data/routeGeometry.json";
 import { FUEL_STOPS } from "../data/fuel";
-import { directionsHref, shortDate } from "../lib/format";
+import { directionsHref, duration, shortDate } from "../lib/format";
 
 const SFO_COORDS = [37.6213, -122.379];
 const ORD_COORDS = [41.9742, -87.9073];
@@ -88,6 +88,18 @@ function FitBounds({ bounds, deps }) {
   return null;
 }
 
+/** Trigger map size recalculation when expanded mode flips. */
+function InvalidateMapSize({ isExpanded }) {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 280);
+    return () => clearTimeout(timer);
+  }, [map, isExpanded]);
+  return null;
+}
+
 /** Which days a fresh map shows: just the focused one, or the whole trip. */
 function defaultVisible(focusDayId) {
   return focusDayId ? new Set([focusDayId]) : new Set(DAYS.map((d) => d.id));
@@ -96,8 +108,28 @@ function defaultVisible(focusDayId) {
 export default function RouteMap({ focusDayId = null, height, compact = false }) {
   const [visible, setVisible] = useState(() => defaultVisible(focusDayId));
   const [showFlight, setShowFlight] = useState(focusDayId === "d0");
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [mapStyle, setMapStyle] = useState("streets");
+  const [layerFilter, setLayerFilter] = useState({
+    stops: true,
+    gas: true,
+    hotels: true,
+    flight: true,
+  });
+
   const [colors, setColors] = useState(() => DAYS.map((_, i) => dayColor(i)));
   const wrapRef = useRef(null);
+
+  // Close expanded map on Escape key
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape" && isExpanded) {
+        setIsExpanded(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isExpanded]);
 
   // Day colours are CSS variables, so re-read them when the theme flips.
   useEffect(() => {
@@ -116,9 +148,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     };
   }, []);
 
-  // Reset the day filter when the caller focuses a different day. Done during
-  // render rather than in an effect — this is React's documented way to adjust
-  // state on a prop change, and it avoids a wasted render pass.
+  // Reset the day filter when the caller focuses a different day.
   const [lastFocus, setLastFocus] = useState(focusDayId);
   if (lastFocus !== focusDayId) {
     setLastFocus(focusDayId);
@@ -132,6 +162,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
   /** Every mappable stop on the visible days, numbered within its day. */
   const markers = useMemo(() => {
+    if (!layerFilter.stops) return [];
     const out = [];
     shownDays.forEach((day) => {
       let n = 0;
@@ -151,40 +182,38 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       });
     });
     return out;
-  }, [shownDays, colors]);
+  }, [shownDays, colors, layerFilter.stops]);
 
-  const beds = useMemo(
-    () =>
-      shownDays
-        .filter((d) => d.sleep?.coords)
-        .map((d) => ({
-          key: `bed-${d.id}`,
-          coords: d.sleep.coords,
-          color: colors[d.index] || "#1f7a8c",
-          name: d.sleep.name,
-          city: d.sleep.city,
-          address: d.sleep.address,
-          date: d.date,
-        })),
-    [shownDays, colors],
-  );
+  const beds = useMemo(() => {
+    if (!layerFilter.hotels) return [];
+    return shownDays
+      .filter((d) => d.sleep?.coords)
+      .map((d) => ({
+        key: `bed-${d.id}`,
+        coords: d.sleep.coords,
+        color: colors[d.index] || "#1f7a8c",
+        name: d.sleep.name,
+        city: d.sleep.city,
+        address: d.sleep.address,
+        date: d.date,
+      }));
+  }, [shownDays, colors, layerFilter.hotels]);
 
-  const fuelPins = useMemo(
-    () =>
-      FUEL_STOPS.filter((f) => visible.has(f.dayId)).map((f) => ({
-        key: `fuel-${f.id}`,
-        coords: f.coords,
-        color: "#d97706",
-        stopName: f.stopName,
-        brand: f.brand,
-        address: f.address,
-        action: f.action,
-        why: f.why,
-        date: f.date,
-        mileMarker: f.mileMarker,
-      })),
-    [visible],
-  );
+  const fuelPins = useMemo(() => {
+    if (!layerFilter.gas) return [];
+    return FUEL_STOPS.filter((f) => visible.has(f.dayId)).map((f) => ({
+      key: `fuel-${f.id}`,
+      coords: f.coords,
+      color: "#d97706",
+      stopName: f.stopName,
+      brand: f.brand,
+      address: f.address,
+      action: f.action,
+      why: f.why,
+      date: f.date,
+      mileMarker: f.mileMarker,
+    }));
+  }, [visible, layerFilter.gas]);
 
   const lines = useMemo(
     () =>
@@ -211,32 +240,104 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     return pts.length ? pts : [HOME.coords];
   }, [lines, markers, beds, fuelPins, visible, showFlight]);
 
-  const toggle = (id) =>
+  const toggle = useCallback((id) => {
     setVisible((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next.size ? next : new Set(DAYS.map((d) => d.id));
     });
+  }, []);
+
+  const toggleLayer = useCallback((layer) => {
+    setLayerFilter((prev) => ({ ...prev, [layer]: !prev[layer] }));
+  }, []);
+
+  const hudStats = useMemo(() => {
+    if (visible.size === 1) {
+      const dayId = [...visible][0];
+      const d = DAYS.find((day) => day.id === dayId);
+      if (!d) return null;
+      return {
+        title: `${shortDate(d.date)} · ${d.title}`,
+        miles: d.miles ? `${d.miles} mi` : "—",
+        drive: d.driveMinutes ? duration(d.driveMinutes) : "—",
+        sleep: d.sleep ? d.sleep.city : "Home in Palatine",
+      };
+    }
+    const totalM = shownDays.reduce((acc, d) => acc + (d.miles || 0), 0);
+    const totalD = shownDays.reduce((acc, d) => acc + (d.driveMinutes || 0), 0);
+    return {
+      title: `${shownDays.length} Days Active`,
+      miles: `${totalM.toLocaleString()} mi`,
+      drive: duration(totalD),
+      sleep: "5 Stays · 4 Gas Stops",
+    };
+  }, [visible, shownDays]);
 
   return (
-    <div className="mapwrap" ref={wrapRef}>
+    <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
+      {/* Floating HUD & Map Controls Overlay */}
+      <div className="map-hud-bar">
+        {hudStats && (
+          <div className="map-hud-card">
+            <span className="map-hud-title">{hudStats.title}</span>
+            <span className="map-hud-stat">
+              <b>{hudStats.miles}</b>
+            </span>
+            <span className="map-hud-stat">
+              Drive: <b>{hudStats.drive}</b>
+            </span>
+          </div>
+        )}
+
+        <div className="map-top-actions">
+          <button
+            type="button"
+            className="map-action-pill"
+            onClick={() => setMapStyle((s) => (s === "streets" ? "satellite" : "streets"))}
+            title="Toggle between Road Map and Satellite Topography"
+          >
+            {mapStyle === "streets" ? "🛰️ Satellite" : "🗺️ Streets"}
+          </button>
+          {!compact && (
+            <button
+              type="button"
+              className="map-action-pill"
+              onClick={() => setIsExpanded((e) => !e)}
+              title={isExpanded ? "Exit Expanded View (Esc)" : "Expand Map Full View"}
+            >
+              {isExpanded ? "✕ Minimize" : "⛶ Expand"}
+            </button>
+          )}
+        </div>
+      </div>
+
       <MapContainer
         center={HOME.coords}
         zoom={6}
         scrollWheelZoom={false}
-        style={height ? { height } : undefined}
+        style={height && !isExpanded ? { height } : undefined}
       >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          maxZoom={19}
-        />
+        {mapStyle === "streets" ? (
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            maxZoom={19}
+          />
+        ) : (
+          <TileLayer
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            attribution='&copy; <a href="https://www.esri.com/">Esri</a>, USGS, Maxar'
+            maxZoom={19}
+          />
+        )}
 
-        <FitBounds bounds={bounds} deps={[shownDays.length, focusDayId, showFlight]} />
+        <FitBounds bounds={bounds} deps={[shownDays.length, focusDayId, showFlight, isExpanded]} />
+        <InvalidateMapSize isExpanded={isExpanded} />
 
         {/* Day 0 Inbound Flight Arc (SFO → ORD) & Rental Car Hand-off */}
-        {visible.has("d0") && (
+        {visible.has("d0") && layerFilter.flight && (
           <>
             <Polyline
               positions={SFO_TO_ORD_ARC}
@@ -297,7 +398,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
 
         {/* Day 7 Outbound Flight Arc (ORD → SFO) */}
-        {visible.has("d7") && (
+        {visible.has("d7") && layerFilter.flight && (
           <>
             <Polyline
               positions={SFO_TO_ORD_ARC}
@@ -460,6 +561,44 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
       </MapContainer>
 
+      {/* Layer Filter Pills */}
+      {!compact && (
+        <div className="map-layer-pills">
+          <span style={{ color: "var(--fg-muted)", fontWeight: 600, marginRight: "4px" }}>
+            Layers:
+          </span>
+          <button
+            type="button"
+            className={`layer-filter-btn${layerFilter.stops ? " is-active" : ""}`}
+            onClick={() => toggleLayer("stops")}
+          >
+            🏷️ Stops
+          </button>
+          <button
+            type="button"
+            className={`layer-filter-btn${layerFilter.gas ? " is-active" : ""}`}
+            onClick={() => toggleLayer("gas")}
+          >
+            ⛽ Gas Stations
+          </button>
+          <button
+            type="button"
+            className={`layer-filter-btn${layerFilter.hotels ? " is-active" : ""}`}
+            onClick={() => toggleLayer("hotels")}
+          >
+            🛏️ Hotels
+          </button>
+          <button
+            type="button"
+            className={`layer-filter-btn${layerFilter.flight ? " is-active" : ""}`}
+            onClick={() => toggleLayer("flight")}
+          >
+            ✈️ Flight Trajectory
+          </button>
+        </div>
+      )}
+
+      {/* Day Selector Legend */}
       {!compact && (
         <div className="map-legend">
           {DAYS.filter((d) => geometry[d.id] || d.id === "d4").map((d) => (
