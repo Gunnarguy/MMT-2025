@@ -214,6 +214,122 @@ export default function OverviewView({ onGo }) {
           ))}
         </div>
       </section>
+
+      <section className="section">
+        <h2>Field visuals &amp; infographics</h2>
+        <p className="section-lede">
+          Topography, daylight curves, border procedures, flight runways, and island tracks.
+        </p>
+        <div
+          style={{
+            display: "grid",
+            gap: "var(--s-4)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          }}
+        >
+          <button
+            type="button"
+            className="card card-pad"
+            style={{ textAlign: "left", cursor: "pointer" }}
+            onClick={() => onGo("days", "d2")}
+          >
+            <div className="eyebrow" style={{ color: "var(--day-2)" }}>
+              Day 2 · Wed Sep 16
+            </div>
+            <h3 style={{ fontSize: "var(--t-md)", margin: "0.2rem 0" }}>
+              🏔️ Sleeping Bear Dunes Cross-Section
+            </h3>
+            <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)" }}>
+              Topographic profile from Lake Michigan beach level (0 ft) to the 450 ft Overlook #9 summit with 33° warning slope.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            className="card card-pad"
+            style={{ textAlign: "left", cursor: "pointer" }}
+            onClick={() => onGo("days", "d4")}
+          >
+            <div className="eyebrow" style={{ color: "var(--day-4)" }}>
+              Day 4 · Fri Sep 18
+            </div>
+            <h3 style={{ fontSize: "var(--t-md)", margin: "0.2rem 0" }}>
+              🚲 Mackinac Island M-185 Track
+            </h3>
+            <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)" }}>
+              Official 8.2-mile flat perimeter highway mile markers: Arch Rock, British Landing cannon, and West Bluff.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            className="card card-pad"
+            style={{ textAlign: "left", cursor: "pointer" }}
+            onClick={() => onGo("border")}
+          >
+            <div className="eyebrow" style={{ color: "var(--day-5)" }}>
+              Day 5 &amp; 6 · Sat–Sun
+            </div>
+            <h3 style={{ fontSize: "var(--t-md)", margin: "0.2rem 0" }}>
+              🇨🇦 Border Crossing 4-Step Guides
+            </h3>
+            <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)" }}>
+              Blue Water Bridge ($5 USD cashless toll) and Detroit–Windsor Tunnel (CA$8.25) lane flow, tolls, and CBP/CBSA checklists.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            className="card card-pad"
+            style={{ textAlign: "left", cursor: "pointer" }}
+            onClick={() => onGo("days", "d6")}
+          >
+            <div className="eyebrow" style={{ color: "var(--day-6)" }}>
+              Day 6 · Sun Sep 20
+            </div>
+            <h3 style={{ fontSize: "var(--t-md)", margin: "0.2rem 0" }}>
+              ⚖️ Sunday Decision: Plan A vs Plan B
+            </h3>
+            <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)" }}>
+              Side-by-side trade-off comparison: Windsor + Belle Isle + Detroit vs Dearborn (The Henry Ford).
+            </p>
+          </button>
+
+          <button
+            type="button"
+            className="card card-pad"
+            style={{ textAlign: "left", cursor: "pointer" }}
+            onClick={() => onGo("ride")}
+          >
+            <div className="eyebrow" style={{ color: "var(--day-7)" }}>
+              Day 7 · Mon Sep 21
+            </div>
+            <h3 style={{ fontSize: "var(--t-md)", margin: "0.2rem 0" }}>
+              ✈️ Flight Departure Runway Countdown
+            </h3>
+            <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)" }}>
+              Reverse timeline counting backwards from AA 1253&rsquo;s 3:20 PM departure at O&rsquo;Hare Terminal 3.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            className="card card-pad"
+            style={{ textAlign: "left", cursor: "pointer" }}
+            onClick={() => onGo("money")}
+          >
+            <div className="eyebrow" style={{ color: "var(--day-3)" }}>
+              Whole Trip Logistics
+            </div>
+            <h3 style={{ fontSize: "var(--t-md)", margin: "0.2rem 0" }}>
+              ⛽ Fuel &amp; Cruising Range Planner
+            </h3>
+            <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)" }}>
+              Mazda CX-50 15.9-gallon fuel tank, 26 MPG combined, and the 4 strategic refueling stops across the 1,430 miles.
+            </p>
+          </button>
+        </div>
+      </section>
     </>
   );
 }

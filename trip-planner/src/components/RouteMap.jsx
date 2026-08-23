@@ -23,6 +23,13 @@ import {
 import { directionsHref, duration, shortDate } from "../lib/format";
 import ElevationRibbon from "./visuals/ElevationRibbon";
 import SunTracker from "./visuals/SunTracker";
+import DaylightRibbon from "./visuals/DaylightRibbon";
+import DuneCrossSection from "./visuals/DuneCrossSection";
+import MackinacTrack from "./visuals/MackinacTrack";
+import { BlueWaterBridgeSteps, DetroitTunnelSteps } from "./visuals/BorderCrossingSteps";
+import FlightRunway from "./visuals/FlightRunway";
+import SundayComparator from "./visuals/SundayComparator";
+import FuelPlanner from "./visuals/FuelPlanner";
 
 const SFO_COORDS = [37.6213, -122.379];
 const ORD_COORDS = [41.9742, -87.9073];
@@ -929,6 +936,38 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       {/* Synchronized Topographic Elevation Ribbon */}
       {showElevation && !compact && (
         <ElevationRibbon activeDayId={visible.size === 1 ? [...visible][0] : null} />
+      )}
+
+      {/* When a day is isolated on the map, show that day's featured infographics below the map */}
+      {!compact && visible.size === 1 && (
+        <div style={{ marginTop: "var(--s-4)" }}>
+          <DaylightRibbon dayId={[...visible][0]} />
+          {visible.has("d2") && (
+            <>
+              <DuneCrossSection />
+              <FuelPlanner dayId="d2" />
+            </>
+          )}
+          {visible.has("d4") && <MackinacTrack />}
+          {visible.has("d5") && (
+            <>
+              <BlueWaterBridgeSteps />
+              <FuelPlanner dayId="d5" />
+            </>
+          )}
+          {visible.has("d6") && (
+            <>
+              <DetroitTunnelSteps />
+              <SundayComparator />
+            </>
+          )}
+          {visible.has("d7") && (
+            <>
+              <FlightRunway />
+              <FuelPlanner dayId="d7" />
+            </>
+          )}
+        </div>
       )}
     </div>
   );
