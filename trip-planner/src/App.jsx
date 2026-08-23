@@ -22,6 +22,7 @@ import PackView from "./components/PackView";
 import RideView from "./components/RideView";
 import RouteMap from "./components/RouteMap";
 import StaysView from "./components/StaysView";
+import EmergencyDrawer from "./components/visuals/EmergencyDrawer";
 import { DAYS, TRIP } from "./data/trip";
 import { useLocalState } from "./hooks/useLocalState";
 import { daysUntil } from "./lib/format";
@@ -183,6 +184,8 @@ export default function App() {
         {route.tab === "money" && <MoneyView />}
         {route.tab === "border" && <BorderView />}
         {route.tab === "pack" && <PackView />}
+
+        <EmergencyDrawer />
       </main>
 
       <footer className="footer">

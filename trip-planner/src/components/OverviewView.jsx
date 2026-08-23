@@ -2,6 +2,7 @@ import { budgetTotals } from "../data/budget";
 import { KINDS, KIND_ORDER, LOOSE_ENDS, looseEndTotals } from "../data/looseEnds";
 import { DAYS, HIGHLIGHTS, TRIP } from "../data/trip";
 import { daysUntil, money } from "../lib/format";
+import { downloadIcsFile } from "../lib/calendarExport";
 import RouteMap from "./RouteMap";
 import { Chip } from "./bits";
 
@@ -40,6 +41,17 @@ export default function OverviewView({ onGo }) {
             <span>days until the car is loaded</span>
           </div>
         )}
+
+        <div style={{ marginTop: "var(--s-4)", display: "flex", gap: "var(--s-3)", flexWrap: "wrap" }}>
+          <button
+            type="button"
+            className="dispatch-copy-btn"
+            style={{ padding: "8px 16px", fontSize: "12px" }}
+            onClick={() => downloadIcsFile("Michigan-2026-Full-Itinerary.ics")}
+          >
+            📅 Export All Trip Events to Apple / Google Calendar (.ics)
+          </button>
+        </div>
 
         <div className="hero-crew">
           {TRIP.crew.map((c) => (

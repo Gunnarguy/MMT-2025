@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { LOOSE_ENDS } from "../data/looseEnds";
 import { DAYS } from "../data/trip";
 import { duration, longDate } from "../lib/format";
@@ -11,6 +12,9 @@ import { BlueWaterBridgeSteps, DetroitTunnelSteps } from "./visuals/BorderCrossi
 import FlightRunway from "./visuals/FlightRunway";
 import SundayComparator from "./visuals/SundayComparator";
 import FuelPlanner from "./visuals/FuelPlanner";
+import MorningDispatch from "./visuals/MorningDispatch";
+import OntarioToolkit from "./visuals/OntarioToolkit";
+import { CALENDAR_EVENTS, downloadIcsFile } from "../lib/calendarExport";
 
 /**
  * Interleave drive legs and stops into one chronological rail.
@@ -42,6 +46,7 @@ function timeline(day) {
 }
 
 export default function DayPanel({ day }) {
+  const [delayMinutes, setDelayMinutes] = useState(0);
   const style = { "--day": `var(--day-${day.index})` };
   const prev = DAYS[DAYS.indexOf(day) - 1];
   const next = DAYS[DAYS.indexOf(day) + 1];
@@ -68,7 +73,7 @@ export default function DayPanel({ day }) {
             <span>Miles</span>
           </div>
           <div className="dayhead-metric">
-            <b>{day.driveMinutes ? duration(day.driveMinutes) : "—"}</b>
+            <b>{day.driveMinutes ? duration(day.driveMinutes + delayMinutes) : "—"}</b>
             <span>Behind the wheel</span>
           </div>
           <div className="dayhead-metric">
@@ -82,9 +87,41 @@ export default function DayPanel({ day }) {
             </div>
           )}
         </div>
+
+        {/* Live Schedule Delay Adjuster & Calendar Export */}
+        <div className="delay-adjuster-bar">
+          <span className="delay-label">⏱️ Schedule Slip:</span>
+          {[0, 15, 30, 45, 60].map((mins) => (
+            <button
+              key={mins}
+              type="button"
+              className={`delay-pill${delayMinutes === mins ? " is-active" : ""}`}
+              onClick={() => setDelayMinutes(mins)}
+            >
+              {mins === 0 ? "On Time" : `+${mins}m`}
+            </button>
+          ))}
+          <button
+            type="button"
+            className="cal-export-btn"
+            onClick={() => {
+              const dayEvents = CALENDAR_EVENTS.filter((e) => e.date === day.date);
+              downloadIcsFile(
+                `Michigan-2026-${day.id}.ics`,
+                dayEvents.length ? dayEvents : CALENDAR_EVENTS,
+              );
+            }}
+            title="Export confirmed events on this date to Apple/Google Calendar"
+          >
+            📅 Add to Calendar
+          </button>
+        </div>
       </header>
 
       <DaylightRibbon dayId={day.id} />
+      <MorningDispatch day={day} />
+
+      {["d5", "d6"].includes(day.id) && <OntarioToolkit />}
 
       {open.length > 0 && (
         <a className="daylooseends" href="#/loose">

@@ -926,3 +926,404 @@
   color: var(--fg);
   white-space: nowrap;
 }
+
+/* ── 10x QoL Tooling Styles ──────────────────────────────────────────────── */
+
+/* 1. Morning Dispatch Card */
+.dispatch-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-4);
+  margin-top: var(--s-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.dispatch-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+}
+
+.dispatch-title {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  display: grid;
+}
+
+.dispatch-actions {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.dispatch-copy-btn,
+.dispatch-sms-btn {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.dispatch-copy-btn {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.dispatch-copy-btn.is-copied {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+.dispatch-sms-btn {
+  background: var(--bg-subtle, rgba(0, 0, 0, 0.05));
+  color: var(--fg);
+}
+
+.dispatch-preview {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  line-height: 1.5;
+  background: var(--bg-subtle, rgba(0, 0, 0, 0.04));
+  padding: var(--s-3);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  margin: 0;
+}
+
+/* 2. Ontario Toolkit */
+.ontario-toolkit-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-4);
+  margin-top: var(--s-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.toolkit-head {
+  margin-bottom: var(--s-3);
+}
+
+.toolkit-title {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  display: grid;
+}
+
+.toolkit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-3);
+}
+
+.toolkit-box {
+  background: var(--bg-subtle, rgba(0, 0, 0, 0.03));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--s-3);
+}
+
+.toolkit-box--full {
+  grid-column: 1 / -1;
+}
+
+.toolkit-box-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--t-xs);
+  margin-bottom: var(--s-2);
+}
+
+.toolkit-rate {
+  font-size: 10px;
+  color: var(--ink-3);
+}
+
+.toolkit-calc-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.calc-input-wrap {
+  display: grid;
+  gap: 2px;
+}
+
+.calc-input-wrap label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.calc-input {
+  width: 90px;
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.calc-arrow {
+  color: var(--ink-4);
+  font-size: 14px;
+}
+
+.calc-result {
+  display: grid;
+}
+
+.calc-result b {
+  font-size: var(--t-md);
+  color: #16a34a;
+  font-family: var(--font-mono);
+}
+
+.calc-result small {
+  font-size: 10px;
+  color: var(--ink-3);
+}
+
+.speed-pill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--s-2);
+}
+
+.speed-pill {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  display: grid;
+  font-size: 11px;
+}
+
+.speed-pill b {
+  color: #2563eb;
+  font-family: var(--font-mono);
+}
+
+.speed-pill span {
+  font-size: 10px;
+  color: var(--ink-3);
+}
+
+/* 3. Emergency Quick Dial */
+.emergency-widget {
+  margin-top: var(--s-5);
+  margin-bottom: var(--s-4);
+}
+
+.emergency-trigger-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  border: 1px solid #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.emergency-trigger-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+[data-theme="dark"] .emergency-trigger-btn {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+  border-color: #ef4444;
+}
+
+.emergency-modal {
+  background: var(--surface);
+  border: 1px solid #ef4444;
+  border-radius: var(--radius);
+  padding: var(--s-4);
+  margin-top: var(--s-3);
+  box-shadow: var(--shadow-lg);
+}
+
+.emergency-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--s-3);
+}
+
+.emergency-modal-head h3 {
+  font-size: var(--t-md);
+  margin: 0;
+  color: #b91c1c;
+}
+
+[data-theme="dark"] .emergency-modal-head h3 {
+  color: #fca5a5;
+}
+
+.emergency-close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--ink-3);
+}
+
+.emergency-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--s-4);
+}
+
+.emergency-group h4 {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  margin-bottom: var(--s-2);
+}
+
+.emergency-list {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.emergency-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--bg-subtle, rgba(0, 0, 0, 0.03));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+}
+
+.emergency-item-info {
+  display: grid;
+  font-size: 11px;
+}
+
+.emergency-dial-btn {
+  font-size: 11px;
+  font-weight: 700;
+  background: #16a34a;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* 4. Schedule Delay Adjuster Bar */
+.delay-adjuster-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--s-3);
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.delay-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-3);
+  margin-right: 4px;
+}
+
+.delay-pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle, rgba(0, 0, 0, 0.04));
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.delay-pill.is-active {
+  background: #f59e0b;
+  color: #000;
+  border-color: #d97706;
+  font-weight: 700;
+}
+
+.cal-export-btn {
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cal-export-btn:hover {
+  background: #1d4ed8;
+}
+
+/* 5. Pack View Extras */
+.trunk-fit-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-4);
+  margin-bottom: var(--s-4);
+  display: grid;
+  gap: var(--s-2);
+}
+
+.trunk-fit-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trunk-fit-head b {
+  font-size: var(--t-sm);
+}
+
+.trunk-stat {
+  font-size: 11px;
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .trunk-stat {
+  background: #1e3a8a;
+  color: #bfdbfe;
+}

@@ -54,6 +54,16 @@ export default function PackView() {
       </section>
 
       <section className="section">
+        <div className="trunk-fit-card">
+          <div className="trunk-fit-head">
+            <b>🚙 Mazda CX-50 Trunk Cargo &amp; Fit Guide</b>
+            <span className="trunk-stat">31.4 cu ft flat load space</span>
+          </div>
+          <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)", margin: 0 }}>
+            Optimized for 3 passengers: The wide cargo floor accommodates <b>3 standard 22&Prime; carry-on rollaboards</b> side-by-side on their sides, plus <b>3 daypacks and a warm fleece tote</b> on top. All gear stays below the rear seatback line, keeping luggage out of view at public trailhead parking lots.
+          </p>
+        </div>
+
         <h2>The bag</h2>
         <p className="section-lede">
           Tailored to this route — not a generic list. The island day and the Sleeping
