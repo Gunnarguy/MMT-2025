@@ -16,7 +16,7 @@ export const LODGING = [
     address: "717 E Ludington Ave, Ludington, MI 49431",
     coords: [43.954, -86.4419],
     phone: "231-843-3448",
-    url: "https://summersinnofludington.com/",
+    url: "https://www.summersinnludington.com/",
     checkIn: "2026-09-15",
     checkOut: "2026-09-16",
     nights: 1,
@@ -33,7 +33,7 @@ export const LODGING = [
         "Confirm the reservation is set for 3 adults in a 2 Double Beds room. Note that post-Labor Day breakfast is served on weekends only.",
     },
     source: "Summer's Inn of Ludington (official site)",
-    sourceUrl: "https://summersinnofludington.com/",
+    sourceUrl: "https://www.summersinnludington.com/",
   },
   {
     id: "traverse-city",
@@ -70,7 +70,7 @@ export const LODGING = [
     address: "699 N Huron Ave, Mackinaw City, MI 49701",
     coords: [45.7857, -84.7228],
     phone: "231-436-5304",
-    url: "https://mackinawcity.com/places/lodging/lighthouse-view-motel/",
+    url: "https://lighthouseviewmotel.com/",
     checkIn: "2026-09-17",
     checkOut: "2026-09-19",
     nights: 2,
@@ -86,8 +86,8 @@ export const LODGING = [
       body:
         "Confirm 2-queen room for 3 adults and take advantage of the free dock shuttle for Friday's 7:30 AM ferry.",
     },
-    source: "Mackinaw Area Visitors Bureau — official listing",
-    sourceUrl: "https://mackinawcity.com/places/lodging/lighthouse-view-motel/",
+    source: "Lighthouse View Motel (official site)",
+    sourceUrl: "https://lighthouseviewmotel.com/",
   },
   {
     id: "sarnia",
@@ -97,7 +97,7 @@ export const LODGING = [
     address: "1498 Venetian Blvd, Point Edward, ON N7T 7W6, Canada",
     coords: [42.9976, -82.4139],
     phone: "519-336-4130",
-    url: "https://www.marriott.com/",
+    url: "https://www.marriott.com/en-us/hotels/yqgfs-four-points-point-edward-sarnia/overview/",
     checkIn: "2026-09-19",
     checkOut: "2026-09-20",
     nights: 1,
@@ -113,8 +113,8 @@ export const LODGING = [
       body:
         "Total is approximately USD $145–$150 all-in including Ontario 13% HST and Point Edward accommodation tax.",
     },
-    source: "Marriott — Four Points by Sheraton Sarnia",
-    sourceUrl: "https://www.marriott.com/",
+    source: "Marriott — Four Points by Sheraton Point Edward / Sarnia",
+    sourceUrl: "https://www.marriott.com/en-us/hotels/yqgfs-four-points-point-edward-sarnia/overview/",
   },
   {
     id: "belleville",
@@ -124,7 +124,7 @@ export const LODGING = [
     address: "46280 N I-94 Service Dr, Belleville, MI 48111",
     coords: [42.2338, -83.4844],
     phone: "734-699-2424",
-    url: "https://www.hilton.com/en/hotels/dtwblhx-hampton-detroit-belleville/",
+    url: "https://www.hilton.com/en/hotels/dtwbehx-hampton-detroit-belleville-airport-area/",
     checkIn: "2026-09-20",
     checkOut: "2026-09-21",
     nights: 1,
@@ -141,7 +141,7 @@ export const LODGING = [
       body:
         "Excluded from budget totals by default since staying with Julia is the primary plan; can be toggled on the Money page.",
     },
-    source: "Hilton — Hampton Inn Detroit/Belleville",
-    sourceUrl: "https://www.hilton.com/en/hotels/dtwblhx-hampton-detroit-belleville/",
+    source: "Hilton — Hampton Inn Detroit/Belleville-Airport Area",
+    sourceUrl: "https://www.hilton.com/en/hotels/dtwbehx-hampton-detroit-belleville-airport-area/",
   },
 ];
