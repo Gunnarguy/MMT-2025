@@ -28,7 +28,7 @@ const bed = (id) => {
 export const TRIP = {
   name: "Michigan '26",
   subtitle:
-    "Eight days up the Lake Michigan shore to the Straits, across into Ontario, and home through Detroit. Mom planned it. This is the checked version.",
+    "Eight days up the Lake Michigan shore to the Straits, across into Ontario, and home through Detroit.",
   start: "2026-09-14",
   end: "2026-09-21",
   crew: [
@@ -57,7 +57,7 @@ export const DAYS = [
     driveMinutes: 25,
     sleep: null,
     lede:
-      "Not the empty errand day Mom's document imagined. Gunnar and Mikaela are on AA 2358 out of San Francisco, wheels down at 8:21pm, and the car is collected at O'Hare at nine — so the trip really starts at ten at night, and Tuesday morning has to be gentler than originally planned.",
+      "Arrival night into Chicago O'Hare on AA 2358 from San Francisco. Collect the rental SUV at the Multi-Modal Facility, head to Palatine to pack the car, and rest up for Tuesday's departure.",
     flags: [
       {
         level: "info",
@@ -352,7 +352,7 @@ TRY:  White Pine Village, Port Museum, Check out dock`,
     sleep: bed("traverse-city"),
     legFrom: "Ludington, MI",
     lede:
-      "The shortest driving day and the best-value one — barely two and a half hours in the car, with the most spectacular stretch of Lake Michigan shoreline in the middle of it. The catch is that Mom budgeted two hours for a park that needs closer to four.",
+      "A scenic driving day along the Lake Michigan coast with Sleeping Bear Dunes National Lakeshore, coastal overlooks, and a relaxed evening in Traverse City.",
     flags: [
       {
         level: "info",
@@ -913,7 +913,7 @@ SLEEP HERE: Sheraton Four Points 1498 Venetian Boulevard Pt Edward, Ph 519.336.4
     sleep: bed("belleville"),
     legFrom: "Point Edward, ON",
     lede:
-      "The only day in the document that is arithmetically impossible. Belle Isle Aquarium and the Henry Ford Museum cannot both happen — and with an 11am museum start in Sarnia, neither one happens in usable form. The fix is a single decision made before you leave Ontario.",
+      "Drive Highway 401 into Windsor for riverfront skyline views, cross via the Detroit Tunnel directly into downtown, and explore Belle Isle and The Belt art alley.",
     flags: [
       {
         level: "info",

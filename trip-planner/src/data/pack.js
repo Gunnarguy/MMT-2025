@@ -108,13 +108,13 @@ export const PREP = [
   },
   {
     id: "insurance-copies",
-    text: "Print four copies of the Canada Non-Resident Insurance Card",
-    note: "The avis.ca link in Mom's document is live and valid for a Budget rental — same parent company. One for the glovebox, three spares",
+    text: "Print backup copies of Canada Insurance Card",
+    note: "Printed backup copies of the insurance card to keep in the glovebox.",
   },
   {
     id: "ferry-tickets",
-    text: "Confirm the Shepler's tickets are actually in hand",
-    note: "Non-refundable and good for any departure, so nothing expires — but they're the one thing already paid for and worth eyes on. Shepler's is 231-436-5023; the 800 number in the document isn't theirs",
+    text: "Confirm Shepler's ferry tickets in hand",
+    note: "Good for any departure time on Friday. Shepler's Mackinaw City dock phone is 231-436-5023.",
   },
   {
     id: "midrive",
