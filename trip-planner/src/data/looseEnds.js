@@ -192,27 +192,22 @@ export const LOOSE_ENDS = [
     kind: "decide",
     dayId: "d2",
     when: "Wed 9/16",
-    title: "One driver, and an evening built entirely on alcohol",
+    title: "Traverse City tasting rooms & dinner",
     problem:
-      "Wineries and distilleries, a single designated driver who has already driven all day, on unlit peninsula roads in heavy September deer season. Center Rd and Peninsula Dr have no streetlights.",
+      "Old Mission Peninsula wineries and local distilleries offer great tastings, but have varying evening hours and require planning designated driver arrangements.",
     answer:
-      "Pick the shape before anyone is standing at a tasting bar, because that is a bad moment to start negotiating.",
-    deadline: "Wednesday afternoon, before you leave Sleeping Bear",
+      "Choose between staying downtown in walking distance to Left Foot Charley and Mammoth Distilling, or driving the scenic peninsula.",
+    deadline: "Wednesday afternoon",
     options: [
       {
-        label: "Stay in town",
+        label: "Downtown / Village",
         detail:
-          "Left Foot Charley in the Village (wine and cider in one stop, open to 7) then Mammoth Distilling downtown (to 10). Both a short cab from Brio, so nobody drives at all. Dinner at Trattoria Stella, 200 feet away.",
+          "Left Foot Charley in the Village (wine & cider, open to 7) and Mammoth Distilling downtown (open to 10). Short cab/walk from hotel; dinner at Trattoria Stella.",
       },
       {
-        label: "Hire the driver",
+        label: "Old Mission Peninsula",
         detail:
-          "Designated Driver TC drive your car rather than shuttling you — which matters with a rental. Books the peninsula version back open.",
-      },
-      {
-        label: "Taste and dump",
-        detail:
-          "Gunnar spits the flight and has one full glass with dinner. Every tasting room has dump buckets and nobody blinks. Cheapest option, needs the least planning.",
+          "Drive M-37 north to Chateau Chantal and 2 Lads for bay views before dinner in town.",
       },
     ],
   },
@@ -443,11 +438,11 @@ export const LOOSE_ENDS = [
     kind: "do",
     dayId: "d0",
     when: "Mon 9/14, 9:00 PM",
-    title: "Say the words “we are driving this into Ontario”",
+    title: "Request Canadian Insurance Card at rental pickup",
     problem:
-      "Budget has to be told at pickup — five days before you actually cross. Without that conversation you may have an insurance gap at the Blue Water Bridge on the 19th, and there's no fixing it from the road. Worse now that the flights are booked: this happens at nine at night, at an airport counter, after six hours in the air.",
+      "Budget provides the Canadian Non-Resident Insurance Card at pickup for cross-border driving into Ontario.",
     answer:
-      "Say it before they start typing. Ask for the Canadian Non-Resident Insurance Card by name and confirm it's physically in your hand before you leave the garage. It's free. Print backup copies from the avis.ca link in Mom's document beforehand — it's live and it does cover Budget vehicles. Two more minutes while you're standing there: photograph every panel and the fuel gauge, and write the car's plate and combined mpg onto the Car & flights page. The mpg isn't trivia — the fuel line on the Money page is computed from it.",
+      "Ask the Budget counter agent at O'Hare MMF for the card when picking up keys. It is free and covers the car in Canada.",
     deadline: "At the O'Hare counter, Monday 9pm",
     url: "#/ride",
     urlLabel: "Car & flights",
@@ -471,24 +466,24 @@ export const LOOSE_ENDS = [
     kind: "do",
     dayId: "d5",
     when: "Before 9/19",
-    title: "Warn the bank, and carry two cards",
+    title: "Travel notice for credit card",
     problem:
-      "Both crossings you might use are card-only. The Blue Water Bridge has taken no cash since April 2025, and the Detroit–Windsor Tunnel takes no cash in either currency. A card declined at a toll booth on a Saturday evening is a genuinely bad twenty minutes.",
+      "Both border crossings (Blue Water Bridge and Detroit Tunnel) are card-only with cashless toll systems.",
     answer:
-      "Tell the card issuer you'll be in Ontario Sept 19–20. Make sure at least two of you carry a chip credit card that works internationally and won't get flagged after two days of Canadian charges. Keep one in the driver's door pocket on approach.",
+      "Ensure credit card or Apple Pay is set up for international Canadian transactions and carry a backup card.",
     deadline: "The week before",
   },
   {
     id: "early-start",
     kind: "do",
     dayId: "d1",
-    when: "Tue 9/15, dawn",
-    title: "Leave Palatine at 6:45 Tuesday — not 5:30",
+    when: "Tue 9/15, 6:45 AM",
+    title: "Depart Palatine at 6:45 AM Tuesday",
     problem:
-      "Tuesday is the longest driving day, it opens with the Borman Expressway through Hammond and Gary, and you lose an hour to Eastern time before lunch. The old advice was a 6:00am start with 5:30 as the stretch goal — written before the flights were booked. AA 2358 doesn't land until 8:21pm Monday, and Palatine is a 9pm rental counter plus 35 minutes away.",
+      "Tuesday is the longest driving day and crosses into Eastern time before Grand Rapids.",
     answer:
-      "6:45am Central, against an 11:30 Meyer May tour. That's roughly seven hours in bed instead of five, still clears the Borman ahead of the worst of the eastbound peak, and puts you in Grand Rapids just after 11:00 Eastern. Pack the car when you get in Monday night, so the morning is coffee and go.",
-    deadline: "Monday night",
+      "Departing Palatine at 6:45 AM Central provides a solid 7+ hours of sleep after Monday night's flight and puts you in Grand Rapids for the 11:30 AM Meyer May tour.",
+    deadline: "Tuesday morning",
   },
 
   // ────────────────────────────── WATCH ─────────────────────────────

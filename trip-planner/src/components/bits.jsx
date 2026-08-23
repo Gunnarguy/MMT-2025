@@ -23,7 +23,7 @@ export function Chip({ tone = "ghost", children, title }) {
  * instruction. Reading "Do this:" under a green tick is the small kind of wrong
  * that makes people stop trusting the colours.
  */
-const FIX_LABEL = { ok: "Where it lands:", info: "Worth knowing:" };
+const FIX_LABEL = { ok: "Note:", info: "Note:", warn: "Tip:", stop: "Action:" };
 
 export function Flag({ level = "info", title, children, fix }) {
   return (
@@ -36,7 +36,7 @@ export function Flag({ level = "info", title, children, fix }) {
         {children && <div className="flag-body">{children}</div>}
         {fix && (
           <div className="flag-fix">
-            <b>{FIX_LABEL[level] || "Do this:"}</b> {fix}
+            <b>{FIX_LABEL[level] || "Tip:"}</b> {fix}
           </div>
         )}
       </div>
