@@ -622,3 +622,307 @@
 .fuel-directions-link:hover {
   text-decoration: underline;
 }
+
+/* ── Advanced Map Overlays & Extraordinaire Tools ────────────────────────── */
+
+/* 1. Highway Shields */
+.shield-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono, monospace);
+  font-weight: 800;
+  font-size: 11px;
+  padding: 3px 7px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  cursor: pointer;
+  transform: none;
+}
+
+.shield-badge.shield--interstate {
+  background: #1e40af;
+  color: #fff;
+  border: 2px solid #ef4444;
+  border-top-width: 4px;
+  border-radius: 4px 4px 10px 10px;
+}
+
+.shield-badge.shield--state {
+  background: #065f46;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 999px;
+}
+
+.shield-badge.shield--us {
+  background: #f8fafc;
+  color: #0f172a;
+  border: 2px solid #0f172a;
+  border-radius: 4px;
+}
+
+/* 2. Border Portals */
+.pin--border-portal {
+  border-radius: 50%;
+  transform: none;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  background: #dc2626 !important;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.35), 0 4px 10px rgba(0, 0, 0, 0.4);
+  animation: pulsePortal 2.2s infinite ease-in-out;
+}
+
+@keyframes pulsePortal {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.4), 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 9px rgba(220, 38, 38, 0.12), 0 4px 14px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* 3. Climate Pins */
+.pin--climate {
+  border-radius: 50%;
+  transform: none;
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+  background: #0284c7 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pin--vehicle-moving {
+  border-radius: 50%;
+  transform: none;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  background: #2563eb !important;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.45), 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 9999 !important;
+}
+
+/* 4. Elevation Profile Ribbon */
+.elevation-ribbon-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-3) var(--s-4);
+  margin-top: var(--s-3);
+  box-shadow: var(--shadow-sm);
+}
+
+.elevation-ribbon-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+}
+
+.elevation-title {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.elevation-live-badge {
+  font-size: var(--t-xs);
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+[data-theme="dark"] .elevation-live-badge {
+  background: #1e3a8a;
+  color: #bfdbfe;
+  border-color: #3b82f6;
+}
+
+.elevation-svg-wrap {
+  width: 100%;
+  height: 90px;
+}
+
+.elevation-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.elevation-axis-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--ink-4);
+  margin-top: 4px;
+}
+
+/* 5. Sun Tracker & Golden Hour Simulator */
+.sun-tracker-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-3) var(--s-4);
+  margin-top: var(--s-3);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.sun-tracker-card.is-golden-hour {
+  border-color: #f59e0b;
+  background: linear-gradient(to right, rgba(245, 158, 11, 0.08), rgba(217, 119, 6, 0.04));
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+}
+
+.sun-tracker-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+}
+
+.sun-tracker-title {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.sun-live-time {
+  background: var(--bg-subtle, rgba(0,0,0,0.05));
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.sun-status-badge {
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.sun-slider-wrap {
+  display: grid;
+  gap: 4px;
+}
+
+.sun-range-slider {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #f59e0b;
+}
+
+.sun-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--ink-4);
+}
+
+.sun-slider-ticks .tick-golden {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.golden-hour-alert {
+  margin-top: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-size: var(--t-xs);
+  color: #b45309;
+}
+
+[data-theme="dark"] .golden-hour-alert {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.25);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+/* 6. Route Playback Floating Console */
+.playback-console-bar {
+  position: absolute;
+  bottom: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  z-index: 600;
+}
+
+[data-theme="dark"] .playback-console-bar {
+  background: rgba(15, 23, 42, 0.92);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.playback-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.playback-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.playback-speed-pill {
+  background: var(--bg-subtle, rgba(0,0,0,0.06));
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.playback-speed-pill.is-active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.playback-scrubber {
+  width: 140px;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+.playback-live-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}

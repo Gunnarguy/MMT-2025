@@ -1,6 +1,7 @@
 import L from "leaflet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Circle,
   CircleMarker,
   MapContainer,
   Marker,
@@ -13,13 +14,21 @@ import {
 import { DAYS, HOME } from "../data/trip";
 import geometry from "../data/routeGeometry.json";
 import { FUEL_STOPS } from "../data/fuel";
+import {
+  BORDER_PORTALS,
+  HIGHWAY_SHIELDS,
+  MICROCLIMATES,
+  calculateSunPosition,
+} from "../data/mapOverlays";
 import { directionsHref, duration, shortDate } from "../lib/format";
+import ElevationRibbon from "./visuals/ElevationRibbon";
+import SunTracker from "./visuals/SunTracker";
 
 const SFO_COORDS = [37.6213, -122.379];
 const ORD_COORDS = [41.9742, -87.9073];
 const ORD_MMF_COORDS = [41.9786, -87.8892];
 
-function greatCircleArc([lat1, lon1], [lat2, lon2], numPoints = 25) {
+function greatCircleArc([lat1, lon1], [lat2, lon2], numPoints = 30) {
   const toRad = (d) => (d * Math.PI) / 180;
   const toDeg = (r) => (r * 180) / Math.PI;
   const φ1 = toRad(lat1),
@@ -49,7 +58,7 @@ function greatCircleArc([lat1, lon1], [lat2, lon2], numPoints = 25) {
   return points;
 }
 
-const SFO_TO_ORD_ARC = greatCircleArc(SFO_COORDS, ORD_COORDS, 30);
+const SFO_TO_ORD_ARC = greatCircleArc(SFO_COORDS, ORD_COORDS, 35);
 
 /** Read a `--day-N` token off the document so map colours track the theme. */
 function dayColor(index) {
@@ -67,13 +76,27 @@ function pinIcon({ label, color, variant = "" }) {
     variant.includes("bed") ||
     variant.includes("flight") ||
     variant.includes("car") ||
-    variant.includes("fuel");
+    variant.includes("fuel") ||
+    variant.includes("climate") ||
+    variant.includes("border") ||
+    variant.includes("vehicle");
+
   return L.divIcon({
     className: "",
     html: `<div class="pin ${variant}" style="background:${color}"><span>${label}</span></div>`,
     iconSize: [26, 26],
     iconAnchor: isCircle ? [13, 13] : [13, 26],
     popupAnchor: [0, isCircle ? -14 : -26],
+  });
+}
+
+function shieldIcon(shield) {
+  return L.divIcon({
+    className: "",
+    html: `<div class="shield-badge shield--${shield.type}"><span>${shield.route}</span></div>`,
+    iconSize: [40, 22],
+    iconAnchor: [20, 11],
+    popupAnchor: [0, -12],
   });
 }
 
@@ -100,6 +123,17 @@ function InvalidateMapSize({ isExpanded }) {
   return null;
 }
 
+/** Track vehicle position during playback and smoothly pan map */
+function VehicleTracker({ currentCoord, isPlaying }) {
+  const map = useMap();
+  useEffect(() => {
+    if (isPlaying && currentCoord) {
+      map.panTo(currentCoord, { animate: true, duration: 0.2 });
+    }
+  }, [currentCoord, isPlaying, map]);
+  return null;
+}
+
 /** Which days a fresh map shows: just the focused one, or the whole trip. */
 function defaultVisible(focusDayId) {
   return focusDayId ? new Set([focusDayId]) : new Set(DAYS.map((d) => d.id));
@@ -110,12 +144,27 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   const [showFlight, setShowFlight] = useState(focusDayId === "d0");
   const [isExpanded, setIsExpanded] = useState(false);
   const [mapStyle, setMapStyle] = useState("streets");
+
+  // Feature Toggles
+  const [showElevation, setShowElevation] = useState(false);
+  const [showSunTracker, setShowSunTracker] = useState(false);
+  const [simHour, setSimHour] = useState(19.25); // 7:15 PM Golden hour default
+
+  // Layer filters
   const [layerFilter, setLayerFilter] = useState({
     stops: true,
     gas: true,
     hotels: true,
     flight: true,
+    shields: true,
+    borders: true,
+    climate: true,
   });
+
+  // Playback Simulator State
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playProgress, setPlayProgress] = useState(0); // 0 to 100
+  const [playSpeed, setPlaySpeed] = useState(1); // 1x, 2x, 4x
 
   const [colors, setColors] = useState(() => DAYS.map((_, i) => dayColor(i)));
   const wrapRef = useRef(null);
@@ -131,7 +180,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     return () => window.removeEventListener("keydown", onKey);
   }, [isExpanded]);
 
-  // Day colours are CSS variables, so re-read them when the theme flips.
+  // Day colours track active theme
   useEffect(() => {
     const read = () => setColors(DAYS.map((_, i) => dayColor(i)));
     read();
@@ -148,7 +197,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     };
   }, []);
 
-  // Reset the day filter when the caller focuses a different day.
+  // Reset day filter on focus change
   const [lastFocus, setLastFocus] = useState(focusDayId);
   if (lastFocus !== focusDayId) {
     setLastFocus(focusDayId);
@@ -160,7 +209,54 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     [visible],
   );
 
-  /** Every mappable stop on the visible days, numbered within its day. */
+  /** All coordinates in order for playback simulation */
+  const allPathPoints = useMemo(() => {
+    const pts = [];
+    if (visible.has("d0")) {
+      pts.push(...SFO_TO_ORD_ARC);
+      if (geometry.d0?.line) pts.push(...geometry.d0.line);
+    }
+    shownDays.forEach((d) => {
+      if (d.id !== "d0" && geometry[d.id]?.line) {
+        pts.push(...geometry[d.id].line);
+      }
+    });
+    return pts.length ? pts : [HOME.coords];
+  }, [shownDays, visible]);
+
+  // Playback timer tick
+  useEffect(() => {
+    if (!isPlaying) return;
+    const intervalTime = Math.max(30, Math.floor(120 / playSpeed));
+    const timer = setInterval(() => {
+      setPlayProgress((prev) => {
+        if (prev >= 100) {
+          setIsPlaying(false);
+          return 0;
+        }
+        return Math.min(100, prev + 0.35 * playSpeed);
+      });
+    }, intervalTime);
+    return () => clearInterval(timer);
+  }, [isPlaying, playSpeed]);
+
+  const currentVehicleCoord = useMemo(() => {
+    if (!allPathPoints.length) return HOME.coords;
+    const idx = Math.min(
+      allPathPoints.length - 1,
+      Math.floor((playProgress / 100) * allPathPoints.length),
+    );
+    return allPathPoints[idx] || HOME.coords;
+  }, [allPathPoints, playProgress]);
+
+  const isVehicleFlying = useMemo(() => {
+    return (
+      visible.has("d0") &&
+      playProgress < (SFO_TO_ORD_ARC.length / allPathPoints.length) * 100
+    );
+  }, [visible, playProgress, allPathPoints]);
+
+  /** Mappable stops on visible days */
   const markers = useMemo(() => {
     if (!layerFilter.stops) return [];
     const out = [];
@@ -275,6 +371,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     };
   }, [visible, shownDays]);
 
+  const solarData = useMemo(() => calculateSunPosition(simHour), [simHour]);
+
   return (
     <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
       {/* Floating HUD & Map Controls Overlay */}
@@ -292,6 +390,22 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
 
         <div className="map-top-actions">
+          <button
+            type="button"
+            className={`map-action-pill${showSunTracker ? " is-active" : ""}`}
+            onClick={() => setShowSunTracker((s) => !s)}
+            title="Toggle Solar Position & Golden Hour Simulator"
+          >
+            🌅 {showSunTracker ? "Hide Sun" : "Golden Hour"}
+          </button>
+          <button
+            type="button"
+            className={`map-action-pill${showElevation ? " is-active" : ""}`}
+            onClick={() => setShowElevation((e) => !e)}
+            title="Toggle Topographic Elevation Profile"
+          >
+            📈 {showElevation ? "Hide Elevation" : "Elevation"}
+          </button>
           <button
             type="button"
             className="map-action-pill"
@@ -333,8 +447,25 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           />
         )}
 
-        <FitBounds bounds={bounds} deps={[shownDays.length, focusDayId, showFlight, isExpanded]} />
+        <FitBounds
+          bounds={bounds}
+          deps={[shownDays.length, focusDayId, showFlight, isExpanded]}
+        />
         <InvalidateMapSize isExpanded={isExpanded} />
+        <VehicleTracker currentCoord={currentVehicleCoord} isPlaying={isPlaying} />
+
+        {/* Golden Hour Ambient Overlay along Shorelines */}
+        {showSunTracker && solarData.isGoldenHour && (
+          <Circle
+            center={[44.5, -86.2]}
+            radius={280000}
+            pathOptions={{
+              fillColor: "#f59e0b",
+              fillOpacity: 0.12,
+              stroke: false,
+            }}
+          />
+        )}
 
         {/* Day 0 Inbound Flight Arc (SFO → ORD) & Rental Car Hand-off */}
         {visible.has("d0") && layerFilter.flight && (
@@ -481,7 +612,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               <br />
               <b>Trip Milepost:</b> Mile {f.mileMarker} · {f.action}
               <br />
-              <span className="muted" style={{ fontSize: "11px" }}>{f.why}</span>
+              <span className="muted" style={{ fontSize: "11px" }}>
+                {f.why}
+              </span>
               {f.address && (
                 <>
                   <br />
@@ -497,6 +630,86 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             </Popup>
           </Marker>
         ))}
+
+        {/* Highway Shields Layer */}
+        {layerFilter.shields &&
+          HIGHWAY_SHIELDS.map((s) => (
+            <Marker key={s.id} position={s.coords} icon={shieldIcon(s)}>
+              <Popup>
+                <b>{s.name}</b>
+                <br />
+                <span className="muted">{s.desc}</span>
+              </Popup>
+            </Marker>
+          ))}
+
+        {/* International Border Portals Layer */}
+        {layerFilter.borders &&
+          BORDER_PORTALS.map((b) => (
+            <Marker
+              key={b.id}
+              position={b.coords}
+              icon={pinIcon({ label: "🇨🇦", color: "#dc2626", variant: "pin--border-portal" })}
+            >
+              <Popup>
+                <b>{b.name}</b>
+                <br />
+                <span style={{ color: "#dc2626", fontWeight: 700 }}>{b.direction}</span>
+                <br />
+                <span className="muted">{b.crossing}</span>
+                <br />
+                <b>Toll:</b> {b.toll}
+                <br />
+                <b>Clearance:</b> {b.clearance}
+                <div style={{ marginTop: "6px", fontSize: "11px" }}>
+                  <b>Required:</b>
+                  <ul style={{ paddingLeft: "14px", margin: "2px 0" }}>
+                    {b.checklist.map((c, i) => (
+                      <li key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
+        {/* Microclimates Layer */}
+        {layerFilter.climate &&
+          MICROCLIMATES.map((c) => (
+            <Marker
+              key={c.id}
+              position={c.coords}
+              icon={pinIcon({ label: c.icon, color: "#0284c7", variant: "pin--climate" })}
+            >
+              <Popup>
+                <b>{c.title}</b>
+                <br />
+                <span style={{ color: "#0284c7", fontWeight: 700 }}>{c.badge}</span>
+                <br />
+                <span className="muted" style={{ fontSize: "11px" }}>
+                  {c.detail}
+                </span>
+              </Popup>
+            </Marker>
+          ))}
+
+        {/* Animated Moving Vehicle during Playback */}
+        {isPlaying && (
+          <Marker
+            position={currentVehicleCoord}
+            icon={pinIcon({
+              label: isVehicleFlying ? "✈" : "🚗",
+              color: "#2563eb",
+              variant: "pin--vehicle-moving",
+            })}
+          >
+            <Popup>
+              <b>{isVehicleFlying ? "AA 2358 in Flight" : "Mazda CX-50 Cruising"}</b>
+              <br />
+              Trip Progress: {Math.round(playProgress)}%
+            </Popup>
+          </Marker>
+        )}
 
         {markers.map((m) => (
           <Marker key={m.key} position={m.coords} icon={pinIcon(m)}>
@@ -526,7 +739,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           </Marker>
         ))}
 
-        {/* Ferry hop — a dashed hint, since there is no road to the island. */}
+        {/* Ferry hop */}
         {visible.has("d4") && (
           <>
             <Polyline
@@ -561,6 +774,51 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
       </MapContainer>
 
+      {/* Floating Playback Console */}
+      <div className="playback-console-bar">
+        <button
+          type="button"
+          className="playback-btn"
+          onClick={() => setIsPlaying((p) => !p)}
+        >
+          {isPlaying ? "⏸ Pause" : "▶ Play Trip"}
+        </button>
+        <button
+          type="button"
+          className={`playback-speed-pill${playSpeed === 1 ? " is-active" : ""}`}
+          onClick={() => setPlaySpeed(1)}
+        >
+          1x
+        </button>
+        <button
+          type="button"
+          className={`playback-speed-pill${playSpeed === 2 ? " is-active" : ""}`}
+          onClick={() => setPlaySpeed(2)}
+        >
+          2x
+        </button>
+        <button
+          type="button"
+          className={`playback-speed-pill${playSpeed === 4 ? " is-active" : ""}`}
+          onClick={() => setPlaySpeed(4)}
+        >
+          4x
+        </button>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="0.5"
+          value={playProgress}
+          onChange={(e) => setPlayProgress(parseFloat(e.target.value))}
+          className="playback-scrubber"
+          aria-label="Route playback progress slider"
+        />
+        <span className="playback-live-tag">
+          {Math.round(playProgress)}% ({Math.round((playProgress / 100) * 1430)} mi)
+        </span>
+      </div>
+
       {/* Layer Filter Pills */}
       {!compact && (
         <div className="map-layer-pills">
@@ -590,10 +848,31 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           </button>
           <button
             type="button"
+            className={`layer-filter-btn${layerFilter.shields ? " is-active" : ""}`}
+            onClick={() => toggleLayer("shields")}
+          >
+            🛣️ Highway Shields
+          </button>
+          <button
+            type="button"
+            className={`layer-filter-btn${layerFilter.borders ? " is-active" : ""}`}
+            onClick={() => toggleLayer("borders")}
+          >
+            🇨🇦 Border Portals
+          </button>
+          <button
+            type="button"
+            className={`layer-filter-btn${layerFilter.climate ? " is-active" : ""}`}
+            onClick={() => toggleLayer("climate")}
+          >
+            💨 Microclimates
+          </button>
+          <button
+            type="button"
             className={`layer-filter-btn${layerFilter.flight ? " is-active" : ""}`}
             onClick={() => toggleLayer("flight")}
           >
-            ✈️ Flight Trajectory
+            ✈️ SFO Flight Arc
           </button>
         </div>
       )}
@@ -640,6 +919,16 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             ✈ {showFlight ? "Midwest focus" : "SFO flight zoom"}
           </button>
         </div>
+      )}
+
+      {/* Synchronized Sun & Golden Hour Simulator */}
+      {showSunTracker && !compact && (
+        <SunTracker hour={simHour} onHourChange={setSimHour} />
+      )}
+
+      {/* Synchronized Topographic Elevation Ribbon */}
+      {showElevation && !compact && (
+        <ElevationRibbon activeDayId={visible.size === 1 ? [...visible][0] : null} />
       )}
     </div>
   );
