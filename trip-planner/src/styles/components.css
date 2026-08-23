@@ -228,6 +228,7 @@
 .table-wrap {
   overflow-x: auto;
   overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);

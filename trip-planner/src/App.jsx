@@ -199,11 +199,9 @@ export default function App() {
             </p>
           </div>
           <div>
-            <h3>Source</h3>
+            <h3>Guide</h3>
             <p>
-              Built from Mom&rsquo;s <em>Trip to Michigan</em> document, then
-              fact-checked against the venues&rsquo; own sites. Where this app and the
-              document disagree, the app says so out loud.
+              Complete offline field guide, maps, confirmed reservations, and border info for our 2026 Michigan road trip.
             </p>
           </div>
           <div>

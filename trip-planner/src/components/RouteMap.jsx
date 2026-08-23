@@ -440,6 +440,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         center={HOME.coords}
         zoom={6}
         scrollWheelZoom={false}
+        tap={false}
+        touchZoom={true}
         style={height && !isExpanded ? { height } : undefined}
       >
         {mapStyle === "streets" ? (
