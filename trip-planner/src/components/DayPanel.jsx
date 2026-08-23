@@ -129,7 +129,7 @@ export default function DayPanel({ day }) {
               and stays grammatical whether there's one or five. */}
           <span className="dle-count">{open.length}</span>
           <span className="dle-text">
-            <b>{open.length === 1 ? "Loose end on this day" : "Loose ends on this day"}</b>
+            <b>{open.length === 1 ? "Action item on this day" : "Action items on this day"}</b>
             <small>{open.map((e) => e.title).join(" · ")}</small>
           </span>
           <span className="dle-go" aria-hidden="true">

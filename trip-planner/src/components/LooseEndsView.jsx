@@ -3,22 +3,9 @@ import { useMemo, useState } from "react";
 import { KINDS, KIND_ORDER, LOOSE_ENDS, looseEndTotals } from "../data/looseEnds";
 import { useChecklist } from "../hooks/useLocalState";
 import { telHref } from "../lib/format";
-import SundayComparator from "./visuals/SundayComparator";
-
-/**
- * Every open question on the trip, on one screen, sorted by what it asks of you.
- *
- * The organising idea: the day pages answer "what happens", this answers "what's
- * left". Sorting by demanded action rather than by severity is the whole point —
- * thirty red boxes that mostly say "I already checked this" train you to ignore
- * red, which is exactly the wrong reflex on the one day it matters.
- *
- * Ticked items are remembered in localStorage and dim out. Nothing is deleted,
- * because on a trip you want to be able to see the thing you decided against.
- */
 
 function ItemCard({ item, done, onToggle }) {
-  const kind = KINDS[item.kind];
+  const kind = KINDS[item.kind] || { tone: "info", icon: "📌", label: "Note" };
   const tel = telHref(item.phone);
 
   return (
@@ -52,47 +39,22 @@ function ItemCard({ item, done, onToggle }) {
       </div>
 
       <div className="le-card-body">
-        {item.problem && <p className="le-problem">{item.problem}</p>}
-
-        {item.answer && (
-          <div className="le-answer">
-            <span className="le-answer-label">
-              {item.kind === "done" ? "Where it landed" : "The way round it"}
-            </span>
-            <p>{item.answer}</p>
-          </div>
-        )}
-
-        {item.options?.length > 0 && (
-          <ul className="le-options">
-            {item.options.map((o) => (
-              <li key={o.label}>
-                <b>{o.label}</b>
-                <span>{o.detail}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {item.id === "sunday-shape" && <SundayComparator />}
-
-        {item.ask && (
-          <div className="le-ask">
-            <span className="le-ask-label">Say this</span>
-            <p>{item.ask}</p>
-          </div>
+        {(item.summary || item.problem) && (
+          <p style={{ margin: "0 0 var(--s-3)", color: "var(--fg)", lineHeight: 1.5 }}>
+            {item.summary || item.problem}
+          </p>
         )}
 
         {(item.deadline || item.cost) && (
-          <div className="le-facts">
+          <div className="le-facts" style={{ marginBottom: "var(--s-3)" }}>
             {item.deadline && (
               <span>
-                <b>When</b> {item.deadline}
+                <b>When:</b> {item.deadline}
               </span>
             )}
             {item.cost && (
               <span>
-                <b>Cost</b> {item.cost}
+                <b>Cost:</b> {item.cost}
               </span>
             )}
           </div>
@@ -107,7 +69,6 @@ function ItemCard({ item, done, onToggle }) {
               </a>
             )}
             {item.url &&
-              // In-app hash links must not open a new tab.
               (item.url.startsWith("#") ? (
                 <a className="action" href={item.url}>
                   <span aria-hidden="true">→</span>
@@ -121,21 +82,6 @@ function ItemCard({ item, done, onToggle }) {
               ))}
           </div>
         )}
-
-        {item.verified && (
-          <p className="le-verified">
-            <b>Checked:</b> {item.verified}
-          </p>
-        )}
-
-        {item.source && (
-          <div className="stop-source">
-            Source ·{" "}
-            <a href={item.source.url} target="_blank" rel="noreferrer">
-              {item.source.name}
-            </a>
-          </div>
-        )}
       </div>
     </article>
   );
@@ -144,44 +90,32 @@ function ItemCard({ item, done, onToggle }) {
 export default function LooseEndsView() {
   const { checked, toggle, reset } = useChecklist("mi26.looseends");
   const [filter, setFilter] = useState(null);
-  const [showDone, setShowDone] = useState(false);
 
   const totals = useMemo(() => looseEndTotals(), []);
-  const openKinds = KIND_ORDER.filter((k) => k !== "done");
-
-  const openItems = LOOSE_ENDS.filter((e) => e.kind !== "done");
-  const doneItems = LOOSE_ENDS.filter((e) => e.kind === "done");
+  const openItems = LOOSE_ENDS;
   const ticked = openItems.filter((e) => checked[e.id]).length;
   const pct = openItems.length ? Math.round((ticked / openItems.length) * 100) : 0;
 
-  const visibleOpen = filter ? openItems.filter((e) => e.kind === filter) : openItems;
-  const showDoneSection = !filter || filter === "done";
+  const visibleItems = filter ? openItems.filter((e) => e.kind === filter) : openItems;
 
   return (
     <>
       <div className="page-head">
-        <div className="eyebrow">Everything unresolved, in one place</div>
-        <h1>
-          {totals.open} things need you.
-          <br />
-          <em>{totals.done} are already handled.</em>
-        </h1>
+        <div className="eyebrow">Essential Pre-Trip Checklist</div>
+        <h1>Key Action Items & Reservations</h1>
         <p>
-          The day pages tell you what happens. This one tells you what&rsquo;s left. Sorted
-          by what each thing asks of you &mdash; not by how alarming it looks &mdash; because
-          a fact I already checked and closed shouldn&rsquo;t wear the same red as a
-          decision only you and Mom can make.
+          The few essential bookings, counter requests, and border requirements for the road trip.
         </p>
       </div>
 
       <section className="section le-progress-wrap">
         <div className="le-progress-head">
           <span className="mono">
-            {ticked} / {openItems.length} cleared
+            {ticked} / {openItems.length} completed
           </span>
           {ticked > 0 && (
             <button type="button" className="le-reset" onClick={reset}>
-              Reset
+              Reset Checklist
             </button>
           )}
         </div>
@@ -191,13 +125,13 @@ export default function LooseEndsView() {
       </section>
 
       <section className="section">
-        <div className="le-filters" role="group" aria-label="Filter by what it asks of you">
+        <div className="le-filters" role="group" aria-label="Filter action items">
           <button
             type="button"
             className={`le-filter${filter === null ? " is-on" : ""}`}
             onClick={() => setFilter(null)}
           >
-            Everything
+            All Action Items
             <b>{totals.total}</b>
           </button>
           {KIND_ORDER.map((k) => (
@@ -215,60 +149,20 @@ export default function LooseEndsView() {
         </div>
       </section>
 
-      {filter !== "done" &&
-        openKinds
-          .filter((k) => !filter || filter === k)
-          .map((k) => {
-            const items = visibleOpen.filter((e) => e.kind === k);
-            if (!items.length) return null;
-            return (
-              <section className="section le-group" key={k}>
-                <div className={`le-group-head le-group-head--${KINDS[k].tone}`}>
-                  <h2>
-                    <span aria-hidden="true">{KINDS[k].icon}</span> {KINDS[k].label}
-                    <span className="le-group-count">{items.length}</span>
-                  </h2>
-                  <p>{KINDS[k].blurb}</p>
-                </div>
-                <div className="le-stack">
-                  {items.map((item) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      done={Boolean(checked[item.id])}
-                      onToggle={() => toggle(item.id)}
-                    />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-
-      {showDoneSection && (
-        <section className="section le-group">
-          <div className="le-group-head le-group-head--ok">
-            <h2>
-              <span aria-hidden="true">{KINDS.done.icon}</span> {KINDS.done.label}
-              <span className="le-group-count">{doneItems.length}</span>
-            </h2>
-            <p>{KINDS.done.blurb}</p>
-          </div>
-
-          <button
-            type="button"
-            className="le-disclose"
-            aria-expanded={showDone}
-            onClick={() => setShowDone((v) => !v)}
-          >
-            {showDone
-              ? "Hide the handled ones"
-              : `Show all ${doneItems.length} — every closure, price and correction, with its source`}
-            <span aria-hidden="true">{showDone ? "▲" : "▼"}</span>
-          </button>
-
-          {showDone && (
-            <div className="le-stack" style={{ marginTop: "var(--s-4)" }}>
-              {doneItems.map((item) => (
+      {KIND_ORDER.filter((k) => !filter || filter === k).map((k) => {
+        const items = visibleItems.filter((e) => e.kind === k);
+        if (!items.length) return null;
+        return (
+          <section className="section le-group" key={k}>
+            <div className={`le-group-head le-group-head--${KINDS[k].tone}`}>
+              <h2>
+                <span aria-hidden="true">{KINDS[k].icon}</span> {KINDS[k].label}
+                <span className="le-group-count">{items.length}</span>
+              </h2>
+              <p>{KINDS[k].blurb}</p>
+            </div>
+            <div className="le-stack">
+              {items.map((item) => (
                 <ItemCard
                   key={item.id}
                   item={item}
@@ -277,9 +171,9 @@ export default function LooseEndsView() {
                 />
               ))}
             </div>
-          )}
-        </section>
-      )}
+          </section>
+        );
+      })}
     </>
   );
 }

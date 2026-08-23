@@ -13,8 +13,7 @@ export default function OverviewView({ onGo }) {
   const drivingDays = DAYS.filter((d) => (d.driveMinutes || 0) > 0).length;
   const { perPerson } = budgetTotals();
   const totals = looseEndTotals();
-  // Only the genuine forks get surfaced here; everything else lives one tap away.
-  const decisions = LOOSE_ENDS.filter((e) => e.kind === "decide");
+  const keyActionItems = LOOSE_ENDS.slice(0, 3);
 
   return (
     <>
@@ -107,11 +106,9 @@ export default function OverviewView({ onGo }) {
       </section>
 
       <section className="section">
-        <h2>What&rsquo;s still open</h2>
+        <h2>Key Action Items & Reservations</h2>
         <p className="section-lede">
-          Fact-checking Mom&rsquo;s document against the venues&rsquo; own 2026 calendars
-          turned up {totals.total} things worth knowing. Most are now closed out. These
-          are what&rsquo;s left, sorted by what each one asks of you.
+          The essential reservations, rental counter requests, and border requirements for the trip.
         </p>
 
         <div className="le-filters" style={{ marginBottom: "var(--s-4)" }}>
@@ -130,18 +127,18 @@ export default function OverviewView({ onGo }) {
         </div>
 
         <div className="le-stack">
-          {decisions.map((d) => (
+          {keyActionItems.map((d) => (
             <button
               key={d.id}
               type="button"
-              className="le-card le-card--stop"
+              className={`le-card le-card--${KINDS[d.kind]?.tone || "info"}`}
               style={{ textAlign: "left", width: "100%" }}
               onClick={() => onGo("loose")}
             >
               <div className="le-card-meta">
-                <span className="le-badge le-badge--stop">
-                  <span aria-hidden="true">{KINDS.decide.icon}</span>
-                  {KINDS.decide.label}
+                <span className={`le-badge le-badge--${KINDS[d.kind]?.tone || "info"}`}>
+                  <span aria-hidden="true">{KINDS[d.kind]?.icon}</span>
+                  {KINDS[d.kind]?.label}
                 </span>
                 <span className="le-when">{d.when}</span>
               </div>
@@ -155,7 +152,7 @@ export default function OverviewView({ onGo }) {
                 {d.title}
               </h3>
               <p style={{ fontSize: "var(--t-sm)", color: "var(--ink-3)", margin: 0 }}>
-                {d.answer}
+                {d.summary || d.problem}
               </p>
             </button>
           ))}
@@ -167,8 +164,7 @@ export default function OverviewView({ onGo }) {
           style={{ marginTop: "var(--s-3)" }}
           onClick={() => onGo("loose")}
         >
-          Open all {totals.total} loose ends &mdash; every decision, booking, phone call and
-          closure, with sources
+          View all {totals.total} key action items & reservations
           <span aria-hidden="true">&rarr;</span>
         </button>
       </section>

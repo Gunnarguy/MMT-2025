@@ -29,7 +29,7 @@ import { daysUntil } from "./lib/format";
 
 const TABS = [
   { id: "overview", label: "Overview", icon: "◆" },
-  { id: "loose", label: "Loose ends", icon: "◈" },
+  { id: "loose", label: "Checklist", icon: "◈" },
   { id: "days", label: "Day by day", icon: "▤" },
   { id: "map", label: "Map", icon: "◎" },
   { id: "stays", label: "Stays", icon: "▮" },
