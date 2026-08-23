@@ -384,8 +384,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   return (
     <>
       <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
-      {/* Floating HUD & Map Controls Overlay */}
-      <div className="map-hud-bar">
+        <div className="map-canvas-frame">
+          {/* Floating HUD & Map Controls Overlay */}
+          <div className="map-hud-bar">
         {hudStats && (
           <div className="map-hud-card">
             <span className="map-hud-title">{hudStats.title}</span>
@@ -865,6 +866,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           )}
         </div>
       )}
+      </div>
 
       {/* Layer Filter Pills */}
       {!compact && (

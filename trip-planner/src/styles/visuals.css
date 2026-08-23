@@ -1206,16 +1206,16 @@
 /* 6. Route Playback Floating Console */
 .playback-console-bar {
   position: absolute;
-  bottom: 54px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: var(--s-2);
   padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 999px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
@@ -1223,7 +1223,7 @@
 }
 
 [data-theme="dark"] .playback-console-bar {
-  background: rgba(15, 23, 42, 0.92);
+  background: rgba(15, 23, 42, 0.94);
   border-color: rgba(255, 255, 255, 0.18);
 }
 
@@ -1330,7 +1330,7 @@
     transform: none;
     justify-content: space-between;
     padding: 6px 10px;
-    bottom: calc(52px + env(safe-area-inset-bottom));
+    bottom: 12px;
   }
 
   .playback-scrubber {
@@ -1341,7 +1341,7 @@
   .map-floating-drawer {
     left: 8px;
     right: 8px;
-    bottom: calc(52px + env(safe-area-inset-bottom));
+    bottom: 60px;
   }
 }
 
