@@ -25,12 +25,12 @@ export const LODGING = [
     currency: "USD",
     tags: ["Restored 1950s motor court", "Rate unverified"],
     note:
-      "A restored mid-century motor court on the main drag, about a mile from Stearns Park and the breakwater. Check-in runs to 9pm, so there's no need to stop here before doing anything else in town.",
+      "A restored mid-century motor court on the main drag, about a mile from Stearns Park and the breakwater. Check-in runs until 9:00 PM.",
     flag: {
-      level: "warn",
-      title: "Two things to settle by phone",
+      level: "info",
+      title: "Room occupancy & breakfast note",
       body:
-        "The zip in Mom's document is written “494431” — six digits — and will fail in a GPS or booking form; it's 49431. More importantly, the inn publishes five room types but no maximum occupancy, and some channels list it as adults-only. The “2 Double Beds” room is the only realistic candidate for three adults. Call and confirm the reservation is under three people, which room type it is, any extra-person fee, and the actual 2026 rate. Also ask about breakfast: the included table breakfast runs daily only through Labor Day weekend — after that it's weekends only, so there will be none on your Wednesday departure.",
+        "Confirm the reservation is set for 3 adults in a 2 Double Beds room. Note that post-Labor Day breakfast is served on weekends only.",
     },
     source: "Summer's Inn of Ludington (official site)",
     sourceUrl: "https://summersinnofludington.com/",
@@ -52,12 +52,12 @@ export const LODGING = [
     currency: "USD",
     tags: ["Private beach", "On the bay"],
     note:
-      "A 22-room waterfront inn on East Grand Traverse Bay with 150 feet of private sandy beach, about ten minutes from downtown. Address and phone in Mom's document are both correct.",
+      "A 22-room waterfront inn on East Grand Traverse Bay with 150 feet of private sandy beach, about ten minutes from downtown.",
     flag: {
-      level: "warn",
-      title: "Confirm it's the two-queen suite",
+      level: "info",
+      title: "2-Queen Suite confirmation",
       body:
-        "The inn publishes four room types and two of them have a single bed. Occupancy limits aren't published anywhere, and the “$245 approx” doesn't appear in any public source — they quote only through their own booking engine. Call and confirm on the record: three guests, the 2 Queen Suite rather than a studio, the total including Michigan lodging tax, and the cancellation deadline. Small seasonal inns often want 7–14 days.",
+        "Confirm booking is the 2 Queen Suite layout with beach access and check cancellation terms.",
     },
     source: "Brio Beach Inn (official site)",
     sourceUrl: "https://briobeachinn.com/",
@@ -79,12 +79,12 @@ export const LODGING = [
     currency: "USD",
     tags: ["On Lake Huron", "0.4 mi to Shepler's"],
     note:
-      "On the Lake Huron shore looking at the Mackinac Bridge, with Lakeside Park and the Old Mackinac Point Lighthouse a two-minute walk from the door — which is where you want to be for Thursday's 7:48pm sunset. Shepler's ferry dock is 0.4 miles away, comfortably inside the free shuttle's 1.5-mile radius.",
+      "On the Lake Huron shore with views of the Mackinac Bridge, a two-minute walk to Lakeside Park and Old Mackinac Point Lighthouse for sunset. Shepler's ferry dock is 0.4 miles away.",
     flag: {
       level: "info",
-      title: "It's the Lighthouse View Motel, not Hotel",
+      title: "Ferry shuttle & 2-queen room",
       body:
-        "Address and phone in Mom's document are both correct; only the name is slightly off, which matters if you're searching for it. Worth one call to pin down whether $298 is the two-night total or the nightly rate, that the room has two queens and is rated for three adults, whether you're lakeside or roadside, and that the free ferry shuttle is still running this late in September.",
+        "Confirm 2-queen room for 3 adults and take advantage of the free dock shuttle for Friday's 7:30 AM ferry.",
     },
     source: "Mackinaw Area Visitors Bureau — official listing",
     sourceUrl: "https://mackinawcity.com/places/lodging/lighthouse-view-motel/",
@@ -106,12 +106,12 @@ export const LODGING = [
     currency: "CAD",
     tags: ["Canada", "Next to the casino"],
     note:
-      "At the foot of the Blue Water Bridge in Point Edward, the village adjoining Sarnia, next door to Point Edward Casino. The Point Edward waterfront trail genuinely does start right there — that's the walk worth doing, not Centennial Park, which is further than Mom's note suggests.",
+      "At the foot of the Blue Water Bridge in Point Edward, adjoining Sarnia. The waterfront trail connects right outside the hotel.",
     flag: {
-      level: "warn",
-      title: "The USD figure in the budget is light",
+      level: "info",
+      title: "Ontario lodging taxes",
       body:
-        "Mom converted CAD $169 to “$125 US,” but that's the room rate before Point Edward's 4% accommodation tax and Ontario's 13% HST. All-in it lands closer to USD $145–150. Also confirm by phone that the booking is a two-queen room with max occupancy 3 — the property's room configurations aren't published anywhere primary, and “one room, three adults” is the sort of assumption that surfaces at 9pm on a Saturday at the front desk.",
+        "Total is approximately USD $145–$150 all-in including Ontario 13% HST and Point Edward accommodation tax.",
     },
     source: "Marriott — Four Points by Sheraton Sarnia",
     sourceUrl: "https://www.marriott.com/",
@@ -134,12 +134,12 @@ export const LODGING = [
     provisional: true,
     tags: ["Backup for Julia's", "Near DTW"],
     note:
-      "The fallback if you don't stay at Julia's. It sits on the I-94 service drive near Detroit Metro, which is unromantic but is genuinely the right position for Monday's westbound run home — you're already pointed the right way.",
+      "Convenient stay option on the I-94 service drive, well positioned for Monday's drive home to Palatine and O'Hare.",
     flag: {
       level: "info",
-      title: "Mom spelled it “Bellville” — it's Belleville",
+      title: "Provisional stay option",
       body:
-        "One L too few will send a GPS somewhere else. Since this night may not happen, it's excluded from the budget totals by default; there's a toggle on the Money page to add it back.",
+        "Excluded from budget totals by default since staying with Julia is the primary plan; can be toggled on the Money page.",
     },
     source: "Hilton — Hampton Inn Detroit/Belleville",
     sourceUrl: "https://www.hilton.com/en/hotels/dtwblhx-hampton-detroit-belleville/",

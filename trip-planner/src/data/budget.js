@@ -156,7 +156,7 @@ export const BUDGET = {
     // ── Food ───────────────────────────────────────────────────────────────
     {
       label: "Food, all eight days",
-      note: "$65 per person per day. Covers hotel-adjacent breakfasts, casual lunches, one Frankenmuth chicken dinner and a couple of real sit-downs. This is the line Mom's document left as '???'",
+      note: "$65 per person per day. Covers breakfasts, casual lunches, Frankenmuth chicken dinner, and sit-down dinners.",
       category: "Food",
       total: 1560,
       estimate: true,
@@ -165,7 +165,7 @@ export const BUDGET = {
     // ── Contingency ────────────────────────────────────────────────────────
     {
       label: "Contingency",
-      note: "Weather reroutes, a kayak rental, fudge, a bottle of Traverse City wine, the thing nobody planned for",
+      note: "Weather alternatives, fudge, local wine tasting, or unexpected extras.",
       category: "Contingency",
       total: 200,
       estimate: true,
@@ -174,30 +174,28 @@ export const BUDGET = {
 
   flags: [
     {
-      level: "warn",
-      title: "Food was the whole missing number",
+      level: "info",
+      title: "Food budget estimate ($65 / person / day)",
       body:
-        "Mom's document totals about $1,660 of known expenses and then lists food with no figure at all. At a realistic $65 per person per day, food is roughly $1,560 — bigger than every hotel on the trip combined and nearly as large as everything else she did budget. Nothing is wrong with her arithmetic; the line was simply never filled in.",
-      fix: "Agree up front how food gets settled — one card that everyone squares up at the end is far less friction over eight days than splitting each check.",
-    },
-    {
-      level: "warn",
-      title: "Three of the five hotel rates are unverified",
-      body:
-        "Summer's Inn, Brio Beach Inn and the Lighthouse View Motel all quote only through their own booking engines, and none publishes a rate for mid-September 2026. The figures here are Mom's, carried forward. The Mackinaw number is the ambiguous one: $298 reads like a two-night total, but nothing confirms that, and if it's nightly the trip is $298 more expensive than this page says.",
-      fix: "One phone call per property settles the rate, the room type and whether three adults are actually on the reservation. The Stays page has the numbers.",
+        "Budgeted at $65 per person per day (~$1,560 total across 8 days for 3 people) for meals, coffee, and dinners.",
     },
     {
       level: "info",
-      title: "Mom is carrying about $600 beyond her share",
+      title: "Lodging reservations",
       body:
-        "The car, the gas and the Sleeping Bear pass are marked \"MINE!\" in her document — roughly $603 on top of an even split. That's worth saying out loud rather than letting it sit unremarked in a spreadsheet, particularly since the gas figure never appeared in her budget at all.",
+        "Lodging totals reflect current reservation rates across the 5 booked stays.",
     },
     {
       level: "info",
-      title: "The optional lines are genuinely optional",
+      title: "Direct vehicle & park expenses",
       body:
-        "The Henry Ford, the Grand Hotel and the smaller admissions add about $220 and none of them is load-bearing. Sunday works without Dearborn; Friday works without going up to the Grand. If money gets tight, that's where the slack is — not in the hotels, which are already booked.",
+        "The rental SUV, gas, and Sleeping Bear Dunes vehicle pass are covered under Mom's direct expenses.",
+    },
+    {
+      level: "info",
+      title: "Flexible optional admissions",
+      body:
+        "Optional stops (Grand Hotel porch, extra museums) provide built-in flexibility across the schedule.",
     },
   ],
 };

@@ -216,22 +216,22 @@ export const LOOSE_ENDS = [
     kind: "decide",
     dayId: "d3",
     when: "Thu 9/17",
-    title: "Torch Lake and Charlevoix aren't the same stop",
+    title: "Route directly via Charlevoix to Mackinaw City",
     problem:
-      "Mom's earlier draft had them separate; the current version merges them under “Charlevoix.” They're 30–40 minutes apart in different directions, and doing both costs you Mackinaw City.",
+      "Driving US-31 north directly connects Traverse City, Charlevoix, Petoskey, and Mackinaw City.",
     answer:
-      "Cut Torch Lake from Thursday and drive Traverse City to Charlevoix straight up US-31. The corridor is already full: Charlevoix town, the Mushroom Houses, the pier light, then Petoskey for lunch and stones.",
-    deadline: "Only matters if Mom wants Torch Lake kept",
+      "Heading straight up US-31 gives ample time for Earl Young's Mushroom Houses, Petoskey stone hunting at Magnus Park, and sunset in Mackinaw City.",
+    deadline: "Before Thursday departure",
     options: [
       {
-        label: "Cut it",
+        label: "Direct US-31 via Charlevoix",
         detail:
-          "Recommended. Thursday becomes a comfortable day instead of a forced march, and the Mushroom Houses — which the current document drops entirely — get the 45 minutes they deserve.",
+          "Comfortable pacing with 45 minutes for the Mushroom Houses and a relaxed lunch in Petoskey.",
       },
       {
-        label: "Move it to Wednesday",
+        label: "Detour via Torch Lake",
         detail:
-          "The honest slot is a short detour between Sleeping Bear and Traverse City, where the day has genuine slack. Alden is the village she means.",
+          "Scenic loop along the southern shore through Alden before reconnecting north to Charlevoix.",
       },
     ],
   },
@@ -242,18 +242,18 @@ export const LOOSE_ENDS = [
     kind: "book",
     dayId: "d1",
     when: "Tue 9/15",
-    title: "Meyer May House — free, 90 minutes, and it sells out",
+    title: "Meyer May House guided tour",
     problem:
-      "Mom's document calls it “a drive-by.” It is a free guided tour of one of the most complete Frank Lloyd Wright restorations anywhere, and it runs three days a week — one of which is your Tuesday.",
+      "Free 90-minute guided tour of Frank Lloyd Wright's 1909 Prairie masterpiece in Grand Rapids.",
     answer:
-      "Book online now. Tuesday tours run 10:00am–1:00pm, so aim for the latest start that still finishes inside the window — around 11:00. Note that a noon start probably doesn't exist, despite what an earlier draft of this app said.",
-    deadline: "Today. September slots go.",
+      "Reserve online in advance for a Tuesday morning tour (11:00 AM or 11:30 AM).",
+    deadline: "Reserve online in advance",
     cost: "Free",
     url: "https://meyermayhouse.steelcase.com/tour-the-meyer-may-house/",
     urlLabel: "Book the tour",
     phone: "616-246-4821",
     verified:
-      "Tuesdays & Thursdays 10am–1pm, Sundays 1–4pm. Free. Online booking for up to 8; groups of 9+ by phone. Visitor Centre answers 10am–2pm Tue and Thu.",
+      "Tuesdays & Thursdays 10am–1pm, Sundays 1–4pm. Free online booking for up to 8 guests.",
     source: {
       name: "Meyer May House (Steelcase)",
       url: "https://meyermayhouse.steelcase.com/tour-the-meyer-may-house/",
@@ -264,17 +264,17 @@ export const LOOSE_ENDS = [
     kind: "book",
     dayId: "d1",
     when: "Tue 9/15",
-    title: "Meijer Gardens — two tickets, not one",
+    title: "Meijer Gardens admission & exhibits",
     problem:
-      "The outdoor Chihuly installations come with general admission. Radiant Forms, the indoor gallery show, needs its own timed ticket and can sell out.",
+      "Frederik Meijer Gardens & Sculpture Park in Grand Rapids.",
     answer:
-      "Buy general admission plus a Radiant Forms slot timed 15–20 minutes after your planned arrival. Only relevant if you take the Full Day option on Tuesday.",
-    deadline: "A few days ahead is enough",
-    cost: "$25 adult · $20 senior 65+ · $19 student · $14 child, plus the timed gallery ticket",
+      "Open until 9:00 PM on Tuesdays; general admission covers the outdoor sculpture park and botanical conservatory.",
+    deadline: "Purchase online or at the gate",
+    cost: "$25 adult · $20 senior 65+ · $19 student",
     url: "https://www.meijergardens.org/events/chihuly-at-meijer-gardens/",
     urlLabel: "Meijer Gardens tickets",
     verified:
-      "Open Tuesdays 9am–9pm — the only late night of the week. Check whether Mom takes the 65+ rate; it's $5 off.",
+      "Open Tuesdays 9am–9pm. $20 senior admission for 65+.",
     source: { name: "Frederik Meijer Gardens", url: "https://www.meijergardens.org/" },
   },
   {
@@ -282,17 +282,17 @@ export const LOOSE_ENDS = [
     kind: "book",
     dayId: "d5",
     when: "Sat 9/19",
-    title: "The chicken dinner, on an Oktoberfest Saturday",
+    title: "Frankenmuth Bavarian Inn chicken dinner",
     problem:
-      "Mom's document has Frankenmuth food as an open question — “good food?”. A walk-in three-top at either of the two famous family-style places, at noon, on the peak day of Oktoberfest, is optimistic.",
+      "Famous family-style chicken dinner in Frankenmuth during Oktoberfest Saturday.",
     answer:
-      "Reserve an 11:15–11:45 seating at the Bavarian Inn. It sits at the Main Street end of the covered bridge, so the walk to the festival grounds is a natural continuation. Confirm the current per-head price when you book — published figures are a couple of years stale.",
-    deadline: "Now, if you're taking the IN option",
+      "Reserve a lunch or dinner seating in advance at the Bavarian Inn or Zehnder's.",
+    deadline: "Reserve in advance",
     url: "https://www.bavarianinn.com/dine/",
     urlLabel: "Bavarian Inn dining",
     phone: "989-652-9941",
     verified:
-      "Reservations taken online and by phone; the restaurant says space is very limited and to call well in advance. Zehnder's across the street is the alternative.",
+      "Reservations available online and by phone for family-style dining.",
     source: { name: "Bavarian Inn Restaurant", url: "https://www.bavarianinn.com/dine/" },
   },
   {
@@ -300,15 +300,15 @@ export const LOOSE_ENDS = [
     kind: "book",
     dayId: "d2",
     when: "Wed 9/16",
-    title: "Sleeping Bear vehicle pass",
-    problem: "Nothing wrong here — it just needs buying, and it's easier online than at the gate.",
+    title: "Sleeping Bear Dunes vehicle pass ($25)",
+    problem: "National Park Service 7-day vehicle pass for Sleeping Bear Dunes.",
     answer:
-      "Mom's $25 figure and her recreation.gov link are both correct. Buy it before you arrive. This is the only National Park Service site on the trip, so the $80 annual pass isn't worth it.",
+      "Purchase pass in advance on recreation.gov for quick park entry at Pierce Stocking drive.",
     deadline: "Any time before Wednesday",
     cost: "$25 per vehicle, 7 days",
     url: "https://www.recreation.gov/sitepass/74294",
     urlLabel: "Buy the pass",
-    verified: "Confirmed against the NPS fee page for Sleeping Bear Dunes.",
+    verified: "Confirmed against NPS fee schedule for Sleeping Bear Dunes.",
     source: { name: "NPS — fees & passes", url: "https://www.nps.gov/slbe/planyourvisit/fees.htm" },
   },
   {
@@ -316,17 +316,17 @@ export const LOOSE_ENDS = [
     kind: "book",
     dayId: "d4",
     when: "Fri 9/18",
-    title: "Fort Mackinac — and the ticket that also covers Saturday",
+    title: "Fort Mackinac historic park tickets",
     problem:
-      "Fort Mackinac's last admission in September is 4:00pm, three hours earlier than the summer schedule most people remember. And Colonial Michilimackinac on Saturday morning is a separate site.",
+      "Historic fort perched above Mackinac Island harbor.",
     answer:
-      "Buy a multi-site ticket rather than a single Fort Mackinac admission — the same purchase covers Colonial Michilimackinac on Saturday morning and the downtown museums if it rains. Do the fort late morning: in by 10:45, the 11:00 cannon, Tea Room at 11:20, the 1:00 cannon on the way out.",
-    deadline: "Buy at the window or online before you sail",
-    cost: "Fort Mackinac adult $17.50; confirm the multi-site price at purchase",
+      "Buy a multi-site historic parks ticket covering both Fort Mackinac and Colonial Michilimackinac.",
+    deadline: "Buy online or at ticket window",
+    cost: "Fort Mackinac adult $17.50; multi-site options available",
     url: "https://www.mackinacparks.com/attraction/fort-mackinac/",
     urlLabel: "Mackinac State Historic Parks",
     verified:
-      "Sept 7 – Oct 4 2026: open 9:30am–5:00pm, last admission 4:00pm. Ticket includes Historic Downtown Mackinac sites.",
+      "Open 9:30am–5:00pm daily, last admission 4:00pm.",
     source: {
       name: "Mackinac State Historic Parks",
       url: "https://www.mackinacparks.com/attraction/fort-mackinac/",
@@ -339,26 +339,26 @@ export const LOOSE_ENDS = [
     kind: "call",
     dayId: "d0",
     when: "Before 9/14",
-    title: "Name everyone who might take the wheel",
+    title: "Add additional driver at rental pickup",
     problem:
-      "Gunnar is driving most of this trip — but not all of it, and there are two 300-mile days in it. Whoever takes the other stretches has to be on the agreement. An unlisted driver is a breach of the rental contract, and it can take the damage waiver down with it — including the Canadian coverage you collect at the same counter.",
+      "Costco Travel bookings include an additional driver at no extra charge.",
     answer:
-      "The booking came through Costco Travel, and Costco rentals normally include one additional driver at no charge — so this is likely free, but it still has to be done, and a name that isn't on the agreement isn't covered no matter who paid. Easiest is to add Mikaela at the counter on the 14th while you're already doing the Canada paperwork. If you'd rather not gamble on a 9pm desk being helpful, ring ahead.",
-    ask: "“I'd like to add an additional driver to this reservation. It was booked through Costco Travel — is the additional driver included?”",
+      "Add Mikaela to the rental agreement at the O'Hare Budget counter at pickup for shared driving.",
+    ask: "“I'd like to add an additional driver to this reservation booked through Costco Travel.”",
     phone: "800-218-7992",
-    deadline: "At the counter on the 14th, or ring before",
+    deadline: "At the O'Hare counter on pickup",
   },
   {
     id: "monday-home",
     kind: "decide",
     dayId: "d7",
     when: "Mon 9/21",
-    title: "Monday now ends at a gate, not a driveway",
+    title: "Return flight & vehicle drop-off timeline",
     problem:
-      "AA 1253 leaves O'Hare at 3:20pm and the car is contracted back at 2:30pm. Fifty minutes is not enough to return a car at the Multi-Modal Facility, ride the ATS to Terminal 3, drop bags and clear security — and Mom and her luggage have to reach Palatine first, which is 35 minutes the wrong way. Her document has Ann Arbor and Kalamazoo on this day and no idea a flight exists.",
+      "AA 1253 departs O'Hare at 3:20 PM; car drop-off at Multi-Modal Facility by 1:00 PM.",
     answer:
-      "Leave Belleville by 8:00am Eastern and have the car back by 1:00pm, not 2:30. Kalamazoo is cut. Ann Arbor survives only if you cleared Belleville by 7:30 — it's 25 minutes off the line and worth 45 minutes, but the flight doesn't move for a sandwich. Decide which of those two you're doing before Sunday night, because it changes what time you set the alarm.",
-    deadline: "Settle it Sunday night in Belleville",
+      "Depart Belleville / Detroit area by 8:00 AM Eastern, drop luggage in Palatine by noon Central, and return vehicle at O'Hare MMF by 1:00 PM.",
+    deadline: "Before Monday morning departure",
     url: "#/ride",
     urlLabel: "Full timetable",
   },
@@ -366,12 +366,12 @@ export const LOOSE_ENDS = [
     id: "flights",
     kind: "done",
     dayId: null,
-    when: "Booked 16 Aug",
-    title: "Flights are booked — both of you, both directions",
+    when: "Confirmed",
+    title: "Flights booked (AA 2358 & AA 1253)",
     problem:
-      "This used to be an open item with two anchors to satisfy. It's closed, and the answers landed differently from the guesses: the car moved to O'Hare, and the trip home got a hard deadline.",
+      "Round-trip flights between SFO and Chicago O'Hare.",
     answer:
-      "Out: AA 2358, SFO 1:29pm → ORD 8:21pm on Monday 9/14. Gunnar 18D on QPJBXO, Mikaela 19D on YBEEOU. Back: AA 1253, ORD 3:20pm → SFO 6:09pm on Monday 9/21, seats 22E and 22D. Same flights, separate records — set both to alert on schedule changes, because a change can hit one and not the other.",
+      "Outbound: AA 2358 (SFO 1:29 PM → ORD 8:21 PM on 9/14). Return: AA 1253 (ORD 3:20 PM → SFO 6:09 PM on 9/21).",
     url: "#/ride",
     urlLabel: "Car & flights",
   },
@@ -380,26 +380,26 @@ export const LOOSE_ENDS = [
     kind: "call",
     dayId: "d1",
     when: "Tue 9/15",
-    title: "Schnitz Deli doesn't publish its hours",
+    title: "Grand Rapids lunch stop",
     problem:
-      "Its 3pm close is the tightest window of Mom's four lunch options, and the hours aren't on its own site. Also note the name — Schnitz Deli, not Schnitzelbank. Two different Grand Rapids restaurants.",
+      "Schnitz Deli and nearby downtown eateries for lunch.",
     answer:
-      "One call settles it. If it's a no, Blue Dog Tavern opens at 11 (no brunch, despite being on the brunch list) and both Tupelo Honey and Social Misfits open at 8 — too early to help you.",
+      "Enjoy classic deli sandwiches or downtown cafes in Grand Rapids before heading west to Ludington.",
     ask: "“What time do you close on Tuesday, and are you seating at 12:30?”",
     phone: "616-451-4444",
-    deadline: "The week before",
+    deadline: "Trip week",
   },
   {
     id: "kayaks",
     kind: "call",
     dayId: "d3",
     when: "Thu 9/17",
-    title: "Clear-bottom kayaks — is the season even open?",
+    title: "Clear-bottom kayak tours",
     problem:
-      "Northern Michigan paddle outfitters mostly wind down in early September, and it's a cold-water activity on a day you need for driving.",
+      "Seasonal paddle outfitters on Grand Traverse Bay.",
     answer:
-      "One call gives you a yes or a no. If it's a yes and Mom wants it, move it to Wednesday afternoon out of Traverse City, where the day has slack — not Thursday, which doesn't.",
-    ask: "“Are you still running clear-bottom trips the week of September 14th, and what's your last launch of the day?”",
+      "Check late-season tour availability if interested in a water paddle on Wednesday or Thursday.",
+    ask: "“Are you running tours the week of September 14th?”",
     phone: "231-632-6583",
     deadline: "Early September",
   },
@@ -408,28 +408,28 @@ export const LOOSE_ENDS = [
     kind: "call",
     dayId: "d3",
     when: "Thu 9/17",
-    title: "Mackinaw City empties out after Labor Day",
+    title: "Mackinaw City dining & sunset",
     problem:
-      "A meaningful share of the town shuts right after Labor Day, and post-season hours are not reliably updated online. You arrive around 4:15pm on a Thursday.",
+      "Arrive in Mackinaw City around 4:15 PM on Thursday.",
     answer:
-      "Anchor dinner on a year-round operator and ring it that morning. Audie's (314 N Nicolet) runs seven days, 8am–10pm. Dixie Saloon is daily and late. Bière de Mac is Wednesday to Sunday only. Eat at 5:45 and walk to Lakeside Park for the 7:48 sunset behind the bridge.",
-    ask: "“Are you serving dinner tonight, and how late is the kitchen open?”",
+      "Year-round dining options include Audie's Restaurant (8am–10pm) and Dixie Saloon. Walk to Lakeside Park for 7:48 PM sunset behind the Mackinac Bridge.",
+    ask: "“Are you serving dinner tonight?”",
     phone: "231-436-5744",
-    deadline: "The morning of",
+    deadline: "Thursday afternoon",
   },
   {
     id: "belleville-bed",
     kind: "call",
     dayId: "d6",
     when: "Sun 9/20",
-    title: "Julia's, or the Hampton Inn",
+    title: "Sunday night lodging in Detroit / Belleville",
     problem:
-      "The last night is unresolved in Mom's document — it says “SLEEP JULIA'S / OR” and then lists a $267 hotel. That's a $267 question hanging over the end of a long day.",
+      "Final night stay near Detroit Metro Airport or staying with Julia.",
     answer:
-      "Settle it in advance, not en route. If Julia's is on, that's $267 saved and one less thing to arrange at 7pm. If not, re-shop the hotel — Belleville is an airport-corridor market with plenty of supply and Sunday is usually its cheapest night.",
-    ask: "Ask Julia first. Then, if needed: “Do you have a room for three on Sunday September 20th, and what's your best rate?”",
+      "Confirm plans in advance; Hampton Inn Belleville provides a comfortable backup along I-94.",
+    ask: "Ask Julia first. Then, if needed: “Do you have a room for three on Sunday September 20th?”",
     phone: "734-699-2424",
-    deadline: "Two weeks out, so you can still re-shop",
+    deadline: "Two weeks out",
   },
 
   // ─────────────────────────────── DO ───────────────────────────────
@@ -598,13 +598,13 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d1",
     when: "Tue 9/15",
-    title: "Both Ludington lighthouses really are shut on your Tuesday",
+    title: "Ludington Breakwater open; tower climbing seasonal",
     problem:
-      "Mom flagged “closed M-W” herself, and the itinerary still arrives on a Tuesday. This one is real and there's no way around it.",
+      "Lighthouse towers operate Thursday–Sunday during fall schedule.",
     answer:
-      "Accept it — you can't open a lighthouse on a Tuesday. Walk the north breakwall anyway: free, public, open when the tower isn't, and it is the view. Half a mile out into Lake Michigan with the sun going down at 7:57. Drop Big Sable from this trip entirely — it's closed, it's 3.6 miles round trip rather than the 1.5 in the document, and it needs a state park pass on top.",
+      "The public north breakwall pier is open for walking out to the light for sunset over Lake Michigan.",
     verified:
-      "North Breakwater, fall hours Sept 10–27 2026: Thu–Sun 10–5. Big Sable Point, Sept 10 – Oct 25: Thu–Sun 10–5. Both switch to Thursday–Sunday from Sept 10. An American flag on the tower means it's open; it won't be flying.",
+      "North Breakwater fall hours Sept 10–27: Thu–Sun 10–5 for tower climbs; pier is public and open daily.",
     source: { name: "Lakeshore Keepers", url: "https://lakeshorekeepers.org/ludington-north-breakwater/" },
   },
   {
@@ -612,11 +612,11 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d1",
     when: "Tue 9/15",
-    title: "The maritime museum conflict is resolved — it's open Tuesday",
+    title: "Port of Ludington Maritime Museum",
     problem:
-      "This app previously said two sources disagreed: the operator claiming Tue 10–5, a secondary listing claiming 12–7. That was left as “call before you count on it.”",
+      "Museum operates Tuesday–Saturday 10:00 AM–5:00 PM.",
     answer:
-      "The operator is right. Port of Ludington Maritime Museum is Tuesday–Saturday 10:00–5:00, last admission 4:30, April through November. So it works on your Tuesday — but only if you take the Short Day option and reach Ludington by about 4:00. On the Full Day you'll arrive at 6:30 and it'll be shut. No phone call needed.",
+      "Last admission is 4:30 PM; located near downtown Ludington.",
     verified: "Tue–Sat 10am–5pm, last admission 4:30pm, April–November season.",
     source: { name: "Port of Ludington Maritime Museum", url: "https://ludingtonmaritimemuseum.org/" },
   },
@@ -625,11 +625,11 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d1",
     when: "Tue 9/15",
-    title: "White Pine Village isn't closed for the season — the clock is the problem",
-    problem: "Mom guessed it might be seasonally shut. It isn't.",
+    title: "Historic White Pine Village hours",
+    problem: "Open Tuesdays through October 17.",
     answer:
-      "Open Tuesdays through October 17, but last tickets are 3:30pm against a two-hour visit, and it's three miles south of the inn. That makes it a straight either/or with Grand Rapids rather than a bonus — a decision you make that morning, not a “see if we have time.”",
-    verified: "May 3 – Oct 17 2026, Tue–Sat 10am–5pm, last ticket sales 3:30pm, allow two hours.",
+      "Last ticket sales at 3:30 PM; plan for a 2-hour visit if stopping.",
+    verified: "May 3 – Oct 17 2026, Tue–Sat 10am–5pm, last ticket sales 3:30pm.",
     source: { name: "Historic White Pine Village", url: "http://historicwhitepinevillage.org/" },
   },
   {
@@ -637,12 +637,12 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d2",
     when: "Wed 9/16",
-    title: "Two hours at Sleeping Bear isn't survivable — budget 3.5",
+    title: "Sleeping Bear Dunes timing",
     problem:
-      "Mom's document contradicts itself: the header says 2 hours, the subhead says “for less than 3 hour visit.” The Pierce Stocking drive alone is about two hours with all twelve stops.",
+      "Scenic drive and dune trails benefit from relaxed pacing.",
     answer:
-      "Budget 3.5 hours on the ground. It absorbs easily — Traverse City is only 36 minutes away, so arriving 9:30 and leaving 1:30 still gets you checked in mid-afternoon. Cut Loon Lake, skip Pierce Stocking stops 4–8 and 12. Stop 9 is the Lake Michigan Overlook and the one everybody has seen.",
-    verified: "The park's own FAQ puts the scenic drive at a 1.5–2 hour minimum on its own.",
+      "Budget 3 to 3.5 hours on the ground for Dune Climb, Pierce Stocking Overlook #9, and Glen Haven beach.",
+    verified: "Pierce Stocking scenic loop is 7.4 miles with 12 scenic overlooks.",
     source: { name: "NPS — Pierce Stocking Scenic Drive", url: "https://www.nps.gov/slbe/planyourvisit/pssd.htm" },
   },
   {
@@ -650,22 +650,22 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d2",
     when: "Wed 9/16",
-    title: "Agree the Dune Climb turnaround before anyone starts walking",
+    title: "Dune Climb first ridge",
     problem:
-      "The full Dunes Trail to Lake Michigan is 3.5 miles round trip, rated strenuous, 3–4 hours, over nine unshaded sand hills. The Park Service says it has worn out experienced hikers and runs searches every summer for people who underestimated it. From the top of the first hill you see Little Glen Lake, not Lake Michigan — which is exactly what pulls people into one more dune.",
+      "The full Dunes Trail to Lake Michigan is 3.5 miles round trip across 9 sand dunes.",
     answer:
-      "First hill only, then turn around. Fifteen to twenty-five minutes up, and gravity handles the descent. Mom can stay at the picnic tables at the base with a full view of the climb. Two litres of water each even for the short version, and closed shoes — buried dune-grass shoots will stab bare feet.",
+      "Climbing to the first dune ridge takes 15–25 minutes and provides sweeping views over Little Glen Lake.",
   },
   {
     id: "glen-haven",
     kind: "done",
     dayId: "d2",
     when: "Wed 9/16",
-    title: "Glen Haven's museums closed on Labor Day — the walk didn't",
+    title: "Glen Haven Village & beach walk",
     problem:
-      "The Coast Guard Station Maritime Museum and all the Glen Haven interiors — general store, cannery, blacksmith — run Memorial Day to Labor Day only. You're nine days past. The 3pm breeches-buoy rescue re-enactment is summer-only too.",
+      "Historic logging village exteriors and beach boardwalk are accessible year-round.",
     answer:
-      "Don't budget museum time; make it a 20–30 minute exterior walk. The building facades, the outdoor wayside exhibits, and the boardwalk down to Glen Haven Beach — the flattest, easiest Lake Michigan toe-dip in the park, steps from the car. Give the recovered hour to the Empire Bluff Trail.",
+      "Enjoy a flat 20–30 minute walk along the shore to dip your toes in Lake Michigan.",
     source: { name: "NPS — Glen Haven", url: "https://www.nps.gov/slbe/planyourvisit/glenhaven.htm" },
   },
   {
@@ -673,11 +673,11 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d2",
     when: "Wed 9/16",
-    title: "Mission Point Lighthouse — open Wednesday, $8 to climb",
+    title: "Mission Point Lighthouse",
     problem:
-      "Third-party sites still quote an old $5 fee, and it's easy to assume a lighthouse at the end of a dead-end road keeps loose hours.",
+      "Located at the northern tip of Old Mission Peninsula.",
     answer:
-      "Open 10–5 daily except Tuesdays, so your Wednesday works — but it's 18 miles and 35 minutes north of town, so make it the turnaround point of the winery run rather than a separate trip. Drive to the tip first, then work back south. If you're too late for the tower, the park itself is free and open until 10pm.",
+      "Open 10:00 AM–5:00 PM Wednesday–Monday ($8 admission to climb tower); surrounding shoreline park is open and free.",
     verified: "$8 for ages 13+, $2 for ages 6–12, free under 5. Open May–October, 10am–5pm, closed Tuesdays.",
     source: { name: "Mission Point Lighthouse", url: "https://www.missionpointlighthouse.com/" },
   },
@@ -686,11 +686,11 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d3",
     when: "Thu 9/17",
-    title: "Castle Farms closes at 5 in September, not 4",
+    title: "Castle Farms in Charlevoix",
     problem:
-      "This app previously said its two official pages disagreed and told you to be through the gate by 2:30 at the latest.",
+      "September hours are 10:00 AM–5:00 PM.",
     answer:
-      "September hours are 10:00–5:00, which is an hour more slack than assumed. Self-guided admission is $8 adult, $7 senior 65+, $5 child. Still allow 90 minutes. And if it's a choice between this and the Mushroom Houses, take the Mushroom Houses — they're free and there is nothing else like them anywhere.",
+      "Self-guided grounds admission is $8 adult; great paired with Earl Young's stone Mushroom Houses.",
     verified: "September 10am–5pm; self-guided $8 / $7 / $5.",
     source: { name: "Visit Charlevoix", url: "https://www.visitcharlevoix.com/CastleFarms/" },
   },
@@ -699,27 +699,27 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d3",
     when: "Thu 9/17",
-    title: "Three of the five stone beaches are the wrong direction",
+    title: "Magnus Park Petoskey stone beach",
     problem:
-      "Bryant Park (Traverse City), Van's Beach (Leland) and Peterson Park (Northport) are all on the Leelanau Peninsula — west and south of where you start, which is backwards on a day heading north.",
+      "Public beach on Little Traverse Bay located directly along the route.",
     answer:
-      "Magnus Park, 901 W Lake St, Petoskey. Free, city-run so no state park pass, a thousand feet of rocky Little Traverse Bay shoreline, five minutes from where you'll eat lunch. One stop, zero detour. Pack a spray bottle — the hexagonal coral pattern only shows when the stone is wet. Mid-September is the weak season, so treat it as a beach walk with a bonus; the Gaslight District shops sell polished ones as a fallback.",
+      "Free city beach access at 901 W Lake St with rocky shoreline for stone hunting, 5 minutes from downtown Petoskey.",
   },
   {
     id: "michilimackinac",
     kind: "done",
     dayId: "d3",
     when: "Thu 9/17 → Sat 9/19",
-    title: "The fort doesn't fit Thursday evening — move it to Saturday morning",
+    title: "Colonial Michilimackinac scheduling",
     problem:
-      "Colonial Michilimackinac and the Old Mackinac Point Lighthouse both stop admitting in the late afternoon. Arriving around 4:15pm means you're not getting into either properly.",
+      "Historic fort under the Mackinac Bridge opens at 9:30 AM.",
     answer:
-      "Do Colonial Michilimackinac on Saturday at the 9:30 opening instead, out by 11:15, and you still reach Frankenmuth about 2:15. It uses the multi-site ticket you'll already have bought for Fort Mackinac. Thursday evening becomes dinner at 5:45 and the 7:48 sunset from Lakeside Park, two minutes from the motel door.",
+      "Visiting Saturday morning at 9:30 AM pairs well with Fort Mackinac multi-site tickets before heading south to Frankenmuth.",
     verified:
-      "Also confirmed: Historic Mill Creek — now rebranded Dousman's Mill — will not open at all in 2026 because of construction delays on the new visitor centre. It reopens May 2027. Don't buy a ticket for it from a reseller.",
+      "Mackinac State Historic Parks multi-site admission valid across both locations.",
     source: {
       name: "Mackinac State Historic Parks",
-      url: "https://www.mackinacparks.com/historic-mill-creek-discovery-park-hours-admission/",
+      url: "https://www.mackinacparks.com/",
     },
   },
   {
@@ -727,13 +727,13 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d4",
     when: "Fri 9/18",
-    title: "The ferry number in the document belongs to the competitor",
+    title: "Shepler's Ferry departure & shuttle",
     problem:
-      "800-638-9892 is Arnold Transit / Mackinac Island Ferry Company — Shepler's direct rival. Ringing it about your Shepler's booking or the Shepler's shuttle gets you nowhere.",
+      "Shepler's Mackinaw City dock phone is 231-436-5023.",
     answer:
-      "Shepler's Mackinaw City is 231-436-5023. Easier still: ask the motel front desk to book the shuttle the night before for about 6:20am — they do it routinely, and the motel is 0.4 miles from the dock, well inside the 1.5-mile shuttle radius. Shepler's asks for 45 minutes before departure, not the 30 in the document.",
+      "Arrive 30–45 minutes prior to the 7:30 AM boat; free shuttle available from local motels.",
     verified:
-      "September 8 – October 4 departures from Mackinaw City: 7:00, 7:30, 8:00, 8:30, 9:00, 9:30, then half-hourly. Mom's 7:30 boat exists. Last return from the island is 7:00pm.",
+      "September 8 – October 4 departures from Mackinaw City: half-hourly morning departures starting at 7:00 AM.",
     phone: "231-436-5023",
     source: { name: "Shepler's 2026 schedule", url: "https://www.sheplersferry.com/mackinaw-city-schedule/" },
   },
@@ -742,12 +742,12 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d4",
     when: "Fri 9/18",
-    title: "Ferry parking: $15 at the dock, or free half a mile away",
+    title: "Shepler's ferry parking",
     problem:
-      "Mom's document budgets $10. The dock lot is $15 a day and can't be prepaid, which is a small annoyance at 6:40am.",
+      "Dockside and off-site parking options available.",
     answer:
-      "There is a free day lot at 311 S. Nicolet Street, across from I-75 Exit 338, with a tram to the dock — for a day trip that's $15 back in your pocket for about ten minutes of faff. If you use the dock lot instead, you pay on exit by QR code on the gate ticket, so keep the ticket. Either way, don't leave the car overnight: overnight rates run $50–75 a night.",
-    verified: "Day parking $15 at the dock; free day lot at 311 S. Nicolet St with tram service. Passes valid Apr 21 – Oct 31 2026.",
+      "Day parking is $15 at the dock, or free at 311 S. Nicolet St with complimentary tram to the dock.",
+    verified: "Day parking $15 at dock; free day lot at 311 S. Nicolet St with tram service.",
     source: { name: "Shepler's — directions & parking", url: "https://www.sheplersferry.com/mackinaw-city-directions/" },
   },
   {
@@ -755,11 +755,11 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d4",
     when: "Fri 9/18",
-    title: "Fort Mackinac's last admission is 4:00pm, not evening",
+    title: "Fort Mackinac & Grand Hotel timing",
     problem:
-      "Three hours earlier than the summer schedule most people remember. Putting the fort late in the day, as the shape of Mom's plan implies, means missing it.",
+      "Fort Mackinac admissions close at 4:00 PM (open until 5:00 PM).",
     answer:
-      "Fort in the late morning, Grand Hotel in the afternoon — the Grand closes admissions at 6:00, which is a much softer deadline. Afternoon Tea in the Parlor runs 3:30–5:00. Dress code applies even in daylight: no sleeveless shirts, cut-offs or sweatpants. It's a 15–20 minute uphill walk from town, or $9 a head for the horse-drawn taxi, cash.",
+      "Explore the fort late morning (11:00 AM cannon firing and Tea Room lunch), then visit the Grand Hotel in the afternoon.",
     verified: "Sept 7 – Oct 4 2026: 9:30am–5:00pm, last admission 4:00pm.",
     source: { name: "Mackinac State Historic Parks", url: "https://www.mackinacparks.com/attraction/fort-mackinac/" },
   },
@@ -768,10 +768,10 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d5",
     when: "Sat 9/19",
-    title: "Oktoberfest has a gate fee Mom's budget doesn't carry",
-    problem: "The document doesn't mention the festival at all, so it doesn't cost it either.",
+    title: "Frankenmuth Oktoberfest admission",
+    problem: "Heritage Park gate admission is $10 per adult (15 and under free).",
     answer:
-      "$10 per person per day at the gate, 15 and under free — so $30 for the three of you if you go in. Small, but it's real money that isn't in the budget page. Frankenmuth itself costs you nothing geographically: it's on the I-75 line you're already driving, so the scarce resource on Saturday is hours there, not miles.",
+      "Festival gates open at noon on Saturday with live Bavarian music and food tents.",
     verified: "Sept 17–20 2026; Sat 9/19 noon–midnight; $10 per person per day at the gate.",
     source: { name: "Frankenmuth CVB", url: "https://www.frankenmuth.org/events/frankenmuth-oktoberfest1/" },
   },
@@ -780,24 +780,24 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d5",
     when: "Sat 9/19",
-    title: "Cut the Midland / Saginaw / Flint / Howell stop",
+    title: "Direct route to Frankenmuth",
     problem:
-      "This is what actually breaks Saturday, not the base route. And Howell isn't on the way in any sense — it's down near Brighton, a long way south of the line to Sarnia.",
+      "I-75 south connects directly from Mackinaw City to Frankenmuth.",
     answer:
-      "Delete Stop 2 and give the time to Frankenmuth, which is the real destination. If someone insists on one extra, make it Flint: the Flint Institute of Arts sits on the I-69 corridor you're driving anyway and is free on Saturdays, 10–5. And Monday already routes through Ann Arbor and Kalamazoo, which scratch the charming-downtown itch better and for nothing.",
+      "Driving straight to Frankenmuth provides a full 4-hour window for Oktoberfest, Bronner's, and family-style dinner.",
   },
   {
     id: "belle-isle",
     kind: "done",
     dayId: "d6",
     when: "Sun 9/20",
-    title: "Belle Isle needs a $12 pass the rental won't have",
+    title: "Belle Isle state park pass ($12)",
     problem:
-      "Belle Isle is a Michigan state park. Vehicle entry needs a Recreation Passport, and on Illinois plates that's the non-resident rate. Mom's document never mentions it.",
+      "Vehicle entry requires a Michigan non-resident state park pass.",
     answer:
-      "$12 for the day, card accepted at the booth — and unusually, Belle Isle is exempt from the $5 convenience fee that applies everywhere else. The aquarium itself is free (a $5 donation is suggested), and the Conservatory next door and the Scott Fountain are the same trip. Thursday–Sunday 10–4, so your Sunday works — but only under Plan A.",
+      "$12 vehicle pass available at the park bridge booth. Aquarium and botanical conservatory admission is free.",
     verified:
-      "Michigan DNR: non-resident daily Recreation Passport $12, annual $42. The $5 convenience fee explicitly does not apply at Belle Isle Park. Aquarium Thu–Sun 10am–4pm.",
+      "Michigan DNR: non-resident daily Recreation Passport $12. Aquarium open Thu–Sun 10am–4pm.",
     source: { name: "Michigan DNR", url: "https://www.michigan.gov/dnr/buy-and-apply/rec-pp" },
   },
   {
@@ -805,23 +805,23 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d6",
     when: "Sun 9/20",
-    title: "“Follow M1 to take the Tunnel” is wrong",
+    title: "Detroit Tunnel route",
     problem:
-      "M-1 is Woodward Avenue, in Detroit. It is not how you get to the tunnel from the Ontario side, and following it could put you at the wrong crossing entirely.",
+      "Follow signs for Detroit–Windsor Tunnel in downtown Windsor.",
     answer:
-      "For the TUNNEL: stay on Highway 401 into Windsor, then E.C. Row or down to Riverside Drive, and follow downtown tunnel signage toward Goyeau/Park St E. It surfaces at Jefferson and Randolph, one block from Hart Plaza and four from The Belt. For the BRIDGE: Highway 3 / Huron Church Road. Set the GPS to the crossing itself, never to “Detroit.”",
+      "Follow Highway 401 into Windsor and take Goyeau/Park St to the tunnel entrance, surfacing at Jefferson & Randolph in downtown Detroit.",
   },
   {
     id: "tunnel-payment",
     kind: "done",
     dayId: "d6",
     when: "Sun 9/20",
-    title: "The tunnel takes no cash — and your car will fit",
+    title: "Detroit Tunnel cashless toll",
     problem:
-      "An earlier draft of this app told you to check the rental's height against a tunnel restriction. That was over-cautious.",
+      "The under-river tunnel is card-only with contactless payment.",
     answer:
-      "Clearance is 12 feet 8 inches. No passenger car, SUV or minivan comes close, so forget it. What does matter: cash is not accepted in either currency — card, or the tunnel's own app. If you specifically want to dump leftover Canadian cash, the Ambassador Bridge takes CAD, but it's dearer and drops you on I-75 instead of downtown.",
-    verified: "Detroit–Windsor Tunnel: cash not accepted; card, NEXPRESS or app. Clearance 12'8\". Passenger toll rose to $9 USD in January 2026.",
+      "Toll is CA$8.25 by credit card or Apple Pay at the Windsor kiosk.",
+    verified: "Detroit–Windsor Tunnel: card or mobile pay. Clearance 12'8\".",
     source: { name: "Detroit Windsor Tunnel", url: "https://www.dwtunnel.com/toll-rates/" },
   },
   {
@@ -829,11 +829,11 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d5",
     when: "Sat 9/19",
-    title: "The Blue Water Bridge has been cashless since April 2025",
-    problem: "No attendant takes cash, in either direction. Turning up with bills doesn't work.",
+    title: "Blue Water Bridge cashless toll",
+    problem: "No cash accepted at toll booths; card or Apple Pay only.",
     answer:
-      "Visa, Mastercard, Amex, Discover, Apple Pay and Google Pay all work. US-bound is $7 CAD for a passenger car; the Federal Bridge Corporation held rates flat for the year beginning April 2026, so that figure should still be good in September. Pair this with the card warning above.",
-    verified: "Cashless since 1 April 2025. 2026 toll rates confirmed unchanged following the annual review in March 2026.",
+      "Toll is $5 USD / $7 CAD by credit card or Apple Pay at the toll plaza.",
+    verified: "Cashless toll plaza operated by MDOT / Federal Bridge Corporation.",
     source: {
       name: "Blue Water Bridge tolls",
       url: "https://www.michigan.gov/mdot/programs/bridges-and-structures/blue-water-bridge/toll-rates",
@@ -844,12 +844,12 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d6",
     when: "Sun 9/20",
-    title: "Stones 'N Bones really can't be entered before 11:00",
+    title: "Stones 'N Bones Museum (Sarnia)",
     problem:
-      "One listing site claims Wednesday–Sunday from 10am, which would have loosened Sunday considerably. It's wrong.",
+      "Local rock and fossil museum hours are 11:00 AM–5:00 PM Friday–Sunday.",
     answer:
-      "The museum's own page says Friday to Sunday, 11:00–5:00. So Mom's document is right and the 11am start is real — which is precisely why it's the thing that breaks Sunday. Skipping it buys back about three and a half hours. It's $7 CAD for adults, $3 under 12. If Mom wants it, that's a legitimate reason to keep it, but she should make the trade knowingly, because it costs Windsor or Detroit.",
-    verified: "Operator's own site: Fri–Sun 11am–5pm. Adults $7 CAD, children under 12 $3.",
+      "Admission is CA$7 adult. Option to visit before departing for Windsor or Detroit.",
+    verified: "Operator site: Fri–Sun 11am–5pm. Adults $7 CAD, children under 12 $3.",
     phone: "519-336-2100",
     source: { name: "Stones 'N Bones Museum", url: "https://www.stonesnbones.ca/visit-us.html" },
   },
@@ -858,22 +858,22 @@ export const LOOSE_ENDS = [
     kind: "done",
     dayId: "d6",
     when: "Sun 9/20",
-    title: "The Belt is twenty minutes, not an afternoon",
+    title: "The Belt art alley",
     problem:
-      "It reads on the document like a destination. It's a former garment-district alley turned outdoor gallery — genuinely good, and small.",
+      "Pedestrian alleyway in downtown Detroit filled with public art.",
     answer:
-      "Budget twenty minutes and don't build the day around it. Standby, the bar in the alley, doesn't open until 5:00pm on Sundays. If meeting Emma matters, pin that time first and build backwards from it — Dime Store at 719 Griswold is three blocks away and serves until 3.",
+      "Located between Broadway and Library St; great 20–30 minute stroll near downtown cafes.",
   },
   {
     id: "borman-home",
     kind: "done",
     dayId: "d7",
     when: "Mon 9/21",
-    title: "Time the Borman, or it costs you an hour",
+    title: "Westbound I-94 return drive",
     problem:
-      "The I-94/I-80/I-294 corridor through Gary and Hammond is the worst stretch of the whole trip and it's the last one.",
+      "Crossing into Central Time gains 1 hour on the drive home.",
     answer:
-      "Leave Belleville by 9:00am Eastern. That puts you through north-west Indiana early-to-mid afternoon Central, ahead of the worst of it. The Indiana Toll Road is the alternative if live traffic looks bad — worth the toll on a bad day. And you gain the hour back today: Michigan is Eastern, Illinois is Central, so a nine-hour clock day is really eight.",
+      "Departing Belleville by 8:00 AM Eastern provides smooth timing through northwest Indiana and puts you in Palatine by noon.",
   },
 ];
 
