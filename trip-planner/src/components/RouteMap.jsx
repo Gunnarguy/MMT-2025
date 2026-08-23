@@ -12,7 +12,44 @@ import {
 
 import { DAYS, HOME } from "../data/trip";
 import geometry from "../data/routeGeometry.json";
+import { FUEL_STOPS } from "../data/fuel";
 import { directionsHref, shortDate } from "../lib/format";
+
+const SFO_COORDS = [37.6213, -122.379];
+const ORD_COORDS = [41.9742, -87.9073];
+const ORD_MMF_COORDS = [41.9786, -87.8892];
+
+function greatCircleArc([lat1, lon1], [lat2, lon2], numPoints = 25) {
+  const toRad = (d) => (d * Math.PI) / 180;
+  const toDeg = (r) => (r * 180) / Math.PI;
+  const φ1 = toRad(lat1),
+    λ1 = toRad(lon1),
+    φ2 = toRad(lat2),
+    λ2 = toRad(lon2);
+  const d =
+    2 *
+    Math.asin(
+      Math.sqrt(
+        Math.sin((φ2 - φ1) / 2) ** 2 +
+          Math.cos(φ1) * Math.cos(φ2) * Math.sin((λ2 - λ1) / 2) ** 2,
+      ),
+    );
+  const points = [];
+  for (let i = 0; i <= numPoints; i++) {
+    const f = i / numPoints;
+    const A = Math.sin((1 - f) * d) / Math.sin(d);
+    const B = Math.sin(f * d) / Math.sin(d);
+    const x = A * Math.cos(φ1) * Math.cos(λ1) + B * Math.cos(φ2) * Math.cos(λ2);
+    const y = A * Math.cos(φ1) * Math.sin(λ1) + B * Math.cos(φ2) * Math.sin(λ2);
+    const z = A * Math.sin(φ1) + B * Math.sin(φ2);
+    const φ = Math.atan2(z, Math.sqrt(x ** 2 + y ** 2));
+    const λ = Math.atan2(y, x);
+    points.push([+toDeg(φ).toFixed(4), +toDeg(λ).toFixed(4)]);
+  }
+  return points;
+}
+
+const SFO_TO_ORD_ARC = greatCircleArc(SFO_COORDS, ORD_COORDS, 30);
 
 /** Read a `--day-N` token off the document so map colours track the theme. */
 function dayColor(index) {
@@ -25,12 +62,18 @@ function dayColor(index) {
 }
 
 function pinIcon({ label, color, variant = "" }) {
+  const isCircle =
+    variant.includes("home") ||
+    variant.includes("bed") ||
+    variant.includes("flight") ||
+    variant.includes("car") ||
+    variant.includes("fuel");
   return L.divIcon({
     className: "",
     html: `<div class="pin ${variant}" style="background:${color}"><span>${label}</span></div>`,
     iconSize: [26, 26],
-    iconAnchor: variant.includes("home") || variant.includes("bed") ? [13, 13] : [13, 26],
-    popupAnchor: [0, variant ? -14 : -26],
+    iconAnchor: isCircle ? [13, 13] : [13, 26],
+    popupAnchor: [0, isCircle ? -14 : -26],
   });
 }
 
@@ -52,6 +95,7 @@ function defaultVisible(focusDayId) {
 
 export default function RouteMap({ focusDayId = null, height, compact = false }) {
   const [visible, setVisible] = useState(() => defaultVisible(focusDayId));
+  const [showFlight, setShowFlight] = useState(focusDayId === "d0");
   const [colors, setColors] = useState(() => DAYS.map((_, i) => dayColor(i)));
   const wrapRef = useRef(null);
 
@@ -125,6 +169,23 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     [shownDays, colors],
   );
 
+  const fuelPins = useMemo(
+    () =>
+      FUEL_STOPS.filter((f) => visible.has(f.dayId)).map((f) => ({
+        key: `fuel-${f.id}`,
+        coords: f.coords,
+        color: "#d97706",
+        stopName: f.stopName,
+        brand: f.brand,
+        address: f.address,
+        action: f.action,
+        why: f.why,
+        date: f.date,
+        mileMarker: f.mileMarker,
+      })),
+    [visible],
+  );
+
   const lines = useMemo(
     () =>
       shownDays
@@ -142,9 +203,13 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       ...lines.flatMap((l) => l.line),
       ...markers.map((m) => m.coords),
       ...beds.map((b) => b.coords),
+      ...fuelPins.map((f) => f.coords),
     ];
+    if (visible.has("d0") && (visible.size === 1 || showFlight)) {
+      pts.push(SFO_COORDS, ...SFO_TO_ORD_ARC, ORD_COORDS, ORD_MMF_COORDS, HOME.coords);
+    }
     return pts.length ? pts : [HOME.coords];
-  }, [lines, markers, beds]);
+  }, [lines, markers, beds, fuelPins, visible, showFlight]);
 
   const toggle = (id) =>
     setVisible((prev) => {
@@ -168,7 +233,95 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           maxZoom={19}
         />
 
-        <FitBounds bounds={bounds} deps={[shownDays.length, focusDayId]} />
+        <FitBounds bounds={bounds} deps={[shownDays.length, focusDayId, showFlight]} />
+
+        {/* Day 0 Inbound Flight Arc (SFO → ORD) & Rental Car Hand-off */}
+        {visible.has("d0") && (
+          <>
+            <Polyline
+              positions={SFO_TO_ORD_ARC}
+              pathOptions={{
+                color: "#7c3aed",
+                weight: 4,
+                opacity: 0.95,
+                dashArray: "8 8",
+              }}
+            />
+            <Marker
+              position={SFO_COORDS}
+              icon={pinIcon({ label: "🛫", color: "#7c3aed", variant: "pin--flight" })}
+            >
+              <Popup>
+                <b>SFO — San Francisco International</b>
+                <br />
+                <span className="muted">Flight AA 2358 Departure (1:29 PM PDT)</span>
+                <br />
+                Nonstop to Chicago O&rsquo;Hare · 1,846 miles
+              </Popup>
+            </Marker>
+            <Marker
+              position={[40.5962, -109.1675]}
+              icon={pinIcon({ label: "✈", color: "#7c3aed", variant: "pin--flight" })}
+            >
+              <Popup>
+                <b>Flight AA 2358 in Flight</b>
+                <br />
+                <span className="muted">SFO → ORD · 4h 52m flight time</span>
+              </Popup>
+            </Marker>
+            <Marker
+              position={ORD_COORDS}
+              icon={pinIcon({ label: "🛬", color: "#7c3aed", variant: "pin--flight" })}
+            >
+              <Popup>
+                <b>ORD — Chicago O&rsquo;Hare International</b>
+                <br />
+                <span className="muted">Flight AA 2358 Arrival (8:21 PM CDT)</span>
+                <br />
+                Terminal 3 · Take ATS people-mover to Rental Car Facility
+              </Popup>
+            </Marker>
+            <Marker
+              position={ORD_MMF_COORDS}
+              icon={pinIcon({ label: "🚗", color: "#2563eb", variant: "pin--car" })}
+            >
+              <Popup>
+                <b>Budget Rental Pickup</b>
+                <br />
+                <span className="muted">9:00 PM CDT · 10255 W Zemke Blvd</span>
+                <br />
+                Mazda CX-50 · Remember Canadian Insurance Card
+              </Popup>
+            </Marker>
+          </>
+        )}
+
+        {/* Day 7 Outbound Flight Arc (ORD → SFO) */}
+        {visible.has("d7") && (
+          <>
+            <Polyline
+              positions={SFO_TO_ORD_ARC}
+              pathOptions={{
+                color: "#7c3aed",
+                weight: 3,
+                opacity: 0.65,
+                dashArray: "6 6",
+              }}
+            />
+            <Marker
+              position={ORD_COORDS}
+              icon={pinIcon({ label: "✈", color: "#7c3aed", variant: "pin--flight" })}
+            >
+              <Popup>
+                <b>Flight AA 1253 Departure</b>
+                <br />
+                <span className="muted">ORD 3:20 PM CDT → SFO 6:09 PM PDT</span>
+                <br />
+                Terminal 3 · Gate closes 3:05 PM CDT
+              </Popup>
+            </Marker>
+          </>
+        )}
 
         {lines.map((l) => (
           <Polyline
@@ -210,6 +363,36 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               {b.city}
               <br />
               <span className="muted">Night of {shortDate(b.date)}</span>
+            </Popup>
+          </Marker>
+        ))}
+
+        {fuelPins.map((f) => (
+          <Marker
+            key={f.key}
+            position={f.coords}
+            icon={pinIcon({ label: "⛽", color: "#d97706", variant: "pin--fuel" })}
+          >
+            <Popup>
+              <b>{f.stopName}</b>
+              <br />
+              <span className="muted">{f.brand}</span>
+              <br />
+              <b>Trip Milepost:</b> Mile {f.mileMarker} · {f.action}
+              <br />
+              <span className="muted" style={{ fontSize: "11px" }}>{f.why}</span>
+              {f.address && (
+                <>
+                  <br />
+                  <a
+                    href={directionsHref(null, f.address)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Directions to Gas Station
+                  </a>
+                </>
+              )}
             </Popup>
           </Marker>
         ))}
@@ -303,6 +486,19 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             title="Show every day"
           >
             Show all
+          </button>
+          <button
+            type="button"
+            aria-pressed={showFlight}
+            onClick={() => {
+              if (!visible.has("d0")) {
+                setVisible(new Set(["d0"]));
+              }
+              setShowFlight((p) => !p);
+            }}
+            title="Zoom between Midwest road trip view and full SFO flight path"
+          >
+            ✈ {showFlight ? "Midwest focus" : "SFO flight zoom"}
           </button>
         </div>
       )}

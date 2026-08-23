@@ -7,6 +7,7 @@ import "./styles/itinerary.css";
 import "./styles/views.css";
 import "./styles/looseends.css";
 import "./styles/ride.css";
+import "./styles/visuals.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 

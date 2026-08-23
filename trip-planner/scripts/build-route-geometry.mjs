@@ -41,9 +41,11 @@ const P = {
   belleville: [-83.4855, 42.2042],
   annArbor: [-83.743, 42.2808],
   kalamazoo: [-85.5872, 42.2917],
+  ohare: [-87.8892, 41.9786],
 };
 
 const DAYS = [
+  { id: "d0", waypoints: [P.ohare, P.palatine] },
   { id: "d1", waypoints: [P.palatine, P.grandRapids, P.ludington] },
   { id: "d2", waypoints: [P.ludington, P.sleepingBear, P.traverseCity] },
   {

@@ -2,6 +2,7 @@ import { BORDER } from "../data/border";
 import { useChecklist } from "../hooks/useLocalState";
 import { Chip, Flag, Source } from "./bits";
 import Checklist from "./Checklist";
+import { BlueWaterBridgeSteps, DetroitTunnelSteps } from "./visuals/BorderCrossingSteps";
 
 export default function BorderView() {
   const docs = useChecklist("mi26.border-docs");
@@ -63,6 +64,9 @@ export default function BorderView() {
             </div>
           ))}
         </div>
+
+        <BlueWaterBridgeSteps />
+        <DetroitTunnelSteps />
       </section>
 
       <section className="section">

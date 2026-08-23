@@ -266,6 +266,22 @@
   transform: none;
 }
 
+.pin--flight,
+.pin--car,
+.pin--fuel {
+  border-radius: 50%;
+  transform: none;
+  width: 26px;
+  height: 26px;
+  font-size: 13px;
+}
+
+.pin--flight > span,
+.pin--car > span,
+.pin--fuel > span {
+  transform: none;
+}
+
 .map-legend {
   display: flex;
   flex-wrap: wrap;

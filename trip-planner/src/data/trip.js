@@ -52,9 +52,9 @@ export const DAYS = [
     date: "2026-09-14",
     title: "Fly in, collect the car",
     route: "San Francisco → O'Hare → Palatine",
-    mapped: false,
-    miles: 0,
-    driveMinutes: 0,
+    mapped: true,
+    miles: 15,
+    driveMinutes: 25,
     sleep: null,
     lede:
       "Not the empty errand day Mom's document imagined. Gunnar and Mikaela are on AA 2358 out of San Francisco, wheels down at 8:21pm, and the car is collected at O'Hare at nine — so the trip really starts at ten at night, and Tuesday morning has to be gentler than originally planned.",
@@ -76,12 +76,30 @@ export const DAYS = [
           "Book the 11:30am Meyer May tour rather than the 11:00, and leave Palatine at 6:45am Central. Seven hours of sleep instead of five, and Grand Rapids still works in full.",
       },
     ],
+    legs: [
+      {
+        label: "Flight AA 2358: SFO → ORD",
+        at: 0,
+        minutes: 292,
+        miles: 1846,
+        note: "1:29 PM PDT → 8:21 PM CDT. Domestic arrival at Terminal 3; take the ATS people-mover out to the rental car facility",
+      },
+      {
+        label: "Drive: O'Hare MMF → Palatine",
+        at: 1,
+        minutes: 25,
+        miles: 15,
+        note: "I-90 W to IL-53 N to Crestwood Ln. Drop bags and get a good night's sleep before Grand Rapids",
+      },
+    ],
     stops: [
       {
         id: "d0-flight",
         kind: "admin",
         name: "AA 2358 — San Francisco to Chicago",
         where: "SFO 1:29 PM → ORD 8:21 PM",
+        address: "Chicago O'Hare International Airport, Terminal 3, Chicago, IL 60666",
+        coords: [41.9742, -87.9073],
         status: "booked",
         blurb:
           "Gunnar in 18D on record QPJBXO, Mikaela in 19D on YBEEOU — same flight, separate bookings, which matters only if there's a schedule change, because it can hit one record and not the other.",

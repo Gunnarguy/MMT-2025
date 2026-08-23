@@ -4,6 +4,13 @@ import { duration, longDate } from "../lib/format";
 import RouteMap from "./RouteMap";
 import StopCard from "./StopCard";
 import { Flag, MomSaid } from "./bits";
+import DaylightRibbon from "./visuals/DaylightRibbon";
+import DuneCrossSection from "./visuals/DuneCrossSection";
+import MackinacTrack from "./visuals/MackinacTrack";
+import { BlueWaterBridgeSteps, DetroitTunnelSteps } from "./visuals/BorderCrossingSteps";
+import FlightRunway from "./visuals/FlightRunway";
+import SundayComparator from "./visuals/SundayComparator";
+import FuelPlanner from "./visuals/FuelPlanner";
 
 /**
  * Interleave drive legs and stops into one chronological rail.
@@ -77,6 +84,8 @@ export default function DayPanel({ day }) {
         </div>
       </header>
 
+      <DaylightRibbon dayId={day.id} />
+
       {open.length > 0 && (
         <a className="daylooseends" href="#/loose">
           {/* The badge carries the number, so the sentence doesn't repeat it —
@@ -124,6 +133,19 @@ export default function DayPanel({ day }) {
           ),
         )}
       </section>
+
+      {day.id === "d2" && <DuneCrossSection />}
+      {day.id === "d4" && <MackinacTrack />}
+      {day.id === "d5" && <BlueWaterBridgeSteps />}
+      {day.id === "d6" && (
+        <>
+          <DetroitTunnelSteps />
+          <SundayComparator />
+        </>
+      )}
+      {day.id === "d7" && <FlightRunway />}
+
+      {["d2", "d5", "d7"].includes(day.id) && <FuelPlanner dayId={day.id} />}
 
       {day.momSaid && (
         <div style={{ marginTop: "var(--s-5)" }}>

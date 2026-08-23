@@ -4,6 +4,7 @@ import { BUDGET, budgetTotals, FX, SPLIT_NOTE } from "../data/budget";
 import { useLocalState } from "../hooks/useLocalState";
 import { money } from "../lib/format";
 import { Chip, Flag, Source } from "./bits";
+import FuelPlanner from "./visuals/FuelPlanner";
 
 const CATEGORY_COLOR = {
   Lodging: "var(--day-1)",
@@ -171,6 +172,8 @@ export default function MoneyView() {
           </Flag>
         </div>
       ))}
+
+      <FuelPlanner />
 
       <section className="section">
         <h2>Exchange rate</h2>

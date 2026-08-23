@@ -15,6 +15,8 @@ import {
 import { useLocalState } from "../hooks/useLocalState";
 import { money, telHref } from "../lib/format";
 import { Flag } from "./bits";
+import FlightRunway from "./visuals/FlightRunway";
+import FuelPlanner from "./visuals/FuelPlanner";
 
 /**
  * The car and the flights.
@@ -296,6 +298,8 @@ export default function RideView() {
             </div>
           ))}
         </div>
+
+        <FuelPlanner />
       </section>
 
       {/* ── The flights ─────────────────────────────────────────────────── */}
@@ -395,6 +399,8 @@ export default function RideView() {
             </li>
           ))}
         </ol>
+
+        <FlightRunway />
       </section>
     </>
   );

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { KINDS, KIND_ORDER, LOOSE_ENDS, looseEndTotals } from "../data/looseEnds";
 import { useChecklist } from "../hooks/useLocalState";
 import { telHref } from "../lib/format";
+import SundayComparator from "./visuals/SundayComparator";
 
 /**
  * Every open question on the trip, on one screen, sorted by what it asks of you.
@@ -72,6 +73,8 @@ function ItemCard({ item, done, onToggle }) {
             ))}
           </ul>
         )}
+
+        {item.id === "sunday-shape" && <SundayComparator />}
 
         {item.ask && (
           <div className="le-ask">
