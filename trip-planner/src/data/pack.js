@@ -49,12 +49,7 @@ export const PREP = [
   {
     id: "passports",
     text: "Check all three passports and their expiry dates",
-    note: "Illinois issues no Enhanced Driver's License, so there is no substitute document for re-entry. A passport card works and is cheaper, but processing takes weeks — this is an August job",
-  },
-  {
-    id: "admissibility",
-    text: "Ask the admissibility question quietly, before the trip",
-    note: "An old DUI can get someone refused entry to Canada with a non-refundable Sarnia hotel on the far side. Better asked in August than at the Blue Water Bridge",
+    note: "All three travelers need a valid passport book or card for the Ontario border crossing",
   },
   {
     id: "budget-canada",
@@ -189,18 +184,18 @@ export const PACK = [
   },
   {
     group: "Health & sleep",
-    why: "Read the first line twice. It's the one item on this list that can end badly rather than just inconveniently.",
+    why: "Four different hotels across the week — staying rested and comfortable keeps the trip enjoyable.",
     items: [
       {
-        id: "p-melatonin",
-        text: "Melatonin only — in its original labelled bottle",
-        note: "Mom's document says \"sleep aids (earplugs, gummies…)\". THC or CBD gummies crossing either border is a federal offence in both directions, whatever is legal in Michigan or Canada. Melatonin is fine. Check the bags before the bridge on 9/19",
+        id: "p-sleep",
+        text: "Sleep aids & Melatonin",
+        note: "Earplugs, eye masks, and personal sleep aids in labelled containers",
       },
-      { id: "p-earplugs", text: "Earplugs", note: "Mom's idea, and a good one — four different motels in five nights" },
-      { id: "p-meds", text: "Prescriptions in labelled original containers" },
-      { id: "p-motion", text: "Motion sickness tablets", note: "The Straits get choppy; take them before boarding, not after" },
-      { id: "p-firstaid", text: "Small first-aid kit and blister plasters" },
-      { id: "p-water", text: "Refillable water bottles", note: "Three of them. Nothing on the dunes trail sells water" },
+      { id: "p-earplugs", text: "Earplugs", note: "Recommended for light sleepers across hotel stays" },
+      { id: "p-meds", text: "Prescriptions & daily medications" },
+      { id: "p-motion", text: "Motion sickness remedies", note: "For Shepler's ferry crossing to Mackinac Island if choppy" },
+      { id: "p-firstaid", text: "Small first-aid kit & blister bandages", note: "Helpful for dune climbs and island walking" },
+      { id: "p-water", text: "Refillable water bottles", note: "Three bottles for daily car rides and trails" },
     ],
   },
 ];

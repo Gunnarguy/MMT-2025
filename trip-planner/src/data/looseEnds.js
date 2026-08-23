@@ -453,16 +453,18 @@ export const LOOSE_ENDS = [
     urlLabel: "Car & flights",
   },
   {
-    id: "gummies",
+    id: "passports-check",
     kind: "do",
     dayId: "d0",
-    when: "Before you load the car",
-    title: "Settle what “gummies” means",
+    when: "Before loading the car",
+    title: "Confirm all 3 passports are packed",
     problem:
-      "Mom's packing note lists “sleep aids (earplugs, gummies…)”. If those are THC, carrying them across either border is a federal offence in both directions regardless of what's legal on either side. It is the one thing on this trip that ends badly rather than merely inconveniently.",
+      "All three passengers need a valid US passport book or passport card for the Saturday/Sunday Ontario leg.",
     answer:
-      "Melatonin only, in the labelled bottle. Then physically search the bags and the car before the bridge on the 19th — not because anyone is lying, but because a forgotten tin in a door pocket is exactly how this goes wrong.",
-    deadline: "Before departure, and again before the bridge",
+      "Ensure all 3 passports are in carry-on bags before leaving Palatine Tuesday morning, with offline photo copies saved to phone camera rolls as backup.",
+    deadline: "Before departure from Palatine",
+    url: "#/border",
+    urlLabel: "Border",
   },
   {
     id: "tell-the-bank",

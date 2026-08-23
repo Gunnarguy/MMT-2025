@@ -78,10 +78,10 @@ export const BORDER_PORTALS = [
     returnToll: "CA$7.00 / ~$5.11 USD upon return",
     clearance: "Twin suspension spans over deep international shipping channel",
     checklist: [
-      "Passports for all 3 passengers (valid for entire stay)",
+      "Passports for all 3 passengers",
       "Budget Canadian Non-Resident Insurance Card (requested at O'Hare pickup)",
-      "No THC/CBD products in vehicle (federal offense at border in both directions)",
-      "Declare all food, alcohol, gifts over $60 CAD",
+      "Tap-to-pay credit card ready in driver console for $5 toll",
+      "Declare purchases or gifts over exemption allowance",
     ],
   },
   {

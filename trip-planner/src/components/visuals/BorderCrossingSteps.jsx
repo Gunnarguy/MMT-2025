@@ -17,7 +17,7 @@ export function BlueWaterBridgeSteps() {
           <span className="border-step-num">Step 1 · Prep</span>
           <span className="border-step-heading">Fuel & Cooler on US Side</span>
           <span className="border-step-body">
-            Fill the tank in Port Huron (Ontario gas is ~CA$1.62/L / $4.40/gal). Eat or bin all fresh fruit. Melatonin in retail bottle only.
+            Fill the tank in Port Huron (Ontario gas is ~CA$1.62/L / $4.40/gal). Finish fresh fruit snacks. Passports in hand.
           </span>
         </div>
         <div className="border-step-card">
