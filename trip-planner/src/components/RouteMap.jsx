@@ -799,51 +799,6 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
       </MapContainer>
 
-      {/* Floating Playback Console */}
-      <div className="playback-console-bar">
-        <button
-          type="button"
-          className="playback-btn"
-          onClick={() => setIsPlaying((p) => !p)}
-        >
-          {isPlaying ? "⏸ Pause" : "▶ Play Trip"}
-        </button>
-        <button
-          type="button"
-          className={`playback-speed-pill${playSpeed === 1 ? " is-active" : ""}`}
-          onClick={() => setPlaySpeed(1)}
-        >
-          1x
-        </button>
-        <button
-          type="button"
-          className={`playback-speed-pill${playSpeed === 2 ? " is-active" : ""}`}
-          onClick={() => setPlaySpeed(2)}
-        >
-          2x
-        </button>
-        <button
-          type="button"
-          className={`playback-speed-pill${playSpeed === 4 ? " is-active" : ""}`}
-          onClick={() => setPlaySpeed(4)}
-        >
-          4x
-        </button>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="0.5"
-          value={playProgress}
-          onChange={(e) => setPlayProgress(parseFloat(e.target.value))}
-          className="playback-scrubber"
-          aria-label="Route playback progress slider"
-        />
-        <span className="playback-live-tag">
-          {Math.round(playProgress)}% ({Math.round((playProgress / 100) * 1430)} mi)
-        </span>
-      </div>
-
       {/* Floating Interactive Drawer for Elevation & Sun Tracker Over Map */}
       {!compact && (showElevation || showSunTracker) && (
         <div className="map-floating-drawer">
@@ -866,6 +821,61 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           )}
         </div>
       )}
+      </div>
+
+      {/* Dedicated Interactive Route Playback Deck */}
+      <div className="playback-deck">
+        <div className="playback-deck-controls">
+          <button
+            type="button"
+            className="playback-btn"
+            onClick={() => setIsPlaying((p) => !p)}
+          >
+            {isPlaying ? "⏸ Pause" : "▶ Play Trip"}
+          </button>
+          <div className="playback-speed-group">
+            <button
+              type="button"
+              className={`playback-speed-pill${playSpeed === 1 ? " is-active" : ""}`}
+              onClick={() => setPlaySpeed(1)}
+            >
+              1x
+            </button>
+            <button
+              type="button"
+              className={`playback-speed-pill${playSpeed === 2 ? " is-active" : ""}`}
+              onClick={() => setPlaySpeed(2)}
+            >
+              2x
+            </button>
+            <button
+              type="button"
+              className={`playback-speed-pill${playSpeed === 4 ? " is-active" : ""}`}
+              onClick={() => setPlaySpeed(4)}
+            >
+              4x
+            </button>
+          </div>
+        </div>
+
+        <div className="playback-deck-scrubber">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="0.5"
+            value={playProgress}
+            onChange={(e) => setPlayProgress(parseFloat(e.target.value))}
+            className="playback-scrubber"
+            aria-label="Route playback progress slider"
+          />
+        </div>
+
+        <div className="playback-deck-status">
+          <span className="playback-live-tag">
+            {Math.round(playProgress)}% · {Math.round((playProgress / 100) * 1430)} mi
+          </span>
+        </div>
       </div>
 
       {/* Layer Filter Pills */}

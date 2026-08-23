@@ -1203,28 +1203,45 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-/* 6. Route Playback Floating Console */
-.playback-console-bar {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
+/* 6. Route Playback Dedicated Deck */
+.playback-deck {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
-  padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  z-index: 600;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 8px 16px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  position: relative;
+  z-index: 10;
 }
 
-[data-theme="dark"] .playback-console-bar {
-  background: rgba(15, 23, 42, 0.94);
-  border-color: rgba(255, 255, 255, 0.18);
+.playback-deck-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.playback-speed-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.playback-deck-scrubber {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 120px;
+}
+
+.playback-deck-status {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fg);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .playback-btn {
@@ -1265,7 +1282,7 @@
 }
 
 .playback-scrubber {
-  width: 140px;
+  width: 100%;
   height: 6px;
   cursor: pointer;
   accent-color: #2563eb;
@@ -1280,8 +1297,8 @@
 .playback-scrubber::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #2563eb;
   cursor: pointer;
@@ -1322,26 +1339,30 @@
 }
 
 @media (max-width: 640px) {
-  .playback-console-bar {
-    width: calc(100% - 24px);
-    max-width: calc(100% - 24px);
-    left: 12px;
-    right: 12px;
-    transform: none;
-    justify-content: space-between;
-    padding: 6px 10px;
-    bottom: 12px;
+  .playback-deck {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
   }
 
-  .playback-scrubber {
-    flex: 1;
-    min-width: 60px;
+  .playback-deck-controls {
+    order: 1;
+  }
+
+  .playback-deck-status {
+    order: 2;
+  }
+
+  .playback-deck-scrubber {
+    order: 3;
+    width: 100%;
+    min-width: 100%;
   }
 
   .map-floating-drawer {
     left: 8px;
     right: 8px;
-    bottom: 60px;
+    bottom: 12px;
   }
 }
 
