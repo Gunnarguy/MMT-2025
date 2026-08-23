@@ -77,24 +77,126 @@ function dayColor(index) {
   );
 }
 
-function pinIcon({ label, color, variant = "" }) {
-  const isCircle =
-    variant.includes("home") ||
-    variant.includes("bed") ||
-    variant.includes("flight") ||
-    variant.includes("car") ||
-    variant.includes("fuel") ||
-    variant.includes("climate") ||
-    variant.includes("border") ||
-    variant.includes("vehicle");
+function pinIcon({ label, color, variant = "", title = "" }) {
+  const isBed = variant.includes("bed");
+  const isFuel = variant.includes("fuel");
+  const isFlight = variant.includes("flight");
+  const isCar = variant.includes("car");
+  const isBorder = variant.includes("border");
+  const isClimate = variant.includes("climate");
+  const isHome = variant.includes("home");
+  const isVehicle = variant.includes("vehicle");
+
+  let glyph = label;
+  let bg = color || "#2563eb";
+
+  if (isBed) {
+    glyph = "🛏️";
+    bg = "#0f172a";
+  } else if (isFuel) {
+    glyph = "⛽";
+    bg = "#b45309";
+  } else if (isFlight) {
+    glyph = label || "✈";
+    bg = "#7c3aed";
+  } else if (isCar) {
+    glyph = "🚗";
+    bg = "#2563eb";
+  } else if (isBorder) {
+    glyph = label || "🇨🇦";
+    bg = "#dc2626";
+  } else if (isClimate) {
+    glyph = label || "💨";
+    bg = "#0284c7";
+  } else if (isHome) {
+    glyph = "🏠";
+    bg = "#1e293b";
+  } else if (isVehicle) {
+    glyph = label || "🚗";
+    bg = "#2563eb";
+  }
+
+  const html = `
+    <div class="map-pointer-pin ${variant}" style="--pin-bg: ${bg};" title="${title || label || ""}">
+      <div class="pin-bubble">
+        <span class="pin-symbol">${glyph}</span>
+      </div>
+      <div class="pin-arrow"></div>
+      <div class="pin-ground-dot"></div>
+    </div>
+  `;
 
   return L.divIcon({
-    className: "",
-    html: `<div class="pin ${variant}" style="background:${color}"><span>${label}</span></div>`,
-    iconSize: [26, 26],
-    iconAnchor: isCircle ? [13, 13] : [13, 26],
-    popupAnchor: [0, isCircle ? -14 : -26],
+    className: "map-pointer-wrapper",
+    html: html,
+    iconSize: [32, 42],
+    iconAnchor: [16, 42], // Downward needle pointer lands directly on ground coordinate
+    popupAnchor: [0, -42],
   });
+}
+
+/**
+ * Declutter proximate markers:
+ * When markers share close coordinates (< 2.5 miles), disperse them into a radial arc
+ * with needle stems so each point is visible and never stacked on top of each other.
+ */
+function declutterMarkers(items, offsetRadius = 0.02) {
+  if (!items || items.length <= 1) {
+    return (items || []).map((item) => ({
+      ...item,
+      displayCoords: item.coords,
+      rawCoords: item.coords,
+      isDispersed: false,
+    }));
+  }
+
+  const clusters = [];
+  items.forEach((item) => {
+    if (!item.coords) return;
+    let placed = false;
+    for (const cl of clusters) {
+      const [cLat, cLon] = cl.center;
+      const dLat = Math.abs(item.coords[0] - cLat);
+      const dLon = Math.abs(item.coords[1] - cLon);
+      if (dLat < 0.035 && dLon < 0.045) {
+        cl.items.push(item);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      clusters.push({ center: [...item.coords], items: [item] });
+    }
+  });
+
+  const result = [];
+  clusters.forEach((cl) => {
+    const count = cl.items.length;
+    if (count === 1) {
+      result.push({
+        ...cl.items[0],
+        displayCoords: cl.items[0].coords,
+        rawCoords: cl.items[0].coords,
+        isDispersed: false,
+      });
+    } else {
+      const [cLat, cLon] = cl.center;
+      cl.items.forEach((item, i) => {
+        const angle = (2 * Math.PI * i) / count - Math.PI / 2;
+        const radiusLat = offsetRadius * 1.3;
+        const radiusLon = offsetRadius * 1.7;
+        const dispLat = cLat + Math.sin(angle) * radiusLat;
+        const dispLon = cLon + Math.cos(angle) * radiusLon;
+        result.push({
+          ...item,
+          displayCoords: [dispLat, dispLon],
+          rawCoords: item.coords,
+          isDispersed: true,
+        });
+      });
+    }
+  });
+  return result;
 }
 
 function shieldIcon(shield) {
@@ -285,12 +387,12 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         });
       });
     });
-    return out;
+    return declutterMarkers(out, 0.022);
   }, [shownDays, colors, layerFilter.stops]);
 
   const beds = useMemo(() => {
     if (!layerFilter.hotels) return [];
-    return shownDays
+    const out = shownDays
       .filter((d) => d.sleep?.coords)
       .map((d) => ({
         key: `bed-${d.id}`,
@@ -301,11 +403,12 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         address: d.sleep.address,
         date: d.date,
       }));
+    return declutterMarkers(out, 0.026);
   }, [shownDays, colors, layerFilter.hotels]);
 
   const fuelPins = useMemo(() => {
     if (!layerFilter.gas) return [];
-    return FUEL_STOPS.filter((f) => visible.has(f.dayId)).map((f) => ({
+    const out = FUEL_STOPS.filter((f) => visible.has(f.dayId)).map((f) => ({
       key: `fuel-${f.id}`,
       coords: f.coords,
       color: "#d97706",
@@ -317,6 +420,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       date: f.date,
       mileMarker: f.mileMarker,
     }));
+    return declutterMarkers(out, 0.022);
   }, [visible, layerFilter.gas]);
 
   const lines = useMemo(
@@ -596,51 +700,75 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         </Marker>
 
         {beds.map((b) => (
-          <Marker
-            key={b.key}
-            position={b.coords}
-            icon={pinIcon({ label: "🛏", color: b.color, variant: "pin--bed" })}
-          >
-            <Popup>
-              <b>{b.name}</b>
-              <br />
-              {b.city}
-              <br />
-              <span className="muted">Night of {shortDate(b.date)}</span>
-            </Popup>
-          </Marker>
+          <div key={b.key}>
+            {b.isDispersed && (
+              <Polyline
+                positions={[b.rawCoords, b.displayCoords]}
+                pathOptions={{
+                  color: "#38bdf8",
+                  weight: 2,
+                  dashArray: "3 3",
+                  opacity: 0.85,
+                }}
+              />
+            )}
+            <Marker
+              position={b.displayCoords || b.coords}
+              icon={pinIcon({ label: "🛏", color: b.color, variant: "pin--bed", title: b.name })}
+            >
+              <Popup>
+                <b>{b.name}</b>
+                <br />
+                {b.city}
+                <br />
+                <span className="muted">Night of {shortDate(b.date)}</span>
+              </Popup>
+            </Marker>
+          </div>
         ))}
 
         {fuelPins.map((f) => (
-          <Marker
-            key={f.key}
-            position={f.coords}
-            icon={pinIcon({ label: "⛽", color: "#d97706", variant: "pin--fuel" })}
-          >
-            <Popup>
-              <b>{f.stopName}</b>
-              <br />
-              <span className="muted">{f.brand}</span>
-              <br />
-              <b>Trip Milepost:</b> Mile {f.mileMarker} · {f.action}
-              <br />
-              <span className="muted" style={{ fontSize: "11px" }}>
-                {f.why}
-              </span>
-              {f.address && (
-                <>
-                  <br />
-                  <a
-                    href={directionsHref(null, f.address)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Directions to Gas Station
-                  </a>
-                </>
-              )}
-            </Popup>
-          </Marker>
+          <div key={f.key}>
+            {f.isDispersed && (
+              <Polyline
+                positions={[f.rawCoords, f.displayCoords]}
+                pathOptions={{
+                  color: "#f59e0b",
+                  weight: 2,
+                  dashArray: "3 3",
+                  opacity: 0.85,
+                }}
+              />
+            )}
+            <Marker
+              position={f.displayCoords || f.coords}
+              icon={pinIcon({ label: "⛽", color: "#d97706", variant: "pin--fuel", title: f.stopName })}
+            >
+              <Popup>
+                <b>{f.stopName}</b>
+                <br />
+                <span className="muted">{f.brand}</span>
+                <br />
+                <b>Trip Milepost:</b> Mile {f.mileMarker} · {f.action}
+                <br />
+                <span className="muted" style={{ fontSize: "11px" }}>
+                  {f.why}
+                </span>
+                {f.address && (
+                  <>
+                    <br />
+                    <a
+                      href={directionsHref(null, f.address)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Directions to Gas Station
+                    </a>
+                  </>
+                )}
+              </Popup>
+            </Marker>
+          </div>
         ))}
 
         {/* Highway Shields Layer */}
@@ -724,31 +852,44 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
 
         {markers.map((m) => (
-          <Marker key={m.key} position={m.coords} icon={pinIcon(m)}>
-            <Popup>
-              <b>{m.title}</b>
-              <br />
-              {m.where && (
-                <>
-                  <span className="muted">{m.where}</span>
-                  <br />
-                </>
-              )}
-              <span className="muted">{m.dayTitle}</span>
-              {m.address && (
-                <>
-                  <br />
-                  <a
-                    href={directionsHref(null, m.address)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Directions
-                  </a>
-                </>
-              )}
-            </Popup>
-          </Marker>
+          <div key={m.key}>
+            {m.isDispersed && (
+              <Polyline
+                positions={[m.rawCoords, m.displayCoords]}
+                pathOptions={{
+                  color: m.color,
+                  weight: 2,
+                  dashArray: "3 3",
+                  opacity: 0.85,
+                }}
+              />
+            )}
+            <Marker position={m.displayCoords || m.coords} icon={pinIcon(m)}>
+              <Popup>
+                <b>{m.title}</b>
+                <br />
+                {m.where && (
+                  <>
+                    <span className="muted">{m.where}</span>
+                    <br />
+                  </>
+                )}
+                <span className="muted">{m.dayTitle}</span>
+                {m.address && (
+                  <>
+                    <br />
+                    <a
+                      href={directionsHref(null, m.address)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Directions
+                    </a>
+                  </>
+                )}
+              </Popup>
+            </Marker>
+          </div>
         ))}
 
         {/* Ferry hop */}
