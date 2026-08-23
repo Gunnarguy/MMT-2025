@@ -69,7 +69,16 @@ export function mapHref(query) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
-/** Turn-by-turn directions link between two place strings. */
+/** Apple Maps navigation link (opens native Maps on iOS / Mac). */
+export function appleMapsHref(to, from) {
+  if (!to) return null;
+  const base = "https://maps.apple.com/?daddr=";
+  const parts = [encodeURIComponent(to)];
+  if (from) parts.push(`&saddr=${encodeURIComponent(from)}`);
+  return `${base}${parts.join("")}`;
+}
+
+/** Google Maps turn-by-turn directions link between two place strings. */
 export function directionsHref(from, to) {
   if (!to) return null;
   const base = "https://www.google.com/maps/dir/?api=1";

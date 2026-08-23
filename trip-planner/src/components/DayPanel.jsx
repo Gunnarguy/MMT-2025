@@ -6,6 +6,7 @@ import RouteMap from "./RouteMap";
 import StopCard from "./StopCard";
 import { Flag, MomSaid } from "./bits";
 import DaylightRibbon from "./visuals/DaylightRibbon";
+import CoPilotHUD from "./visuals/CoPilotHUD";
 import DuneCrossSection from "./visuals/DuneCrossSection";
 import MackinacTrack from "./visuals/MackinacTrack";
 import { BlueWaterBridgeSteps, DetroitTunnelSteps } from "./visuals/BorderCrossingSteps";
@@ -147,6 +148,8 @@ export default function DayPanel({ day }) {
           ))}
         </div>
       )}
+
+      {day.stops?.length > 0 && <CoPilotHUD day={day} stops={day.stops} />}
 
       <section className="timeline">
         {timeline(day).map((item) =>

@@ -356,6 +356,33 @@ export default function RideView() {
                 </div>
               ))}
 
+              <div className="flight-tracker-actions" style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "var(--s-3)" }}>
+                {f.flight && (
+                  <>
+                    <a
+                      href={`https://www.flightaware.com/live/flight/AAL${f.flight.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="action action--nav"
+                      title="Live radar & inbound aircraft tracking on FlightAware"
+                    >
+                      <span aria-hidden="true">✈️</span>
+                      Track Flight #{f.flight} on FlightAware
+                    </a>
+                    <a
+                      href={`https://www.aa.com/travelInformation/flights/status/detail?flightNumber=${f.flight.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="action action--web"
+                      title="Official American Airlines gate, baggage & status"
+                    >
+                      <span aria-hidden="true">📋</span>
+                      AA.com Flight Status
+                    </a>
+                  </>
+                )}
+              </div>
+
               {verdict && (
                 <div className={`ride-verdict ride-verdict--${verdict.tone}`}>
                   {verdict.text}

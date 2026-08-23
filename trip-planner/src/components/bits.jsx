@@ -2,7 +2,7 @@
  * Tiny shared presentational pieces. Deliberately dumb — no state, no fetching.
  */
 
-import { directionsHref, mapHref, telHref } from "../lib/format";
+import { appleMapsHref, directionsHref, mapHref, telHref } from "../lib/format";
 
 const FLAG_ICON = { stop: "⛔", warn: "⚠️", info: "ℹ️", ok: "✅" };
 
@@ -74,34 +74,33 @@ export function MomSaid({ children, label = "Mom's Itinerary Notes" }) {
  */
 export function ActionRow({ phone, mapQuery, from, url, urlLabel = "Website", extra }) {
   const tel = telHref(phone);
-  const map = mapHref(mapQuery);
-  const dir = from ? directionsHref(from, mapQuery) : null;
+  const appleMap = mapQuery ? appleMapsHref(mapQuery, from) : null;
+  const googleMap = from ? directionsHref(from, mapQuery) : mapHref(mapQuery);
 
-  if (!tel && !map && !url && !extra) return null;
+  if (!tel && !googleMap && !appleMap && !url && !extra) return null;
 
   return (
     <div className="actions">
+      {appleMap && (
+        <a className="action action--nav" href={appleMap} target="_blank" rel="noreferrer" title="Open in Apple Maps">
+          <span aria-hidden="true">🍏</span>
+          Apple Maps
+        </a>
+      )}
+      {googleMap && (
+        <a className="action action--nav" href={googleMap} target="_blank" rel="noreferrer" title="Open in Google Maps">
+          <span aria-hidden="true">🧭</span>
+          Google Maps
+        </a>
+      )}
       {tel && (
-        <a className="action" href={tel}>
+        <a className="action action--tel" href={tel} title={`Call ${phone}`}>
           <span aria-hidden="true">📞</span>
           {phone}
         </a>
       )}
-      {dir ? (
-        <a className="action" href={dir} target="_blank" rel="noreferrer">
-          <span aria-hidden="true">🧭</span>
-          Directions
-        </a>
-      ) : (
-        map && (
-          <a className="action" href={map} target="_blank" rel="noreferrer">
-            <span aria-hidden="true">📍</span>
-            Map
-          </a>
-        )
-      )}
       {url && (
-        <a className="action" href={url} target="_blank" rel="noreferrer">
+        <a className="action action--web" href={url} target="_blank" rel="noreferrer">
           <span aria-hidden="true">🔗</span>
           {urlLabel}
         </a>
