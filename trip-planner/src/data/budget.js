@@ -153,6 +153,13 @@ export const BUDGET = {
       estimate: true,
     },
 
+    {
+      label: "Frankenmuth Oktoberfest gate",
+      note: "3 × $10 at the Heritage Park gate, Saturday 9/19. 15 and under free",
+      category: "Tickets & entry",
+      total: 30,
+    },
+
     // ── Food ───────────────────────────────────────────────────────────────
     {
       label: "Food, all eight days",
