@@ -35,7 +35,11 @@ export default function MorningDispatch({ day }) {
       const lodging = LODGING.find((l) => l.name === day.sleep.name);
       lines.push(`🏨 Overnight: ${day.sleep.name} (${day.sleep.city})`);
       if (day.sleep.address) lines.push(`  Address: ${day.sleep.address}`);
-      if (lodging?.conf) lines.push(`  Confirmation: ${lodging.conf}`);
+      if (lodging) {
+        lines.push(
+          `  Confirmation: ${lodging.conf ?? "⚠️ MISSING — call the hotel"}`,
+        );
+      }
     } else {
       lines.push("🏠 Sleep: Home in Palatine");
     }

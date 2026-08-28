@@ -66,6 +66,17 @@ export default function StaysView() {
               ) : (
                 <Chip tone="locked">Booked</Chip>
               )}
+              {!stay.provisional &&
+                (stay.conf ? (
+                  <Chip tone="locked">Conf #{stay.conf}</Chip>
+                ) : (
+                  <Chip
+                    tone="warn"
+                    title="Needed at the Canadian border — CBSA asks where you are staying"
+                  >
+                    No confirmation #
+                  </Chip>
+                ))}
               {stay.tags?.map((t) => (
                 <Chip key={t} tone="ghost">
                   {t}

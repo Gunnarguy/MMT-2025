@@ -7,6 +7,13 @@
  * `flag` rather than silently swallowed.
  */
 
+/**
+ * `conf` is the booking confirmation number. It is null on every record until
+ * someone reads it off the reservation email — CBSA asks where you are staying
+ * when you cross at the Blue Water Bridge, and "I think it is booked" is a poor
+ * answer. The Stays page and the morning dispatch both call out a null one
+ * rather than staying silent, which is how five missing numbers went unnoticed.
+ */
 export const LODGING = [
   {
     id: "ludington",
@@ -23,6 +30,7 @@ export const LODGING = [
     price: 155,
     usd: 155,
     currency: "USD",
+    conf: null,
     tags: ["Restored 1950s motor court", "Rate unverified"],
     note:
       "A restored mid-century motor court on the main drag, about a mile from Stearns Park and the breakwater. Check-in runs until 9:00 PM.",
@@ -50,6 +58,7 @@ export const LODGING = [
     price: 245,
     usd: 245,
     currency: "USD",
+    conf: null,
     tags: ["Private beach", "On the bay"],
     note:
       "A 22-room waterfront inn on East Grand Traverse Bay with 150 feet of private sandy beach, about ten minutes from downtown.",
@@ -77,6 +86,7 @@ export const LODGING = [
     price: 298,
     usd: 298,
     currency: "USD",
+    conf: null,
     tags: ["On Lake Huron", "0.4 mi to Shepler's"],
     note:
       "On the Lake Huron shore with views of the Mackinac Bridge, a two-minute walk to Lakeside Park and Old Mackinac Point Lighthouse for sunset. Shepler's ferry dock is 0.4 miles away.",
@@ -104,6 +114,7 @@ export const LODGING = [
     price: 169,
     usd: 148,
     currency: "CAD",
+    conf: null,
     tags: ["Canada", "Next to the casino"],
     note:
       "At the foot of the Blue Water Bridge in Point Edward, adjoining Sarnia. The waterfront trail connects right outside the hotel.",
@@ -131,6 +142,7 @@ export const LODGING = [
     price: 267,
     usd: 267,
     currency: "USD",
+    conf: null,
     provisional: true,
     tags: ["Backup for Julia's", "Near DTW"],
     note:
