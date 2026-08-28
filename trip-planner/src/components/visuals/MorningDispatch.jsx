@@ -21,12 +21,15 @@ export default function MorningDispatch({ day }) {
       lines.push("");
     }
 
-    const fuel = FUEL_STOPS.find((f) => f.dayId === day.id);
-    if (fuel) {
+    // Days can carry more than one fill — 9/19 is Mackinaw City then the
+    // pre-border top-up at Port Huron, and 9/21 ends with the mandatory
+    // full-tank receipt for Budget. `find` silently dropped the second one.
+    const fuelStops = FUEL_STOPS.filter((f) => f.dayId === day.id);
+    fuelStops.forEach((fuel) => {
       lines.push(`⛽ Fuel Stop: ${fuel.brand} (${fuel.stopName}) · Mile ${fuel.mileMarker}`);
       lines.push(`  ${fuel.action} — ${fuel.why}`);
       lines.push("");
-    }
+    });
 
     if (day.sleep) {
       const lodging = LODGING.find((l) => l.name === day.sleep.name);

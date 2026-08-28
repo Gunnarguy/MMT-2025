@@ -5,7 +5,7 @@ import { directionsHref } from "../../lib/format";
  * Fuel & Mileage Planner Component.
  *
  * Grounded in the Mazda CX-50's 15.9-gallon tank and 26 MPG fuel economy,
- * detailing the 4 strategic gas stations across the 1,430-mile road trip.
+ * detailing the strategic gas stations across the road trip.
  */
 export default function FuelPlanner({ dayId = null }) {
   const stopsToShow = dayId
@@ -21,7 +21,7 @@ export default function FuelPlanner({ dayId = null }) {
         <h3>
           {dayId
             ? `Gas & Refueling Plan — ${stopsToShow.length === 1 ? "Strategic Stop" : "Required Stops"}`
-            : "Trip Fuel & Mileage Plan (1,430 Miles · 4 Fuel Stops)"}
+            : `Trip Fuel & Mileage Plan (${FUEL_SPECS.totalTripMiles.toLocaleString()} Miles · ${stopsToShow.length} Fuel Stops)`}
         </h3>
         <p className="muted" style={{ fontSize: "var(--t-xs)", margin: 0 }}>
           Based on <b>{FUEL_SPECS.vehicle}</b> (<b>{FUEL_SPECS.tankCapacityGallons} gal</b> tank · <b>{FUEL_SPECS.epaCombinedMpg} MPG</b> combined · <b>{FUEL_SPECS.maxRangeMiles} mi</b> range).
