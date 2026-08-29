@@ -141,7 +141,7 @@ function pinIcon({ label, color, variant = "", title = "" }) {
  * When markers share close coordinates (< 2.5 miles), disperse them into a radial arc
  * with needle stems so each point is visible and never stacked on top of each other.
  */
-function declutterMarkers(items, offsetRadius = 0.02) {
+function declutterMarkers(items, offsetRadius = 0.02, zoomScale = 1) {
   if (!items || items.length <= 1) {
     return (items || []).map((item) => ({
       ...item,
@@ -159,7 +159,7 @@ function declutterMarkers(items, offsetRadius = 0.02) {
       const [cLat, cLon] = cl.center;
       const dLat = Math.abs(item.coords[0] - cLat);
       const dLon = Math.abs(item.coords[1] - cLon);
-      if (dLat < 0.035 && dLon < 0.045) {
+      if (dLat < 0.035 * zoomScale && dLon < 0.045 * zoomScale) {
         cl.items.push(item);
         placed = true;
         break;
@@ -182,10 +182,12 @@ function declutterMarkers(items, offsetRadius = 0.02) {
       });
     } else {
       const [cLat, cLon] = cl.center;
+      // Big clusters need a wider ring or adjacent fan slots still touch.
+      const spread = 1 + Math.min(2, Math.max(0, count - 2) * 0.24);
       cl.items.forEach((item, i) => {
         const angle = (2 * Math.PI * i) / count - Math.PI / 2;
-        const radiusLat = offsetRadius * 1.3;
-        const radiusLon = offsetRadius * 1.7;
+        const radiusLat = offsetRadius * 1.3 * zoomScale * spread;
+        const radiusLon = offsetRadius * 1.7 * zoomScale * spread;
         const dispLat = cLat + Math.sin(angle) * radiusLat;
         const dispLon = cLon + Math.cos(angle) * radiusLon;
         result.push({
@@ -198,6 +200,57 @@ function declutterMarkers(items, offsetRadius = 0.02) {
     }
   });
   return result;
+}
+
+/**
+ * Place Town Scout pins away from every already-placed pin.
+ * Scout towns sit at town centres — exactly where day stops, hotels, and fuel
+ * pins cluster — so instead of dispersing only against each other, each scout
+ * pin is repelled from ALL visible markers: it tries eight bearings (starting
+ * away from the local crowd) at a wider radius than the trip pins use, and the
+ * standard needle stem ties it back to the true coordinate.
+ */
+function placeScoutPins(items, obstacles, zoomScale = 1) {
+  // Pixel-consistent constants: at the whole-route zoom these degrees work out
+  // to roughly a 38px stand-off and a 24px personal-space box, and they shrink
+  // with the zoomScale curve so street-level zoom keeps pins near their towns.
+  const rLat = 0.028 * zoomScale;
+  const rLon = 0.038 * zoomScale;
+  const NEAR_LAT = 0.02 * zoomScale;
+  const NEAR_LON = 0.027 * zoomScale;
+  const all = obstacles.filter(Boolean).map((c) => [...c]);
+  return items.map((item) => {
+    const near = all.filter(
+      (o) =>
+        Math.abs(o[0] - item.coords[0]) < NEAR_LAT * 2 &&
+        Math.abs(o[1] - item.coords[1]) < NEAR_LON * 2,
+    );
+    if (!near.length) {
+      all.push([...item.coords]);
+      return { ...item, displayCoords: item.coords, rawCoords: item.coords, isDispersed: false };
+    }
+    const cy = near.reduce((n, o) => n + o[0], 0) / near.length;
+    const cx = near.reduce((n, o) => n + o[1], 0) / near.length;
+    let away = Math.atan2(item.coords[0] - cy, item.coords[1] - cx);
+    if (!Number.isFinite(away) || (cy === item.coords[0] && cx === item.coords[1])) {
+      away = (3 * Math.PI) / 4; // default: stand off to the northwest
+    }
+    for (let k = 0; k < 8; k += 1) {
+      const a = away + k * (Math.PI / 4);
+      const lat = item.coords[0] + Math.sin(a) * rLat;
+      const lon = item.coords[1] + Math.cos(a) * rLon;
+      const clash = all.some(
+        (o) => Math.abs(o[0] - lat) < NEAR_LAT * 1.2 && Math.abs(o[1] - lon) < NEAR_LON * 1.2,
+      );
+      if (!clash) {
+        all.push([lat, lon]);
+        return { ...item, displayCoords: [lat, lon], rawCoords: item.coords, isDispersed: true };
+      }
+    }
+    const fallback = [item.coords[0] + rLat, item.coords[1] - rLon];
+    all.push(fallback);
+    return { ...item, displayCoords: fallback, rawCoords: item.coords, isDispersed: true };
+  });
 }
 
 function shieldIcon(shield) {
@@ -218,6 +271,18 @@ function FitBounds({ bounds, deps }) {
     map.fitBounds(bounds, { padding: [42, 42], maxZoom: 11 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
+  return null;
+}
+
+/** Report the live zoom level so marker dispersal can scale with it. */
+function ZoomTracker({ onZoom }) {
+  const map = useMap();
+  useEffect(() => {
+    const report = () => onZoom(map.getZoom());
+    report();
+    map.on("zoomend", report);
+    return () => map.off("zoomend", report);
+  }, [map, onZoom]);
   return null;
 }
 
@@ -272,6 +337,13 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     climate: true,
     scout: false,
   });
+
+  // Dispersal offsets are geographic, so at state-wide zoom they collapse to a
+  // couple of pixels and every pin stacks. Scale them with zoom: full-route
+  // view fans clusters wide (the stems show where each pin really lives),
+  // street-level zoom returns to tight true-position offsets.
+  const [zoomLevel, setZoomLevel] = useState(6);
+  const dispersalScale = Math.min(22, Math.max(1, 2 ** (10.4 - zoomLevel)));
 
   // Playback Simulator State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -369,61 +441,93 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   }, [visible, playProgress, allPathPoints]);
 
   /** Mappable stops on visible days */
-  const markers = useMemo(() => {
-    if (!layerFilter.stops) return [];
-    const out = [];
-    shownDays.forEach((day) => {
-      let n = 0;
-      (day.stops || []).forEach((stop) => {
-        if (!stop.coords) return;
-        n += 1;
-        out.push({
-          key: `${day.id}-${stop.id}`,
-          coords: stop.coords,
-          label: String(n),
-          color: colors[day.index] || "#1f7a8c",
-          title: stop.name,
-          where: stop.where,
-          dayTitle: `${shortDate(day.date)} · ${day.title}`,
-          address: stop.address,
+  // One dispersal pass across ALL pin groups. The old per-group passes left
+  // cross-group stacks — a bed pin and the day's final stop share exact
+  // coordinates every night — so stops, hotels, and fuel now declutter
+  // together and split back out for rendering.
+  const { markers, beds, fuelPins } = useMemo(() => {
+    const raw = [];
+    if (layerFilter.stops) {
+      shownDays.forEach((day) => {
+        let n = 0;
+        (day.stops || []).forEach((stop) => {
+          if (!stop.coords) return;
+          n += 1;
+          raw.push({
+            kind: "stop",
+            key: `${day.id}-${stop.id}`,
+            coords: stop.coords,
+            label: String(n),
+            color: colors[day.index] || "#1f7a8c",
+            title: stop.name,
+            where: stop.where,
+            dayTitle: `${shortDate(day.date)} · ${day.title}`,
+            address: stop.address,
+          });
         });
       });
-    });
-    return declutterMarkers(out, 0.022);
-  }, [shownDays, colors, layerFilter.stops]);
+    }
+    if (layerFilter.hotels) {
+      shownDays
+        .filter((d) => d.sleep?.coords)
+        .forEach((d) => {
+          raw.push({
+            kind: "bed",
+            key: `bed-${d.id}`,
+            coords: d.sleep.coords,
+            color: colors[d.index] || "#1f7a8c",
+            name: d.sleep.name,
+            city: d.sleep.city,
+            address: d.sleep.address,
+            date: d.date,
+          });
+        });
+    }
+    if (layerFilter.gas) {
+      FUEL_STOPS.filter((f) => visible.has(f.dayId)).forEach((f) => {
+        raw.push({
+          kind: "fuel",
+          key: `fuel-${f.id}`,
+          coords: f.coords,
+          color: "#d97706",
+          stopName: f.stopName,
+          brand: f.brand,
+          address: f.address,
+          action: f.action,
+          why: f.why,
+          date: f.date,
+          mileMarker: f.mileMarker,
+        });
+      });
+    }
+    const placed = declutterMarkers(raw, 0.024, dispersalScale);
+    return {
+      markers: placed.filter((x) => x.kind === "stop"),
+      beds: placed.filter((x) => x.kind === "bed"),
+      fuelPins: placed.filter((x) => x.kind === "fuel"),
+    };
+  }, [
+    shownDays,
+    colors,
+    visible,
+    layerFilter.stops,
+    layerFilter.hotels,
+    layerFilter.gas,
+    dispersalScale,
+  ]);
 
-  const beds = useMemo(() => {
-    if (!layerFilter.hotels) return [];
-    const out = shownDays
-      .filter((d) => d.sleep?.coords)
-      .map((d) => ({
-        key: `bed-${d.id}`,
-        coords: d.sleep.coords,
-        color: colors[d.index] || "#1f7a8c",
-        name: d.sleep.name,
-        city: d.sleep.city,
-        address: d.sleep.address,
-        date: d.date,
-      }));
-    return declutterMarkers(out, 0.026);
-  }, [shownDays, colors, layerFilter.hotels]);
-
-  const fuelPins = useMemo(() => {
-    if (!layerFilter.gas) return [];
-    const out = FUEL_STOPS.filter((f) => visible.has(f.dayId)).map((f) => ({
-      key: `fuel-${f.id}`,
-      coords: f.coords,
-      color: "#d97706",
-      stopName: f.stopName,
-      brand: f.brand,
-      address: f.address,
-      action: f.action,
-      why: f.why,
-      date: f.date,
-      mileMarker: f.mileMarker,
-    }));
-    return declutterMarkers(out, 0.022);
-  }, [visible, layerFilter.gas]);
+  const scoutPins = useMemo(() => {
+    if (!layerFilter.scout) return [];
+    const obstacles = [
+      ...markers.map((m) => m.displayCoords || m.coords),
+      ...beds.map((b) => b.displayCoords || b.coords),
+      ...fuelPins.map((f) => f.displayCoords || f.coords),
+      ...BORDER_PORTALS.map((b) => b.coords),
+      ...MICROCLIMATES.map((c) => c.coords),
+      HOME.coords,
+    ];
+    return placeScoutPins(RELOCATION_TOWNS, obstacles, dispersalScale);
+  }, [layerFilter.scout, markers, beds, fuelPins, dispersalScale]);
 
   const lines = useMemo(
     () =>
@@ -490,7 +594,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   return (
     <>
       <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
-        <div className="map-canvas-frame">
+        <div className={`map-canvas-frame${zoomLevel <= 8.5 ? " pins-compact" : ""}`}>
           {/* Floating HUD & Map Controls Overlay */}
           <div className="map-hud-bar">
         {hudStats && (
@@ -551,6 +655,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         touchZoom={true}
         style={height && !isExpanded ? { height } : undefined}
       >
+        <ZoomTracker onZoom={setZoomLevel} />
         {mapStyle === "streets" ? (
           <TileLayer
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -817,36 +922,48 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
         {/* Town Scout Layer — relocation reconnaissance pins */}
         {layerFilter.scout &&
-          RELOCATION_TOWNS.map((t) => {
+          scoutPins.map((t) => {
             const tier = SCOUT_TIERS.find((x) => x.id === t.tier);
             return (
-              <Marker
-                key={t.id}
-                position={t.coords}
-                icon={pinIcon({ label: "⌂", color: tier.color, variant: "pin--scout" })}
-              >
-                <Popup>
-                  <b>{t.name}</b>
-                  <br />
-                  <span style={{ color: tier.color, fontWeight: 700 }}>{tier.label}</span>
-                  {" · "}
-                  <span className="muted">{t.verified === "yes" ? "✓ verified" : "≈ sources split"}</span>
-                  <div style={{ marginTop: "4px", fontSize: "11px", lineHeight: 1.5 }}>
-                    <b>Median:</b> {t.median}
+              <div key={t.id}>
+                {t.isDispersed && (
+                  <Polyline
+                    positions={[t.rawCoords, t.displayCoords]}
+                    pathOptions={{
+                      color: tier.color,
+                      weight: 2,
+                      dashArray: "3 3",
+                      opacity: 0.8,
+                    }}
+                  />
+                )}
+                <Marker
+                  position={t.displayCoords || t.coords}
+                  icon={pinIcon({ label: "⌂", color: tier.color, variant: "pin--scout", title: t.name })}
+                >
+                  <Popup>
+                    <b>{t.name}</b>
                     <br />
-                    <b>Comfortable:</b> {t.comfort}
-                    <br />
-                    <b>Crime v/p:</b> {t.crime} · <b>Snow:</b> {t.snow}
-                    <br />
-                    <b>Tax:</b> {t.tax}
-                    <br />
-                    <b>To Palatine:</b> {t.drive}
-                  </div>
-                  <div className="muted" style={{ marginTop: "4px", fontSize: "11px" }}>
-                    Full workup on the Scout tab.
-                  </div>
-                </Popup>
-              </Marker>
+                    <span style={{ color: tier.color, fontWeight: 700 }}>{tier.label}</span>
+                    {" · "}
+                    <span className="muted">{t.verified === "yes" ? "✓ verified" : "≈ sources split"}</span>
+                    <div style={{ marginTop: "4px", fontSize: "11px", lineHeight: 1.5 }}>
+                      <b>Median:</b> {t.median}
+                      <br />
+                      <b>Comfortable:</b> {t.comfort}
+                      <br />
+                      <b>Crime v/p:</b> {t.crime} · <b>Snow:</b> {t.snow}
+                      <br />
+                      <b>Tax:</b> {t.tax}
+                      <br />
+                      <b>To Palatine:</b> {t.drive}
+                    </div>
+                    <div className="muted" style={{ marginTop: "4px", fontSize: "11px" }}>
+                      Full workup on the Scout tab.
+                    </div>
+                  </Popup>
+                </Marker>
+              </div>
             );
           })}
 

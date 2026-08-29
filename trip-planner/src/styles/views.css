@@ -804,3 +804,13 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+
+/* Zoomed-out pin de-clutter: shrink every needle pin (anchored at its ground
+   point) and the highway shields whenever the map shows the whole route. */
+.pins-compact .map-pointer-pin {
+  transform: scale(0.6);
+  transform-origin: bottom center;
+}
+.pins-compact .shield-badge {
+  transform: scale(0.72);
+}
