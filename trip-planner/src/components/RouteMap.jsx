@@ -141,7 +141,7 @@ function pinIcon({ label, color, variant = "", title = "" }) {
  * When markers share close coordinates (< 2.5 miles), disperse them into a radial arc
  * with needle stems so each point is visible and never stacked on top of each other.
  */
-function declutterMarkers(items, offsetRadius = 0.02, zoomScale = 1) {
+function declutterMarkers(items, zoomScale = 1) {
   if (!items || items.length <= 1) {
     return (items || []).map((item) => ({
       ...item,
@@ -182,12 +182,14 @@ function declutterMarkers(items, offsetRadius = 0.02, zoomScale = 1) {
       });
     } else {
       const [cLat, cLon] = cl.center;
-      // Big clusters need a wider ring or adjacent fan slots still touch.
-      const spread = 1 + Math.min(2, Math.max(0, count - 2) * 0.24);
+      // Pixel-targeted ring: two pins sit ±12px, bigger clusters grow just
+      // enough that adjacent fan slots clear a compact pin (arc ≥ ~22px).
+      // zoomScale/1351 converts a pixel target to degrees at the current zoom.
+      const ringPx = Math.max(12, 3.5 * count);
       cl.items.forEach((item, i) => {
         const angle = (2 * Math.PI * i) / count - Math.PI / 2;
-        const radiusLat = offsetRadius * 1.3 * zoomScale * spread;
-        const radiusLon = offsetRadius * 1.7 * zoomScale * spread;
+        const radiusLat = (ringPx * zoomScale) / 1351;
+        const radiusLon = radiusLat * 1.41;
         const dispLat = cLat + Math.sin(angle) * radiusLat;
         const dispLon = cLon + Math.cos(angle) * radiusLon;
         result.push({
@@ -211,13 +213,12 @@ function declutterMarkers(items, offsetRadius = 0.02, zoomScale = 1) {
  * standard needle stem ties it back to the true coordinate.
  */
 function placeScoutPins(items, obstacles, zoomScale = 1) {
-  // Pixel-consistent constants: at the whole-route zoom these degrees work out
-  // to roughly a 38px stand-off and a 24px personal-space box, and they shrink
-  // with the zoomScale curve so street-level zoom keeps pins near their towns.
-  const rLat = 0.028 * zoomScale;
-  const rLon = 0.038 * zoomScale;
-  const NEAR_LAT = 0.02 * zoomScale;
-  const NEAR_LON = 0.027 * zoomScale;
+  // Pixel-targeted: a ~26px stand-off from the town centre and a ~20px
+  // personal-space box, at whatever the current zoom is.
+  const rLat = (26 * zoomScale) / 1351;
+  const rLon = rLat * 1.41;
+  const NEAR_LAT = (20 * zoomScale) / 1351;
+  const NEAR_LON = NEAR_LAT * 1.41;
   const all = obstacles.filter(Boolean).map((c) => [...c]);
   return items.map((item) => {
     const near = all.filter(
@@ -500,7 +501,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         });
       });
     }
-    const placed = declutterMarkers(raw, 0.024, dispersalScale);
+    const placed = declutterMarkers(raw, dispersalScale);
     return {
       markers: placed.filter((x) => x.kind === "stop"),
       beds: placed.filter((x) => x.kind === "bed"),
@@ -813,9 +814,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                 positions={[b.rawCoords, b.displayCoords]}
                 pathOptions={{
                   color: "#38bdf8",
-                  weight: 2,
-                  dashArray: "3 3",
-                  opacity: 0.85,
+                  weight: 1.5,
+                  dashArray: "2 4",
+                  opacity: 0.45,
                 }}
               />
             )}
@@ -841,9 +842,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                 positions={[f.rawCoords, f.displayCoords]}
                 pathOptions={{
                   color: "#f59e0b",
-                  weight: 2,
-                  dashArray: "3 3",
-                  opacity: 0.85,
+                  weight: 1.5,
+                  dashArray: "2 4",
+                  opacity: 0.45,
                 }}
               />
             )}
@@ -931,9 +932,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                     positions={[t.rawCoords, t.displayCoords]}
                     pathOptions={{
                       color: tier.color,
-                      weight: 2,
-                      dashArray: "3 3",
-                      opacity: 0.8,
+                      weight: 1.5,
+                      dashArray: "2 4",
+                      opacity: 0.45,
                     }}
                   />
                 )}
@@ -1012,9 +1013,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                 positions={[m.rawCoords, m.displayCoords]}
                 pathOptions={{
                   color: m.color,
-                  weight: 2,
-                  dashArray: "3 3",
-                  opacity: 0.85,
+                  weight: 1.5,
+                  dashArray: "2 4",
+                  opacity: 0.45,
                 }}
               />
             )}
