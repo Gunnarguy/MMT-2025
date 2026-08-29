@@ -21,6 +21,7 @@ import OverviewView from "./components/OverviewView";
 import PackView from "./components/PackView";
 import RideView from "./components/RideView";
 import RouteMap from "./components/RouteMap";
+import ScoutView from "./components/ScoutView";
 import StaysView from "./components/StaysView";
 import EmergencyDrawer from "./components/visuals/EmergencyDrawer";
 import { DAYS, TRIP } from "./data/trip";
@@ -37,6 +38,7 @@ const TABS = [
   { id: "money", label: "Money", icon: "$" },
   { id: "border", label: "Border", icon: "⚑" },
   { id: "pack", label: "Pack", icon: "✓" },
+  { id: "scout", label: "Scout", icon: "⌂" },
 ];
 
 /**
@@ -184,6 +186,7 @@ export default function App() {
         {route.tab === "money" && <MoneyView />}
         {route.tab === "border" && <BorderView />}
         {route.tab === "pack" && <PackView />}
+        {route.tab === "scout" && <ScoutView />}
 
         <EmergencyDrawer />
       </main>

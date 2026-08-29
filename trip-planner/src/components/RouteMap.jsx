@@ -20,6 +20,7 @@ import {
   MICROCLIMATES,
   calculateSunPosition,
 } from "../data/mapOverlays";
+import { RELOCATION_TOWNS, SCOUT_TIERS } from "../data/relocation";
 import { directionsHref, duration, shortDate } from "../lib/format";
 import ElevationRibbon from "./visuals/ElevationRibbon";
 import SunTracker from "./visuals/SunTracker";
@@ -269,6 +270,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     shields: true,
     borders: true,
     climate: true,
+    scout: false,
   });
 
   // Playback Simulator State
@@ -551,8 +553,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       >
         {mapStyle === "streets" ? (
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             maxZoom={19}
           />
         ) : (
@@ -813,6 +815,41 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             </Marker>
           ))}
 
+        {/* Town Scout Layer — relocation reconnaissance pins */}
+        {layerFilter.scout &&
+          RELOCATION_TOWNS.map((t) => {
+            const tier = SCOUT_TIERS.find((x) => x.id === t.tier);
+            return (
+              <Marker
+                key={t.id}
+                position={t.coords}
+                icon={pinIcon({ label: "⌂", color: tier.color, variant: "pin--scout" })}
+              >
+                <Popup>
+                  <b>{t.name}</b>
+                  <br />
+                  <span style={{ color: tier.color, fontWeight: 700 }}>{tier.label}</span>
+                  {" · "}
+                  <span className="muted">{t.verified === "yes" ? "✓ verified" : "≈ sources split"}</span>
+                  <div style={{ marginTop: "4px", fontSize: "11px", lineHeight: 1.5 }}>
+                    <b>Median:</b> {t.median}
+                    <br />
+                    <b>Comfortable:</b> {t.comfort}
+                    <br />
+                    <b>Crime v/p:</b> {t.crime} · <b>Snow:</b> {t.snow}
+                    <br />
+                    <b>Tax:</b> {t.tax}
+                    <br />
+                    <b>To Palatine:</b> {t.drive}
+                  </div>
+                  <div className="muted" style={{ marginTop: "4px", fontSize: "11px" }}>
+                    Full workup on the Scout tab.
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
+
         {/* Microclimates Layer */}
         {layerFilter.climate &&
           MICROCLIMATES.map((c) => (
@@ -1066,6 +1103,13 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             onClick={() => toggleLayer("climate")}
           >
             💨 Microclimates
+          </button>
+          <button
+            type="button"
+            className={`layer-filter-btn${layerFilter.scout ? " is-active" : ""}`}
+            onClick={() => toggleLayer("scout")}
+          >
+            ⌂ Town Scout
           </button>
           <button
             type="button"
