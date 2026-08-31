@@ -76,7 +76,7 @@ export const RELOCATION_TOWNS = [
     county: "Wayne County",
     coords: [42.2048, -83.4852],
     tier: "viable",
-    verified: "yes",
+    verified: "split",
     median: "$148,300 ACS value · sold data conflicts",
     comfort: "data conflict — see note",
     crime: "3.10 / 10.1–10.3",
