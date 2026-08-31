@@ -141,7 +141,7 @@ function pinIcon({ label, color, variant = "", title = "" }) {
  * When markers share close coordinates (< 2.5 miles), disperse them into a radial arc
  * with needle stems so each point is visible and never stacked on top of each other.
  */
-function declutterMarkers(items, zoomScale = 1) {
+function declutterMarkers(items, zoomScale = 1, pinPx = 32) {
   if (!items || items.length <= 1) {
     return (items || []).map((item) => ({
       ...item,
@@ -182,10 +182,16 @@ function declutterMarkers(items, zoomScale = 1) {
       });
     } else {
       const [cLat, cLon] = cl.center;
-      // Pixel-targeted ring: two pins sit ±12px, bigger clusters grow just
-      // enough that adjacent fan slots clear a compact pin (arc ≥ ~22px).
-      // zoomScale/1351 converts a pixel target to degrees at the current zoom.
-      const ringPx = Math.max(12, 3.5 * count);
+      // Ring sized from the pin's REAL rendered width. With `count` pins evenly
+      // spaced the chord between neighbours is 2R·sin(π/count), and that has to
+      // clear a whole pin or they overlap. Pins are 32px but shrink to 0.6×
+      // under .pins-compact below z8.5 — a ring tuned for the small ones
+      // collapses the instant that class drops and the pins jump 67% wider.
+      // zoomScale/1351 converts the pixel target to degrees at the current zoom.
+      const ringPx = Math.max(
+        pinPx * 0.75,
+        (pinPx * 1.18) / (2 * Math.sin(Math.PI / count)),
+      );
       cl.items.forEach((item, i) => {
         const angle = (2 * Math.PI * i) / count - Math.PI / 2;
         const radiusLat = (ringPx * zoomScale) / 1351;
@@ -212,12 +218,12 @@ function declutterMarkers(items, zoomScale = 1) {
  * away from the local crowd) at a wider radius than the trip pins use, and the
  * standard needle stem ties it back to the true coordinate.
  */
-function placeScoutPins(items, obstacles, zoomScale = 1) {
-  // Pixel-targeted: a ~26px stand-off from the town centre and a ~20px
-  // personal-space box, at whatever the current zoom is.
-  const rLat = (26 * zoomScale) / 1351;
+function placeScoutPins(items, obstacles, zoomScale = 1, pinPx = 32) {
+  // Stand-off and personal-space box both scale with the pin's rendered width,
+  // so they stay proportional when .pins-compact drops at z8.5.
+  const rLat = (pinPx * 1.25 * zoomScale) / 1351;
   const rLon = rLat * 1.41;
-  const NEAR_LAT = (20 * zoomScale) / 1351;
+  const NEAR_LAT = (pinPx * 0.95 * zoomScale) / 1351;
   const NEAR_LON = NEAR_LAT * 1.41;
   const all = obstacles.filter(Boolean).map((c) => [...c]);
   return items.map((item) => {
@@ -348,6 +354,10 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   // floor just avoids degenerate values at extreme street zoom.
   const [zoomLevel, setZoomLevel] = useState(6);
   const dispersalScale = Math.min(22, Math.max(0.02, 2 ** (10.4 - zoomLevel)));
+  // Pins render at 32px, or 0.6x that under .pins-compact. One source of
+  // truth so the CSS class and the dispersal geometry can never disagree.
+  const pinsCompact = zoomLevel <= 8.5;
+  const pinPx = pinsCompact ? 32 * 0.6 : 32;
 
   // Playback Simulator State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -504,7 +514,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         });
       });
     }
-    const placed = declutterMarkers(raw, dispersalScale);
+    const placed = declutterMarkers(raw, dispersalScale, pinPx);
     return {
       markers: placed.filter((x) => x.kind === "stop"),
       beds: placed.filter((x) => x.kind === "bed"),
@@ -518,6 +528,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     layerFilter.hotels,
     layerFilter.gas,
     dispersalScale,
+    pinPx,
   ]);
 
   const scoutPins = useMemo(() => {
@@ -530,8 +541,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       ...MICROCLIMATES.map((c) => c.coords),
       HOME.coords,
     ];
-    return placeScoutPins(RELOCATION_TOWNS, obstacles, dispersalScale);
-  }, [layerFilter.scout, markers, beds, fuelPins, dispersalScale]);
+    return placeScoutPins(RELOCATION_TOWNS, obstacles, dispersalScale, pinPx);
+  }, [layerFilter.scout, markers, beds, fuelPins, dispersalScale, pinPx]);
 
   const lines = useMemo(
     () =>
@@ -598,7 +609,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   return (
     <>
       <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
-        <div className={`map-canvas-frame${zoomLevel <= 8.5 ? " pins-compact" : ""}`}>
+        <div className={`map-canvas-frame${pinsCompact ? " pins-compact" : ""}`}>
           {/* Floating HUD & Map Controls Overlay */}
           <div className="map-hud-bar">
         {hudStats && (
