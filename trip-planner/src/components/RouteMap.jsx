@@ -339,12 +339,15 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     scout: false,
   });
 
-  // Dispersal offsets are geographic, so at state-wide zoom they collapse to a
-  // couple of pixels and every pin stacks. Scale them with zoom: full-route
-  // view fans clusters wide (the stems show where each pin really lives),
-  // street-level zoom returns to tight true-position offsets.
+  // Dispersal offsets are geographic degrees derived from a pixel target, so
+  // this factor MUST keep shrinking as you zoom in — one zoom level in halves
+  // the degrees a pixel is worth. Flooring it at 1 (as an earlier version did)
+  // froze the conversion past z10.4, so by z14 offsets were ~12x too wide and
+  // clusters were flung miles from the coordinates their stems pointed at.
+  // Ceiling 22 stops whole-continent zoom from fanning absurdly; the small
+  // floor just avoids degenerate values at extreme street zoom.
   const [zoomLevel, setZoomLevel] = useState(6);
-  const dispersalScale = Math.min(22, Math.max(1, 2 ** (10.4 - zoomLevel)));
+  const dispersalScale = Math.min(22, Math.max(0.02, 2 ** (10.4 - zoomLevel)));
 
   // Playback Simulator State
   const [isPlaying, setIsPlaying] = useState(false);
