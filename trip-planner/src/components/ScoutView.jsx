@@ -30,7 +30,7 @@ export default function ScoutView() {
       <div className="stat-grid" style={{ marginBottom: "var(--s-5)" }}>
         <ScoutStat value="15" label="Towns scouted" note="Every stop on the route" />
         <ScoutStat
-          value={`${SCOUT_META.confirmed}✓ / ${SCOUT_META.corrected}≈`}
+          value={`${SCOUT_META.confirmed}✓ / ${SCOUT_META.correctedFigures}≈`}
           label="Figures verified"
           note="Confirmed / corrected to ranges"
         />
@@ -97,7 +97,8 @@ export default function ScoutView() {
       </section>
 
       <p className="muted" style={{ fontSize: "var(--t-xs)" }}>
-        Researched {SCOUT_META.researched}. {SCOUT_META.method} What no dataset
+        Researched {SCOUT_META.researched}, housing rebuilt {SCOUT_META.corrected}.{" "}
+        {SCOUT_META.method} What no dataset
         holds — how February feels, whether downtown is alive at 7pm — is what
         the drive itself is for.
       </p>
