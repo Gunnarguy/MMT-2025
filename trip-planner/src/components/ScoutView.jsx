@@ -6,6 +6,20 @@ import {
 } from "../data/relocation";
 import { Chip, Flag } from "./bits";
 
+/** Order and labels for the per-town full workup; a town shows only the sections it has. */
+const WORKUP_SECTIONS = [
+  ["demographics", "Who lives here"],
+  ["errands", "Groceries & errands"],
+  ["shipping", "Shipping & delivery"],
+  ["healthcare", "Healthcare"],
+  ["schools", "Schools"],
+  ["economy", "Jobs & economy"],
+  ["airport", "Airports"],
+  ["lifestyle", "Walkability & lifestyle"],
+  ["climate", "Climate beyond snow"],
+  ["gotchas", "Mover gotchas"],
+];
+
 /**
  * Town Scout — the trip as reconnaissance. Every overnight and drive-through
  * town, scored for actually living there. Data lives in data/relocation.js;
@@ -20,7 +34,10 @@ export default function ScoutView() {
         <p>
           This trip drives through every one of them, so each got a full
           livability workup — home prices, what a comfortable year costs, crime,
-          snow, internet, and the property-tax bill nobody advertises. Numbers
+          snow, internet, the property-tax bill nobody advertises, and under
+          each card the full picture: groceries and Costco distance, Amazon
+          speed, the nearest ER, schools, employers, airports, walkability,
+          climate, and who actually lives there. Numbers
           are ranges wherever sources disagree, because a single crisp number
           would be false precision. The same towns are a pin layer on the Map
           tab.
@@ -78,6 +95,29 @@ export default function ScoutView() {
                   <p style={{ fontSize: "var(--t-sm)", color: "var(--ink-2)" }}>
                     {t.verdict}
                   </p>
+
+                  {t.workup && (
+                    <details className="scout-workup">
+                      <summary>Full workup — errands, shipping, healthcare, schools, jobs, airports, lifestyle, climate, demographics</summary>
+                      {WORKUP_SECTIONS.map(([key, label]) =>
+                        t.workup[key]?.length ? (
+                          <div key={key} className="scout-workup-section">
+                            <div className="eyebrow">{label}</div>
+                            <dl className="scout-facts">
+                              {t.workup[key].map(([k, v]) => (
+                                <FactRow key={k} k={k} v={v} />
+                              ))}
+                            </dl>
+                          </div>
+                        ) : null,
+                      )}
+                      {t.workup.sources && (
+                        <p className="muted" style={{ fontSize: "var(--t-xs)", marginTop: "var(--s-2)" }}>
+                          {t.workup.sources}
+                        </p>
+                      )}
+                    </details>
+                  )}
                 </article>
               ))}
             </div>

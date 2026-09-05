@@ -67,6 +67,297 @@ export const RELOCATION_TOWNS = [
     fiber: "30% fiber · 99% cable",
     tax: "33.12 mills (1.66%) + 1.5% city income tax",
     drive: "≈208 mi · 3:31",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Bridge Street Market, 405 Seward Ave NW (1 mi); Gordon Food (1 mi); Meijer, 1540 28th St SE (4 mi)"
+        ],
+        [
+          "Costco",
+          "Costco, 5100 28th St SE, 6 miles"
+        ],
+        [
+          "Target",
+          "Target, 5120 28th St SE, 7 miles"
+        ],
+        [
+          "Walmart",
+          "Walmart, 5859 28th St SE, 8 miles"
+        ],
+        [
+          "Aldi",
+          "Aldi, 2120 28th St SE, 6 miles"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's (3684 28th St SE, 6 mi), Whole Foods (2897 Radcliff Ave SE, 7 mi)"
+        ],
+        [
+          "Pharmacy",
+          "Walgreens at 555 Michigan St NE, 1 mile"
+        ],
+        [
+          "Home Depot/Lowe's/Menards",
+          "Home Depot (4646 28th St SE, 6 mi), Lowe's (4297 Plainfield Ave NE, 5 mi), Menards (4151 Alpine Ave NW, 5 mi)"
+        ],
+        [
+          "Farmers market",
+          "Fulton Street Farmers Market, 1145 Fulton St E, 1 mile (Season: Main May-Oct, Second Nov-Apr)"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Same-day available (free for Prime over $25), next-day available to 49503"
+        ],
+        [
+          "Nearest Amazon station",
+          "DGR6 at 3951 Trade Dr SE, 6 miles"
+        ],
+        [
+          "Amazon fulfillment center",
+          "GRR1/VEA8 at 4500 68th St SE, 17 miles"
+        ],
+        [
+          "UPS / FedEx",
+          "FedEx Office at 233 Fulton St W (0 mi); nearest UPS Store is 5557 28th St SE (none in 49503)"
+        ],
+        [
+          "Grocery delivery",
+          "Instacart / DoorDash: Full coverage in 49503"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Corewell Health Butterworth, 100 Michigan St NE, 0 miles"
+        ],
+        [
+          "Safety grade",
+          "Leapfrog safety grade: A"
+        ],
+        [
+          "CMS star rating",
+          "NOT FOUND"
+        ],
+        [
+          "Trauma center",
+          "Corewell Health Butterworth (Level I), 0 miles"
+        ],
+        [
+          "Urgent care",
+          "4 clinics (Corewell, Trinity, RightCare, WellCare have locations)"
+        ],
+        [
+          "New-patient access",
+          "Yes, Trinity Health and others accepting (wait time: 3 to 4 weeks)"
+        ],
+        [
+          "Referral center",
+          "Corewell Health Butterworth, 0 miles"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Grand Rapids Public Schools"
+        ],
+        [
+          "GreatSchools rating",
+          "NOT FOUND"
+        ],
+        [
+          "GreatSchools rating scope",
+          "Rated per school, not district level"
+        ],
+        [
+          "Graduation rate",
+          "83.22% (Class of 2025)"
+        ]
+      ],
+      "economy": [
+        [
+          "5 largest employers",
+          "Corewell Health, Meijer, Gordon Food Service, Steelcase, Pine Rest Christian"
+        ],
+        [
+          "Employer headcounts",
+          "NOT FOUND"
+        ],
+        [
+          "County unemployment rate",
+          "4.3% (July 2026)"
+        ],
+        [
+          "Coworking space",
+          "Yes, The Factory, Worklab, Regus"
+        ],
+        [
+          "Seasonal economy",
+          "No (stable year-round economy)"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Gerald R. Ford International Airport (GRR), 13 miles, 20 minutes drive time"
+        ],
+        [
+          "Nonstop destinations",
+          "30"
+        ],
+        [
+          "Airlines",
+          "Allegiant, American, Delta, Frontier, Southwest, United"
+        ],
+        [
+          "Nearest major hub airport",
+          "Detroit (DTW), 150 minutes drive time"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk Score downtown",
+          "92"
+        ],
+        [
+          "Bike Score downtown",
+          "45.63"
+        ],
+        [
+          "Sit-down restaurants",
+          "1,200"
+        ],
+        [
+          "Count of breweries",
+          "80"
+        ],
+        [
+          "Real downtown year-round",
+          "Yes"
+        ],
+        [
+          "Outdoor recreation (30 min)",
+          "Millennium Park, Fred Meijer White Pine Trail, Action Wake Park, Cannonsburg Ski Area"
+        ],
+        [
+          "Arts/music venues",
+          "Acrisure Amphitheater, Van Andel Arena, DeVos Performance Hall, The Intersection"
+        ],
+        [
+          "Dog-friendliness",
+          "Highly friendly; Dog parks: Hillcrest, Wahlfield; Beaches: Kirk Park, Norman F. Kruse Park"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "82"
+        ],
+        [
+          "January average low",
+          "19"
+        ],
+        [
+          "Annual hours of sunshine",
+          "2,335 hours"
+        ],
+        [
+          "Annual rainfall",
+          "39 inches"
+        ],
+        [
+          "First frost",
+          "September 19"
+        ],
+        [
+          "Last frost",
+          "May 4"
+        ],
+        [
+          "Lake-effect snowfall/fog",
+          "Heavy lake-effect snowfall, 72 to 78 inches annually"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "199,417 · Kent Co 652,617"
+        ],
+        [
+          "Median age",
+          "31.2 · county 35.4"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "6% of units · county 5%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "39% · county 39%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "6% · county 5%"
+        ],
+        [
+          "Median household income",
+          "$51,333 · county $65,722"
+        ],
+        [
+          "Works from home",
+          "6% of workers · county 6%"
+        ],
+        [
+          "Mix",
+          "58% white · 18% Black · 16% Hispanic · 3% Asian"
+        ],
+        [
+          "Median home built",
+          "1953"
+        ],
+        [
+          "Median rent (2020)",
+          "$813"
+        ],
+        [
+          "Population trend",
+          "Growing (188,000 to 201,000)"
+        ],
+        [
+          "2024 presidential margin",
+          "5.35% margin (Harris)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water vs well/septic",
+          "Downtown/suburbs use municipal; rural use well/septic (30% in MI)"
+        ],
+        [
+          "Short-term rental rules",
+          "Strict, primary residence only, 1 room max, 200 license cap"
+        ],
+        [
+          "HOA prevalence",
+          "High"
+        ],
+        [
+          "Flood zone/erosion",
+          "Flood risk near Grand River; soil erosion regulated within 500 feet of water"
+        ],
+        [
+          "Surprises",
+          "Title companies handle closings (no attorneys); commute math (45 mins crosses counties); Dutch/Reformed influence"
+        ]
+      ],
+      "sources": "Sources: en.wikipedia.org, google.com, experiencegr.com, waze.com, maptons.com, corewellhealth.org, healthline.com, weatherspark.com"
+    },
     verdict:
       "Cheapest viable median, closest to Palatine, best overall connectivity — and the discount is explained: ~9 violent crimes per 1,000 (citywide; varies sharply by neighborhood) and 23,000 lead service lines. First on value. Buy it street by street, and ask what the service line is made of.",
   },
@@ -84,6 +375,273 @@ export const RELOCATION_TOWNS = [
     fiber: "7% fiber · 97% cable",
     tax: "37.88 mills (1.89%)",
     drive: "≈287 mi · 4:34",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Meijer (9701 Belleville Rd, ~2 mi), Walmart (~3 mi), The Butcher Shop (510 Main St, 0 mi)"
+        ],
+        [
+          "Costco / Sam's Club",
+          "Costco: Ann Arbor (~15-18 mi, Depot not retail); Sam's Club: Canton (~9 mi)"
+        ],
+        [
+          "Target",
+          "47330 Michigan Ave, Canton, MI, ~8 miles"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercenter, 10562 Belleville Rd, ~3 miles"
+        ],
+        [
+          "Aldi",
+          "10017 Belleville Rd, Belleville, ~2.5 miles"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Whole Foods (Ann Arbor, ~15 mi); Trader Joe's (Ann Arbor, ~18 mi)"
+        ],
+        [
+          "Pharmacy",
+          "CVS (10915 Belleville Rd), Walgreens (10276 Belleville Rd), Meijer Pharmacy"
+        ],
+        [
+          "Home improvement",
+          "Menards (Belleville, ~2.5 mi), Home Depot (Canton, ~7 mi), Lowe's (Canton, ~9 mi)"
+        ],
+        [
+          "Farmers market",
+          "Belleville Farmers Market (4th St Place & Sq); Jun-Oct, Mon 4-7:30 PM"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Same-day or next-day delivery on eligible items for Prime members"
+        ],
+        [
+          "Nearest Amazon station",
+          "Romulus DTW1 (32801 Ecorse Rd, ~7-9 mi); Canton Delivery Station (49000 Michigan Ave, ~8 mi)"
+        ],
+        [
+          "UPS / FedEx",
+          "The UPS Store (11740 Belleville Rd); FedEx Authorized ShipCenter (847 Sumpter Rd)"
+        ],
+        [
+          "Grocery delivery",
+          "Instacart and DoorDash both cover Belleville 48111"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Corewell Health Wayne Hospital (Wayne, MI, ~7.8 miles); CMS star rating: 1/5 stars"
+        ],
+        [
+          "Safety grade",
+          "NOT FOUND"
+        ],
+        [
+          "Trauma center",
+          "Trinity Health Ann Arbor Hospital (Level I, Ypsilanti, ~13-15 miles)"
+        ],
+        [
+          "Urgent care",
+          "4 clinics in town"
+        ],
+        [
+          "New-patient access",
+          "Corewell Health Family Medicine (same/next-day appts); WellHealth Medical Belleville"
+        ],
+        [
+          "Referral center",
+          "Trinity Health Ann Arbor (~13-15 miles) or Corewell Health Dearborn (~15-20 miles)"
+        ]
+      ],
+      "schools": [
+        [
+          "District name",
+          "Van Buren Public Schools"
+        ],
+        [
+          "Niche district rating",
+          "B"
+        ],
+        [
+          "GreatSchools rating",
+          "Belleville High School: 5/10; District rating: NOT FOUND"
+        ],
+        [
+          "High school graduation rate",
+          "82.6% for Belleville High School"
+        ]
+      ],
+      "economy": [
+        [
+          "Largest employers",
+          "NOT FOUND"
+        ],
+        [
+          "County unemployment rate",
+          "7.30% (Wayne County, July 2026)"
+        ],
+        [
+          "Coworking space in town",
+          "NOT FOUND in 48111; nearest in Ypsilanti and Ann Arbor"
+        ],
+        [
+          "Seasonality",
+          "Year-round; driven by manufacturing and retail, not seasonal tourism"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Detroit Metropolitan Wayne County Airport (DTW), ~12 miles / 10-15 min drive"
+        ],
+        [
+          "Major hub status",
+          "DTW is a major hub (Delta), 10-15 min drive"
+        ],
+        [
+          "Nonstop destinations",
+          "120-140 nonstop destinations"
+        ],
+        [
+          "Airlines serving DTW",
+          "17 airlines"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk Score / Bike Score",
+          "Walk Score 40/100, Bike Score 29/100 for downtown"
+        ],
+        [
+          "Restaurants & breweries",
+          "~4 sit-down restaurants and 1 brewery downtown"
+        ],
+        [
+          "Downtown character",
+          "Year-round downtown"
+        ],
+        [
+          "Outdoor recreation",
+          "Belleville Lake (water sports), Lower Huron Metropark, Mt. Brighton (skiing, within 30 min)"
+        ],
+        [
+          "Arts & music venues",
+          "Diamondback Music Hall, Horizon Park summer events"
+        ],
+        [
+          "Dog friendliness",
+          "Leashed dogs at Lower Huron Metropark; off-leash parks/beaches NOT FOUND in city limits"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "84°F (1991-2020 normal)"
+        ],
+        [
+          "January average low",
+          "18°F (1991-2020 normal)"
+        ],
+        [
+          "Annual sunshine",
+          "NOAA/NWS days NOT FOUND; ~2,389 hours annually via secondary source"
+        ],
+        [
+          "Annual rainfall",
+          "32.7 inches (1991-2020 normal)"
+        ],
+        [
+          "Frost dates",
+          "Average last spring frost ~April 24; average first fall frost ~October 20"
+        ],
+        [
+          "Lake-effect snow",
+          "Generally less susceptible to heavy localized lake-effect snow bands hitting western MI"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "3,879 · Wayne Co 1,753,059"
+        ],
+        [
+          "Median age",
+          "41.7 · county 37.9"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "11% of units · county 15%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "36% · county 26%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "8% · county 9%"
+        ],
+        [
+          "Median household income",
+          "$52,810 · county $49,359"
+        ],
+        [
+          "Works from home",
+          "10% of workers · county 5%"
+        ],
+        [
+          "Mix",
+          "76% white · 13% Black · 6% Hispanic"
+        ],
+        [
+          "Median home built",
+          "1978"
+        ],
+        [
+          "Median rent (2020)",
+          "$765"
+        ],
+        [
+          "Population trend",
+          "Growing slightly (~0.8% increase for city 2010-2020)"
+        ],
+        [
+          "2024 presidential margin",
+          "Exact final margin NOT FOUND; Donald Trump margin improved by 9.2 percentage points vs 2020"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water & sewer",
+          "City/subdivisions have municipal water/sewer; private wells and septic prevalent in rural areas"
+        ],
+        [
+          "Short-term rentals",
+          "Regulated heavily at the local level by zoning ordinances"
+        ],
+        [
+          "HOA prevalence",
+          "Very common; township officially operates an HOA Committee"
+        ],
+        [
+          "Flood zones & erosion",
+          "Parts in FEMA flood zones near Belleville Lake; heavy rain prompts localized flooding"
+        ],
+        [
+          "Newcomer surprises",
+          "Train noise (nighttime horns) and landfill odors (rotten egg smells from Wayne Disposal Inc.)"
+        ]
+      ],
+      "sources": "Sources: weather.gov, vbtmi.gov, metroairport.com, metroparks.com, waynecounty.com, meijer.com, walmart.com, cms.gov"
+    },
     verdict:
       "Flagged unreliable rather than guessed. Its Census home value ($148,300), median sold ($334,000) and median listing ($119,949) cannot all be true for a city of ~4,000 - small-sample noise, not a market. Wayne County's $194,800 value is the trustworthy anchor, and DTW is twenty minutes away. Worth seeing on the ground; do not trust these numbers until you have stood in it.",
   },
@@ -101,6 +659,277 @@ export const RELOCATION_TOWNS = [
     fiber: "10% fiber · 76% cable",
     tax: "40.28 mills (2.01%, incl. 5-mill assessment)",
     drive: "≈330 mi · 4:55",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Kroger, 435 N Main St (0-2 miles)"
+        ],
+        [
+          "Costco",
+          "6200 LaFontaine Way, Flint, MI (approx 25-30 miles)"
+        ],
+        [
+          "Target",
+          "2772 Tittabawassee Rd, Saginaw, MI (15-20 miles)"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercenter, 11493 N Linden Rd, Clio, MI (11 miles)"
+        ],
+        [
+          "Aldi",
+          "5275 Bay Rd, Saginaw, MI (15-20 miles)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's & Whole Foods, 2918/3044 Walton Blvd, Rochester Hills, MI (approx 85 miles)"
+        ],
+        [
+          "Pharmacy",
+          "CVS (111 N Main), Kroger (435 N Main), Frankenmuth Family Pharmacy (154 S Main) in town"
+        ],
+        [
+          "Home Depot",
+          "3132 Bueker Dr N, Saginaw, MI (14-15 miles)"
+        ],
+        [
+          "Farmers market",
+          "Frankenmuth Farmers Market, 534 N Main St (Saturdays Jun-mid Oct)"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard 1-2 day Prime delivery; same-day/next-day highly restricted"
+        ],
+        [
+          "Nearest Amazon station",
+          "3280 Commerce Centre Dr, Saginaw, MI (14-15 miles)"
+        ],
+        [
+          "UPS Store",
+          "481 N Main St, in town"
+        ],
+        [
+          "FedEx",
+          "Authorized ShipCenter at Computer Country (146 S Main St, Ste 5); full-service Flint/Saginaw"
+        ],
+        [
+          "Grocery delivery",
+          "Instacart, DoorDash, and UberEats available for grocery and restaurant delivery"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "MyMichigan Medical Center Saginaw (Ascension St. Mary's), 800 S Washington Ave, Saginaw (12-13 mi)"
+        ],
+        [
+          "Safety grade",
+          "MyMichigan Medical Center: Grade A (Leapfrog Fall 2025); Covenant Medical Center: 2-star CMS (2024/2026)"
+        ],
+        [
+          "Trauma center",
+          "Covenant HealthCare Level II (15-20 mi); Hurley Medical Center Flint Level I (25-30 mi)"
+        ],
+        [
+          "Urgent care",
+          "Covenant MedExpress, 600 N Main St, in town"
+        ],
+        [
+          "New-patient access",
+          "Yes; Frankenmuth Medical Associates and Covenant Medical Group (Ste 220-B) list open panels"
+        ],
+        [
+          "Referral center",
+          "University of Michigan Hospital, Ann Arbor (78 miles, ~1h 20m drive)"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Frankenmuth School District"
+        ],
+        [
+          "District rating",
+          "Overall A grade on Niche (2024-2026 data)"
+        ],
+        [
+          "High school rating",
+          "Frankenmuth High School: 8/10 on GreatSchools (2024-2026 data)"
+        ],
+        [
+          "Graduation rate",
+          "Consistently 95% or greater (top 10% in Michigan)"
+        ]
+      ],
+      "economy": [
+        [
+          "Largest employers",
+          "Bavarian Inn (~1,000), Frankenmuth Insurance (750-889), Bronner's (150-750), Zehnder's, Star of the West"
+        ],
+        [
+          "Unemployment rate",
+          "5.9% (Saginaw County preliminary, July 2026 BLS)"
+        ],
+        [
+          "Coworking",
+          "None dedicated in town (library rooms/R1SE limited space); nearest full coworking CMURC in Saginaw"
+        ],
+        [
+          "Seasonal economy",
+          "Highly seasonal around Christmas, Oktoberfest, and summer festivals; waterparks add stability"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "MBS International Airport (MBS), Freeland, MI (30 miles, 25-30 min drive)"
+        ],
+        [
+          "Non-stop destinations",
+          "2 non-stop destinations via Delta (to DTW) and United (to ORD)"
+        ],
+        [
+          "Nearest major hub",
+          "Detroit Metropolitan Wayne County Airport (DTW) (90-100 miles, 1h 45m to 2h drive)"
+        ],
+        [
+          "Airlines",
+          "Delta and United at MBS"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk score",
+          "Downtown scores around 67 (somewhat walkable); no universal score"
+        ],
+        [
+          "Dining and beverage count",
+          "~26 restaurants, 1 brewery (Frankenmuth Brewery), winery tasting rooms, 1 distillery"
+        ],
+        [
+          "Downtown vibe",
+          "Year-round Bavarian-themed downtown catering to tourists, fully open through winter"
+        ],
+        [
+          "Outdoor recreation",
+          "Memorial Park (sledding/skiing); Saginaw Valley Rail Trail within 30 min; downhill ski further north/west"
+        ],
+        [
+          "Arts and music",
+          "Bronner Performing Arts Center, Fischer Hall, Harvey Kern Pavilion, Fischer Platz / Lorelei Lounge"
+        ],
+        [
+          "Dog friendliness",
+          "Pet-friendly downtown; Hund Platz off-leash park in Memorial Park; no off-leash beaches nearby"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "81°F to 83°F"
+        ],
+        [
+          "January average low",
+          "15°F to 18°F"
+        ],
+        [
+          "Sunshine",
+          "Approx 2,361 hours of sunshine per year"
+        ],
+        [
+          "Annual rainfall",
+          "Approx 34 inches"
+        ],
+        [
+          "Frost dates",
+          "Average last spring frost: May 6; average first fall frost: October 11"
+        ],
+        [
+          "Lake effect and fog",
+          "Shielded from primary lake-effect snow belts; standard humidity fog, no lake fog banks"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "5,396 · Saginaw Co 191,166"
+        ],
+        [
+          "Median age",
+          "46.0 · county 41.0"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "6% of units · county 10%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "59% · county 24%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "3% · county 7%"
+        ],
+        [
+          "Median household income",
+          "$76,115 · county $49,565"
+        ],
+        [
+          "Works from home",
+          "7% of workers · county 4%"
+        ],
+        [
+          "Mix",
+          "89% white · 7% Hispanic · 4% Black"
+        ],
+        [
+          "Median home built",
+          "1975"
+        ],
+        [
+          "Median rent (2020)",
+          "$611"
+        ],
+        [
+          "Population trend",
+          "Modest growth of ~5% since 2010 (4,976 in 2010 to estimated 5,232 in 2026)"
+        ],
+        [
+          "Political lean",
+          "2024 Election: Saginaw County voted Donald J. Trump by margin of 3.26% (3,397 votes)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water vs septic",
+          "Municipal water/sewer (Water Resource Recovery Facility); private wells/septic extremely rare in city"
+        ],
+        [
+          "Short-term rentals",
+          "Strict Planning Commission permit, strict zoning limits, and 300-foot distance rule"
+        ],
+        [
+          "HOAs",
+          "Exist especially for condos; private contracts unenforced by city, verify via title search"
+        ],
+        [
+          "Flood and erosion",
+          "Cass River historic flood risk; downtown protected by levee system; stone vanes control bank erosion"
+        ],
+        [
+          "Newcomer surprises",
+          "Quiet small town with large tourist influxes; safe and clean, but traditional and tight-knit"
+        ]
+      ],
+      "sources": "Sources: leapfroggroup.org, cms.gov, niche.com, greatschools.org, bls.gov, census.gov, walkscore.com, frankenmuth.org"
+    },
     verdict:
       "The other quiet winner: low crime, the least snow of any northern option, under five hours to Palatine. The Bavarian theme is a tourist economy that stays open all year. Its 2% property tax quietly claws back some of the price advantage.",
   },
@@ -118,6 +947,281 @@ export const RELOCATION_TOWNS = [
     fiber: "0.3% fiber · 90% cable",
     tax: "37.07 mills city proper (1.85%) — the oft-quoted 26.8 is Acme Twp",
     drive: "≈350 mi · 5:57",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Meijer (3955 US 31 S, 3-4 miles)"
+        ],
+        [
+          "Costco",
+          "125 S Airport Rd E, Traverse City, 3-4 miles"
+        ],
+        [
+          "Target",
+          "3130 S Airport Rd W, Traverse City, 3-4 miles"
+        ],
+        [
+          "Walmart",
+          "2640 Crossing Cir, Traverse City, 3-4 miles"
+        ],
+        [
+          "Aldi",
+          "3123 W South Airport Rd, Traverse City, 4-5 miles"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's (Grand Rapids, ~140 mi); Whole Foods (Grand Rapids, ~140 mi)"
+        ],
+        [
+          "Pharmacy",
+          "Walgreens, 526 W 14th St, Traverse City, 1 mile"
+        ],
+        [
+          "Home Depot/Lowe's/Menards",
+          "Home Depot (4-5 mi), Lowe's (4-5 mi), Menards (4-5 mi)"
+        ],
+        [
+          "Farmers market",
+          "Sara Hardy Downtown Farmers Market (0 miles, downtown), May through October"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "2-day standard; same-day/next-day occasionally available depending on item"
+        ],
+        [
+          "Nearest Amazon station",
+          "4471 US 31 South, Traverse City, 4-5 miles"
+        ],
+        [
+          "UPS / FedEx",
+          "The UPS Store (526 W 14th St, 1 mi); FedEx authorized: Kwik Print (1-2 mi)"
+        ],
+        [
+          "Grocery delivery",
+          "DoorDash and Shipt highly active; Instacart present but less reliable"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Munson Medical Center, 0.9 miles"
+        ],
+        [
+          "Safety grade",
+          "Leapfrog Grade: A (Spring 2026), CMS Star Rating: 5 stars"
+        ],
+        [
+          "Trauma center",
+          "Munson Medical Center (Level II), 0.9 miles"
+        ],
+        [
+          "Urgent care",
+          "4 major clinics in town"
+        ],
+        [
+          "New-patient access",
+          "Accepting new patients; wait times up to 31 days for initial intake"
+        ],
+        [
+          "Referral center",
+          "Corewell Health in Grand Rapids, 130-140 miles"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Traverse City Area Public Schools (TCAPS)"
+        ],
+        [
+          "District Niche grade",
+          "A-"
+        ],
+        [
+          "High school ratings",
+          "TC West High: 8/10, TC Central High: 7/10 (GreatSchools)"
+        ],
+        [
+          "Graduation rate",
+          "84%"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "Munson Healthcare (3,700), Hagerty (900), NMC (700), NW Ed Services (176)"
+        ],
+        [
+          "Hospitality West LLC",
+          "NOT FOUND"
+        ],
+        [
+          "Unemployment rate",
+          "3.6% as of June 2026"
+        ],
+        [
+          "Coworking spaces",
+          "20Fathoms, Commonplace, SPACE Coworking"
+        ],
+        [
+          "Seasonal economy",
+          "29% tourism-tied jobs; population spikes 47% February to July"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest airport",
+          "Cherry Capital Airport (TVC), 4-5 miles, 10-15 min drive"
+        ],
+        [
+          "Nonstop destinations",
+          "14 nonstop destinations"
+        ],
+        [
+          "Airlines",
+          "American, Delta, United, Allegiant, JetBlue, Sun Country"
+        ],
+        [
+          "Nearest major hub",
+          "Gerald R. Ford International (GRR) in Grand Rapids, 2-2.5 hr drive"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk / Bike score",
+          "Walk Score 84, Bike Score 65"
+        ],
+        [
+          "Dining & drinks",
+          "150+ restaurants, 30+ breweries, 40+ wineries, 5 distilleries"
+        ],
+        [
+          "Downtown seasonality",
+          "Open year-round with winter festivals; summer peak"
+        ],
+        [
+          "Outdoor recreation",
+          "Boardman Lake Loop Trail, Grand Traverse Bay, Sleeping Bear Dunes (<30 min)"
+        ],
+        [
+          "Arts / Music venues",
+          "City Opera House, The Alluvion, Interlochen Center for the Arts"
+        ],
+        [
+          "Dog-friendliness",
+          "3 off-leash dog parks; on-leash at Mission Point & West End beaches"
+        ]
+      ],
+      "climate": [
+        [
+          "July avg high",
+          "80 to 81°F"
+        ],
+        [
+          "January avg low",
+          "17 to 18°F"
+        ],
+        [
+          "Sunshine",
+          "2,214 hours annually"
+        ],
+        [
+          "Annual rainfall",
+          "33 to 34 inches"
+        ],
+        [
+          "Frost dates",
+          "Last spring frost mid-late May; first fall frost late Sep-early Oct"
+        ],
+        [
+          "Lake-effect",
+          "Significant lake-effect moderation and heavy lake-effect snow"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "15,525 · Grand Traverse Co 92,640"
+        ],
+        [
+          "Median age",
+          "40.1 · county 43.0"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "10% of units · county 15%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "47% · county 38%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "5% · county 4%"
+        ],
+        [
+          "Median household income",
+          "$61,056 · county $66,457"
+        ],
+        [
+          "Works from home",
+          "8% of workers · county 8%"
+        ],
+        [
+          "Mix",
+          "90% white · 3% Hispanic · 1% Asian · 1% Black"
+        ],
+        [
+          "Median home built",
+          "1957"
+        ],
+        [
+          "Median rent (2020)",
+          "$838"
+        ],
+        [
+          "Population trend",
+          "Growing, up 7.78% from 2010 to 2026"
+        ],
+        [
+          "2024 presidential margin",
+          "Trump won county by 1,084 votes (1.8% margin)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water & septic",
+          "Municipal in city; ~15,000 county homes on well/septic; transfer inspections"
+        ],
+        [
+          "Short-term rentals",
+          "Requires VHR license; strict zoning limits and unhosted caps"
+        ],
+        [
+          "HOA prevalence",
+          "Highly prevalent in newer developments, condos, and subdivisions"
+        ],
+        [
+          "Flood & erosion",
+          "Shoreline erosion on bay; FEMA Flood Zone AE along Boardman/Ottaway River"
+        ],
+        [
+          "Housing crunch",
+          "2% rental vacancy and high housing costs relative to local wages"
+        ],
+        [
+          "Seasonal traffic",
+          "Intense summer tourist traffic makes local errands difficult"
+        ]
+      ],
+      "sources": "Sources: traversecity.com, munsonhealthcare.org, traversecitymi.gov, tvcairport.com, weatherspark.com, downtowntc.com, greatschools.org, census.gov"
+    },
     verdict:
       "The life most people picture when they say northern Michigan, at a price you can actually name. Two verified surprises: the city's real millage is 37, not the widely-quoted 27 — about $8,700/yr on the median — and it is the region's fiber desert at 0.3%. Cable carries remote work fine; check the address anyway.",
   },
@@ -135,6 +1239,281 @@ export const RELOCATION_TOWNS = [
     fiber: "44% fiber · 69% cable",
     tax: "33.63 mills (1.68%)",
     drive: "≈394 mi · 6:03",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Meijer, 1201 Lears Rd (5 miles)"
+        ],
+        [
+          "Costco",
+          "Costco Wholesale, 2730 N US 31 S, Traverse City (65 miles)"
+        ],
+        [
+          "Target",
+          "Traverse City (66 miles)"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercenter, 1850 Anderson Rd, Petoskey (3 miles)"
+        ],
+        [
+          "Aldi",
+          "2130 Anderson Rd, Petoskey (3 miles)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's: Kentwood (185 miles); Whole Foods: NOT FOUND (190+ miles)"
+        ],
+        [
+          "Pharmacy",
+          "Walgreens, 1301 N US Hwy 31, Petoskey (2 miles)"
+        ],
+        [
+          "Home Depot / Lowe's",
+          "Home Depot (3 mi), Lowe's (3 mi), Menards: Gaylord (37 mi)"
+        ],
+        [
+          "Farmers market",
+          "Downtown Petoskey Farmers Market (May 29 to October 2)"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard 2 to 5 days to 49770; no same-day or next-day options available"
+        ],
+        [
+          "Nearest Amazon station",
+          "Gaylord area (35 miles)"
+        ],
+        [
+          "UPS / FedEx",
+          "The UPS Store: 201 W Mitchell St; FedEx drop-off: Walgreens (1301 N US Hwy 31)"
+        ],
+        [
+          "Grocery delivery",
+          "Instacart and DoorDash have full active coverage"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "McLaren Northern Michigan, Petoskey (1 mile)"
+        ],
+        [
+          "Safety grade",
+          "Leapfrog safety grade: A; CMS star rating: 4 stars"
+        ],
+        [
+          "Trauma center",
+          "McLaren Northern MI (Level II); nearest Level I: Corewell Health Butterworth, Grand Rapids (180 miles)"
+        ],
+        [
+          "Urgent care",
+          "3 urgent-care clinics in town"
+        ],
+        [
+          "New-patient access",
+          "Primary-care accepting new patients with brief wait for intake packet review"
+        ],
+        [
+          "Referral center",
+          "Munson Medical Center in Traverse City (65 miles)"
+        ]
+      ],
+      "schools": [
+        [
+          "District name",
+          "Public Schools of Petoskey"
+        ],
+        [
+          "Niche grade",
+          "B+"
+        ],
+        [
+          "GreatSchools rating",
+          "7/10"
+        ],
+        [
+          "Graduation rate",
+          "89%"
+        ]
+      ],
+      "economy": [
+        [
+          "Largest employer",
+          "McLaren Northern Michigan (1,300-1,400 employees)"
+        ],
+        [
+          "Major employers",
+          "Petoskey Plastics (450-600), Kilwins (340-370), NCMC (300+), Great Lakes Energy (290-300)"
+        ],
+        [
+          "County unemployment rate",
+          "4.20% (June 2026)"
+        ],
+        [
+          "Coworking space",
+          "NorthCoast.Work located at 417 Howard St"
+        ],
+        [
+          "Seasonal economy",
+          "Highly seasonal tourist influx driving summer (lake) and winter (ski) economy"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Pellston Regional Airport (PLN) (25 miles, 30-40 mins drive)"
+        ],
+        [
+          "Nonstop destinations",
+          "2 destinations (Detroit, Chicago)"
+        ],
+        [
+          "Airlines serving PLN",
+          "Delta and United Airlines"
+        ],
+        [
+          "Nearest major hub airport",
+          "Detroit Metropolitan Wayne County Airport (DTW) (260 miles, 4-5 hours)"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk & Bike Score",
+          "Walk Score: 85 downtown, 10 city-wide; Bike Score: 13-18"
+        ],
+        [
+          "Restaurants & breweries",
+          "Dozens downtown; popular breweries include Beards Brewery and The Back Lot"
+        ],
+        [
+          "Downtown",
+          "Historic Gaslight District, very active year-round, busier in summer"
+        ],
+        [
+          "Outdoor recreation",
+          "26-mile Little Traverse Wheelway, Bear River Valley, Petoskey State Park, skiing within 30 mins"
+        ],
+        [
+          "Arts & culture",
+          "Crooked Tree Arts Center, Great Lakes Center for the Arts"
+        ],
+        [
+          "Dog-friendliness",
+          "Extremely pet-friendly; dogs allowed at breweries, trails, state park beach areas"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "75°F to 80°F"
+        ],
+        [
+          "January average low",
+          "14°F to 15°F"
+        ],
+        [
+          "Sunshine & daylight",
+          "Up to 15 hours daylight in summer; winters heavily overcast"
+        ],
+        [
+          "Annual precipitation",
+          "31 to 35 inches of precipitation"
+        ],
+        [
+          "Frost dates",
+          "Last frost mid-May, first frost mid-September"
+        ],
+        [
+          "Lake-effect note",
+          "Lake-effect fog (steam fog/sea smoke) off Little Traverse Bay in spring/fall"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "5,701 · Emmet Co 33,175"
+        ],
+        [
+          "Median age",
+          "42.3 · county 45.7"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "24% of units · county 35%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "48% · county 35%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "2% · county 4%"
+        ],
+        [
+          "Median household income",
+          "$58,197 · county $55,947"
+        ],
+        [
+          "Works from home",
+          "6% of workers · county 5%"
+        ],
+        [
+          "Mix",
+          "89% white · 3% Hispanic"
+        ],
+        [
+          "Median home built",
+          "1974"
+        ],
+        [
+          "Median rent (2020)",
+          "$681"
+        ],
+        [
+          "Population trend",
+          "5,670 (2010) to 5,877 (2020) to est 5,759 (2026); slight shrinkage/stagnation"
+        ],
+        [
+          "2024 vote margin",
+          "Emmet County voted Donald Trump +18.95% (58.46% to 39.51%)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water and sewer",
+          "City has municipal water/sewer; township outskirts rely on private well/septic"
+        ],
+        [
+          "Short-term rentals",
+          "Banned in residential zones; allowed only in designated business districts with city license"
+        ],
+        [
+          "HOA prevalence",
+          "Highly prevalent in developments; frequently ban STRs entirely"
+        ],
+        [
+          "Flood zone & erosion",
+          "Waterfront erosion along Lake Michigan; properties near Bear River may be in flood zones"
+        ],
+        [
+          "Housing availability",
+          "Severe lack of affordable year-round housing (99% occupancy)"
+        ],
+        [
+          "Local quirks & tourism",
+          "Zero-visibility lake-effect fog walls; large summer tourist influx changing pace"
+        ]
+      ],
+      "sources": "Sources: greatschools.org, niche.com, leapfroggroup.org, cms.gov, census.gov, walkscore.com"
+    },
     verdict:
       "The verification round's climber: lowest violent crime on the board, the best fiber in the north, a real hospital (McLaren), no PFAS site found. The price is the most snow of anywhere on this list — 123 inches — and six hours to Palatine.",
   },
@@ -152,6 +1531,273 @@ export const RELOCATION_TOWNS = [
     fiber: "26% fiber · 95% cable",
     tax: "52.67 mills (2.63%) — ~$12,900/yr on the median",
     drive: "≈275 mi · 4:41",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Kroger (2641 Plymouth Rd, 3.5 mi), Busch's (2020 Green Rd, 3.5 mi)"
+        ],
+        [
+          "Costco",
+          "771 Airport Blvd, Ann Arbor - 5 mi"
+        ],
+        [
+          "Target",
+          "231 S State St, Ann Arbor - 0 mi (downtown)"
+        ],
+        [
+          "Walmart",
+          "2515 Ellsworth Rd, Ypsilanti - 7 mi"
+        ],
+        [
+          "Aldi",
+          "2340 Dexter Ave, Ann Arbor - 2.5 mi"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's (2398 E Stadium Blvd, 3.5 mi); Whole Foods (3135 Washtenaw Ave, 3.5 mi)"
+        ],
+        [
+          "Pharmacy",
+          "CVS (209 S State St, Ann Arbor) - 0 mi (downtown)"
+        ],
+        [
+          "Home Depot",
+          "3300 Carpenter Rd, Ypsilanti - 6 mi"
+        ],
+        [
+          "Farmers market",
+          "Ann Arbor Farmers Market (315 Detroit St) - 0.2 mi (Kerrytown, year-round)"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Same-day and next-day delivery widely available in 48104 for Prime members"
+        ],
+        [
+          "Nearest Amazon station",
+          "4700 Carpenter Rd, Ypsilanti, MI - 7 mi"
+        ],
+        [
+          "UPS / FedEx",
+          "The UPS Store (2531 Jackson Ave); FedEx Office Print & Ship Center (2800 S State St)"
+        ],
+        [
+          "Grocery / food delivery",
+          "Instacart and DoorDash offer comprehensive coverage across Ann Arbor"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "University of Michigan Health (Michigan Medicine) Adult ER (1500 E Medical Center Dr) - 1.7 mi"
+        ],
+        [
+          "Safety grade / CMS",
+          "Leapfrog Grade A (Spring 2026); CMS 5 stars (2026)"
+        ],
+        [
+          "Trauma center",
+          "University of Michigan Health, verified Level I Trauma Center - 1.7 mi"
+        ],
+        [
+          "Urgent care",
+          "At least 7 clinics (Trinity Health IHA, Ann Arbor Urgent Care, Advance, Concentra, etc.)"
+        ],
+        [
+          "New-patient access",
+          "Accepting new patients; >50% wait >=1 week, major systems wait up to several months"
+        ],
+        [
+          "Referral center",
+          "University of Michigan Health (Michigan Medicine) - 1.7 mi"
+        ]
+      ],
+      "schools": [
+        [
+          "District name",
+          "Ann Arbor Public Schools (AAPS)"
+        ],
+        [
+          "Niche rating",
+          "A+ district rating (2026)"
+        ],
+        [
+          "GreatSchools rating",
+          "High school ratings typically range from 8/10 to 10/10 (2026)"
+        ],
+        [
+          "Graduation rate",
+          "91.0% (Class of 2025)"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "U-M (~37,400), Trinity Health (~5,500), AAPS (~2,700), VA Healthcare (~2,700), IHA Health (~1,600)"
+        ],
+        [
+          "County unemployment rate",
+          "4.2% (July 2026)"
+        ],
+        [
+          "Coworking spaces",
+          "Cahoots (tech/startups), Venue by 4M, Workantile, BrightWorks Coworking, Bamboo Ann Arbor"
+        ],
+        [
+          "Seasonal economy",
+          "100% core economy active year-round; hospitality spikes during U-M football (~$226M) & August move-in"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Detroit Metropolitan Wayne County Airport (DTW) - 25 mi, 35 min drive"
+        ],
+        [
+          "Hub status",
+          "Delta Air Lines hub; served by all major domestic and many international airlines"
+        ],
+        [
+          "Nonstop destinations",
+          "125+ destinations globally"
+        ],
+        [
+          "Nearest major hub",
+          "Detroit Metropolitan Wayne County Airport (DTW) - 35 min drive"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk Score / Bike Score",
+          "Walk Score 96 (Walker's Paradise); Bike Score 98 (downtown, 2026)"
+        ],
+        [
+          "Restaurants & breweries",
+          "400+ restaurants citywide; downtown breweries include Grizzly Peak, Jolly Pumpkin"
+        ],
+        [
+          "Downtown activity",
+          "Open year-round; patio seating in warm months, indoor operations through winter"
+        ],
+        [
+          "Outdoor recreation <=30 min",
+          "Border-to-Border Trail, Waterloo Rec Area (DTE trail), Huron River (kayak/tube), Whitmore/Belleville lakes"
+        ],
+        [
+          "Arts & music venues",
+          "The Ark, The Blind Pig, Hill Auditorium, Michigan Theater, Blue Llama Jazz Club, Kerrytown Concert House"
+        ],
+        [
+          "Dog-friendliness",
+          "Dog-friendly patios; 3 off-leash dog parks (Swift Run, Olson, Broadway; permit req); no dog beaches"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "84°F (Historical avg)"
+        ],
+        [
+          "January average low",
+          "18°F (Historical avg)"
+        ],
+        [
+          "Annual sunshine",
+          "2,451 hours of sunshine annually (Historical avg)"
+        ],
+        [
+          "Annual rainfall",
+          "37 inches (Historical avg)"
+        ],
+        [
+          "Frost dates",
+          "Last spring frost early May (approx May 3); first autumn frost late Sept to early Oct"
+        ],
+        [
+          "Lake-effect & fog",
+          "Outside main snow belt; light lake-effect dusting late fall/early winter; periodic fog in humid transitions"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "121,093 · Washtenaw Co 368,385"
+        ],
+        [
+          "Median age",
+          "27.5 · county 33.9"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "6% of units · county 6%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "80% · county 59%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "4% · county 5%"
+        ],
+        [
+          "Median household income",
+          "$69,456 · county $75,730"
+        ],
+        [
+          "Works from home",
+          "12% of workers · county 8%"
+        ],
+        [
+          "Mix",
+          "67% white · 17% Asian · 7% Black · 5% Hispanic"
+        ],
+        [
+          "Median home built",
+          "1970"
+        ],
+        [
+          "Median rent (2020)",
+          "$1,217"
+        ],
+        [
+          "Population trend",
+          "Down 1.71% since 2020 (-0.48% annual decline) (2020-2024)"
+        ],
+        [
+          "Presidential vote margin",
+          "+44.4% Democratic (71.0% D vs 26.6% R) in Washtenaw County (2024)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water & septic prevalence",
+          "City on municipal water (Huron River); county has ~20% on private wells & ~48k active septics (2026)"
+        ],
+        [
+          "Short-term rental rules",
+          "Strictly regulated: $500 annual fee, ADUs banned as STRs, non-principal STRs restricted, moratorium explored (2026)"
+        ],
+        [
+          "HOA prevalence",
+          "Over 100 registered residential associations, from informal groups to formal HOAs with mandatory CC&Rs"
+        ],
+        [
+          "Flood & erosion issues",
+          "Basement flooding common (high water table, clay soil, aging pipes); creek lots face storm erosion"
+        ],
+        [
+          "Newcomer surprises",
+          "High home prices & property taxes, game day/move-in traffic, townie/student dynamic, basement water management"
+        ]
+      ],
+      "sources": "Sources: google.com, amazon.com, leapfroggroup.org, cms.gov, walkscore.com, niche.com, greatschools.org"
+    },
     verdict:
       "The most culturally SF-like option — college town, food, walkability — and taxed like it: the highest viable-tier millage means a $12,900 first-year bill on the median house. Property crime runs college-town high. Zero lead lines.",
   },
@@ -169,6 +1815,269 @@ export const RELOCATION_TOWNS = [
     fiber: "27% fiber · 99% cable",
     tax: "41.31 mills (2.07%) + 1.0% city income tax",
     drive: "≈372 mi · 5:29",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Kroger (2907 Krafft Rd, 3.5 mi; 1215 24th St, 1.5 mi); Meijer (4775 24th Ave, Fort Gratiot, 4.5 mi)"
+        ],
+        [
+          "Costco / Sam's Club",
+          "Costco (45460 Market St, Shelby Township, MI, 48 miles)"
+        ],
+        [
+          "Target",
+          "Target (4300 24th Ave, Fort Gratiot, MI, 4.0 miles)"
+        ],
+        [
+          "Walmart",
+          "Walmart (4845 24th Ave, Fort Gratiot, MI, 4.5 miles)"
+        ],
+        [
+          "Aldi",
+          "Aldi (4189 24th Ave, Fort Gratiot, MI, 4.0 miles)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's (3044 Walton Blvd), Whole Foods (2918 Walton Blvd), Rochester Hills, MI, 50 miles"
+        ],
+        [
+          "Pharmacy",
+          "CVS (940 Lapeer Ave, 1.0 mile); Walgreens (3990 24th Ave, 3.8 miles)"
+        ],
+        [
+          "Hardware",
+          "Home Depot (4195 24th Ave, 4.0 mi); Lowe's (4200 24th Ave, 4.0 mi); Menards (2800 Indian Dr, 4.0 mi)"
+        ],
+        [
+          "Farmers market",
+          "Port Huron Farmers Market (100 Merchant St); Season: May through October"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard 2-day delivery typical; same-day or next-day generally not available"
+        ],
+        [
+          "Nearest Amazon station",
+          "Sterling Heights, MI (33600 Mound Road), approx. 65 miles"
+        ],
+        [
+          "UPS / FedEx",
+          "UPS Store (2014 Holland Ave, 2 mi); FedEx Office closed Sep 2024 (retail drop-offs only)"
+        ],
+        [
+          "Grocery delivery",
+          "Both Instacart and DoorDash have coverage"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "McLaren Port Huron (1221 Pine Grove Ave, 1.2 mi); Lake Huron Medical Center (2601 Electric Ave, 2.5 mi)"
+        ],
+        [
+          "Safety grade",
+          "McLaren Port Huron: Leapfrog B, CMS 2-star; Lake Huron Medical Center: Leapfrog A, CMS 5-star"
+        ],
+        [
+          "Trauma center",
+          "Local are Level III; Level II: Henry Ford Macomb (42 mi); Level I: Ascension St. John (55 mi)"
+        ],
+        [
+          "Urgent care",
+          "3 clinics (Blue Water Urgent Care, WellNow Urgent Care, MedExpress)"
+        ],
+        [
+          "New-patient access",
+          "Yes (Health Management Care PC, Port Huron Family Care); wait times 1 to 11 days"
+        ],
+        [
+          "Referral center",
+          "Henry Ford (Detroit, 60 miles); U-M Health (Ann Arbor, 85 miles)"
+        ]
+      ],
+      "schools": [
+        [
+          "School district",
+          "Port Huron Area School District"
+        ],
+        [
+          "High school ratings",
+          "Port Huron Northern High School: Niche B+, GreatSchools 6/10"
+        ],
+        [
+          "District graduation rate",
+          "76% district average"
+        ],
+        [
+          "High school graduation rate",
+          "Port Huron Northern High School: 91%"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "McLaren (1,300), Motherson/SMR (949), School District (949), St. Clair County (923), US Farathane (650)"
+        ],
+        [
+          "Unemployment rate",
+          "5.3% (St. Clair County, May 2026, BLS)"
+        ],
+        [
+          "Coworking spaces",
+          "Propeller, Blue Water Business Center, The Roost"
+        ],
+        [
+          "Seasonality",
+          "Moderately seasonal; grounded by healthcare/manufacturing with summer tourism spikes from lake/river"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Bishop International Airport (FNT), 55 miles, 1 hour 5 mins drive"
+        ],
+        [
+          "Bishop nonstop destinations",
+          "~10 (including Orlando, Tampa, Chicago, Las Vegas)"
+        ],
+        [
+          "Bishop airlines",
+          "Allegiant, American, United"
+        ],
+        [
+          "Nearest major hub airport",
+          "Detroit Metropolitan Wayne County Airport (DTW), 75 miles, 1 hour 25 mins drive"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk / Bike Score",
+          "Walk Score 50, Bike Score 40 (Downtown)"
+        ],
+        [
+          "Restaurants & breweries",
+          "~15-20 sit-down restaurants and breweries downtown (e.g., Vintage Tavern, Quay Street Brewing)"
+        ],
+        [
+          "Downtown vibe",
+          "Real downtown open year-round; features a Social District for open containers"
+        ],
+        [
+          "Outdoor recreation",
+          "Blue Water River Walk, Lakeport State Park (10 mi), Thomas Edison Parkway, boating/beaches"
+        ],
+        [
+          "Arts & music venues",
+          "McMorran Place (theater/arena), The Foundry, The Citadel Stage"
+        ],
+        [
+          "Dog-friendliness",
+          "Fort Gratiot Canine Commons (dog park); leashed dogs allowed on trails and Lakeport State Park"
+        ]
+      ],
+      "climate": [
+        [
+          "Avg temperatures",
+          "July average high: 80°F; January average low: 17°F"
+        ],
+        [
+          "Annual sunshine",
+          "2,331 hours annually"
+        ],
+        [
+          "Annual precipitation",
+          "33 inches of rainfall"
+        ],
+        [
+          "Frost dates",
+          "Last spring frost mid-May; first fall frost mid-October"
+        ],
+        [
+          "Lake-effect & fog",
+          "Susceptible to fog from Lake Huron; sheltered from major lake-effect snow unless northeasterly winds"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "28,918 · St. Clair Co 159,285"
+        ],
+        [
+          "Median age",
+          "38.3 · county 44.0"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "10% of units · county 9%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "14% · county 19%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "10% · county 7%"
+        ],
+        [
+          "Median household income",
+          "$41,165 · county $58,722"
+        ],
+        [
+          "Works from home",
+          "2% of workers · county 3%"
+        ],
+        [
+          "Mix",
+          "78% white · 8% Black · 6% Hispanic · 1% Asian"
+        ],
+        [
+          "Median home built",
+          "1955"
+        ],
+        [
+          "Median rent (2020)",
+          "$622"
+        ],
+        [
+          "Population trend",
+          "Shrinking (30,110 in 2010 to 28,125 in 2026, ~6.5% decline)"
+        ],
+        [
+          "2024 presidential vote",
+          "St. Clair County: Donald Trump +34.59 percentage points (66.50% to 31.91%)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water / sewer",
+          "City strictly municipal water/sewer; surrounding townships heavily rely on private wells/septic"
+        ],
+        [
+          "Short-term rentals",
+          "Governed by local zoning; requires Rental Certification from Planning Dept; 6% state use tax applies"
+        ],
+        [
+          "HOA prevalence",
+          "Rare in older city neighborhoods; common in newer condos/subdivisions; voluntary associations exist"
+        ],
+        [
+          "Flood zone / erosion",
+          "Shoreline erosion; designated High-Risk Erosion Areas (HREAs) with strict building setbacks"
+        ],
+        [
+          "Newcomer surprises",
+          "Sharp divide in municipal services outside city; strict state rules on coastline erosion modifications"
+        ]
+      ],
+      "sources": "Sources: michigan.gov, porthuron.org, downtownph.com, census.gov, bls.gov, weather.gov, walkscore.com, amazon.com"
+    },
     verdict:
       "The cheapest way into Michigan homeownership, with the least snow on the list and Canada across the bridge. Median sources disagree by 30% — the market is small enough that a few sales move it. Mid-pack crime, three PFAS sites on the state list.",
   },
@@ -186,6 +2095,269 @@ export const RELOCATION_TOWNS = [
     fiber: "55% fiber · 75% cable",
     tax: "40.67 mills (2.03%)",
     drive: "≈275 mi · 4:21",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Meijer (3 mi, 3900 W US Hwy 10), Family Fare (3 mi, 5539 W US Hwy 10)"
+        ],
+        [
+          "Costco / Sam's Club",
+          "Costco (95 mi, Wyoming, MI), Sam's Club (90 mi, Comstock Park, MI)"
+        ],
+        [
+          "Target",
+          "Norton Shores, MI (57 mi, 5057 S Harvey St)"
+        ],
+        [
+          "Walmart",
+          "4854 W US Hwy 10 (3 mi)"
+        ],
+        [
+          "Aldi",
+          "4833 W US Hwy 10 (3 mi)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's (100 mi, Kentwood), Whole Foods (100 mi, Kentwood)"
+        ],
+        [
+          "Pharmacy",
+          "Walgreens (3 mi, 33 S Pere Marquette Hwy), Meijer Pharmacy (3 mi)"
+        ],
+        [
+          "Home Depot / Lowe's",
+          "Home Depot (3 mi, 3865 W US Hwy 10), Lowe's (3 mi, 4460 W US Hwy 10)"
+        ],
+        [
+          "Farmers market",
+          "Ludington Farmers Market, 112 N James St (0 mi); late May-late Sept (Fri 2-7 PM)"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard 2-day delivery or slower; same-day/next-day generally unavailable"
+        ],
+        [
+          "Nearest Amazon station",
+          "GRR1 Fulfillment Center, Caledonia, MI (105 mi, 4300 68th St SE)"
+        ],
+        [
+          "UPS / FedEx",
+          "NOT FOUND for standalone retail stores (drop-offs only)"
+        ],
+        [
+          "Grocery delivery",
+          "DoorDash (restaurants/retail), Instacart & Shipt (Meijer, Family Fare)"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Corewell Health Ludington Hospital (1.5 mi)"
+        ],
+        [
+          "Safety grade",
+          "Leapfrog C grade (Spring 2026), CMS 4 stars (August 2026)"
+        ],
+        [
+          "Trauma center",
+          "Trinity Health Muskegon Hospital, Level II (59 mi)"
+        ],
+        [
+          "Urgent care",
+          "2 clinics (Trinity Health Urgent Care, Corewell Health Walk-In)"
+        ],
+        [
+          "New-patient access",
+          "Yes (Trinity Health, Corewell); wait times NOT FOUND"
+        ],
+        [
+          "Referral center",
+          "Munson Medical Center in Traverse City (94 mi)"
+        ]
+      ],
+      "schools": [
+        [
+          "School district",
+          "Ludington Area School District"
+        ],
+        [
+          "District rating",
+          "Niche B (2026)"
+        ],
+        [
+          "High school rating",
+          "Ludington High School: Niche B, GreatSchools 8/10 (2026)"
+        ],
+        [
+          "Graduation rate",
+          "82% at Ludington High School (2026)"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "Corewell Health (~1,300), UACJ Whitehall (~800), FloraCraft (200-300), Schools (~229)"
+        ],
+        [
+          "Unemployment rate",
+          "5.3% in Mason County (June 2026)"
+        ],
+        [
+          "Coworking space",
+          "\"the Outbox\" at 509 S James St (2026)"
+        ],
+        [
+          "Seasonal economy",
+          "Tourism: $117.4M visitor spending, 2,600 jobs; peaks in summer, drops sharply off-season"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Manistee County Blacker Airport (MBL) (33 mi, 35-45 min)"
+        ],
+        [
+          "Commercial flights",
+          "1 nonstop destination (Chicago ORD) via Contour Airlines"
+        ],
+        [
+          "Nearest major hub",
+          "Gerald R. Ford International Airport (GRR), Grand Rapids"
+        ],
+        [
+          "Major hub distance",
+          "110 miles (1 hr 40 min drive)"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk & Bike Score",
+          "Walk Score: low 20s (Car-Dependent); Bike Score: 32-34 (Somewhat Bikeable)"
+        ],
+        [
+          "Dining & drinks",
+          "20-35 sit-down restaurants, 3 downtown breweries, 2 wineries, 0 distilleries"
+        ],
+        [
+          "Downtown vitality",
+          "Yes, year-round downtown operations with reduced winter hours"
+        ],
+        [
+          "Outdoor recreation",
+          "Hamlin Lake (boating), Lake Michigan (beaches), Ludington State Park (hiking/skiing)"
+        ],
+        [
+          "Arts & culture",
+          "Ludington Area Center for the Arts (250-seat hall), Rotary Band Shell, Legacy Plaza"
+        ],
+        [
+          "Dog-friendliness",
+          "Central Bark Dog Park (off-leash), Loomis Street Dog Beach, Buttersville Beach"
+        ]
+      ],
+      "climate": [
+        [
+          "Seasonal temperatures",
+          "July high 77-82°F, January low 16-21°F"
+        ],
+        [
+          "Annual sunshine",
+          "~2,254 hours annually; heavy winter cloud cover"
+        ],
+        [
+          "Annual precipitation",
+          "31-37 inches of rain annually"
+        ],
+        [
+          "Frost dates",
+          "Last spring frost May 11-23, first fall frost Oct 1-10"
+        ],
+        [
+          "Lake-effect & fog",
+          "Primary lake-effect snow belt (intense squalls); frequent overnight/morning fog"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "8,081 · Mason Co 29,062"
+        ],
+        [
+          "Median age",
+          "43.0 · county 46.3"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "21% of units · county 30%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "19% · county 22%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "4% · county 5%"
+        ],
+        [
+          "Median household income",
+          "$39,248 · county $51,568"
+        ],
+        [
+          "Works from home",
+          "1% of workers · county 4%"
+        ],
+        [
+          "Mix",
+          "90% white · 6% Hispanic · 2% Black"
+        ],
+        [
+          "Median home built",
+          "1957"
+        ],
+        [
+          "Median rent (2020)",
+          "$610"
+        ],
+        [
+          "Population trend",
+          "Shrinking by 5.2% from 8,076 to 7,655 (2010-2020)"
+        ],
+        [
+          "2024 presidential vote",
+          "Donald Trump +3,861 votes in Mason County (2024)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water & sewer",
+          "Municipal water (Lake Michigan) & sewer in city; private wells/septic outside"
+        ],
+        [
+          "Short-term rentals",
+          "Strict 50-license cap (waitlisted), no transfer upon sale, max 2 per block"
+        ],
+        [
+          "HOA prevalence",
+          "NOT FOUND (rare outside waterfront/condo tracts)"
+        ],
+        [
+          "Coastal flood & erosion",
+          "Severe shoreline erosion (30-60 yr setbacks in High-Risk areas), FEMA zones AE/VE"
+        ],
+        [
+          "Winter weather hazard",
+          "Intense lake-effect snow with blinding whiteouts and inches per hour accumulation"
+        ]
+      ],
+      "sources": "Sources: google.com, corewellhealth.org, downtownludington.org, ludington.mi.us, census.gov, weather.gov, trinityhealthmichigan.org, niche.com"
+    },
     verdict:
       "Verification's biggest single flip: round one called it a 0.2%-fiber cable town, the re-check found 54.9% fiber (Truestream's build). Closest northern shore town to Palatine at 4:21. Night one of the trip — pay attention to what's open at 8pm, because that's the seasonal question in miniature.",
   },
@@ -203,6 +2375,281 @@ export const RELOCATION_TOWNS = [
     fiber: "43% fiber · 63% cable",
     tax: "33.48 mills (1.67%)",
     drive: "≈387 mi · 5:57",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Family Fare Supermarket (111 M-66 N, Charlevoix), 0.9 miles"
+        ],
+        [
+          "Costco",
+          "Traverse City, 50.1 miles"
+        ],
+        [
+          "Target",
+          "Traverse City, 49.8 miles"
+        ],
+        [
+          "Walmart",
+          "Petoskey, 16.5 miles"
+        ],
+        [
+          "Aldi",
+          "Traverse City, 49.9 miles"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "NOT FOUND"
+        ],
+        [
+          "Pharmacy",
+          "Walgreens (1500 Bridge St, Charlevoix), 1.1 miles"
+        ],
+        [
+          "Home Depot/Lowe's/Menards",
+          "Home Depot (Petoskey) 16.4 mi; Lowe's (Petoskey) 16.8 mi; Menards (Gaylord) 44.5 mi"
+        ],
+        [
+          "Farmers market",
+          "Charlevoix Farmers Market (Bridge Street/East Park), May through October"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard 2-day; next/same-day NOT FOUND"
+        ],
+        [
+          "Nearest Amazon station",
+          "WMI2 (Traverse City), 53.2 miles"
+        ],
+        [
+          "UPS / FedEx",
+          "UPS Store Petoskey 16.8 mi; UPS drop-off Andy's Party Store, FedEx drop-off Walgreens"
+        ],
+        [
+          "Grocery delivery",
+          "Instacart (via Family Fare) and DoorDash operate; seasonal driver availability"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Munson Healthcare Charlevoix Hospital (14700 Lake Shore Dr), 1.4 miles"
+        ],
+        [
+          "Safety grade",
+          "NOT FOUND"
+        ],
+        [
+          "CMS star rating",
+          "NOT FOUND (Excluded as a Critical Access Hospital)"
+        ],
+        [
+          "Urgent care",
+          "1 in town (at the hospital)"
+        ],
+        [
+          "Trauma center",
+          "Level II: Munson Medical Center (Traverse City) 49.3 mi; Level I: Corewell (Grand Rapids) 184.0 mi"
+        ],
+        [
+          "New-patient access",
+          "Clinics accepting patients; wait times for a new patient appointment can be 6 months"
+        ],
+        [
+          "Referral center",
+          "Munson Medical Center (Traverse City), 49.3 miles"
+        ]
+      ],
+      "schools": [
+        [
+          "District",
+          "Charlevoix Public Schools"
+        ],
+        [
+          "Niche rating",
+          "District is B+"
+        ],
+        [
+          "GreatSchools rating",
+          "Charlevoix High School is 9 out of 10"
+        ],
+        [
+          "Graduation rate",
+          "82.8%"
+        ]
+      ],
+      "economy": [
+        [
+          "Largest employers",
+          "Boyne USA (565), EJ (500), Munson Healthcare (400), LexaMar Corp (345), Grandvue Medical (240)"
+        ],
+        [
+          "Unemployment",
+          "3.8% (June 2026)"
+        ],
+        [
+          "Coworking",
+          "The Vault (102 E Bridge St)"
+        ],
+        [
+          "Seasonality",
+          "Hyper-seasonal; many businesses rely entirely on summer tourism to survive the winter"
+        ]
+      ],
+      "airport": [
+        [
+          "Commercial airport",
+          "Pellston Regional Airport (PLN), 29.5 miles"
+        ],
+        [
+          "Drive time",
+          "39 mins to Pellston Regional Airport (PLN)"
+        ],
+        [
+          "Destinations & airlines",
+          "1 destination (Detroit) on Delta"
+        ],
+        [
+          "Hub airport",
+          "Detroit Metropolitan Airport (DTW), 235 mins drive"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk score",
+          "68 (Downtown)"
+        ],
+        [
+          "Bike score",
+          "39"
+        ],
+        [
+          "Dining & drinks",
+          "Around 18 sit-down restaurants and 3 breweries/wineries/distilleries"
+        ],
+        [
+          "Downtown",
+          "Vibrant year-round downtown; some tourist shops close in winter"
+        ],
+        [
+          "Outdoor rec",
+          "Lake Charlevoix/Lake Michigan boating; Little Traverse Wheelway biking; Boyne Mountain skiing (27 mins)"
+        ],
+        [
+          "Arts",
+          "Charlevoix Circle of Arts, Odmark Pavilion (outdoor concerts), Castle Farms"
+        ],
+        [
+          "Dogs",
+          "Charlevoix Dog Park (fenced); Fisherman's Island State Park (6ft leash on beach); City beaches prohibit dogs"
+        ]
+      ],
+      "climate": [
+        [
+          "July avg high",
+          "77.2°F"
+        ],
+        [
+          "January avg low",
+          "16.5°F"
+        ],
+        [
+          "Sunshine",
+          "159 sunny days/year"
+        ],
+        [
+          "Rainfall",
+          "32.2 inches"
+        ],
+        [
+          "Frost dates",
+          "Last frost May 19; First frost Oct 8"
+        ],
+        [
+          "Fog & lake effect",
+          "Heavy lake-effect snow in winter; steam fog in early winter over warm lake"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "2,467 · Charlevoix Co 26,197"
+        ],
+        [
+          "Median age",
+          "40.2 · county 49.1"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "39% of units · county 34%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "21% · county 29%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "8% · county 5%"
+        ],
+        [
+          "Median household income",
+          "$36,341 · county $60,433"
+        ],
+        [
+          "Works from home",
+          "1% of workers · county 5%"
+        ],
+        [
+          "Mix",
+          "86% white · 8% Hispanic · 3% Black"
+        ],
+        [
+          "Median home built",
+          "1962"
+        ],
+        [
+          "Median rent (2020)",
+          "$614"
+        ],
+        [
+          "Population trend",
+          "-7.3% since 2010"
+        ],
+        [
+          "2024 vote margin",
+          "Republican +16.9 points"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Utilities",
+          "City limits have municipal water/sewer; townships heavily rely on private wells and septic"
+        ],
+        [
+          "Short-term rentals",
+          "City cap of 80 licenses in residential zones (waitlisted, $50 deposit); Township has no strict cap"
+        ],
+        [
+          "HOAs",
+          "Rare for standard homes, but common in luxury lakefront/resort communities (e.g. Charlevoix Country Club)"
+        ],
+        [
+          "Hazards",
+          "Lake Michigan shoreline is prone to High-Risk Erosion Areas requiring building setbacks"
+        ],
+        [
+          "Drawbridge & taxes",
+          "US-31 Drawbridge opens every 30 mins in summer (traffic jams); higher non-homestead property taxes"
+        ]
+      ],
+      "sources": "Sources: google.com, charlevoixmi.gov, munsonhealthcare.org, usclimatedata.com, walkscore.com, tripadvisor.com, almanac.com, data.census.gov"
+    },
     verdict:
       "Earlier research put this at $525-729k; that blended median LISTING with average sale. It actually sells at $378,000 - a 56% overstatement, now corrected. Second-lowest violent crime, 42.7% fiber, and Charlevoix County is cheaper still at $276,800. The catch is its PFAS site: the municipal well field. Ask about water before anything else.",
   },
@@ -220,6 +2667,277 @@ export const RELOCATION_TOWNS = [
     fiber: "9% fiber · 84% cable",
     tax: "17.7–26.5 mills (~1%) — the lowest rates on the list",
     drive: "≈348–370 mi · 5:44–6:24",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Anderson's Market (6545 Western Ave: 0 mi), Lively NeighborFood (10016 W Front St: 8 mi)"
+        ],
+        [
+          "Costco",
+          "2730 N Garfield Rd, Traverse City (30 miles)"
+        ],
+        [
+          "Target",
+          "3100 N US 31 S, Traverse City (26 miles)"
+        ],
+        [
+          "Walmart",
+          "2640 Crossing Cir, Traverse City (26 miles)"
+        ],
+        [
+          "Aldi",
+          "1522 S Division St, Traverse City (28 miles)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's (Grand Rapids: 150 mi), Whole Foods (2897 Radcliff Ave SE, Grand Rapids: 150 mi)"
+        ],
+        [
+          "Pharmacy",
+          "Meijer Pharmacy (3955 US 31 S, Traverse City: 26 miles)"
+        ],
+        [
+          "Home Depot",
+          "2522 Crossing Cir, Traverse City (26 miles)"
+        ],
+        [
+          "Farmers market",
+          "Glen Arbor Farmers Market (Jun-Sep: 0 mi), Empire Farmers Market (Jun-Aug: 8 mi)"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard 2-5 days (same-day or next-day: NOT FOUND)"
+        ],
+        [
+          "Nearest Amazon station",
+          "GRR1 (4500 68th St SE, Caledonia, MI: 130 miles)"
+        ],
+        [
+          "UPS / FedEx",
+          "Traverse City (20 mi); local drop-off at Northwoods Hardware in Glen Arbor"
+        ],
+        [
+          "Grocery delivery",
+          "Handled directly by Anderson's Market (Instacart/DoorDash standard coverage: NOT FOUND)"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Munson Medical Center in Traverse City (19 miles)"
+        ],
+        [
+          "Safety grade",
+          "Leapfrog: A; CMS: 5 stars"
+        ],
+        [
+          "Trauma center",
+          "Munson Medical Center (Level II: 19 miles)"
+        ],
+        [
+          "Urgent care",
+          "0 in town (nearest are in Traverse City)"
+        ],
+        [
+          "New-patient access",
+          "Yes (e.g. West Front Primary Care in Traverse City; system-wide wait time: NOT FOUND)"
+        ],
+        [
+          "Referral center",
+          "Munson Medical Center (19 miles)"
+        ]
+      ],
+      "schools": [
+        [
+          "District",
+          "Glen Lake Community Schools"
+        ],
+        [
+          "Niche rating",
+          "B+"
+        ],
+        [
+          "GreatSchools rating",
+          "8/10"
+        ],
+        [
+          "Graduation rate",
+          "90%"
+        ]
+      ],
+      "economy": [
+        [
+          "Largest employers",
+          "Munson Healthcare, The Homestead Resort, Cherry Republic, Sleeping Bear Dunes (headcounts: NOT FOUND)"
+        ],
+        [
+          "Small business share",
+          "99.5% of businesses have fewer than 100 employees"
+        ],
+        [
+          "County unemployment",
+          "3.8% (BLS)"
+        ],
+        [
+          "Coworking space",
+          "The Mill in Glen Arbor"
+        ],
+        [
+          "Seasonal economy",
+          "Highly seasonal; Sleeping Bear Dunes draws 1.6M annual visitors; accommodation sector dominates"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest airport",
+          "Cherry Capital Airport (TVC: 23 miles, 40 minutes)"
+        ],
+        [
+          "Nonstop destinations",
+          "15"
+        ],
+        [
+          "Airlines",
+          "6 (American, Delta, United, Allegiant, Sun Country, JetBlue)"
+        ],
+        [
+          "Nearest major hub",
+          "DTW (4.5 hours drive), ORD (5 hours drive)"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk Score",
+          "50 (downtown)"
+        ],
+        [
+          "Bike Score",
+          "52 (downtown)"
+        ],
+        [
+          "Restaurants & breweries",
+          "4 notable (Art's Tavern, Cherry Public House, Boonedocks, Western Avenue Grill)"
+        ],
+        [
+          "Downtown vibe",
+          "Cozy, rustic; year-round but heavily seasonal with reduced winter shop hours"
+        ],
+        [
+          "Outdoor recreation",
+          "Sleeping Bear Dunes, Sleeping Bear Heritage Trail, Alligator Hill Trail, Crystal River (<30 min)"
+        ],
+        [
+          "Arts & music venues",
+          "The River Club (outdoor live music)"
+        ],
+        [
+          "Dog-friendliness",
+          "Very pet-friendly; Empire Bluff Trail allows dogs; downtown shops welcome leashed pets"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "77°F"
+        ],
+        [
+          "January average low",
+          "15°F"
+        ],
+        [
+          "Sunshine days / percent",
+          "NOT FOUND"
+        ],
+        [
+          "Annual rainfall",
+          "33 inches"
+        ],
+        [
+          "First & last frost",
+          "Last spring frost May 11-20; first fall frost Oct 11-20"
+        ],
+        [
+          "Lake-effect & fog",
+          "Significant lake-effect snow, winter steam fog, and dense marine fog banks from Lake Michigan"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "Glen Arbor 140 · Empire 324 · Leelanau Co 21,649"
+        ],
+        [
+          "Median age",
+          "Glen Arbor 71.2 · Empire 59.3 · county 54.6"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "Glen Arbor 68% · Empire 54% · county 42%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "county 41% (villages too small to be stable)"
+        ],
+        [
+          "Unemployment (ACS)",
+          "county 4%"
+        ],
+        [
+          "Median household income",
+          "Glen Arbor $250k+ (topcoded) · Empire $51,786 · county $67,330"
+        ],
+        [
+          "Works from home",
+          "Glen Arbor 31% · county 10%"
+        ],
+        [
+          "Mix",
+          "90% white county-wide"
+        ],
+        [
+          "Median home built",
+          "Glen Arbor 1997 · Empire 1977"
+        ],
+        [
+          "Population trend",
+          "Growing (+6% in county since 2010)"
+        ],
+        [
+          "2024 presidential margin",
+          "Democrat (Kamala Harris) by 7.74%"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water and septic",
+          "Heavily relies on private wells/septic; Glen Arbor Township requires septic inspection upon title transfer"
+        ],
+        [
+          "Short-term rentals",
+          "Strict, parcel-by-parcel zoning rules; no universal right to rent"
+        ],
+        [
+          "HOA rules",
+          "Present; private HOA bylaws/deed restrictions supersede municipal rental zoning rules"
+        ],
+        [
+          "Flood zone & erosion",
+          "Properties near Lake Michigan/Glen Lake may be FEMA Zone A/V; shoreline erosion risk"
+        ],
+        [
+          "Newcomer surprises",
+          "Mandatory point-of-sale septic inspections and strict parcel-by-parcel STR zoning catch buyers off guard"
+        ]
+      ],
+      "sources": "Sources: rome2rio.com, munsonhealthcare.org, visitglenarbor.com, plantmaps.com, myperfectweather.com, healthgrades.com, homes.com, unitedstateszipcodes.org, thelivelyfarm.com, google.com"
+    },
     verdict:
       "Sleeping Bear's front porch, priced like it: the highest comfortable-income requirement of any real option, ~$300k. The consolation is the sleeper tax rate — the priciest houses here carry the lowest millage in this entire comparison. Deep snow country, tiny year-round population.",
   },
@@ -237,6 +2955,305 @@ export const RELOCATION_TOWNS = [
     fiber: "6% fiber · 59% cable",
     tax: "36.7–37.5 mills (1.84–1.88%)",
     drive: "≈447 mi · 6:34",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Mackinaw Family Market, 101 E Central Ave: 0 miles (0 min)"
+        ],
+        [
+          "Costco",
+          "Costco Wholesale, 125 S Airport Rd E, Traverse City: 105 miles (120 min)"
+        ],
+        [
+          "Target",
+          "Target, 3130 S Airport Rd W, Traverse City: 105 miles (120 min)"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercenter, 1150 S Main St, Cheboygan: 16 miles (22 min)"
+        ],
+        [
+          "Aldi",
+          "Aldi, 2130 Anderson Rd, Petoskey: 36 miles (45 min)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's, 3684 28th St SE, Kentwood: 230 miles (225 min)"
+        ],
+        [
+          "Pharmacy",
+          "Walgreens, 991 S Main St, Cheboygan: 16 miles (20 min)"
+        ],
+        [
+          "Home Depot / Lowe's",
+          "The Home Depot, 1700 Anderson Rd, Petoskey: 36 miles (45 min)"
+        ],
+        [
+          "Farmers market",
+          "Mackinaw City Farmers Market, Conkling Heritage Park: 0 miles (0 min), July-Sept"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard 3 to 5 days; same-day and next-day NOT FOUND"
+        ],
+        [
+          "Nearest Amazon station",
+          "1751 Badger Pkwy, Gaylord: 60 miles (60 min)"
+        ],
+        [
+          "UPS",
+          "NOT FOUND in town; nearest UPS Outlet at 303 Ferry Ln, St. Ignace: 18.5 miles"
+        ],
+        [
+          "FedEx",
+          "NOT FOUND in town; nearest FedEx Ship Center at 1285 Mackinaw Hwy, Pellston: 18 miles"
+        ],
+        [
+          "Grocery delivery",
+          "DoorDash covered; Instacart NOT FOUND"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Mackinac Straits Hospital in St. Ignace: 7 miles"
+        ],
+        [
+          "Safety grade",
+          "Leapfrog: NOT FOUND; CMS star rating: NOT FOUND"
+        ],
+        [
+          "Trauma center",
+          "McLaren Northern Michigan in Petoskey (Level II): 36 miles"
+        ],
+        [
+          "Urgent care",
+          "0 in town"
+        ],
+        [
+          "New-patient access",
+          "Mackinaw City Medical Clinic accepting new patients; wait time NOT FOUND"
+        ],
+        [
+          "Referral center",
+          "Munson Medical Center in Traverse City: 80 miles"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Mackinaw City Public Schools"
+        ],
+        [
+          "Niche rating",
+          "B+"
+        ],
+        [
+          "GreatSchools rating",
+          "NOT FOUND"
+        ],
+        [
+          "Graduation rate",
+          "NOT FOUND"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "NOT FOUND"
+        ],
+        [
+          "Emmet Co. unemployment",
+          "4.2% (June 2026)"
+        ],
+        [
+          "Cheboygan Co. unemployment",
+          "6.0% (May 2026)"
+        ],
+        [
+          "Coworking spaces",
+          "0 in town"
+        ],
+        [
+          "Peak tourism revenue",
+          "85% of local revenue generated Memorial Day to Labor Day"
+        ],
+        [
+          "Hospitality employment",
+          "Accommodation & Food Services accounts for 32.2% of total employment"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Pellston Regional Airport (PLN): 16.5 miles (20-30 min)"
+        ],
+        [
+          "Nonstop destinations",
+          "2 destinations (Detroit DTW, Chicago ORD)"
+        ],
+        [
+          "Airlines serving PLN",
+          "2 airlines (Delta Air Lines, United Airlines)"
+        ],
+        [
+          "Nearest major hub",
+          "Detroit Metro Airport (DTW): 290 miles (4.5 to 5.5 hours)"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk / Bike Score",
+          "NOT FOUND"
+        ],
+        [
+          "Sit-down restaurants",
+          "NOT FOUND"
+        ],
+        [
+          "Breweries / wineries",
+          "8"
+        ],
+        [
+          "Downtown seasonality",
+          "Seasonal; peak tourism May-Oct, majority of shops, restaurants, ferries close in winter"
+        ],
+        [
+          "Notable outdoor recreation",
+          "Headlands Dark Sky (2 mi), Mill Creek (4 mi), Wilderness State Park (11 mi); downhill ski 35 mi"
+        ],
+        [
+          "Arts and music venues",
+          "1 main outdoor venue (Conkling Heritage Park, summer concerts)"
+        ],
+        [
+          "Dog friendliness",
+          "Dog parks NOT FOUND; off-leash beaches NOT FOUND (state parks require 6-ft leash)"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "76°F"
+        ],
+        [
+          "January average low",
+          "11°F"
+        ],
+        [
+          "Annual sunshine",
+          "NOT FOUND"
+        ],
+        [
+          "Annual rainfall",
+          "33 inches"
+        ],
+        [
+          "First fall frost",
+          "October 16"
+        ],
+        [
+          "Last spring frost",
+          "May 13"
+        ],
+        [
+          "Lake-effect / fog note",
+          "Straits of Mackinac prone to patchy fog, marine Dense Fog Advisories, and lake-effect snow"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "704 · Cheboygan Co 25,435"
+        ],
+        [
+          "Median age",
+          "56.8 · county 51.6"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "51% of units · county 40%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "29% · county 20%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "24% · county 7%"
+        ],
+        [
+          "Median household income",
+          "$36,406 · county $49,624"
+        ],
+        [
+          "Works from home",
+          "8% of workers · county 5%"
+        ],
+        [
+          "Mix",
+          "78% white · 6% Black · 4% Asian · 1% Hispanic"
+        ],
+        [
+          "Median home built",
+          "1969"
+        ],
+        [
+          "Median rent (2020)",
+          "$505"
+        ],
+        [
+          "Population trend (2010-20)",
+          "+5.0% (806 to 846 residents)"
+        ],
+        [
+          "2024 vote Cheboygan Co.",
+          "Republican +31 (64.9% to 33.8%)"
+        ],
+        [
+          "2024 vote Emmet Co.",
+          "Republican +11 (54.6% to 43.8%)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water and sewer",
+          "Municipal mandatory within 200 ft of main (Ord. 127); remote use private well/septic (50-ft setback)"
+        ],
+        [
+          "Short-term rentals",
+          "Prohibited in residential zones (R1-R3); annual registration by Jan 1 in permitted zones"
+        ],
+        [
+          "HOA prevalence",
+          "Not prevalent; predominantly non-HOA homes governed by Village zoning"
+        ],
+        [
+          "Flood and erosion risks",
+          "Shoreline in FEMA Zone VE (coastal flood/waves); periodic severe shoreline erosion"
+        ],
+        [
+          "Bugs / insect swarms",
+          "Massive midges/mayflies swarms in May/June; repellent ineffective"
+        ],
+        [
+          "Winter shutdown",
+          "Tourist season ends Oct; most shops and restaurants close until May"
+        ],
+        [
+          "Mackinac Bridge traffic",
+          "Summer weekends, events, and high-wind closures cause severe local traffic jams"
+        ]
+      ],
+      "sources": "Sources: mackinawcity.org, mackinawchamber.com, mackinacstraitshealth.org, rome2rio.com, myperfectweather.com, fred.stlouisfed.org, census.gov, politico.com"
+    },
     verdict:
       "The most seasonal town on the mainland — the property-crime rate is a tourist-town artifact (a few hundred year-round residents under a summer-sized incident count), and much of the town simply closes after October. You'll sleep here two nights; imagine it in February before going further.",
   },
@@ -254,6 +3271,269 @@ export const RELOCATION_TOWNS = [
     fiber: "0% fiber · 34% cable",
     tax: "25.39 mills (1.27%)",
     drive: "≈447 mi · 6:34 + ferry",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Doud's Market, 7200 Main St (0 mi)"
+        ],
+        [
+          "Costco",
+          "2700 Airport Access Rd, Traverse City (approx 103 mi drive from Mackinaw City ferry dock)"
+        ],
+        [
+          "Target",
+          "3130 S Airport Rd W, Traverse City (approx 103 mi drive from Mackinaw City)"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercenter, 1150 S Main St, Cheboygan (approx 15 mi drive from Mackinaw City)"
+        ],
+        [
+          "Aldi",
+          "2130 Anderson Rd, Petoskey (approx 35-40 mi drive from Mackinaw City)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "None in N. MI; nearest Trader Joe's in Kentwood (approx 220 mi); Whole Foods in Kentwood/Ann Arbor (220+ mi)"
+        ],
+        [
+          "Pharmacy",
+          "Straits Area Pharmacy (St. Ignace dock delivery); Walgreens in Cheboygan (approx 15 mi from Mackinaw City)"
+        ],
+        [
+          "Home Depot / Lowe's",
+          "Home Depot, 1700 Anderson Rd, Petoskey (approx 35 mi drive from Mackinaw City)"
+        ],
+        [
+          "Farmers market",
+          "Bayside Farmers Market in St. Ignace (mainland dock 0 mi; Thu, Jul–early Sep)"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard or slower; ferry and horse-drawn drays via Mackinac Island Service Co; next-day virtually impossible"
+        ],
+        [
+          "Nearest Amazon station",
+          "NOT FOUND"
+        ],
+        [
+          "UPS / FedEx",
+          "None on island; nearest drop-off points in St. Ignace on mainland"
+        ],
+        [
+          "Grocery delivery",
+          "Instacart and DoorDash not available on island due to vehicle ban"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Mackinac Island Medical Ctr (24/7 on-call); Mackinac Straits Hospital, 1140 N State St, St. Ignace (ferry required)"
+        ],
+        [
+          "Safety grade",
+          "Not available (Mackinac Straits Hospital is Critical Access Hospital; lacks volume threshold for Leapfrog/CMS)"
+        ],
+        [
+          "Trauma center",
+          "McLaren Northern MI (Level II) in Petoskey (~40 mi south of St. Ignace); UP Health System–Marquette (~150 mi)"
+        ],
+        [
+          "Urgent care",
+          "1 (Mackinac Island Medical Center handles walk-ins for non-life-threatening issues)"
+        ],
+        [
+          "New-patient access",
+          "St. Ignace Medical Clinic (Mackinac Straits Health System) is accepting new patients"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Mackinac Island Public School District"
+        ],
+        [
+          "School rating",
+          "Niche rates Mackinac Island Public School with an overall B+ grade"
+        ],
+        [
+          "Graduation rate",
+          "No data available across public metrics"
+        ],
+        [
+          "Data reporting note",
+          "Metrics unavailable due to exceptionally small cohort sizes protecting student privacy"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "Grand Hotel (~650), Mackinac Straits Hosp (~280), Mackinac Bridge Auth (~100), Sault Tribe (~75-95), County Govt (~75)"
+        ],
+        [
+          "County unemployment rate",
+          "3.8% (BLS, June 2026)"
+        ],
+        [
+          "Coworking space",
+          "No dedicated space; Pontiac Lodge offers rentable conference rooms with high-speed internet"
+        ],
+        [
+          "Seasonal economy",
+          "Drops from 20,000+ daily in summer to ~500 in winter; vast majority of local commerce shuts down"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Pellston Regional (PLN), approx 15 mi (30 min drive) from Mackinaw City ferry docks"
+        ],
+        [
+          "Nonstop destinations",
+          "1 (Detroit via Delta from PLN)"
+        ],
+        [
+          "Nearest regional hub",
+          "Cherry Capital Airport (TVC) in Traverse City (2-hour drive from Mackinaw City)"
+        ],
+        [
+          "Major hub airport",
+          "Gerald R. Ford Int'l Airport (GRR) in Grand Rapids (3.5+ hour drive from Mackinaw City)"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walkability & bikeability",
+          "Entire island is car-free, highly walkable/bikeable; standard Walk Score unavailable/inapplicable"
+        ],
+        [
+          "Food and drink counts",
+          "Dozens of restaurants; 1 brewery/distillery (Great Turtle, off-island prod); 1 rum tasting room; 0 vineyards"
+        ],
+        [
+          "Downtown character",
+          "Almost exclusively seasonal; practically shuts down in the winter"
+        ],
+        [
+          "Outdoor recreation",
+          "Mackinac Island State Park covers 80% of island; 70+ mi hiking/biking trails; M-185 perimeter loop"
+        ],
+        [
+          "Arts and music venues",
+          "Marquette Park summer music series, Pink Pony, Gate House, Horn's Bar, Richard & Jane Manoogian Art Museum"
+        ],
+        [
+          "Dog-friendliness",
+          "Pet-friendly for leashed dogs on ferries/carriages; strict leash laws; 0 off-leash dog parks or beaches"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "74°F - 76°F"
+        ],
+        [
+          "January average low",
+          "11°F - 13°F"
+        ],
+        [
+          "Sunshine",
+          "Approx 2,257 hours annually"
+        ],
+        [
+          "Annual rainfall",
+          "32 - 33 inches"
+        ],
+        [
+          "First and last frost",
+          "Average last spring frost May 11–22; average first fall frost Oct 1–10"
+        ],
+        [
+          "Lake effect & moderation",
+          "Lakes moderate summers (rarely >80°F); trigger lake-effect snow averaging 87 inches annually"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "992 · Mackinac Co 10,781"
+        ],
+        [
+          "Median age",
+          "43.1 · county 53.1"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "57% of units · county 53%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "24% · county 20%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "6% · county 9%"
+        ],
+        [
+          "Median household income",
+          "$43,125 · county $50,058"
+        ],
+        [
+          "Works from home",
+          "4% of workers · county 7%"
+        ],
+        [
+          "Mix",
+          "55% white · 23% Black · 4% Hispanic · 2% Asian"
+        ],
+        [
+          "Median home built",
+          "1962"
+        ],
+        [
+          "Median rent (2020)",
+          "$714"
+        ],
+        [
+          "Population trend (2010-2020)",
+          "Stable; permanent year-round population was 583 in 2020 Census"
+        ],
+        [
+          "2024 presidential vote",
+          "Mackinac County: Donald Trump won by margin of 1,803 votes over Kamala Harris"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water and sewer",
+          "Modernized $78M municipal wastewater/sewer system; practically all properties on grid rather than septic"
+        ],
+        [
+          "Short-term rental rules",
+          "STRs not banned; require strict city lodging license; minimum stays (1 week to 30 days) enforced by zoning"
+        ],
+        [
+          "HOA prevalence",
+          "Very low; regulated by city zoning & State Park Commission; few associations (e.g. Sunset Forest) plow roads"
+        ],
+        [
+          "Flood and erosion risks",
+          "Coastal areas in state High-Risk Erosion Areas (HREA) with strict grading/clearing/shoreline restrictions"
+        ],
+        [
+          "Routine surprises",
+          "Car ban requires ferry & horse dray logistics for all goods; extreme isolation during winter months"
+        ]
+      ],
+      "sources": "Sources: mackinacisland.org, mackinacstraitshealth.org, michigan.gov, census.gov, niche.com, weather.gov, datausa.io, mackinaccounty.net"
+    },
     verdict:
       "No cars, a few hundred winter residents, seven-figure medians, and the ferry is the commute. The property-crime figure is the same tourist artifact as Mackinaw City's. A place to love for a day — which is exactly what day five is for.",
   },
@@ -271,6 +3551,273 @@ export const RELOCATION_TOWNS = [
     fiber: "18% fiber · 99% cable",
     tax: "64.18 mills (3.21%) + 2.4% city income tax",
     drive: "≈317 mi · 4:44–5:15",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Meijer Rivertown Market (1475 E Jefferson Ave), 1.1 mi"
+        ],
+        [
+          "Costco",
+          "Costco Wholesale (30550 Stephenson Hwy, Madison Heights), 12.5 mi"
+        ],
+        [
+          "Target",
+          "Target (15600 Southfield Rd, Allen Park), 12.6 mi"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercenter (5851 Mercury Dr, Dearborn), 9.2 mi"
+        ],
+        [
+          "Aldi",
+          "ALDI (15415 Gratiot Ave, Detroit), 10.5 mi"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Whole Foods Market (115 Mack Ave, 1.5 mi); Trader Joe's (16919 Kercheval Ave, 8.4 mi)"
+        ],
+        [
+          "Pharmacy",
+          "CVS (1000 Woodward Ave), 0.4 mi"
+        ],
+        [
+          "Home Depot",
+          "The Home Depot (18700 Meyers Rd, Detroit), 11.4 mi"
+        ],
+        [
+          "Farmers market",
+          "Eastern Market (2934 Russell St), 1.4 mi, year-round on Saturdays"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Same-day and next-day delivery widely available in 48226"
+        ],
+        [
+          "Nearest Amazon station",
+          "Amazon DET6 (1200 E State Fair Ave, Detroit), 8.8 mi"
+        ],
+        [
+          "UPS / FedEx",
+          "UPS Store (333 W Fort St), FedEx Office (1001 Woodward Ave) downtown"
+        ],
+        [
+          "Grocery delivery",
+          "Full coverage via Instacart, DoorDash, Amazon Fresh, and Whole Foods"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Detroit Receiving Hospital (4201 St Antoine), 1.5 mi"
+        ],
+        [
+          "Safety grade",
+          "Leapfrog grade F; CMS 1 star (Detroit Receiving Hospital)"
+        ],
+        [
+          "Trauma center",
+          "Detroit Receiving Hospital (Level I Trauma Center), 1.5 mi"
+        ],
+        [
+          "Urgent care",
+          "5-10 urgent care options in urban core (DMC, Henry Ford, independent)"
+        ],
+        [
+          "New-patient access",
+          "Henry Ford and DMC clinics accepting new patients; 1-3 week wait"
+        ],
+        [
+          "Referral center",
+          "Corewell Health William Beaumont University Hospital (Royal Oak), 17.7 mi"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Detroit Public Schools Community District (DPSCD)"
+        ],
+        [
+          "Niche rating",
+          "Overall grade C-"
+        ],
+        [
+          "GreatSchools rating",
+          "District average 1-3/10 for neighborhood schools; selective schools higher"
+        ],
+        [
+          "Graduation rate",
+          "83.2% for 2025 cohort (historic high)"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "Rocket Companies (13k+), Stellantis (10k+), City of Detroit (8k+), Henry Ford (8k+), US Govt (6k+)"
+        ],
+        [
+          "County unemployment",
+          "7.3% (Wayne County, BLS, July 2026)"
+        ],
+        [
+          "Coworking spaces",
+          "WeWork (1001 Woodward Ave), Bamboo Detroit (1420 Washington Blvd)"
+        ],
+        [
+          "Seasonal economy",
+          "Not seasonal; year-round corporate, automotive, government, healthcare"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Detroit Metropolitan Wayne County Airport (DTW), 22.6 mi, 25-35 min"
+        ],
+        [
+          "Hub status",
+          "DTW is a major hub (Delta hub), 22.6 mi"
+        ],
+        [
+          "Nonstop destinations",
+          "125+ nonstop global destinations"
+        ],
+        [
+          "Airlines serving",
+          "Delta (hub), American, United, Spirit, Southwest, Frontier, and international carriers"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk and Bike Score",
+          "Walk Score 82 (Very Walkable), Bike Score 70 (Very Bikeable) for 48226"
+        ],
+        [
+          "Dining and breweries",
+          "50+ sit-down restaurants; Detroit Beer Co., The Brakeman"
+        ],
+        [
+          "Downtown vitality",
+          "Year-round vitality; 4 major pro sports teams playing downtown within blocks"
+        ],
+        [
+          "Outdoor recreation",
+          "Detroit Riverwalk, Belle Isle Park (982 acres), Lake St. Clair boating"
+        ],
+        [
+          "Arts and music venues",
+          "Fox Theatre, Detroit Opera House, Little Caesars Arena, Saint Andrew's Hall, Fillmore"
+        ],
+        [
+          "Dog-friendliness",
+          "Very dog-friendly; Capitol Park dog area, Grand Circus Park Dog Park"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "83.8°F"
+        ],
+        [
+          "January average low",
+          "19.2°F"
+        ],
+        [
+          "Annual sunshine",
+          "Approx. 135 clear days (53% possible annual sunshine)"
+        ],
+        [
+          "Annual rainfall",
+          "~33.5 inches"
+        ],
+        [
+          "Frost dates",
+          "Last spring frost late April; first fall frost mid-to-late October"
+        ],
+        [
+          "Lake effect and fog",
+          "Misses West MI heavy lake-effect snow; occasional localized fog/squalls from Lake Erie/St. Clair"
+        ]
+      ],
+      "demographics": [
+        [
+          "Source",
+          "Census ACS 2016–2020 via BigQuery; county in each row for contrast"
+        ],
+        [
+          "Population (2020 ACS)",
+          "672,351 · Wayne Co 1,753,059"
+        ],
+        [
+          "Median age",
+          "34.6 · county 37.9"
+        ],
+        [
+          "Vacant / seasonal housing",
+          "24% of units · county 15%"
+        ],
+        [
+          "Bachelor's or higher, 25–64",
+          "16% · county 26%"
+        ],
+        [
+          "Unemployment (ACS)",
+          "15% · county 9%"
+        ],
+        [
+          "Median household income",
+          "$32,498 · county $49,359"
+        ],
+        [
+          "Works from home",
+          "5% of workers · county 5%"
+        ],
+        [
+          "Mix",
+          "77% Black · 11% white · 8% Hispanic · 2% Asian"
+        ],
+        [
+          "Median home built",
+          "1947"
+        ],
+        [
+          "Median rent (2020)",
+          "$636"
+        ],
+        [
+          "Population trend",
+          "Shrunk 2010-2020; growing steadily since 2023, stabilizing around 650,000 as of 2025/2026"
+        ],
+        [
+          "2024 presidential vote",
+          "Wayne County: Democratic margin +29 points (9-point shift to Trump vs 2020)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water and sewer",
+          "100% municipal water/sewer (DWSD / GLWA); no private wells/septic"
+        ],
+        [
+          "Short-term rentals",
+          "No nightly cap; registration, 15-pt inspection, lead clearance, BSEED cert required"
+        ],
+        [
+          "HOA prevalence",
+          "Common for downtown/Midtown condos/lofts; rare in historic single-family areas"
+        ],
+        [
+          "Flood zones",
+          "Jefferson-Chalmers in FEMA floodplain; severe canal/basement flooding from lake levels/seawall"
+        ],
+        [
+          "Auto insurance",
+          "Michigan no-fault auto insurance causes some of the highest car insurance premiums in US"
+        ]
+      ],
+      "sources": "Sources: census.gov, weather.gov, detroitmi.gov, detroitk12.org, metroairport.com, leapfroggroup.org, crainsdetroit.com, walkscore.com"
+    },
     verdict:
       "A house for the price of an SF parking spot, then the catch: the state's heaviest tax stack — 3.2% effective property plus 2.4% city income tax — and the highest crime on this list. Individual neighborhoods break the citywide averages in both directions; as a blanket answer, it's a no.",
   },
@@ -288,6 +3835,241 @@ export const RELOCATION_TOWNS = [
     fiber: "Canadian providers",
     tax: "Ontario property tax ~2.1%",
     drive: "≈377 mi · 5:35",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Real Canadian Superstore (600 Murphy Rd, 5 km / 8 min); Metro (1375 London Rd, 5 km / 8 min)"
+        ],
+        [
+          "Costco",
+          "NOT FOUND in Sarnia. Nearest: 45460 Market St, Shelby Township, MI (approx 85 km / 55 min)"
+        ],
+        [
+          "Target",
+          "4300 24th Ave, Fort Gratiot, MI (approx 12 km / 20 min)"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercentre, 1444 Quinn Dr, Sarnia (approx 6 km / 10 min)"
+        ],
+        [
+          "Aldi",
+          "4189 24th Ave, Fort Gratiot, MI (approx 12 km / 20 min)"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "Trader Joe's: Grosse Pointe, MI (105 km / 70 min); Whole Foods: Rochester Hills, MI (100 km / 70 min)"
+        ],
+        [
+          "Pharmacy",
+          "Shoppers Drug Mart, 510 Exmouth St, Sarnia (approx 2 km / 5 min)"
+        ],
+        [
+          "Home Depot / Rona+ / Menards",
+          "Home Depot: 1350 Quinn Dr (6 km / 10 min); Rona+: 1390 Quinn Dr (6 km); Menards: Fort Gratiot, MI (13 km / 20 min)"
+        ],
+        [
+          "Farmers market",
+          "Sarnia Farmers' Market, 110 Proctor St (approx 1 km / 3 min), year-round Wed and Sat"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Standard shipping is 3-5 business days; Prime is 1-2 days to N7T postal code"
+        ],
+        [
+          "Nearest Amazon station",
+          "NOT FOUND in Sarnia. Nearest major facility is YXU1 in Talbotville/St. Thomas, ON (approx 115 km / 1 hr 15 min)"
+        ],
+        [
+          "UPS / FedEx",
+          "UPS Access Point: 168 Russell St N (1 km / 3 min); FedEx ShipCentre: 1030 Confederation St (3 km / 7 min)"
+        ],
+        [
+          "Grocery delivery",
+          "Full coverage via Instacart, DoorDash, SkipTheDishes, and UberEats"
+        ],
+        [
+          "Cross-border package pickup",
+          "Amazon.com incurs duties/delays; locals often use US PO box in Port Huron, MI and drive across border"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Bluewater Health, 89 Norman St, Sarnia (approx 2 km / 5 min)"
+        ],
+        [
+          "Safety grade",
+          "Bluewater: N/A (Canadian). Nearest US: Lake Huron Medical Ctr, Port Huron, MI (10 km) Leapfrog A, 4-star CMS"
+        ],
+        [
+          "Trauma center",
+          "London Health Sciences Centre (Victoria Hospital), London, ON (approx 110 km / 1 hr 10 min)"
+        ],
+        [
+          "Urgent care",
+          "3 clinics: Rapids Family Health Team, Sarnia Medical Group after-hours clinic, Wiltshire Pharmacy walk-in"
+        ],
+        [
+          "New-patient access",
+          "Severe shortage of family doctors accepting new patients, with long waitlists reported"
+        ],
+        [
+          "Referral center",
+          "London Health Sciences Centre, London, ON (approx 110 km / 1 hr 10 min)"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Lambton Kent District School Board (LKDSB)"
+        ],
+        [
+          "Northern Collegiate rating",
+          "Fraser Institute rating: 7.3/10 (Northern Collegiate Institute & Vocational School)"
+        ],
+        [
+          "Great Lakes Secondary rating",
+          "Fraser Institute rating: 5.5/10 (Great Lakes Secondary School)"
+        ],
+        [
+          "Graduation rate",
+          "NOT FOUND. LKDSB suppresses exact system-wide graduation rates in public summaries"
+        ],
+        [
+          "US rating platforms",
+          "Niche and GreatSchools do not rate Ontario public schools"
+        ]
+      ],
+      "economy": [
+        [
+          "Top employers",
+          "Bluewater Health (1,700), NOVA Chemicals (1,000), Lambton College (800), Imperial Oil (700), Suncor Energy (500)"
+        ],
+        [
+          "Unemployment rate",
+          "8.0% for the Sarnia-Lambton area (as of June 2026)"
+        ],
+        [
+          "Coworking space",
+          "Alt Space at 136-140 Christina St N, downtown Sarnia"
+        ],
+        [
+          "Economic anchors",
+          "Year-round petrochemical refining, manufacturing, healthcare; minor summer bump for waterfront tourism"
+        ]
+      ],
+      "airport": [
+        [
+          "Local airport",
+          "Sarnia Chris Hadfield Airport (YZR) - commercial flights suspended in 2020"
+        ],
+        [
+          "Nearest commercial airport",
+          "London International Airport (YXU), approx 123 km / 1 hr 15 min drive"
+        ],
+        [
+          "YXU airlines & destinations",
+          "Approx 5-10 nonstop destinations (varies by season) via Air Canada, WestJet, and Flair"
+        ],
+        [
+          "Nearest major hub airport",
+          "Detroit Metropolitan Wayne County Airport (DTW), approx 130 km / 1 hr 30 min drive"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk Score / Bike Score",
+          "Downtown up to 89 (Very Walkable), city average 32; city-wide Bike Score 43 (Somewhat Bikeable)"
+        ],
+        [
+          "Dining & breweries",
+          "20+ downtown sit-down restaurants; 4 craft breweries: Refined Fool, Imperial City, Point Brewing, Big Family"
+        ],
+        [
+          "Downtown seasonality",
+          "Real year-round active center, with waterfront park areas peaking in summer"
+        ],
+        [
+          "Outdoor recreation",
+          "Howard Watson Nature Trail, Canatara Park (Blue Flag beach); Pinery Provincial Park (45 min) for hiking/skiing"
+        ],
+        [
+          "Arts & culture venues",
+          "Imperial Theatre, Judith & Norman Alix Art Gallery, The Lawrence House Centre for the Arts"
+        ],
+        [
+          "Dog-friendliness",
+          "Excellent; dedicated off-leash dog parks include Germain Dog Park and Blackwell Dog Park"
+        ]
+      ],
+      "climate": [
+        [
+          "Summer high / Winter low",
+          "July average high: 27°C (80°F); January average low: -8°C (17°F)"
+        ],
+        [
+          "Annual sunshine",
+          "2,060 - 2,200 hours (approx 200 - 288 sunny days)"
+        ],
+        [
+          "Annual precipitation",
+          "878 mm total precipitation annually (rain and snow combined)"
+        ],
+        [
+          "Frost dates",
+          "Last spring frost approx May 1; first fall frost approx October 25"
+        ],
+        [
+          "Lake effect",
+          "Lake Huron moderates fall frost, but triggers intense localized lake-effect snow squalls in winter"
+        ]
+      ],
+      "demographics": [
+        [
+          "Population trend",
+          "72,366 in 2011 to 72,047 in 2021 (-0.4% decline; stagnant/shrinking slightly)"
+        ],
+        [
+          "Median age",
+          "46.0 years (older than Canadian national median of 41.6)"
+        ],
+        [
+          "Seasonal housing",
+          "8.5% of Lambton County private dwellings classified as not occupied by usual residents"
+        ],
+        [
+          "Political leaning",
+          "Conservative +25.1% in 2021 federal riding; neighbouring St. Clair County, MI Trump +34.59% in 2024"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water and sewer",
+          "City is fully serviced by municipal water/sewer; rural/lakefront Lambton County relies on private wells/septic"
+        ],
+        [
+          "Short-term rentals",
+          "Annual STA Business Licence required for rentals under 30 days plus Municipal Accommodation Tax collection"
+        ],
+        [
+          "HOA prevalence",
+          "Very rare for detached single-family homes; standard in newer condo and townhome developments"
+        ],
+        [
+          "Flood & erosion risks",
+          "Lake Huron & St. Clair River shoreline properties regulated by St. Clair Region Conservation Authority (SCRCA)"
+        ],
+        [
+          "Cross-border quirks",
+          "Blue Water Bridge wait times fluctuate; OHIP does not cover routine US care (requires out-of-pocket or US insurance)"
+        ]
+      ],
+      "sources": "Sources: amazon.ca, amazon.com"
+    },
     verdict:
       "The cheapest comfortable life on the entire list — Canadian healthcare removes the biggest US line item — behind a wall the spreadsheet can't cross: US citizens need immigration status to live here. Without a path to residency, this row is trivia.",
   },
@@ -305,6 +4087,241 @@ export const RELOCATION_TOWNS = [
     fiber: "Canadian providers",
     tax: "2.10% property (2026 rate)",
     drive: "≈321 mi · 5:35",
+    workup: {
+      "errands": [
+        [
+          "Grocery in town",
+          "Metro (Downtown, Wyandotte St): 0.6 miles"
+        ],
+        [
+          "Costco",
+          "Costco (4411 Walker Rd): 4.5 miles"
+        ],
+        [
+          "Target",
+          "None in Canada. Nearest is Dearborn, MI (15901 Ford Rd): 13.9 miles"
+        ],
+        [
+          "Walmart",
+          "Walmart Supercentre (3120 Dougall Ave): 3.9 miles"
+        ],
+        [
+          "Aldi",
+          "None in Canada. Nearest is Detroit, MI (Highland Park area): 8.8 miles"
+        ],
+        [
+          "Trader Joe's / Whole Foods",
+          "None in Windsor. Nearest TJ's is Grosse Pointe, MI (17028 Kercheval Ave): 9.8 miles"
+        ],
+        [
+          "Pharmacy",
+          "Shoppers Drug Mart (Ouellette Ave): 0.3 miles"
+        ],
+        [
+          "Home Depot / Lowe's",
+          "Home Depot (1925 Division Rd): 4.7 miles"
+        ],
+        [
+          "Farmers market",
+          "Downtown Windsor Farmers Market (Pelissier St, May-Oct): 0.4 miles"
+        ]
+      ],
+      "shipping": [
+        [
+          "Amazon delivery",
+          "Next-day/Overnight delivery is available via Amazon.ca Prime"
+        ],
+        [
+          "Nearest Amazon station",
+          "Amazon Delivery Station (YQG1): 10.6 miles"
+        ],
+        [
+          "UPS / FedEx",
+          "UPS Store (300 Ouellette Ave): 0.2 miles"
+        ],
+        [
+          "Grocery delivery",
+          "Instacart / DoorDash: Full coverage is available in Windsor"
+        ],
+        [
+          "Cross-border delivery",
+          "US retailers often do not ship to Canada; residents use Detroit parcel lockers (Detroit Mailbox) + CBSA duties"
+        ]
+      ],
+      "healthcare": [
+        [
+          "Nearest ER",
+          "Windsor Regional Hospital (Ouellette Campus): 0.9 miles"
+        ],
+        [
+          "Safety grade",
+          "NOT FOUND"
+        ],
+        [
+          "Trauma center",
+          "Detroit Receiving Hospital, Detroit MI: 2.9 miles"
+        ],
+        [
+          "Urgent care",
+          "5 clinics in Windsor"
+        ],
+        [
+          "New-patient access",
+          "Ontario has a severe shortage; patients wait months/years on Health Care Connect waitlist"
+        ],
+        [
+          "Referral center",
+          "London Health Sciences Centre, London ON: 118.5 miles"
+        ]
+      ],
+      "schools": [
+        [
+          "Public school district",
+          "Greater Essex County District School Board (GECDSB)"
+        ],
+        [
+          "District acronym",
+          "GECDSB"
+        ],
+        [
+          "Niche / GreatSchools",
+          "NOT FOUND"
+        ],
+        [
+          "Graduation rate",
+          "78.5%"
+        ]
+      ],
+      "economy": [
+        [
+          "Largest employers",
+          "Stellantis (4,000+), Caesars Windsor (2,100), Ford (1,900), Windsor Regional (4,000+), Univ of Windsor (2,000+)"
+        ],
+        [
+          "County unemployment rate",
+          "7.5%"
+        ],
+        [
+          "Coworking space",
+          "Downtown Windsor Business Accelerator"
+        ],
+        [
+          "Seasonal economy",
+          "Highly seasonal agribusiness/greenhouse sector in county; manufacturing subject to cyclical layoffs"
+        ]
+      ],
+      "airport": [
+        [
+          "Nearest commercial airport",
+          "Windsor International Airport (YQG): 7.7 miles (20.5 mins drive time)"
+        ],
+        [
+          "Nonstop destinations",
+          "3 scheduled domestic destinations (Air Canada, Porter, WestJet)"
+        ],
+        [
+          "Commercial airlines",
+          "Air Canada, Porter, WestJet"
+        ],
+        [
+          "Nearest major hub",
+          "Detroit Metro Airport (DTW): 24.0 miles (35.0 mins drive time, highly dependent on border wait)"
+        ]
+      ],
+      "lifestyle": [
+        [
+          "Walk Score",
+          "81"
+        ],
+        [
+          "Bike Score",
+          "63"
+        ],
+        [
+          "Restaurants and breweries",
+          "Over 50 downtown"
+        ],
+        [
+          "Real downtown",
+          "Yes, Downtown Windsor is a year-round urban centre"
+        ],
+        [
+          "Notable outdoor recreation",
+          "Point Pelee National Park: 40.5 miles"
+        ],
+        [
+          "Dog-friendliness",
+          "Several dog parks, including Ford Test Track dog park"
+        ]
+      ],
+      "climate": [
+        [
+          "July average high",
+          "28.1°C"
+        ],
+        [
+          "January average low",
+          "-7.3°C"
+        ],
+        [
+          "Days of sunshine",
+          "2,282 hours annually"
+        ],
+        [
+          "Annual rainfall",
+          "840 mm"
+        ],
+        [
+          "Frost dates",
+          "Last spring frost usually late April; first autumn frost late October"
+        ],
+        [
+          "Lake-effect",
+          "Surrounding lakes moderate winter lows but cause occasional localized fog and mild lake-effect snow"
+        ]
+      ],
+      "demographics": [
+        [
+          "Population trend",
+          "8.9% growth since 2010 (reaching ~229,660)"
+        ],
+        [
+          "Median age",
+          "41.4"
+        ],
+        [
+          "Vacation housing share",
+          "NOT FOUND"
+        ],
+        [
+          "2021 election margin",
+          "10.9% (Windsor West)"
+        ]
+      ],
+      "gotchas": [
+        [
+          "Water source",
+          "Urban Windsor is entirely municipal water; wells/septic are only in rural Essex County"
+        ],
+        [
+          "Short-term-rental rules",
+          "Heavily restricted; must be owner's principal residence and licensed"
+        ],
+        [
+          "HOA prevalence",
+          "Traditional American HOAs are non-existent; townhouses/condos have condominium fees"
+        ],
+        [
+          "Flood zone",
+          "High risk of basement flooding due to low elevation; sump pumps and backwater valves are standard"
+        ],
+        [
+          "Newcomer surprises",
+          "Cross-border commuting requires a NEXUS card; expensive auto insurance; healthcare differs from US"
+        ]
+      ],
+      "sources": "Sources: router.project-osrm.org, en.wikipedia.org, climate.weather.gc.ca, statcan.gc.ca, citywindsor.ca, publicboard.ca, walkscore.com, amazon.ca"
+    },
     verdict:
       "Same border wall as Sarnia, with higher prices and higher crime (sources disagree on how much). The tunnel to Detroit makes it a fascinating day on the trip and an immigration project as a home.",
   },
