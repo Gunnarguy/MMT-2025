@@ -28,6 +28,24 @@ export const SCOUT_META = {
   correctedFigures: 26,
 };
 
+/**
+ * The ten things a move actually turns on, each scored 0–10 per town from the
+ * researched figures (the raw numbers sit in each town's workup). Weights are
+ * the reader's; the scores are ours and say so on the page.
+ */
+export const SCOUT_DIMENSIONS = [
+  { key: "cost", label: "Cost", icon: "💸", hint: "Income needed to live comfortably — lower is better" },
+  { key: "winter", label: "Mild winter", icon: "❄️", hint: "Less snow scores higher" },
+  { key: "internet", label: "Internet", icon: "📶", hint: "Fiber and cable availability" },
+  { key: "healthcare", label: "Healthcare", icon: "🏥", hint: "ER distance, trauma level, safety grade" },
+  { key: "errands", label: "Errands", icon: "🛒", hint: "Costco, Target, Trader Joe's, Amazon speed" },
+  { key: "culture", label: "Culture & food", icon: "🍺", hint: "Restaurants, breweries, walkability, venues" },
+  { key: "nature", label: "Nature", icon: "🌲", hint: "Water, dunes, trails within 30 minutes" },
+  { key: "safety", label: "Safety", icon: "🛡️", hint: "Violent crime per 1,000" },
+  { key: "mom", label: "Near Mom", icon: "🏠", hint: "Drive time to Palatine" },
+  { key: "yearRound", label: "Year-round life", icon: "📅", hint: "Does the town still run in February?" },
+];
+
 export const SCOUT_TIERS = [
   {
     id: "viable",
@@ -60,6 +78,33 @@ export const RELOCATION_TOWNS = [
     coords: [42.9634, -85.6681],
     tier: "viable",
     verified: "yes",
+    oneLiner:
+      "A real mid-size city — 80 breweries, a Level I trauma center downtown, same-day Amazon — that happens to be three and a half hours from your mom. Buy the neighborhood, not the city.",
+    scores: {
+      "cost": 8,
+      "winter": 6,
+      "internet": 8,
+      "healthcare": 10,
+      "errands": 10,
+      "culture": 10,
+      "nature": 6,
+      "safety": 3,
+      "mom": 10,
+      "yearRound": 10
+    },
+    badges: {
+      "pro": [
+        "Level I trauma downtown",
+        "Same-day Amazon",
+        "80 breweries · Walk Score 92",
+        "3:31 to Palatine"
+      ],
+      "con": [
+        "~9 violent/1k citywide",
+        "23,000 lead service lines",
+        "1.5% city income tax"
+      ]
+    },
     median: "$310,000 sold · $244,500 ACS value",
     comfort: "$106k in town · $102k in county",
     crime: "9.0 / 24.4–24.8",
@@ -368,6 +413,32 @@ export const RELOCATION_TOWNS = [
     coords: [42.2048, -83.4852],
     tier: "viable",
     verified: "split",
+    oneLiner:
+      "A small lake town twenty minutes from DTW and Ann Arbor's hospitals, cheap by any coastal standard — with numbers too thin to trust until you have stood in it.",
+    scores: {
+      "cost": 8,
+      "winter": 8,
+      "internet": 6,
+      "healthcare": 8,
+      "errands": 8,
+      "culture": 4,
+      "nature": 5,
+      "safety": 8,
+      "mom": 8,
+      "yearRound": 8
+    },
+    badges: {
+      "pro": [
+        "DTW 20 min",
+        "Costco 15 mi (Ann Arbor)",
+        "45″ snow",
+        "4:34 to Palatine"
+      ],
+      "con": [
+        "Data conflicts — verify in person",
+        "Few amenities in town"
+      ]
+    },
     median: "$148,300 ACS value · sold data conflicts",
     comfort: "data conflict — see note",
     crime: "3.10 / 10.1–10.3",
@@ -652,6 +723,33 @@ export const RELOCATION_TOWNS = [
     coords: [43.3317, -83.7383],
     tier: "viable",
     verified: "yes",
+    oneLiner:
+      "A prosperous, tidy, tight-knit Bavarian town — top-decile schools, 44 inches of snow, Costco half an hour away — that fills with tourists on weekends and empties politely on Sunday night.",
+    scores: {
+      "cost": 8,
+      "winter": 9,
+      "internet": 5,
+      "healthcare": 6,
+      "errands": 5,
+      "culture": 5,
+      "nature": 3,
+      "safety": 8,
+      "mom": 7,
+      "yearRound": 7
+    },
+    badges: {
+      "pro": [
+        "Schools: Niche A · 95% grad",
+        "44″ snow",
+        "No local income tax",
+        "$82k comfortable in county"
+      ],
+      "con": [
+        "Nearest ER 12 mi (Saginaw)",
+        "Trader Joe's 85 mi",
+        "Tourist weekends"
+      ]
+    },
     median: "$323,000 sold · $300,500 ACS value",
     comfort: "$110k in town · $82k in county",
     crime: "2.3–2.9 / 6.5–7.4",
@@ -940,6 +1038,34 @@ export const RELOCATION_TOWNS = [
     coords: [44.7631, -85.6206],
     tier: "viable",
     verified: "yes",
+    oneLiner:
+      "The northern Michigan town that actually works year-round: a 5-star hospital nine minutes from downtown, Costco and Target in town, 150 restaurants — priced accordingly, and 140 miles from a Trader Joe's.",
+    scores: {
+      "cost": 6,
+      "winter": 3,
+      "internet": 6,
+      "healthcare": 10,
+      "errands": 9,
+      "culture": 8,
+      "nature": 9,
+      "safety": 8,
+      "mom": 5,
+      "yearRound": 6
+    },
+    badges: {
+      "pro": [
+        "Munson: Level II · Leapfrog A · CMS 5★ · 0.9 mi",
+        "Costco & Target in town",
+        "Walk Score 84",
+        "14 nonstops from TVC"
+      ],
+      "con": [
+        "101″ snow",
+        "Trader Joe's 140 mi",
+        "0.3% fiber (cable 90%)",
+        "2% rental vacancy"
+      ]
+    },
     median: "$445,000 sold · $415,400 ACS value",
     comfort: "$128k in town · $111k in county",
     crime: "2.8–3.2 / 9.9–12.9",
@@ -1232,6 +1358,34 @@ export const RELOCATION_TOWNS = [
     coords: [45.3733, -84.9553],
     tier: "viable",
     verified: "yes",
+    oneLiner:
+      "Hemingway's summer country with the lowest violent crime on the list, the best fiber, and a hospital a mile away; the bill is 124 inches of snow and a 65-mile Costco run.",
+    scores: {
+      "cost": 5,
+      "winter": 1,
+      "internet": 8,
+      "healthcare": 9,
+      "errands": 4,
+      "culture": 6,
+      "nature": 9,
+      "safety": 10,
+      "mom": 4,
+      "yearRound": 5
+    },
+    badges: {
+      "pro": [
+        "Lowest violent crime (1.2–1.5/1k)",
+        "44% fiber",
+        "McLaren hospital 1 mi",
+        "No local income tax"
+      ],
+      "con": [
+        "123.6″ snow — most on the list",
+        "Costco 65 mi",
+        "Amazon 2–5 days",
+        "6:03 to Palatine"
+      ]
+    },
     median: "$472,000 sold · $364,100 ACS value",
     comfort: "$131k in town · $107k in county",
     crime: "1.2–1.5 / 5.7–6.4",
@@ -1524,6 +1678,33 @@ export const RELOCATION_TOWNS = [
     coords: [42.2808, -83.743],
     tier: "viable",
     verified: "yes",
+    oneLiner:
+      "A college town with university-hospital healthcare, everything within four miles, and the highest property tax on the list — young, educated, expensive, and 4:41 from Palatine.",
+    scores: {
+      "cost": 5,
+      "winter": 7,
+      "internet": 8,
+      "healthcare": 10,
+      "errands": 10,
+      "culture": 9,
+      "nature": 5,
+      "safety": 7,
+      "mom": 8,
+      "yearRound": 10
+    },
+    badges: {
+      "pro": [
+        "U-M hospital in town",
+        "Trader Joe's & Whole Foods 3.5 mi",
+        "Same-day Amazon",
+        "Walkable, year-round"
+      ],
+      "con": [
+        "$12.9k/yr property tax on the median",
+        "Median age 27 — a student town",
+        "Property crime 17–21/1k"
+      ]
+    },
     median: "$476,000 sold · $479,800 ACS value",
     comfort: "$140k in town · $123k in county",
     crime: "3.0–3.4 / 17.2–21.1",
@@ -1808,6 +1989,33 @@ export const RELOCATION_TOWNS = [
     coords: [42.9709, -82.4249],
     tier: "viable",
     verified: "yes",
+    oneLiner:
+      "The cheapest viable town — $89k comfortable — on the St. Clair River across from Canada, with a hospital in town and a 1% city income tax; the trade is a working-class lake town, not a resort.",
+    scores: {
+      "cost": 9,
+      "winter": 9,
+      "internet": 8,
+      "healthcare": 8,
+      "errands": 6,
+      "culture": 4,
+      "nature": 7,
+      "safety": 5,
+      "mom": 6,
+      "yearRound": 8
+    },
+    badges: {
+      "pro": [
+        "$89k comfortable",
+        "35.5″ snow — least in Michigan here",
+        "McLaren hospital in town",
+        "Fiber 27% · cable 99%"
+      ],
+      "con": [
+        "~6 violent/1k",
+        "1.0% city income tax",
+        "Trader Joe's 50 mi"
+      ]
+    },
     median: "$195,000 sold · $156,700 ACS value",
     comfort: "$89k in town · $97k in county",
     crime: "6.0 / 15.0–15.1",
@@ -2088,6 +2296,34 @@ export const RELOCATION_TOWNS = [
     coords: [43.9553, -86.4526],
     tier: "seasonal",
     verified: "yes",
+    oneLiner:
+      "A car-ferry town on Lake Michigan with surprising fiber (55%), Meijer, Walmart and Aldi in town, a small hospital — and the nearest Costco 95 miles away.",
+    scores: {
+      "cost": 7,
+      "winter": 4,
+      "internet": 9,
+      "healthcare": 7,
+      "errands": 5,
+      "culture": 4,
+      "nature": 8,
+      "safety": 9,
+      "mom": 8,
+      "yearRound": 5
+    },
+    badges: {
+      "pro": [
+        "55% fiber — best on the list",
+        "Meijer · Walmart · Aldi in town",
+        "4:21 to Palatine",
+        "2.1–2.6 violent/1k"
+      ],
+      "con": [
+        "Costco 95 mi",
+        "86″ snow",
+        "21% vacant housing",
+        "1,265 lead lines"
+      ]
+    },
     median: "$311,000 sold · $201,100 ACS value",
     comfort: "$108k in town · $93k in county",
     crime: "2.1–2.6 / 9.4–10.6",
@@ -2368,6 +2604,34 @@ export const RELOCATION_TOWNS = [
     coords: [45.318, -85.2584],
     tier: "seasonal",
     verified: "split",
+    oneLiner:
+      "The picture-book harbor between two lakes, quiet and safe, 39% of its houses empty in winter, and a PFAS site at the municipal well field to ask about first.",
+    scores: {
+      "cost": 6,
+      "winter": 3,
+      "internet": 8,
+      "healthcare": 7,
+      "errands": 4,
+      "culture": 4,
+      "nature": 9,
+      "safety": 9,
+      "mom": 5,
+      "yearRound": 3
+    },
+    badges: {
+      "pro": [
+        "1.7–2.1 violent/1k",
+        "43% fiber",
+        "Munson hospital in town",
+        "$100k comfortable in county"
+      ],
+      "con": [
+        "PFAS: the municipal well field",
+        "39% vacant in winter",
+        "103″ snow",
+        "Costco 50 mi"
+      ]
+    },
     median: "$378,000 sold · $331,500 ACS value",
     comfort: "$116k in town · $100k in county",
     crime: "1.7–2.1 / 14.9–15.0",
@@ -2660,6 +2924,33 @@ export const RELOCATION_TOWNS = [
     coords: [44.8995, -85.9812],
     tier: "seasonal",
     verified: "yes",
+    oneLiner:
+      "Sleeping Bear's doorstep: the best nature on the list, 140 year-round residents, median age 71, a million-dollar median — a place to visit, or to retire to with money already made.",
+    scores: {
+      "cost": 2,
+      "winter": 2,
+      "internet": 4,
+      "healthcare": 4,
+      "errands": 3,
+      "culture": 2,
+      "nature": 10,
+      "safety": 9,
+      "mom": 5,
+      "yearRound": 1
+    },
+    badges: {
+      "pro": [
+        "Sleeping Bear Dunes at the door",
+        "Lowest millage (17.7)",
+        "Cable 84%"
+      ],
+      "con": [
+        "$625k–$1M median",
+        "68% vacant · 140 residents",
+        "Nearest ER 25+ mi",
+        "Trader Joe's 150 mi"
+      ]
+    },
     median: "$625k–$1.04M sold · $456–700k ACS value",
     comfort: "$174k in town · $122k in county",
     crime: "1.4–2.9 / 1.8–14.7",
@@ -2948,6 +3239,32 @@ export const RELOCATION_TOWNS = [
     coords: [45.7775, -84.7271],
     tier: "seasonal",
     verified: "split",
+    oneLiner:
+      "A bridgehead village of 704 people that runs on summer — 24% winter unemployment, Amazon in three to five days, the ER across the bridge in St. Ignace.",
+    scores: {
+      "cost": 7,
+      "winter": 3,
+      "internet": 4,
+      "healthcare": 4,
+      "errands": 2,
+      "culture": 2,
+      "nature": 8,
+      "safety": 6,
+      "mom": 3,
+      "yearRound": 1
+    },
+    badges: {
+      "pro": [
+        "$88k comfortable in county",
+        "Straits & bridge views"
+      ],
+      "con": [
+        "24% winter unemployment",
+        "51% vacant housing",
+        "ER across the bridge",
+        "Costco 110 mi · Amazon 3–5 days"
+      ]
+    },
     median: "$289,000 sold · $224,300 ACS value",
     comfort: "$103k in town · $88k in county",
     crime: "5.9 / 35.4",
@@ -3264,6 +3581,32 @@ export const RELOCATION_TOWNS = [
     coords: [45.8492, -84.6189],
     tier: "no",
     verified: "yes",
+    oneLiner:
+      "No cars, 992 year-round residents, a medical center but no hospital, and a $1.3M median. Go for the fudge; do not move there.",
+    scores: {
+      "cost": 1,
+      "winter": 3,
+      "internet": 1,
+      "healthcare": 2,
+      "errands": 1,
+      "culture": 3,
+      "nature": 9,
+      "safety": 8,
+      "mom": 2,
+      "yearRound": 1
+    },
+    badges: {
+      "pro": [
+        "No cars, no noise",
+        "Genuinely beautiful"
+      ],
+      "con": [
+        "$1.3M median",
+        "No hospital — ferry to the mainland",
+        "0% fiber · cable 34%",
+        "57% vacant"
+      ]
+    },
     median: "$1.07–1.3M sold · ACS value NOT IN DATA",
     comfort: "$232k in town",
     crime: "1.7–3.2 / 74–86",
@@ -3544,6 +3887,33 @@ export const RELOCATION_TOWNS = [
     coords: [42.3314, -83.0458],
     tier: "no",
     verified: "yes",
+    oneLiner:
+      "The cheapest housing of any big American city, a Level I trauma center, Whole Foods a mile and a half away — and 18 violent crimes per 1,000 citywide with a 2.4% city income tax. Neighborhood is everything.",
+    scores: {
+      "cost": 10,
+      "winter": 8,
+      "internet": 7,
+      "healthcare": 9,
+      "errands": 9,
+      "culture": 8,
+      "nature": 4,
+      "safety": 1,
+      "mom": 7,
+      "yearRound": 6
+    },
+    badges: {
+      "pro": [
+        "$78k comfortable — lowest",
+        "Level I trauma (Detroit Receiving)",
+        "Whole Foods 1.5 mi · same-day Amazon",
+        "DTW hub"
+      ],
+      "con": [
+        "18 violent/1k citywide",
+        "2.4% city income tax",
+        "24% vacant housing"
+      ]
+    },
     median: "$110,000 sold · $95,900 ACS value",
     comfort: "$78k in town · $94k in county",
     crime: "17.8–18.1 / 43.1–43.6",
@@ -3828,6 +4198,33 @@ export const RELOCATION_TOWNS = [
     coords: [42.9745, -82.4066],
     tier: "no",
     verified: "yes",
+    oneLiner:
+      "A chemical-industry city across the bridge from Port Huron: cheap, flat, Costco 85 km away, and — first — a different country's immigration system.",
+    scores: {
+      "cost": 8,
+      "winter": 9,
+      "internet": 6,
+      "healthcare": 7,
+      "errands": 5,
+      "culture": 4,
+      "nature": 7,
+      "safety": 3,
+      "mom": 5,
+      "yearRound": 7
+    },
+    badges: {
+      "pro": [
+        "US$83k comfortable",
+        "44″ snow",
+        "Bluewater Health 2 km"
+      ],
+      "con": [
+        "Immigration status first",
+        "~12 violent/1k",
+        "Costco 85 km",
+        "Amazon.ca 3–5 days"
+      ]
+    },
     median: "CA$495k (≈US$352k)",
     comfort: "≈US$83k",
     crime: "11.9 / 34.5",
@@ -4080,6 +4477,32 @@ export const RELOCATION_TOWNS = [
     coords: [42.3149, -83.0364],
     tier: "no",
     verified: "split",
+    oneLiner:
+      "Detroit's Canadian mirror with a Costco 4.5 miles away, a real hospital, and next-day Amazon.ca; a US citizen needs status before anything else counts.",
+    scores: {
+      "cost": 6,
+      "winter": 9,
+      "internet": 7,
+      "healthcare": 8,
+      "errands": 9,
+      "culture": 6,
+      "nature": 4,
+      "safety": 3,
+      "mom": 6,
+      "yearRound": 7
+    },
+    badges: {
+      "pro": [
+        "Costco 4.5 mi",
+        "Windsor Regional Hospital",
+        "Next-day Amazon.ca",
+        "47″ snow"
+      ],
+      "con": [
+        "Immigration status first",
+        "9.5–13.5 violent/1k"
+      ]
+    },
     median: "CA$510–579k (≈US$363–412k)",
     comfort: "≈US$136k net",
     crime: "9.5–13.5 / 27–39",
