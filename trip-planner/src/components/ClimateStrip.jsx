@@ -5,7 +5,7 @@
  * whether a winter is livable underneath. `sf` is San Francisco run through
  * the same math so every chart has a baseline the reader already knows.
  */
-export default function ClimateStrip({ climate, sf, color }) {
+export default function ClimateStrip({ climate, sf, baselineName = "SF", color }) {
   if (!climate?.months?.length) return null;
   const { months, annual } = climate;
   const maxSnow = Math.max(1, ...months.map((x) => x.snow));
@@ -54,7 +54,7 @@ export default function ClimateStrip({ climate, sf, color }) {
         </span>
         {sf && (
           <span className="climate-sf">
-            SF, same math: <b>{sf.annual.rain}″</b> rain, <b>{sf.annual.snow}″</b> snow, <b>{Math.round(sf.annual.frost)}</b> frost nights, <b>{Math.round(sf.annual.above90)}</b> days at 90°F+
+            {baselineName}, same math: <b>{sf.annual.rain}″</b> rain, <b>{sf.annual.snow}″</b> snow, <b>{Math.round(sf.annual.frost)}</b> frost nights, <b>{Math.round(sf.annual.above90)}</b> days at 90°F+
           </span>
         )}
       </div>

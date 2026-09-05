@@ -1,16 +1,19 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
   RELOCATION_TOWNS,
   SCOUT_DIMENSIONS,
+  SCOUT_CAMPBELL,
+  SCOUT_CAMPBELL_CLIMATE,
   SCOUT_META,
-  SCOUT_SF_CLIMATE,
   SCOUT_TIERS,
   SCOUT_TRAPS,
 } from "../data/relocation";
 import { Chip, Flag } from "./bits";
 import ClimateStrip from "./ClimateStrip";
 import { useLocalState } from "../hooks/useLocalState";
-import { daylightFor, fmtClock, fmtHours, SAN_FRANCISCO } from "../lib/daylight";
+import { CAMPBELL, daylightFor, fmtClock, fmtHours } from "../lib/daylight";
+import { MoneyBlock, MoneyPanel, moneyFor } from "./YourMoney";
+import { money } from "../lib/money";
 
 /**
  * Town Scout — the trip as reconnaissance. Every overnight and drive-through
@@ -71,8 +74,30 @@ export default function ScoutView() {
   const [weights, setWeights] = useLocalState("scout-weights", DEFAULT_WEIGHTS);
   const [compare, setCompare] = useLocalState("scout-compare", []);
   const [showCompare, setShowCompare] = useLocalState("scout-compare-open", false);
+  const [income, setIncome] = useLocalState("scout-income", { a: 65000, b: 56000 });
+  const moneyOf = useMemo(
+    () =>
+      Object.fromEntries(
+        (SCOUT_CAMPBELL ? [SCOUT_CAMPBELL, ...RELOCATION_TOWNS] : RELOCATION_TOWNS).map((t) => [t.id, moneyFor(t, income)]),
+      ),
+    [income],
+  );
+  const moneyRows = useMemo(
+    () =>
+      RELOCATION_TOWNS.map((town) => ({ town, r: moneyOf[town.id] }))
+        .filter((x) => x.r)
+        .sort((a, b) => (a.r.modeled ? a.r.share : 9) - (b.r.modeled ? b.r.share : 9)),
+    [moneyOf],
+  );
   const cardRefs = useRef({});
   const compareRef = useRef(null);
+  // The parent owns the ref map; cards receive a registrar instead of the map itself.
+  const registerRef = useCallback(
+    (id) => (el) => {
+      cardRefs.current[id] = el;
+    },
+    [],
+  );
 
   const ranked = useMemo(
     () =>
@@ -82,12 +107,14 @@ export default function ScoutView() {
     [weights],
   );
   const matchOf = Object.fromEntries(ranked.map((r) => [r.t.id, r.match]));
+  if (SCOUT_CAMPBELL) matchOf[SCOUT_CAMPBELL.id] = matchPercent(SCOUT_CAMPBELL, weights);
+  const ALL_TOWNS = SCOUT_CAMPBELL ? [SCOUT_CAMPBELL, ...RELOCATION_TOWNS] : RELOCATION_TOWNS;
   const activeCount = SCOUT_DIMENSIONS.filter((d) => (weights[d.key] ?? 1) > 0).length;
 
   const cycle = (key) => setWeights((w) => ({ ...w, [key]: ((w[key] ?? 1) + 1) % 3 }));
   const toggleCompare = (id) =>
     setCompare((c) => (c.includes(id) ? c.filter((x) => x !== id) : c.length >= 3 ? c : [...c, id]));
-  const compareTowns = compare.map((id) => RELOCATION_TOWNS.find((t) => t.id === id)).filter(Boolean);
+  const compareTowns = compare.map((id) => ALL_TOWNS.find((t) => t.id === id)).filter(Boolean);
   const jump = (id) => cardRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
   const openCompare = () => {
     setShowCompare(true);
@@ -118,8 +145,10 @@ export default function ScoutView() {
           label="Figures verified"
           note="Confirmed / corrected to ranges"
         />
-        <ScoutStat value="1 hr" label="Mom's clock" note="Palatine is Central; all of these are Eastern" />
+        <ScoutStat value="3 hrs" label="Ahead of Campbell" note="Eastern time; Palatine is 1 hour behind" />
       </div>
+
+      <MoneyPanel income={income} setIncome={setIncome} rows={moneyRows} campbell={SCOUT_CAMPBELL?.money} />
 
       <section className="scout-prio">
         <div className="card card-pad">
@@ -233,6 +262,21 @@ export default function ScoutView() {
                   </tr>
                 ))}
                 <tr>
+                  <td className="lab">💵 Median home on your income</td>
+                  {compareTowns.map((t) => {
+                    const r = moneyOf[t.id];
+                    return (
+                      <td key={t.id}>
+                        {r?.modeled ? (
+                          <>
+                            {money(r.monthly)}/mo · {Math.round(r.share * 100)}% <Chip tone={r.verdict.tone}>{r.verdict.label}</Chip>
+                          </>
+                        ) : "—"}
+                      </td>
+                    );
+                  })}
+                </tr>
+                <tr>
                   <td className="lab">For</td>
                   {compareTowns.map((t) => (
                     <td key={t.id}>
@@ -258,6 +302,32 @@ export default function ScoutView() {
         </section>
       )}
 
+      {SCOUT_CAMPBELL && (
+        <section style={{ marginBottom: "var(--s-6)" }}>
+          <div className="eyebrow" style={{ color: "var(--accent)", marginBottom: "0.35rem" }}>
+            Where you live now · the baseline
+          </div>
+          <p className="muted" style={{ fontSize: "var(--t-sm)", marginBottom: "var(--s-3)" }}>
+            Campbell, quantified the same way as the fifteen towns below, so every comparison has a
+            floor you already know. Add it to a side-by-side.
+          </p>
+          <div className="stay-grid">
+            <TownCard
+              t={SCOUT_CAMPBELL}
+              tier={{ id: "home", color: "var(--accent)" }}
+              weights={weights}
+              matchOf={matchOf}
+              moneyOf={moneyOf}
+              income={income}
+              compare={compare}
+              toggleCompare={toggleCompare}
+              registerRef={registerRef}
+              isHome
+            />
+          </div>
+        </section>
+      )}
+
       {SCOUT_TIERS.map((tier) => {
         const towns = RELOCATION_TOWNS.filter((t) => t.tier === tier.id);
         return (
@@ -269,112 +339,20 @@ export default function ScoutView() {
               {tier.blurb}
             </p>
             <div className="stay-grid">
-              {towns.map((t) => {
-                const compared = compare.includes(t.id);
-                return (
-                  <article
-                    key={t.id}
-                    ref={(el) => {
-                      cardRefs.current[t.id] = el;
-                    }}
-                    className={`card card-pad scout-card${compared ? " is-compared" : ""}`}
-                    style={{ borderTop: `3px solid ${tier.color}`, "--tc": tier.color }}
-                  >
-                    <div className="card-head" style={{ marginBottom: 0 }}>
-                      <div style={{ minWidth: 0 }}>
-                        <h3 style={{ fontSize: "var(--t-lg)" }}>{t.name}</h3>
-                        <div className="muted" style={{ fontSize: "var(--t-sm)" }}>
-                          {t.county} · {t.drive}
-                        </div>
-                      </div>
-                      <div className="scout-head-right">
-                        <span className="match-pill" title="Match to your priorities">{matchOf[t.id]}%</span>
-                        <Chip tone={t.verified === "yes" ? "locked" : "warn"}>
-                          {t.verified === "yes" ? "✓ verified" : "≈ sources split"}
-                        </Chip>
-                      </div>
-                    </div>
-
-                    {t.oneLiner && <p className="scout-oneliner">{t.oneLiner}</p>}
-
-                    {t.scores && (
-                      <div className="scorecard" aria-label="Scorecard, 0 to 10">
-                        {SCOUT_DIMENSIONS.map((d) => {
-                          const v = t.scores[d.key] ?? 0;
-                          const w = weights[d.key] ?? 1;
-                          return (
-                            <div
-                              key={d.key}
-                              className={`score-row${w === 0 ? " is-off" : ""}${w === 2 ? " is-double" : ""}`}
-                              title={`${d.label}: ${v}/10 — ${d.hint}`}
-                            >
-                              <span className="score-lab">
-                                <span aria-hidden="true">{d.icon}</span> {d.label}
-                              </span>
-                              <span className="score-bar"><i style={{ width: `${v * 10}%` }} /></span>
-                              <span className="score-v">{v}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    {t.badges && (
-                      <div className="badge-row">
-                        {t.badges.pro.map((b) => <Chip key={b} tone="ok">{b}</Chip>)}
-                        {t.badges.con.map((b) => <Chip key={b} tone="stop">{b}</Chip>)}
-                      </div>
-                    )}
-
-                    <dl className="scout-facts">
-                      {SUMMARY_ROWS.slice(0, 6).map(([k, get]) => (
-                        <FactRow key={k} k={k} v={get(t)} />
-                      ))}
-                    </dl>
-
-                    <Daylight coords={t.coords} />
-                    <ClimateStrip climate={t.climate} sf={SCOUT_SF_CLIMATE} color={tier.color} />
-
-                    <p style={{ fontSize: "var(--t-sm)", color: "var(--ink-2)" }}>{t.verdict}</p>
-
-                    <div className="scout-actions">
-                      <button
-                        type="button"
-                        className={`scout-btn${compared ? " is-on" : ""}`}
-                        aria-pressed={compared}
-                        disabled={!compared && compare.length >= 3}
-                        onClick={() => toggleCompare(t.id)}
-                        title={!compared && compare.length >= 3 ? "Three at a time" : "Add to side-by-side"}
-                      >
-                        {compared ? "✓ Comparing" : "+ Compare"}
-                      </button>
-                    </div>
-
-                    {t.workup && (
-                      <details className="scout-workup">
-                        <summary>Full workup — errands, shipping, healthcare, schools, jobs, airports, lifestyle, climate, demographics</summary>
-                        {WORKUP_SECTIONS.map(([key, label]) =>
-                          t.workup[key]?.length ? (
-                            <div key={key} className="scout-workup-section">
-                              <div className="eyebrow">{label}</div>
-                              <dl className="scout-facts">
-                                {t.workup[key].map(([k, v]) => (
-                                  <FactRow key={k} k={k} v={v} />
-                                ))}
-                              </dl>
-                            </div>
-                          ) : null,
-                        )}
-                        {t.workup.sources && (
-                          <p className="muted" style={{ fontSize: "var(--t-xs)", marginTop: "var(--s-2)" }}>
-                            {t.workup.sources}
-                          </p>
-                        )}
-                      </details>
-                    )}
-                  </article>
-                );
-              })}
+              {towns.map((t) => (
+                <TownCard
+                  key={t.id}
+                  t={t}
+                  tier={tier}
+                  weights={weights}
+                  matchOf={matchOf}
+                  moneyOf={moneyOf}
+                  income={income}
+                  compare={compare}
+                  toggleCompare={toggleCompare}
+                  registerRef={registerRef}
+                />
+              ))}
             </div>
           </section>
         );
@@ -426,19 +404,127 @@ export default function ScoutView() {
   );
 }
 
-function Daylight({ coords }) {
+function TownCard({ t, tier, weights, matchOf, moneyOf, income, compare, toggleCompare, registerRef, isHome = false }) {
+  const compared = compare.includes(t.id);
+  return (
+        <article
+          key={t.id}
+          ref={registerRef(t.id)}
+          className={`card card-pad scout-card${compared ? " is-compared" : ""}${isHome ? " is-home" : ""}`}
+          style={{ borderTop: `3px solid ${tier.color}`, "--tc": tier.color }}
+        >
+          <div className="card-head" style={{ marginBottom: 0 }}>
+            <div style={{ minWidth: 0 }}>
+              <h3 style={{ fontSize: "var(--t-lg)" }}>{t.name}</h3>
+              <div className="muted" style={{ fontSize: "var(--t-sm)" }}>
+                {t.county} · {t.drive}
+              </div>
+            </div>
+            <div className="scout-head-right">
+              <span className="match-pill" title="Match to your priorities">{matchOf[t.id]}%</span>
+              <Chip tone={t.verified === "yes" ? "locked" : "warn"}>
+                {t.verified === "yes" ? "✓ verified" : "≈ sources split"}
+              </Chip>
+            </div>
+          </div>
+
+          {t.oneLiner && <p className="scout-oneliner">{t.oneLiner}</p>}
+
+          {t.scores && (
+            <div className="scorecard" aria-label="Scorecard, 0 to 10">
+              {SCOUT_DIMENSIONS.map((d) => {
+                const v = t.scores[d.key] ?? 0;
+                const w = weights[d.key] ?? 1;
+                return (
+                  <div
+                    key={d.key}
+                    className={`score-row${w === 0 ? " is-off" : ""}${w === 2 ? " is-double" : ""}`}
+                    title={`${d.label}: ${v}/10 — ${d.hint}`}
+                  >
+                    <span className="score-lab">
+                      <span aria-hidden="true">{d.icon}</span> {d.label}
+                    </span>
+                    <span className="score-bar"><i style={{ width: `${v * 10}%` }} /></span>
+                    <span className="score-v">{v}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {t.badges && (
+            <div className="badge-row">
+              {t.badges.pro.map((b) => <Chip key={b} tone="ok">{b}</Chip>)}
+              {t.badges.con.map((b) => <Chip key={b} tone="stop">{b}</Chip>)}
+            </div>
+          )}
+
+          <dl className="scout-facts">
+            {SUMMARY_ROWS.slice(0, 6).map(([k, get]) => (
+              <FactRow key={k} k={k} v={get(t)} />
+            ))}
+          </dl>
+
+          <Daylight coords={t.coords} isHome={isHome} />
+          <MoneyBlock r={moneyOf[t.id]} gross={income.a + income.b} />
+          <ClimateStrip climate={t.climate} sf={isHome ? null : SCOUT_CAMPBELL_CLIMATE} baselineName="Campbell" color={tier.color} />
+
+          <p style={{ fontSize: "var(--t-sm)", color: "var(--ink-2)" }}>{t.verdict}</p>
+
+          <div className="scout-actions">
+            <button
+              type="button"
+              className={`scout-btn${compared ? " is-on" : ""}`}
+              aria-pressed={compared}
+              disabled={!compared && compare.length >= 3}
+              onClick={() => toggleCompare(t.id)}
+              title={!compared && compare.length >= 3 ? "Three at a time" : "Add to side-by-side"}
+            >
+              {compared ? "✓ Comparing" : "+ Compare"}
+            </button>
+          </div>
+
+          {t.workup && (
+            <details className="scout-workup">
+              <summary>Full workup — errands, shipping, healthcare, schools, jobs, airports, lifestyle, climate, demographics</summary>
+              {WORKUP_SECTIONS.map(([key, label]) =>
+                t.workup[key]?.length ? (
+                  <div key={key} className="scout-workup-section">
+                    <div className="eyebrow">{label}</div>
+                    <dl className="scout-facts">
+                      {t.workup[key].map(([k, v]) => (
+                        <FactRow key={k} k={k} v={v} />
+                      ))}
+                    </dl>
+                  </div>
+                ) : null,
+              )}
+              {t.workup.sources && (
+                <p className="muted" style={{ fontSize: "var(--t-xs)", marginTop: "var(--s-2)" }}>
+                  {t.workup.sources}
+                </p>
+              )}
+            </details>
+          )}
+        </article>
+
+  );
+}
+
+function Daylight({ coords, isHome = false }) {
   if (!coords) return null;
   const d = daylightFor(coords[0], coords[1]);
-  const sf = SAN_FRANCISCO;
-  const dW = Math.round((d.winter.hours - sf.winter.hours) * 60);
-  const dS = Math.round((d.summer.hours - sf.summer.hours) * 60);
-  const rel = (m) => (m < 0 ? `${-m} min less than SF` : `${m} min more than SF`);
+  const base = CAMPBELL;
+  const dW = Math.round((d.winter.hours - base.winter.hours) * 60);
+  const dS = Math.round((d.summer.hours - base.summer.hours) * 60);
+  const rel = (m) => (m < 0 ? `${-m} min less than Campbell` : `${m} min more than Campbell`);
   return (
     <div className="daylight">
       <span className="daylight-k" aria-hidden="true">☀️</span>
       <span>
-        Shortest day <b>{fmtHours(d.winter.hours)}</b>, sunset {fmtClock(d.winter.sunset)} ({rel(dW)}) ·
-        longest <b>{fmtHours(d.summer.hours)}</b>, sunset {fmtClock(d.summer.sunset)} ({rel(dS)})
+        Shortest day <b>{fmtHours(d.winter.hours)}</b>, sunset {fmtClock(d.winter.sunset)}
+        {isHome ? "" : ` (${rel(dW)})`} · longest <b>{fmtHours(d.summer.hours)}</b>, sunset {fmtClock(d.summer.sunset)}
+        {isHome ? " — the baseline the other cards compare to" : ` (${rel(dS)})`}
       </span>
     </div>
   );

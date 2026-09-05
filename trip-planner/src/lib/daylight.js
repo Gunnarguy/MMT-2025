@@ -44,3 +44,5 @@ export function daylightFor(lat, lon, tzWinter = -5, tzSummer = -4) {
 }
 
 export const SAN_FRANCISCO = daylightFor(37.7749, -122.4194, -8, -7);
+
+export const CAMPBELL = daylightFor(37.2872, -121.95, -8, -7);

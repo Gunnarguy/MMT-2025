@@ -46,6 +46,382 @@ export const SCOUT_DIMENSIONS = [
   { key: "yearRound", label: "Year-round life", icon: "📅", hint: "Does the town still run in February?" },
 ];
 
+/** Campbell, CA — where they live now — through the same NOAA math (San Jose station). */
+export const SCOUT_CAMPBELL_CLIMATE = {
+  "station": "San Jose (USW00023293), 5.2 mi from Campbell",
+  "years": "2010–2024",
+  "annual": {
+    "snow": 0,
+    "rain": 12.0,
+    "snowDays": 0,
+    "snowCover": 0,
+    "below0": 0,
+    "frost": 2.9,
+    "above90": 14.7,
+    "wetDays": 54.4,
+    "recordLow": 25,
+    "recordHigh": 109,
+    "maxSnowDay": 0,
+    "snowiest": "none",
+    "wettest": "Dec 2.43\"",
+    "hottest": "Aug 81.7°",
+    "coldest": "Dec 42.8°",
+    "snowSeason": "none",
+    "coverage": 99
+  },
+  "months": [
+    {
+      "m": "Jan",
+      "snow": 0,
+      "rain": 2.31,
+      "hi": 61.1,
+      "lo": 42.8
+    },
+    {
+      "m": "Feb",
+      "snow": 0,
+      "rain": 1.95,
+      "hi": 63.6,
+      "lo": 43.5
+    },
+    {
+      "m": "Mar",
+      "snow": 0,
+      "rain": 2.16,
+      "hi": 66,
+      "lo": 46.3
+    },
+    {
+      "m": "Apr",
+      "snow": 0,
+      "rain": 0.93,
+      "hi": 70.2,
+      "lo": 49.1
+    },
+    {
+      "m": "May",
+      "snow": 0,
+      "rain": 0.28,
+      "hi": 73.6,
+      "lo": 52.5
+    },
+    {
+      "m": "Jun",
+      "snow": 0,
+      "rain": 0.13,
+      "hi": 79.7,
+      "lo": 56.6
+    },
+    {
+      "m": "Jul",
+      "snow": 0,
+      "rain": 0,
+      "hi": 81.4,
+      "lo": 58.7
+    },
+    {
+      "m": "Aug",
+      "snow": 0,
+      "rain": 0,
+      "hi": 81.7,
+      "lo": 59.7
+    },
+    {
+      "m": "Sep",
+      "snow": 0,
+      "rain": 0.12,
+      "hi": 81.6,
+      "lo": 58.3
+    },
+    {
+      "m": "Oct",
+      "snow": 0,
+      "rain": 0.41,
+      "hi": 77.5,
+      "lo": 53.9
+    },
+    {
+      "m": "Nov",
+      "snow": 0,
+      "rain": 1.28,
+      "hi": 67.2,
+      "lo": 46
+    },
+    {
+      "m": "Dec",
+      "snow": 0,
+      "rain": 2.43,
+      "hi": 60.6,
+      "lo": 42.8
+    }
+  ]
+};
+
+/** Campbell, CA — where they live now, quantified like every other town. */
+export const SCOUT_CAMPBELL = { ...{
+  "id": "scout-campbell",
+  "name": "Campbell, CA",
+  "county": "Santa Clara County · where you live now",
+  "coords": [
+    37.2872,
+    -121.95
+  ],
+  "tier": "home",
+  "verified": "yes",
+  "median": "$1,790,000 sold · $1,617,000 ACS value",
+  "comfort": "~$478k to buy the median · renting a 2BR at $3,170",
+  "crime": "4.73 / 28.3",
+  "snow": "0\"",
+  "fiber": "Same-day Amazon · gigabit common",
+  "tax": "~1.3% on purchase (Prop 13) · 10.5% sales tax",
+  "drive": "2,300 mi · SJC→ORD ~4h in the air",
+  "oneLiner": "Where you live now: a walkable Silicon Valley suburb with a Trader Joe's, a Whole Foods and a Home Depot inside a mile, 77% sunshine, no snow, a Level I trauma center down the road — and a median house that sells for $1.79 million, which is the reason this page exists.",
+  "scores": {
+    "cost": 1,
+    "winter": 10,
+    "internet": 9,
+    "healthcare": 7,
+    "errands": 10,
+    "culture": 9,
+    "nature": 6,
+    "safety": 5,
+    "mom": 1,
+    "yearRound": 10
+  },
+  "badges": {
+    "pro": [
+      "Walk Score 93",
+      "TJ's · Whole Foods · Home Depot under 1 mi",
+      "Same-day Amazon",
+      "~3,420 sunshine hours · no snow",
+      "No local income tax"
+    ],
+    "con": [
+      "$1.79M median — needs ~$478k income",
+      "2BR rent $3,170 (31% of gross)",
+      "10.5% sales tax",
+      "Good Samaritan: Leapfrog C",
+      "Property crime 28/1k",
+      "2,300 mi from Mom"
+    ]
+  },
+  "money": {
+    "medianPrice": 1790000,
+    "effTax": 0.013,
+    "cityTax": 0,
+    "taxState": "CA",
+    "rent2br": 3170,
+    "rent1br": 3245,
+    "acsRent": 2737,
+    "priceNote": "Redfin median sold, July 2026"
+  },
+  "workup": {
+    "demographics": [
+      [
+        "Source",
+        "Census ACS 2016–2020 via BigQuery; Santa Clara County in each row for contrast"
+      ],
+      [
+        "Population (2020 ACS)",
+        "42,891 · Santa Clara Co 1,924,379"
+      ],
+      [
+        "Median age",
+        "38.9 · county 37.2"
+      ],
+      [
+        "Vacant housing",
+        "8% of units · county 5%"
+      ],
+      [
+        "Bachelor's or higher, 25–64",
+        "57% · county 56%"
+      ],
+      [
+        "Unemployment (ACS)",
+        "2% · county 4%"
+      ],
+      [
+        "Median household income",
+        "$122,644 · county $130,890"
+      ],
+      [
+        "Works from home",
+        "8% of workers · county 9%"
+      ],
+      [
+        "Mix",
+        "48% white · 23% Asian · 20% Hispanic · 2% Black"
+      ],
+      [
+        "Median home built",
+        "1971"
+      ],
+      [
+        "Median rent (2020 ACS)",
+        "$2,224 · 2020–24 ACS $2,737"
+      ],
+      [
+        "Population trend",
+        "39,349 (2010) → 43,797 (2020) → ~42,800 (2024–26 est.)"
+      ],
+      [
+        "2024 presidential margin",
+        "Santa Clara County: Harris +36.6 (66.8% to 30.2%)"
+      ]
+    ],
+    "errands": [
+      [
+        "Grocery in town",
+        "Trader Joe's (Pruneyard) & Whole Foods (1690 S Bascom), both under 1 mi"
+      ],
+      [
+        "Costco",
+        "Almaden, 5301 Almaden Expy, San Jose — ~6 mi"
+      ],
+      [
+        "Target",
+        "San Jose Westgate, ~4 mi"
+      ],
+      [
+        "Walmart",
+        "Neighborhood Market, Stevens Creek Blvd — ~5 mi"
+      ],
+      [
+        "Home Depot",
+        "480 E Hamilton Ave, Campbell — under 1 mi"
+      ],
+      [
+        "Farmers market",
+        "Downtown Campbell, Sundays year-round"
+      ]
+    ],
+    "shipping": [
+      [
+        "Amazon delivery",
+        "Same-day available to 95008"
+      ],
+      [
+        "Grocery delivery",
+        "Instacart, DoorDash, Amazon Fresh — full coverage"
+      ]
+    ],
+    "healthcare": [
+      [
+        "Nearest ER",
+        "Good Samaritan Hospital, San Jose — ~3 mi"
+      ],
+      [
+        "Safety grade",
+        "Leapfrog C (Spring 2026)"
+      ],
+      [
+        "Trauma center",
+        "Santa Clara Valley Medical Center — Level I"
+      ],
+      [
+        "Referral center",
+        "Stanford Health Care ~15 mi; UCSF ~50 mi"
+      ]
+    ],
+    "economy": [
+      [
+        "Median household income",
+        "$122,644 (ACS 2020) — the couple is below the local median"
+      ],
+      [
+        "MIT living wage, 2 adults working",
+        "$23.93/hr each ≈ $99,500 combined"
+      ],
+      [
+        "Cost of living index",
+        "198 — 98% above the US average (Payscale, San Jose metro)"
+      ],
+      [
+        "Groceries / utilities / transport",
+        "143 / 110–132 / 130–136 vs US 100"
+      ],
+      [
+        "Gas today",
+        "~$3.98/gal"
+      ]
+    ],
+    "airport": [
+      [
+        "Nearest commercial airport",
+        "SJC — ~7 mi; nonstops to ORD"
+      ],
+      [
+        "Major hub",
+        "SFO — ~40 mi"
+      ]
+    ],
+    "lifestyle": [
+      [
+        "Walk Score, downtown",
+        "93 — Walker's Paradise"
+      ],
+      [
+        "Downtown",
+        "100+ shops and restaurants, Pruneyard, Sunday market — year-round"
+      ],
+      [
+        "Nature within 30 min",
+        "Los Gatos Creek Trail, Santa Cruz Mountains, Pacific in ~50 min"
+      ]
+    ],
+    "climate": [
+      [
+        "Annual rainfall",
+        "~19″ NOAA normal; 12.0″ averaged 2010–2024 (drought decade)"
+      ],
+      [
+        "July high / January low",
+        "78–82°F / 41–44°F"
+      ],
+      [
+        "Sunshine",
+        "~77% of possible, ~3,420 hours"
+      ],
+      [
+        "Snow",
+        "none, ever"
+      ],
+      [
+        "Climate risk",
+        "wildfire-smoke days in late summer, drought cycling and water restrictions, earthquake"
+      ]
+    ],
+    "gotchas": [
+      [
+        "Buying the median",
+        "$358,000 down and ~$9,250/mo P&I at 6.71% — needs ~$478k household income at a 28% front-end ratio"
+      ],
+      [
+        "Renting",
+        "1BR $3,245 · 2BR $3,170 asking (Sept 2026); ACS median gross rent $2,737"
+      ],
+      [
+        "Property tax",
+        "Prop 13: ~1.25–1.35% of purchase price, then capped growth — the Michigan uncapping trap has a California cousin, just gentler"
+      ],
+      [
+        "Sales tax",
+        "10.5% in Campbell vs 6% in Michigan"
+      ],
+      [
+        "Utilities",
+        "PG&E $109–300+/mo; water + sewer + garbage $150–370/mo"
+      ],
+      [
+        "The move itself",
+        "professional movers $5,700–15,000, container $2,500–7,500, DIY truck $1,500–4,500; shipping one car $850–1,900; no California exit tax for W-2 earners — part-year residency only"
+      ]
+    ],
+    "sources": "Sources: census.gov, redfin.com, realtor.com, zumper.com, rent.com, payscale.com, livingwage.mit.edu, ftb.ca.gov, edd.ca.gov, cdtfa.ca.gov, neighborhoodscout.com, hospitalsafetygrade.org, walkscore.com, weather.gov, move.org"
+  }
+}, climate: SCOUT_CAMPBELL_CLIMATE };
+
 /** San Francisco through the same NOAA math, so every climate strip has a familiar baseline. */
 export const SCOUT_SF_CLIMATE = {
   "station": "San Francisco Downtown",
@@ -189,6 +565,7 @@ export const RELOCATION_TOWNS = [
     coords: [42.9634, -85.6681],
     tier: "viable",
     verified: "yes",
+    money: {"medianPrice": 310000, "effTax": 0.0166, "cityTax": 0.015, "taxState": "MI", "countyPrice": 289900},
     oneLiner:
       "A real mid-size city — 80 breweries, a Level I trauma center downtown, same-day Amazon — that happens to be three and a half hours from your mom. Buy the neighborhood, not the city.",
     scores: {
@@ -636,6 +1013,7 @@ export const RELOCATION_TOWNS = [
     coords: [42.2048, -83.4852],
     tier: "viable",
     verified: "split",
+    money: {"medianPrice": 194800, "effTax": 0.0189, "cityTax": 0, "taxState": "MI", "priceNote": "county median — the city figures conflict", "countyPrice": 194800},
     oneLiner:
       "A small lake town twenty minutes from DTW and Ann Arbor's hospitals, cheap by any coastal standard — with numbers too thin to trust until you have stood in it.",
     scores: {
@@ -1058,6 +1436,7 @@ export const RELOCATION_TOWNS = [
     coords: [43.3317, -83.7383],
     tier: "viable",
     verified: "yes",
+    money: {"medianPrice": 323000, "effTax": 0.0201, "cityTax": 0, "taxState": "MI", "countyPrice": 152800},
     oneLiner:
       "A prosperous, tidy, tight-knit Bavarian town — top-decile schools, 44 inches of snow, Costco half an hour away — that fills with tourists on weekends and empties politely on Sunday night.",
     scores: {
@@ -1485,6 +1864,7 @@ export const RELOCATION_TOWNS = [
     coords: [44.7631, -85.6206],
     tier: "viable",
     verified: "yes",
+    money: {"medianPrice": 445000, "effTax": 0.0185, "cityTax": 0, "taxState": "MI", "countyPrice": 339400},
     oneLiner:
       "The northern Michigan town that actually works year-round: a 5-star hospital nine minutes from downtown, Costco and Target in town, 150 restaurants — priced accordingly, and 140 miles from a Trader Joe's.",
     scores: {
@@ -1917,6 +2297,7 @@ export const RELOCATION_TOWNS = [
     coords: [45.3733, -84.9553],
     tier: "viable",
     verified: "yes",
+    money: {"medianPrice": 472000, "effTax": 0.0168, "cityTax": 0, "taxState": "MI", "countyPrice": 315700},
     oneLiner:
       "Hemingway's summer country with the lowest violent crime on the list, the best fiber, and a hospital a mile away; the bill is 124 inches of snow and a 65-mile Costco run.",
     scores: {
@@ -2349,6 +2730,7 @@ export const RELOCATION_TOWNS = [
     coords: [42.2808, -83.743],
     tier: "viable",
     verified: "yes",
+    money: {"medianPrice": 476000, "effTax": 0.0263, "cityTax": 0, "taxState": "MI", "countyPrice": 374100},
     oneLiner:
       "A college town with university-hospital healthcare, everything within four miles, and the highest property tax on the list — young, educated, expensive, and 4:41 from Palatine.",
     scores: {
@@ -2772,6 +3154,7 @@ export const RELOCATION_TOWNS = [
     coords: [42.9709, -82.4249],
     tier: "viable",
     verified: "yes",
+    money: {"medianPrice": 195000, "effTax": 0.0207, "cityTax": 0.01, "taxState": "MI", "countyPrice": 242500},
     oneLiner:
       "The cheapest viable town — $89k comfortable — on the St. Clair River across from Canada, with a hospital in town and a 1% city income tax; the trade is a working-class lake town, not a resort.",
     scores: {
@@ -3191,6 +3574,7 @@ export const RELOCATION_TOWNS = [
     coords: [43.9553, -86.4526],
     tier: "seasonal",
     verified: "yes",
+    money: {"medianPrice": 311000, "effTax": 0.0203, "cityTax": 0, "taxState": "MI", "countyPrice": 219600},
     oneLiner:
       "A car-ferry town on Lake Michigan with surprising fiber (55%), Meijer, Walmart and Aldi in town, a small hospital — and the nearest Costco 95 miles away.",
     scores: {
@@ -3611,6 +3995,7 @@ export const RELOCATION_TOWNS = [
     coords: [45.318, -85.2584],
     tier: "seasonal",
     verified: "split",
+    money: {"medianPrice": 378000, "effTax": 0.0167, "cityTax": 0, "taxState": "MI", "countyPrice": 276800},
     oneLiner:
       "The picture-book harbor between two lakes, quiet and safe, 39% of its houses empty in winter, and a PFAS site at the municipal well field to ask about first.",
     scores: {
@@ -4043,6 +4428,7 @@ export const RELOCATION_TOWNS = [
     coords: [44.8995, -85.9812],
     tier: "seasonal",
     verified: "yes",
+    money: {"medianPrice": 830000, "effTax": 0.0095, "cityTax": 0, "taxState": "MI", "priceNote": "blend of the two villages", "countyPrice": 458400},
     oneLiner:
       "Sleeping Bear's doorstep: the best nature on the list, 140 year-round residents, median age 71, a million-dollar median — a place to visit, or to retire to with money already made.",
     scores: {
@@ -4470,6 +4856,7 @@ export const RELOCATION_TOWNS = [
     coords: [45.7775, -84.7271],
     tier: "seasonal",
     verified: "split",
+    money: {"medianPrice": 289000, "effTax": 0.0186, "cityTax": 0, "taxState": "MI", "countyPrice": 192500},
     oneLiner:
       "A bridgehead village of 704 people that runs on summer — 24% winter unemployment, Amazon in three to five days, the ER across the bridge in St. Ignace.",
     scores: {
@@ -4924,6 +5311,7 @@ export const RELOCATION_TOWNS = [
     coords: [45.8492, -84.6189],
     tier: "no",
     verified: "yes",
+    money: {"medianPrice": 1300000, "effTax": 0.0127, "cityTax": 0, "taxState": "MI"},
     oneLiner:
       "No cars, 992 year-round residents, a medical center but no hospital, and a $1.3M median. Go for the fudge; do not move there.",
     scores: {
@@ -5342,6 +5730,7 @@ export const RELOCATION_TOWNS = [
     coords: [42.3314, -83.0458],
     tier: "no",
     verified: "yes",
+    money: {"medianPrice": 110000, "effTax": 0.0321, "cityTax": 0.024, "taxState": "MI", "countyPrice": 194800},
     oneLiner:
       "The cheapest housing of any big American city, a Level I trauma center, Whole Foods a mile and a half away — and 18 violent crimes per 1,000 citywide with a 2.4% city income tax. Neighborhood is everything.",
     scores: {
@@ -5765,6 +6154,7 @@ export const RELOCATION_TOWNS = [
     coords: [42.9745, -82.4066],
     tier: "no",
     verified: "yes",
+    money: {"medianPrice": 352000, "effTax": 0.0125, "cityTax": 0, "taxState": null, "priceNote": "CA$495k at 0.71"},
     oneLiner:
       "A chemical-industry city across the bridge from Port Huron: cheap, flat, Costco 85 km away, and — first — a different country's immigration system.",
     scores: {
@@ -6156,6 +6546,7 @@ export const RELOCATION_TOWNS = [
     coords: [42.3149, -83.0364],
     tier: "no",
     verified: "split",
+    money: {"medianPrice": 388000, "effTax": 0.021, "cityTax": 0, "taxState": null, "priceNote": "CA$510–579k at 0.71"},
     oneLiner:
       "Detroit's Canadian mirror with a Costco 4.5 miles away, a real hospital, and next-day Amazon.ca; a US citizen needs status before anything else counts.",
     scores: {
