@@ -3,10 +3,12 @@ import {
   RELOCATION_TOWNS,
   SCOUT_DIMENSIONS,
   SCOUT_META,
+  SCOUT_SF_CLIMATE,
   SCOUT_TIERS,
   SCOUT_TRAPS,
 } from "../data/relocation";
 import { Chip, Flag } from "./bits";
+import ClimateStrip from "./ClimateStrip";
 import { useLocalState } from "../hooks/useLocalState";
 import { daylightFor, fmtClock, fmtHours, SAN_FRANCISCO } from "../lib/daylight";
 
@@ -38,10 +40,13 @@ const SUMMARY_ROWS = [
   ["Median home", (t) => t.median],
   ["Comfortable income", (t) => t.comfort],
   ["Crime v/p per 1k", (t) => t.crime],
-  ["Snow per year", (t) => t.snow],
+  ["Snow per year (1991–2020 normal)", (t) => t.snow],
   ["Internet", (t) => t.fiber],
   ["Property tax", (t) => t.tax],
   ["To Palatine", (t) => t.drive],
+  ["Rain per year (NOAA)", (t) => (t.climate ? `${t.climate.annual.rain}″` : "—")],
+  ["Snow on the ground", (t) => (t.climate ? `${Math.round(t.climate.annual.snowCover)} days` : "—")],
+  ["Nights below 0°F", (t) => (t.climate ? `${Math.round(t.climate.annual.below0)}` : "—")],
 ];
 
 function matchPercent(town, weights) {
@@ -328,6 +333,7 @@ export default function ScoutView() {
                     </dl>
 
                     <Daylight coords={t.coords} />
+                    <ClimateStrip climate={t.climate} sf={SCOUT_SF_CLIMATE} color={tier.color} />
 
                     <p style={{ fontSize: "var(--t-sm)", color: "var(--ink-2)" }}>{t.verdict}</p>
 

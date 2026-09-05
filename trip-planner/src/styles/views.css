@@ -893,3 +893,21 @@
 }
 .compare-tag { font: inherit; font-size: var(--t-xs); padding: 0.2rem 0.55rem; border-radius: 999px; border: 1px solid var(--surface-3); background: var(--surface-2); color: var(--ink); cursor: pointer; }
 @media (max-width: 560px) { .scorecard { grid-template-columns: 1fr; } .score-row { grid-template-columns: 8rem 1fr 1.2rem; } }
+
+/* Town Scout — NOAA climate strip */
+.climate { margin: var(--s-3) 0; padding: var(--s-3); border-radius: 10px; background: var(--surface-2); }
+.climate-head { display: flex; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; font-size: var(--t-sm); margin-bottom: var(--s-2); }
+.climate-head .muted { font-size: var(--t-xs); }
+.climate-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; height: 112px; }
+.climate-col { display: grid; grid-template-rows: 34px 1fr auto; gap: 2px; min-width: 0; }
+.climate-temp { position: relative; background: var(--surface-3); border-radius: 3px; }
+.climate-temp i { position: absolute; left: 25%; right: 25%; background: linear-gradient(var(--accent), #6fa8c4); border-radius: 3px; min-height: 3px; }
+.climate-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; align-items: end; border-bottom: 1px solid var(--surface-3); }
+.climate-bars i { display: block; border-radius: 2px 2px 0 0; min-height: 1px; }
+.climate-bars .snow { background: #8fb8d8; }
+.climate-bars .rain { background: #2e9e8f; }
+.climate-m { font-size: 9px; text-align: center; color: var(--ink-3); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.climate-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.15rem 0.8rem; margin-top: var(--s-2); font-size: var(--t-xs); color: var(--ink-2); }
+.climate-stats b { color: var(--ink); }
+.climate-sf { grid-column: 1 / -1; margin-top: 0.25rem; padding-top: 0.25rem; border-top: 1px dashed var(--surface-3); }
+@media (max-width: 560px) { .climate-stats { grid-template-columns: 1fr; } }

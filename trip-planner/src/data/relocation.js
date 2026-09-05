@@ -46,6 +46,117 @@ export const SCOUT_DIMENSIONS = [
   { key: "yearRound", label: "Year-round life", icon: "📅", hint: "Does the town still run in February?" },
 ];
 
+/** San Francisco through the same NOAA math, so every climate strip has a familiar baseline. */
+export const SCOUT_SF_CLIMATE = {
+  "station": "San Francisco Downtown",
+  "years": "2010–2024",
+  "annual": {
+    "snow": 0,
+    "rain": 21.2,
+    "snowDays": 0,
+    "snowCover": 0,
+    "below0": 0,
+    "frost": 0,
+    "above90": 2.2,
+    "wetDays": 65.7,
+    "recordLow": 36,
+    "recordHigh": 106,
+    "maxSnowDay": 0,
+    "snowiest": "none",
+    "wettest": "Dec 4.98\"",
+    "hottest": "Sep 70.3°",
+    "coldest": "Jan 47.9°",
+    "snowSeason": "none",
+    "coverage": 100
+  },
+  "months": [
+    {
+      "m": "Jan",
+      "snow": 0,
+      "rain": 3.97,
+      "hi": 58.8,
+      "lo": 47.9
+    },
+    {
+      "m": "Feb",
+      "snow": 0,
+      "rain": 3.05,
+      "hi": 60.8,
+      "lo": 48.2
+    },
+    {
+      "m": "Mar",
+      "snow": 0,
+      "rain": 3.58,
+      "hi": 61.5,
+      "lo": 49
+    },
+    {
+      "m": "Apr",
+      "snow": 0,
+      "rain": 1.48,
+      "hi": 62.9,
+      "lo": 50
+    },
+    {
+      "m": "May",
+      "snow": 0,
+      "rain": 0.49,
+      "hi": 63.6,
+      "lo": 51.3
+    },
+    {
+      "m": "Jun",
+      "snow": 0,
+      "rain": 0.19,
+      "hi": 66.5,
+      "lo": 53.5
+    },
+    {
+      "m": "Jul",
+      "snow": 0,
+      "rain": 0.03,
+      "hi": 66.1,
+      "lo": 54.8
+    },
+    {
+      "m": "Aug",
+      "snow": 0,
+      "rain": 0.02,
+      "hi": 67.6,
+      "lo": 56.3
+    },
+    {
+      "m": "Sep",
+      "snow": 0,
+      "rain": 0.12,
+      "hi": 70.3,
+      "lo": 56.5
+    },
+    {
+      "m": "Oct",
+      "snow": 0,
+      "rain": 1.03,
+      "hi": 70.1,
+      "lo": 55.3
+    },
+    {
+      "m": "Nov",
+      "snow": 0,
+      "rain": 2.26,
+      "hi": 63.5,
+      "lo": 51.1
+    },
+    {
+      "m": "Dec",
+      "snow": 0,
+      "rain": 4.98,
+      "hi": 58.1,
+      "lo": 47.9
+    }
+  ]
+};
+
 export const SCOUT_TIERS = [
   {
     id: "viable",
@@ -403,6 +514,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: en.wikipedia.org, google.com, experiencegr.com, waze.com, maptons.com, corewellhealth.org, healthline.com, weatherspark.com"
     },
+    climate: {
+      "station": "Grand Rapids Airport",
+      "stationMi": 7.9,
+      "years": "2010–2024",
+      "snowStation": "Grand Rapids",
+      "snowStationMi": 7.9,
+      "annual": {
+        "snow": 70.9,
+        "rain": 40.2,
+        "snowDays": 19.8,
+        "snowCover": 60.6,
+        "below0": 2.8,
+        "frost": 126.1,
+        "above90": 7.9,
+        "wetDays": 150.8,
+        "recordLow": -13,
+        "recordHigh": 104,
+        "maxSnowDay": 11.1,
+        "snowiest": "Jan 20.7\"",
+        "wettest": "Oct 4.94\"",
+        "hottest": "Jul 83.9°",
+        "coldest": "Feb 19.4°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 20.7,
+          "rain": 2.6,
+          "hi": 31.5,
+          "lo": 19.8
+        },
+        {
+          "m": "Feb",
+          "snow": 19.8,
+          "rain": 2.58,
+          "hi": 34.1,
+          "lo": 19.4
+        },
+        {
+          "m": "Mar",
+          "snow": 6,
+          "rain": 2.73,
+          "hi": 45.8,
+          "lo": 27.8
+        },
+        {
+          "m": "Apr",
+          "snow": 1.9,
+          "rain": 4.4,
+          "hi": 57.5,
+          "lo": 37.2
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 3.45,
+          "hi": 71,
+          "lo": 49.6
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.96,
+          "hi": 79.9,
+          "lo": 58.7
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 4.03,
+          "hi": 83.9,
+          "lo": 63.4
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.58,
+          "hi": 81.6,
+          "lo": 61.5
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 2.68,
+          "hi": 74.8,
+          "lo": 54.3
+        },
+        {
+          "m": "Oct",
+          "snow": 0.1,
+          "rain": 4.94,
+          "hi": 61.8,
+          "lo": 43
+        },
+        {
+          "m": "Nov",
+          "snow": 7.4,
+          "rain": 2.65,
+          "hi": 47.9,
+          "lo": 32.7
+        },
+        {
+          "m": "Dec",
+          "snow": 15,
+          "rain": 2.57,
+          "hi": 37.6,
+          "lo": 26.4
+        }
+      ]
+    },
     verdict:
       "Cheapest viable median, closest to Palatine, best overall connectivity — and the discount is explained: ~9 violent crimes per 1,000 (citywide; varies sharply by neighborhood) and 23,000 lead service lines. First on value. Buy it street by street, and ask what the service line is made of.",
   },
@@ -712,6 +935,118 @@ export const RELOCATION_TOWNS = [
         ]
       ],
       "sources": "Sources: weather.gov, vbtmi.gov, metroairport.com, metroparks.com, waynecounty.com, meijer.com, walmart.com, cms.gov"
+    },
+    climate: {
+      "station": "Detroit Metro Airport",
+      "stationMi": 8.1,
+      "years": "2010–2024",
+      "snowStation": "Detroit Metro Ap",
+      "snowStationMi": 8.1,
+      "annual": {
+        "snow": 45.9,
+        "rain": 35.9,
+        "snowDays": 12.6,
+        "snowCover": 45.8,
+        "below0": 3.0,
+        "frost": 114.8,
+        "above90": 10.2,
+        "wetDays": 137.8,
+        "recordLow": -14,
+        "recordHigh": 102,
+        "maxSnowDay": 13.7,
+        "snowiest": "Feb 16.4\"",
+        "wettest": "Aug 3.92\"",
+        "hottest": "Jul 84.9°",
+        "coldest": "Jan 20°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 13.1,
+          "rain": 2.3,
+          "hi": 32.9,
+          "lo": 20
+        },
+        {
+          "m": "Feb",
+          "snow": 16.4,
+          "rain": 2.22,
+          "hi": 36.1,
+          "lo": 20.8
+        },
+        {
+          "m": "Mar",
+          "snow": 4.8,
+          "rain": 2.62,
+          "hi": 47.6,
+          "lo": 29.8
+        },
+        {
+          "m": "Apr",
+          "snow": 1.4,
+          "rain": 3.32,
+          "hi": 59,
+          "lo": 39.1
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 3.67,
+          "hi": 72.2,
+          "lo": 51.7
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.32,
+          "hi": 80.6,
+          "lo": 60.7
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 3.72,
+          "hi": 84.9,
+          "lo": 65.7
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.92,
+          "hi": 82.8,
+          "lo": 63.9
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.35,
+          "hi": 75.6,
+          "lo": 57
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 2.63,
+          "hi": 63.4,
+          "lo": 45.5
+        },
+        {
+          "m": "Nov",
+          "snow": 3.1,
+          "rain": 2.46,
+          "hi": 49.6,
+          "lo": 33.7
+        },
+        {
+          "m": "Dec",
+          "snow": 7.1,
+          "rain": 2.33,
+          "hi": 39.3,
+          "lo": 27.5
+        }
+      ]
     },
     verdict:
       "Flagged unreliable rather than guessed. Its Census home value ($148,300), median sold ($334,000) and median listing ($119,949) cannot all be true for a city of ~4,000 - small-sample noise, not a market. Wayne County's $194,800 value is the trustworthy anchor, and DTW is twenty minutes away. Worth seeing on the ground; do not trust these numbers until you have stood in it.",
@@ -1027,6 +1362,118 @@ export const RELOCATION_TOWNS = [
         ]
       ],
       "sources": "Sources: leapfroggroup.org, cms.gov, niche.com, greatschools.org, bls.gov, census.gov, walkscore.com, frankenmuth.org"
+    },
+    climate: {
+      "station": "Frankenmuth 1SE",
+      "stationMi": 1.4,
+      "years": "2010–2024",
+      "snowStation": "Saginaw #3",
+      "snowStationMi": 12.3,
+      "annual": {
+        "snow": 31.7,
+        "rain": 27.9,
+        "snowDays": 8.8,
+        "snowCover": 38.4,
+        "below0": 7.1,
+        "frost": 104.1,
+        "above90": 1.9,
+        "wetDays": 91.0,
+        "recordLow": -23,
+        "recordHigh": 97,
+        "maxSnowDay": 10.2,
+        "snowiest": "Feb 11.5\"",
+        "wettest": "Aug 3.34\"",
+        "hottest": "Jul 82°",
+        "coldest": "Feb 15.7°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 65
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 8.5,
+          "rain": 1.77,
+          "hi": 29.1,
+          "lo": 16
+        },
+        {
+          "m": "Feb",
+          "snow": 11.5,
+          "rain": 1.59,
+          "hi": 32.1,
+          "lo": 15.7
+        },
+        {
+          "m": "Mar",
+          "snow": 4.5,
+          "rain": 1.65,
+          "hi": 43.8,
+          "lo": 24.5
+        },
+        {
+          "m": "Apr",
+          "snow": 0.3,
+          "rain": 3.19,
+          "hi": 57.1,
+          "lo": 35.1
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 2.7,
+          "hi": 68.9,
+          "lo": 46.8
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 2.77,
+          "hi": 77.7,
+          "lo": 55.7
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 2.69,
+          "hi": 82,
+          "lo": 60
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.34,
+          "hi": 79.8,
+          "lo": 58.8
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 2.15,
+          "hi": 73.4,
+          "lo": 51.2
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 2.77,
+          "hi": 60.2,
+          "lo": 40.8
+        },
+        {
+          "m": "Nov",
+          "snow": 1.8,
+          "rain": 1.81,
+          "hi": 47.3,
+          "lo": 30.8
+        },
+        {
+          "m": "Dec",
+          "snow": 5.1,
+          "rain": 1.47,
+          "hi": 36.4,
+          "lo": 24
+        }
+      ]
     },
     verdict:
       "The other quiet winner: low crime, the least snow of any northern option, under five hours to Palatine. The Bavarian theme is a tourist economy that stays open all year. Its 2% property tax quietly claws back some of the price advantage.",
@@ -1348,6 +1795,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: traversecity.com, munsonhealthcare.org, traversecitymi.gov, tvcairport.com, weatherspark.com, downtowntc.com, greatschools.org, census.gov"
     },
+    climate: {
+      "station": "Cherry Capital Airport",
+      "stationMi": 3.1,
+      "years": "2010–2024",
+      "snowStation": "Nw Michigan Rsch Farm",
+      "snowStationMi": 8.7,
+      "annual": {
+        "snow": 104.6,
+        "rain": 29.2,
+        "snowDays": 29.0,
+        "snowCover": 88.9,
+        "below0": 3.9,
+        "frost": 141.8,
+        "above90": 8.7,
+        "wetDays": 140.1,
+        "recordLow": -22,
+        "recordHigh": 98,
+        "maxSnowDay": 18,
+        "snowiest": "Jan 29.5\"",
+        "wettest": "Oct 3.93\"",
+        "hottest": "Jul 82.3°",
+        "coldest": "Feb 17.3°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 29.5,
+          "rain": 1,
+          "hi": 30,
+          "lo": 19
+        },
+        {
+          "m": "Feb",
+          "snow": 20.7,
+          "rain": 0.87,
+          "hi": 31.9,
+          "lo": 17.3
+        },
+        {
+          "m": "Mar",
+          "snow": 11.6,
+          "rain": 1.74,
+          "hi": 42.1,
+          "lo": 24.5
+        },
+        {
+          "m": "Apr",
+          "snow": 6.5,
+          "rain": 2.96,
+          "hi": 53.5,
+          "lo": 33.5
+        },
+        {
+          "m": "May",
+          "snow": 0.1,
+          "rain": 2.86,
+          "hi": 68.4,
+          "lo": 44.5
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3,
+          "hi": 77.1,
+          "lo": 54.6
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 2.66,
+          "hi": 82.3,
+          "lo": 61
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 2.96,
+          "hi": 80.4,
+          "lo": 60.1
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.63,
+          "hi": 73.2,
+          "lo": 53.1
+        },
+        {
+          "m": "Oct",
+          "snow": 0.1,
+          "rain": 3.93,
+          "hi": 59.9,
+          "lo": 42.7
+        },
+        {
+          "m": "Nov",
+          "snow": 12.6,
+          "rain": 2.03,
+          "hi": 46.5,
+          "lo": 32.8
+        },
+        {
+          "m": "Dec",
+          "snow": 23.5,
+          "rain": 1.54,
+          "hi": 35.8,
+          "lo": 25.7
+        }
+      ]
+    },
     verdict:
       "The life most people picture when they say northern Michigan, at a price you can actually name. Two verified surprises: the city's real millage is 37, not the widely-quoted 27 — about $8,700/yr on the median — and it is the region's fiber desert at 0.3%. Cable carries remote work fine; check the address anyway.",
   },
@@ -1668,6 +2227,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: greatschools.org, niche.com, leapfroggroup.org, cms.gov, census.gov, walkscore.com"
     },
+    climate: {
+      "station": "Petoskey (in town)",
+      "stationMi": 1.0,
+      "years": "2010–2024",
+      "snowStation": "Petoskey Ncmc",
+      "snowStationMi": 0.8,
+      "annual": {
+        "snow": 113.3,
+        "rain": 37.1,
+        "snowDays": 35.0,
+        "snowCover": 83.3,
+        "below0": 7.0,
+        "frost": 144.3,
+        "above90": 1.1,
+        "wetDays": 158.7,
+        "recordLow": -21,
+        "recordHigh": 95,
+        "maxSnowDay": 13.8,
+        "snowiest": "Jan 31.7\"",
+        "wettest": "Oct 5.24\"",
+        "hottest": "Jul 75.5°",
+        "coldest": "Feb 14.3°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 99
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 31.7,
+          "rain": 2.39,
+          "hi": 28,
+          "lo": 17
+        },
+        {
+          "m": "Feb",
+          "snow": 20.8,
+          "rain": 1.68,
+          "hi": 28.3,
+          "lo": 14.3
+        },
+        {
+          "m": "Mar",
+          "snow": 12,
+          "rain": 2.22,
+          "hi": 37.6,
+          "lo": 21.6
+        },
+        {
+          "m": "Apr",
+          "snow": 6.1,
+          "rain": 3.38,
+          "hi": 47.2,
+          "lo": 31.9
+        },
+        {
+          "m": "May",
+          "snow": 0.2,
+          "rain": 3.1,
+          "hi": 61.3,
+          "lo": 43.4
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.52,
+          "hi": 70.3,
+          "lo": 53.4
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 2.57,
+          "hi": 75.5,
+          "lo": 60.3
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.19,
+          "hi": 75.1,
+          "lo": 60
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.51,
+          "hi": 69.6,
+          "lo": 52.5
+        },
+        {
+          "m": "Oct",
+          "snow": 0.5,
+          "rain": 5.24,
+          "hi": 57.1,
+          "lo": 42.6
+        },
+        {
+          "m": "Nov",
+          "snow": 12.6,
+          "rain": 3.58,
+          "hi": 44.2,
+          "lo": 32.2
+        },
+        {
+          "m": "Dec",
+          "snow": 29.4,
+          "rain": 2.69,
+          "hi": 34.6,
+          "lo": 24.8
+        }
+      ]
+    },
     verdict:
       "The verification round's climber: lowest violent crime on the board, the best fiber in the north, a real hospital (McLaren), no PFAS site found. The price is the most snow of anywhere on this list — 123 inches — and six hours to Palatine.",
   },
@@ -1979,6 +2650,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: google.com, amazon.com, leapfroggroup.org, cms.gov, walkscore.com, niche.com, greatschools.org"
     },
+    climate: {
+      "station": "Ann Arbor U of M",
+      "stationMi": 4.2,
+      "years": "2010–2024",
+      "snowStation": "Ann Arbor Se",
+      "snowStationMi": 3.7,
+      "annual": {
+        "snow": 55.0,
+        "rain": 39.8,
+        "snowDays": 15.8,
+        "snowCover": 43.3,
+        "below0": 5.2,
+        "frost": 131.7,
+        "above90": 9.6,
+        "wetDays": 169.0,
+        "recordLow": -18,
+        "recordHigh": 100,
+        "maxSnowDay": 11.9,
+        "snowiest": "Feb 17.5\"",
+        "wettest": "Jun 4.48\"",
+        "hottest": "Jul 84.7°",
+        "coldest": "Jan 18.8°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 15,
+          "rain": 2.79,
+          "hi": 32.3,
+          "lo": 18.8
+        },
+        {
+          "m": "Feb",
+          "snow": 17.5,
+          "rain": 2.59,
+          "hi": 36.2,
+          "lo": 19.2
+        },
+        {
+          "m": "Mar",
+          "snow": 6.3,
+          "rain": 3,
+          "hi": 48,
+          "lo": 27.9
+        },
+        {
+          "m": "Apr",
+          "snow": 2.2,
+          "rain": 3.68,
+          "hi": 59.9,
+          "lo": 36.9
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 4.04,
+          "hi": 72.8,
+          "lo": 48.9
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 4.48,
+          "hi": 80.8,
+          "lo": 57.5
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 3.72,
+          "hi": 84.7,
+          "lo": 62
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 4.1,
+          "hi": 82.2,
+          "lo": 60.2
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.11,
+          "hi": 75.9,
+          "lo": 53.8
+        },
+        {
+          "m": "Oct",
+          "snow": 0.1,
+          "rain": 3.1,
+          "hi": 63.6,
+          "lo": 43
+        },
+        {
+          "m": "Nov",
+          "snow": 5,
+          "rain": 2.64,
+          "hi": 48.9,
+          "lo": 31.7
+        },
+        {
+          "m": "Dec",
+          "snow": 8.9,
+          "rain": 2.59,
+          "hi": 38.4,
+          "lo": 25.8
+        }
+      ]
+    },
     verdict:
       "The most culturally SF-like option — college town, food, walkability — and taxed like it: the highest viable-tier millage means a $12,900 first-year bill on the median house. Property crime runs college-town high. Zero lead lines.",
   },
@@ -2285,6 +3068,118 @@ export const RELOCATION_TOWNS = [
         ]
       ],
       "sources": "Sources: michigan.gov, porthuron.org, downtownph.com, census.gov, bls.gov, weather.gov, walkscore.com, amazon.com"
+    },
+    climate: {
+      "station": "Port Huron (in town)",
+      "stationMi": 0.4,
+      "years": "2010–2024",
+      "snowStation": "Richmond 4 Nnw",
+      "snowStationMi": 19.8,
+      "annual": {
+        "snow": 41.8,
+        "rain": 34.6,
+        "snowDays": 13.0,
+        "snowCover": 38.7,
+        "below0": 2.7,
+        "frost": 108.5,
+        "above90": 6.3,
+        "wetDays": 129.3,
+        "recordLow": -14,
+        "recordHigh": 100,
+        "maxSnowDay": 11.4,
+        "snowiest": "Feb 13.5\"",
+        "wettest": "Aug 3.54\"",
+        "hottest": "Jul 82.6°",
+        "coldest": "Jan 20.3°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 10.3,
+          "rain": 2.27,
+          "hi": 32.2,
+          "lo": 20.3
+        },
+        {
+          "m": "Feb",
+          "snow": 13.5,
+          "rain": 2.18,
+          "hi": 34.5,
+          "lo": 20.9
+        },
+        {
+          "m": "Mar",
+          "snow": 5.5,
+          "rain": 2.47,
+          "hi": 43.7,
+          "lo": 28.9
+        },
+        {
+          "m": "Apr",
+          "snow": 1.4,
+          "rain": 3.24,
+          "hi": 55.1,
+          "lo": 38.2
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 3.3,
+          "hi": 68.4,
+          "lo": 49.7
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.46,
+          "hi": 77,
+          "lo": 59.4
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 3.23,
+          "hi": 82.6,
+          "lo": 65.9
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.54,
+          "hi": 80.4,
+          "lo": 64.6
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.15,
+          "hi": 73.9,
+          "lo": 58
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 3.48,
+          "hi": 61.9,
+          "lo": 47.5
+        },
+        {
+          "m": "Nov",
+          "snow": 3.9,
+          "rain": 2.25,
+          "hi": 47.8,
+          "lo": 35.1
+        },
+        {
+          "m": "Dec",
+          "snow": 7.2,
+          "rain": 2,
+          "hi": 38.3,
+          "lo": 28.1
+        }
+      ]
     },
     verdict:
       "The cheapest way into Michigan homeownership, with the least snow on the list and Canada across the bridge. Median sources disagree by 30% — the market is small enough that a few sales move it. Mid-pack crime, three PFAS sites on the state list.",
@@ -2593,6 +3488,118 @@ export const RELOCATION_TOWNS = [
         ]
       ],
       "sources": "Sources: google.com, corewellhealth.org, downtownludington.org, ludington.mi.us, census.gov, weather.gov, trinityhealthmichigan.org, niche.com"
+    },
+    climate: {
+      "station": "Manistee 3SE (nearest lakeshore station)",
+      "stationMi": 19.4,
+      "years": "2010–2024",
+      "snowStation": "Hart 3 Wsw",
+      "snowStationMi": 19.4,
+      "annual": {
+        "snow": 78.3,
+        "rain": 37.2,
+        "snowDays": 24.0,
+        "snowCover": 66.5,
+        "below0": 2.0,
+        "frost": 136.1,
+        "above90": 1.7,
+        "wetDays": 143.3,
+        "recordLow": -16,
+        "recordHigh": 95,
+        "maxSnowDay": 14,
+        "snowiest": "Jan 26.1\"",
+        "wettest": "Oct 4.7\"",
+        "hottest": "Jul 79.8°",
+        "coldest": "Feb 19°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 96
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 26.1,
+          "rain": 2.25,
+          "hi": 30.4,
+          "lo": 19.6
+        },
+        {
+          "m": "Feb",
+          "snow": 20.7,
+          "rain": 1.65,
+          "hi": 32.2,
+          "lo": 19
+        },
+        {
+          "m": "Mar",
+          "snow": 7.3,
+          "rain": 2.23,
+          "hi": 42.6,
+          "lo": 25.9
+        },
+        {
+          "m": "Apr",
+          "snow": 2.1,
+          "rain": 3.64,
+          "hi": 53.8,
+          "lo": 34.9
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 3.43,
+          "hi": 67.8,
+          "lo": 45.9
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.94,
+          "hi": 75.5,
+          "lo": 54.4
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 3.52,
+          "hi": 79.8,
+          "lo": 60.3
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.31,
+          "hi": 78.3,
+          "lo": 59.6
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.04,
+          "hi": 72.3,
+          "lo": 53.3
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 4.7,
+          "hi": 59.2,
+          "lo": 42.8
+        },
+        {
+          "m": "Nov",
+          "snow": 6.5,
+          "rain": 3.04,
+          "hi": 45.9,
+          "lo": 32.8
+        },
+        {
+          "m": "Dec",
+          "snow": 15.6,
+          "rain": 2.5,
+          "hi": 35.9,
+          "lo": 25.8
+        }
+      ]
     },
     verdict:
       "Verification's biggest single flip: round one called it a 0.2%-fiber cable town, the re-check found 54.9% fiber (Truestream's build). Closest northern shore town to Palatine at 4:21. Night one of the trip — pay attention to what's open at 8pm, because that's the seasonal question in miniature.",
@@ -2914,6 +3921,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: google.com, charlevoixmi.gov, munsonhealthcare.org, usclimatedata.com, walkscore.com, tripadvisor.com, almanac.com, data.census.gov"
     },
+    climate: {
+      "station": "Charlevoix (in town)",
+      "stationMi": 0.4,
+      "years": "2010–2024",
+      "snowStation": "Charlevoix",
+      "snowStationMi": 0.4,
+      "annual": {
+        "snow": 75.6,
+        "rain": 35.2,
+        "snowDays": 20.5,
+        "snowCover": 83.9,
+        "below0": 4.9,
+        "frost": 136.5,
+        "above90": 2.0,
+        "wetDays": 149.8,
+        "recordLow": -18,
+        "recordHigh": 96,
+        "maxSnowDay": 12,
+        "snowiest": "Jan 24.2\"",
+        "wettest": "Oct 4.83\"",
+        "hottest": "Jul 76.8°",
+        "coldest": "Feb 16.3°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 24.2,
+          "rain": 2.3,
+          "hi": 29.4,
+          "lo": 19
+        },
+        {
+          "m": "Feb",
+          "snow": 16.9,
+          "rain": 1.64,
+          "hi": 29.3,
+          "lo": 16.3
+        },
+        {
+          "m": "Mar",
+          "snow": 7.9,
+          "rain": 2.1,
+          "hi": 38,
+          "lo": 22.5
+        },
+        {
+          "m": "Apr",
+          "snow": 4.2,
+          "rain": 3.21,
+          "hi": 47.7,
+          "lo": 32.8
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 2.99,
+          "hi": 61.7,
+          "lo": 43.4
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.38,
+          "hi": 71.5,
+          "lo": 54.2
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 2.53,
+          "hi": 76.8,
+          "lo": 61.9
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 2.77,
+          "hi": 76.1,
+          "lo": 61.7
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.52,
+          "hi": 70.6,
+          "lo": 54.2
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 4.83,
+          "hi": 57.9,
+          "lo": 43.9
+        },
+        {
+          "m": "Nov",
+          "snow": 5.4,
+          "rain": 3.35,
+          "hi": 45.3,
+          "lo": 33.8
+        },
+        {
+          "m": "Dec",
+          "snow": 17,
+          "rain": 2.61,
+          "hi": 35.5,
+          "lo": 26.2
+        }
+      ]
+    },
     verdict:
       "Earlier research put this at $525-729k; that blended median LISTING with average sale. It actually sells at $378,000 - a 56% overstatement, now corrected. Second-lowest violent crime, 42.7% fiber, and Charlevoix County is cheaper still at $276,800. The catch is its PFAS site: the municipal well field. Ask about water before anything else.",
   },
@@ -3228,6 +4347,118 @@ export const RELOCATION_TOWNS = [
         ]
       ],
       "sources": "Sources: rome2rio.com, munsonhealthcare.org, visitglenarbor.com, plantmaps.com, myperfectweather.com, healthgrades.com, homes.com, unitedstateszipcodes.org, thelivelyfarm.com, google.com"
+    },
+    climate: {
+      "station": "Maple City 1E",
+      "stationMi": 7.8,
+      "years": "2010–2024",
+      "snowStation": "Nw Michigan Rsch Farm",
+      "snowStationMi": 15,
+      "annual": {
+        "snow": 104.6,
+        "rain": 35.0,
+        "snowDays": 29.0,
+        "snowCover": 88.9,
+        "below0": 4.1,
+        "frost": 148.3,
+        "above90": 1.5,
+        "wetDays": 148.3,
+        "recordLow": -20,
+        "recordHigh": 94,
+        "maxSnowDay": 18,
+        "snowiest": "Jan 29.5\"",
+        "wettest": "Oct 4.93\"",
+        "hottest": "Jul 79.8°",
+        "coldest": "Feb 16.4°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 92
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 29.5,
+          "rain": 2.68,
+          "hi": 29.2,
+          "lo": 17.6
+        },
+        {
+          "m": "Feb",
+          "snow": 20.7,
+          "rain": 1.89,
+          "hi": 31.2,
+          "lo": 16.4
+        },
+        {
+          "m": "Mar",
+          "snow": 11.6,
+          "rain": 2.45,
+          "hi": 41.6,
+          "lo": 23.5
+        },
+        {
+          "m": "Apr",
+          "snow": 6.5,
+          "rain": 3.4,
+          "hi": 53.2,
+          "lo": 32.2
+        },
+        {
+          "m": "May",
+          "snow": 0.1,
+          "rain": 2.93,
+          "hi": 67.6,
+          "lo": 43.3
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 2.29,
+          "hi": 74.2,
+          "lo": 52.1
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 1.79,
+          "hi": 79.8,
+          "lo": 59.3
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 2.34,
+          "hi": 78,
+          "lo": 59.4
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 4.12,
+          "hi": 71.1,
+          "lo": 52
+        },
+        {
+          "m": "Oct",
+          "snow": 0.1,
+          "rain": 4.93,
+          "hi": 58.7,
+          "lo": 42
+        },
+        {
+          "m": "Nov",
+          "snow": 12.6,
+          "rain": 3.29,
+          "hi": 45.5,
+          "lo": 30.8
+        },
+        {
+          "m": "Dec",
+          "snow": 23.5,
+          "rain": 2.91,
+          "hi": 34.9,
+          "lo": 24
+        }
+      ]
     },
     verdict:
       "Sleeping Bear's front porch, priced like it: the highest comfortable-income requirement of any real option, ~$300k. The consolation is the sleeper tax rate — the priciest houses here carry the lowest millage in this entire comparison. Deep snow country, tiny year-round population.",
@@ -3571,6 +4802,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: mackinawcity.org, mackinawchamber.com, mackinacstraitshealth.org, rome2rio.com, myperfectweather.com, fred.stlouisfed.org, census.gov, politico.com"
     },
+    climate: {
+      "station": "Cheboygan",
+      "stationMi": 15.0,
+      "years": "2010–2024",
+      "snowStation": "Cheboygan",
+      "snowStationMi": 15,
+      "annual": {
+        "snow": 72.3,
+        "rain": 33.4,
+        "snowDays": 19.2,
+        "snowCover": 89.5,
+        "below0": 13.2,
+        "frost": 160.1,
+        "above90": 1.5,
+        "wetDays": 163.1,
+        "recordLow": -32,
+        "recordHigh": 94,
+        "maxSnowDay": 14,
+        "snowiest": "Jan 19.9\"",
+        "wettest": "Oct 4.72\"",
+        "hottest": "Jul 78.1°",
+        "coldest": "Feb 11°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 19.9,
+          "rain": 1.5,
+          "hi": 28,
+          "lo": 13.9
+        },
+        {
+          "m": "Feb",
+          "snow": 15.1,
+          "rain": 1.19,
+          "hi": 29.6,
+          "lo": 11
+        },
+        {
+          "m": "Mar",
+          "snow": 9.4,
+          "rain": 1.86,
+          "hi": 38.6,
+          "lo": 19.7
+        },
+        {
+          "m": "Apr",
+          "snow": 3.9,
+          "rain": 3.59,
+          "hi": 48.1,
+          "lo": 29.9
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 2.87,
+          "hi": 62.1,
+          "lo": 41.4
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.53,
+          "hi": 71.7,
+          "lo": 51.3
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 2.82,
+          "hi": 78.1,
+          "lo": 58.1
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 2.97,
+          "hi": 77.2,
+          "lo": 57.6
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.3,
+          "hi": 70.3,
+          "lo": 50.2
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 4.72,
+          "hi": 57.6,
+          "lo": 40.2
+        },
+        {
+          "m": "Nov",
+          "snow": 6.7,
+          "rain": 2.95,
+          "hi": 44.6,
+          "lo": 30.4
+        },
+        {
+          "m": "Dec",
+          "snow": 17.3,
+          "rain": 2.13,
+          "hi": 34.3,
+          "lo": 22.4
+        }
+      ]
+    },
     verdict:
       "The most seasonal town on the mainland — the property-crime rate is a tourist-town artifact (a few hundred year-round residents under a summer-sized incident count), and much of the town simply closes after October. You'll sleep here two nights; imagine it in February before going further.",
   },
@@ -3876,6 +5219,118 @@ export const RELOCATION_TOWNS = [
         ]
       ],
       "sources": "Sources: mackinacisland.org, mackinacstraitshealth.org, michigan.gov, census.gov, niche.com, weather.gov, datausa.io, mackinaccounty.net"
+    },
+    climate: {
+      "station": "Cheboygan (nearest mainland station)",
+      "stationMi": 15.3,
+      "years": "2010–2024",
+      "snowStation": "Cheboygan",
+      "snowStationMi": 15,
+      "annual": {
+        "snow": 72.3,
+        "rain": 33.4,
+        "snowDays": 19.2,
+        "snowCover": 89.5,
+        "below0": 13.2,
+        "frost": 160.1,
+        "above90": 1.5,
+        "wetDays": 163.1,
+        "recordLow": -32,
+        "recordHigh": 94,
+        "maxSnowDay": 14,
+        "snowiest": "Jan 19.9\"",
+        "wettest": "Oct 4.72\"",
+        "hottest": "Jul 78.1°",
+        "coldest": "Feb 11°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 19.9,
+          "rain": 1.5,
+          "hi": 28,
+          "lo": 13.9
+        },
+        {
+          "m": "Feb",
+          "snow": 15.1,
+          "rain": 1.19,
+          "hi": 29.6,
+          "lo": 11
+        },
+        {
+          "m": "Mar",
+          "snow": 9.4,
+          "rain": 1.86,
+          "hi": 38.6,
+          "lo": 19.7
+        },
+        {
+          "m": "Apr",
+          "snow": 3.9,
+          "rain": 3.59,
+          "hi": 48.1,
+          "lo": 29.9
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 2.87,
+          "hi": 62.1,
+          "lo": 41.4
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.53,
+          "hi": 71.7,
+          "lo": 51.3
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 2.82,
+          "hi": 78.1,
+          "lo": 58.1
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 2.97,
+          "hi": 77.2,
+          "lo": 57.6
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.3,
+          "hi": 70.3,
+          "lo": 50.2
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 4.72,
+          "hi": 57.6,
+          "lo": 40.2
+        },
+        {
+          "m": "Nov",
+          "snow": 6.7,
+          "rain": 2.95,
+          "hi": 44.6,
+          "lo": 30.4
+        },
+        {
+          "m": "Dec",
+          "snow": 17.3,
+          "rain": 2.13,
+          "hi": 34.3,
+          "lo": 22.4
+        }
+      ]
     },
     verdict:
       "No cars, a few hundred winter residents, seven-figure medians, and the ferry is the commute. The property-crime figure is the same tourist artifact as Mackinaw City's. A place to love for a day — which is exactly what day five is for.",
@@ -4188,6 +5643,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: census.gov, weather.gov, detroitmi.gov, detroitk12.org, metroairport.com, leapfroggroup.org, crainsdetroit.com, walkscore.com"
     },
+    climate: {
+      "station": "Dearborn #2",
+      "stationMi": 6.6,
+      "years": "2010–2024",
+      "snowStation": "Windsor Riverside",
+      "snowStationMi": 5.7,
+      "annual": {
+        "snow": 36.7,
+        "rain": 34.0,
+        "snowDays": 11.4,
+        "snowCover": 36.3,
+        "below0": 2.8,
+        "frost": 111.9,
+        "above90": 10.6,
+        "wetDays": 123.4,
+        "recordLow": -14,
+        "recordHigh": 100,
+        "maxSnowDay": 11.3,
+        "snowiest": "Feb 11.7\"",
+        "wettest": "Aug 3.94\"",
+        "hottest": "Jul 84.9°",
+        "coldest": "Jan 19.9°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 95
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 10.5,
+          "rain": 1.97,
+          "hi": 33.5,
+          "lo": 19.9
+        },
+        {
+          "m": "Feb",
+          "snow": 11.7,
+          "rain": 1.95,
+          "hi": 36.8,
+          "lo": 20.3
+        },
+        {
+          "m": "Mar",
+          "snow": 4.2,
+          "rain": 2.45,
+          "hi": 47.1,
+          "lo": 28.5
+        },
+        {
+          "m": "Apr",
+          "snow": 1,
+          "rain": 3.17,
+          "hi": 58.7,
+          "lo": 37.6
+        },
+        {
+          "m": "May",
+          "snow": 0.1,
+          "rain": 3.55,
+          "hi": 71.7,
+          "lo": 50.6
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.28,
+          "hi": 80.3,
+          "lo": 60.5
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 3.67,
+          "hi": 84.9,
+          "lo": 65.5
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.94,
+          "hi": 82.8,
+          "lo": 63.7
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.14,
+          "hi": 76.4,
+          "lo": 56.8
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 2.45,
+          "hi": 64.2,
+          "lo": 45.2
+        },
+        {
+          "m": "Nov",
+          "snow": 2.8,
+          "rain": 2.35,
+          "hi": 49.8,
+          "lo": 33.5
+        },
+        {
+          "m": "Dec",
+          "snow": 6.4,
+          "rain": 2.03,
+          "hi": 39.8,
+          "lo": 27.5
+        }
+      ]
+    },
     verdict:
       "A house for the price of an SF parking spot, then the catch: the state's heaviest tax stack — 3.2% effective property plus 2.4% city income tax — and the highest crime on this list. Individual neighborhoods break the citywide averages in both directions; as a blanket answer, it's a no.",
   },
@@ -4467,6 +6034,118 @@ export const RELOCATION_TOWNS = [
       ],
       "sources": "Sources: amazon.ca, amazon.com"
     },
+    climate: {
+      "station": "Port Huron (across the river)",
+      "stationMi": 0.6,
+      "years": "2010–2024",
+      "snowStation": "Richmond 4 Nnw",
+      "snowStationMi": 19.8,
+      "annual": {
+        "snow": 41.8,
+        "rain": 34.6,
+        "snowDays": 13.0,
+        "snowCover": 38.7,
+        "below0": 2.7,
+        "frost": 108.5,
+        "above90": 6.3,
+        "wetDays": 129.3,
+        "recordLow": -14,
+        "recordHigh": 100,
+        "maxSnowDay": 11.4,
+        "snowiest": "Feb 13.5\"",
+        "wettest": "Aug 3.54\"",
+        "hottest": "Jul 82.6°",
+        "coldest": "Jan 20.3°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 10.3,
+          "rain": 2.27,
+          "hi": 32.2,
+          "lo": 20.3
+        },
+        {
+          "m": "Feb",
+          "snow": 13.5,
+          "rain": 2.18,
+          "hi": 34.5,
+          "lo": 20.9
+        },
+        {
+          "m": "Mar",
+          "snow": 5.5,
+          "rain": 2.47,
+          "hi": 43.7,
+          "lo": 28.9
+        },
+        {
+          "m": "Apr",
+          "snow": 1.4,
+          "rain": 3.24,
+          "hi": 55.1,
+          "lo": 38.2
+        },
+        {
+          "m": "May",
+          "snow": 0,
+          "rain": 3.3,
+          "hi": 68.4,
+          "lo": 49.7
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.46,
+          "hi": 77,
+          "lo": 59.4
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 3.23,
+          "hi": 82.6,
+          "lo": 65.9
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 3.54,
+          "hi": 80.4,
+          "lo": 64.6
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 3.15,
+          "hi": 73.9,
+          "lo": 58
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 3.48,
+          "hi": 61.9,
+          "lo": 47.5
+        },
+        {
+          "m": "Nov",
+          "snow": 3.9,
+          "rain": 2.25,
+          "hi": 47.8,
+          "lo": 35.1
+        },
+        {
+          "m": "Dec",
+          "snow": 7.2,
+          "rain": 2,
+          "hi": 38.3,
+          "lo": 28.1
+        }
+      ]
+    },
     verdict:
       "The cheapest comfortable life on the entire list — Canadian healthcare removes the biggest US line item — behind a wall the spreadsheet can't cross: US citizens need immigration status to live here. Without a path to residency, this row is trivia.",
   },
@@ -4744,6 +6423,118 @@ export const RELOCATION_TOWNS = [
         ]
       ],
       "sources": "Sources: router.project-osrm.org, en.wikipedia.org, climate.weather.gc.ca, statcan.gc.ca, citywindsor.ca, publicboard.ca, walkscore.com, amazon.ca"
+    },
+    climate: {
+      "station": "Windsor Riverside",
+      "stationMi": 5.4,
+      "years": "2010–2024",
+      "snowStation": "Windsor Riverside",
+      "snowStationMi": 5.4,
+      "annual": {
+        "snow": 36.7,
+        "rain": 39.4,
+        "snowDays": 11.4,
+        "snowCover": 36.3,
+        "below0": 1.8,
+        "frost": 106.5,
+        "above90": 14.5,
+        "wetDays": 140.2,
+        "recordLow": -13,
+        "recordHigh": 101,
+        "maxSnowDay": 11.3,
+        "snowiest": "Feb 11.7\"",
+        "wettest": "Aug 4.59\"",
+        "hottest": "Jul 85.2°",
+        "coldest": "Jan 21.8°",
+        "snowSeason": "Jan–Dec",
+        "coverage": 100
+      },
+      "months": [
+        {
+          "m": "Jan",
+          "snow": 10.5,
+          "rain": 2.57,
+          "hi": 33.3,
+          "lo": 21.8
+        },
+        {
+          "m": "Feb",
+          "snow": 11.7,
+          "rain": 2.34,
+          "hi": 36.5,
+          "lo": 22.4
+        },
+        {
+          "m": "Mar",
+          "snow": 4.2,
+          "rain": 2.74,
+          "hi": 47.1,
+          "lo": 30.5
+        },
+        {
+          "m": "Apr",
+          "snow": 1,
+          "rain": 3.28,
+          "hi": 58.5,
+          "lo": 39.5
+        },
+        {
+          "m": "May",
+          "snow": 0.1,
+          "rain": 3.63,
+          "hi": 72,
+          "lo": 51.3
+        },
+        {
+          "m": "Jun",
+          "snow": 0,
+          "rain": 3.65,
+          "hi": 81,
+          "lo": 61.6
+        },
+        {
+          "m": "Jul",
+          "snow": 0,
+          "rain": 4.09,
+          "hi": 85.2,
+          "lo": 66.5
+        },
+        {
+          "m": "Aug",
+          "snow": 0,
+          "rain": 4.59,
+          "hi": 83,
+          "lo": 64.9
+        },
+        {
+          "m": "Sep",
+          "snow": 0,
+          "rain": 4.31,
+          "hi": 75.9,
+          "lo": 58.3
+        },
+        {
+          "m": "Oct",
+          "snow": 0,
+          "rain": 3,
+          "hi": 63.3,
+          "lo": 47.3
+        },
+        {
+          "m": "Nov",
+          "snow": 2.8,
+          "rain": 2.71,
+          "hi": 49.2,
+          "lo": 34.9
+        },
+        {
+          "m": "Dec",
+          "snow": 6.4,
+          "rain": 2.48,
+          "hi": 39.7,
+          "lo": 29
+        }
+      ]
     },
     verdict:
       "Same border wall as Sarnia, with higher prices and higher crime (sources disagree on how much). The tunnel to Detroit makes it a fascinating day on the trip and an immigration project as a home.",
