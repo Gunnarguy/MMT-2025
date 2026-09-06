@@ -159,6 +159,8 @@ export const SCOUT_CAMPBELL_CLIMATE = {
 
 /** Campbell, CA — where they live now, quantified like every other town. */
 export const SCOUT_CAMPBELL = { ...{
+  "stryker": {"site": "San Jose, CA", "mi": 7.9, "hrs": "0:14"},
+  "costs": {"utility": "PG&E", "heatFuel": "natural gas", "summerBill": 300.0, "utilities": 329.0, "utilitiesNote": "PG&E; average electric ~$329/mo, winter bill $400-$500+, summer bill $300+", "internet": 35.0, "internetNote": "AT&T Fiber 300 Mbps", "cell": "Excellent and reliable in 95008; potential localized dead zones due to infrastructure density, building materials, and terrain", "carIns2": 493.5, "carInsNote": "Bankrate's True Cost of Auto Insurance Report; SF-Oakland-Fremont metro avg $2,961/yr", "gasPrice": 5.83, "groceries": 769.33, "groceryNote": "MIT Living Wage Calculator for Santa Clara County, 2 adults (0 children) food cost", "groceryBasis": "MIT", "waterTrash": 330.15, "homeIns": 104.83, "extras": "Annual property tax includes special assessments (e.g. $691.80 sewer) and parcel taxes; no HOA fees unless in managed community", "basketTotal": 2411.61, "sources": "pge.com, att.com, rootmetrics.com, bankrate.com, aaa.com, livingwage.mit.edu, sjwater.com, wvsdca.gov, westvalleyrecycles.com, policygenius.com"},
   "id": "scout-campbell",
   "name": "Campbell, CA",
   "county": "Santa Clara County · where you live now",
@@ -537,7 +539,13 @@ export const SCOUT_SF_CLIMATE = {
 
 /** Stryker — Gunnar's employer. HQ is in Michigan; coordinates refined by geocoding once the research pass lands. */
 export const STRYKER_SITES = [
-  { id: "stryker-hq", name: "Stryker Corporate HQ", what: "Global headquarters", address: "2825 Airview Blvd, Portage, MI 49002", coords: [42.2318, -85.562], approx: true },
+  // Geocoded by CARTO/TomTom from the street addresses (match confidence 0.86–1.0).
+  { id: "stryker-hq", name: "Stryker Corporate HQ", what: "Global headquarters", address: "2825 Airview Blvd, Portage, MI 49002", coords: [42.2428, -85.5552], state: "MI" },
+  { id: "stryker-instruments", name: "Stryker Instruments", what: "Instruments division campus", address: "4100 E Milham Ave, Portage, MI 49001", coords: [42.2279, -85.5384], state: "MI" },
+  { id: "stryker-medical", name: "Stryker Medical", what: "Medical division (beds, stretchers)", address: "3800 E Centre Ave, Portage, MI 49002", coords: [42.1973, -85.5431], state: "MI" },
+  { id: "stryker-cary", name: "Stryker Sage", what: "Sage Products, Cary IL", address: "3909 Three Oaks Rd, Cary, IL 60013", coords: [42.2174, -88.2744], state: "IL" },
+  { id: "stryker-fremont", name: "Stryker Endoscopy, Fremont", what: "Bay Area site", address: "47900 Bayside Pkwy, Fremont, CA 94538", coords: [37.4732, -121.9331], state: "CA" },
+  { id: "stryker-san-jose", name: "Stryker Endoscopy, San Jose", what: "Bay Area site, 8 mi from home", address: "5900 Optical Ct, San Jose, CA 95138", coords: [37.2551, -121.7835], state: "CA" },
 ];
 
 export const SCOUT_TIERS = [
@@ -572,6 +580,8 @@ export const RELOCATION_TOWNS = [
     coords: [42.9634, -85.6681],
     tier: "viable",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 50.5, "hrs": "0:57"},
+    costs: {"utility": "Consumers Energy", "heatFuel": "natural gas", "winterHeat": 200.0, "summerBill": 25.0, "utilities": 263.27, "utilitiesNote": "Consumers Energy; electric $150.77, winter gas $200, summer $25", "internet": 40.0, "internetNote": "Xfinity 300 Mbps", "cell": "RootMetrics ranks Grand Rapids highly for speed and reliability, but local users report dead-zones on West Side, Ada, and Lowell", "carIns2": 238.17, "carInsNote": "MonitorBankRates avg $1,429/yr per car ($2,858/yr for 2 cars)", "gasPrice": 4.03, "groceries": 656.92, "groceryNote": "MIT Living Wage Calculator $7,883/yr for 2 adults", "groceryBasis": "MIT", "waterTrash": 110.0, "homeIns": 209.92, "extras": "City Special Assessments on summer tax bills; HOA fees $50-$150/mo in some subdivisions", "basketTotal": 1847.58, "sources": "eia.gov, bridgemi.com, xfinity.com, rootmetrics.com, monitorbankrates.com, aaa.com, mit.edu, grandrapidsmi.gov, insure.com"},
     money: {"medianPrice": 310000, "effTax": 0.0166, "cityTax": 0.015, "taxState": "MI", "countyPrice": 289900},
     oneLiner:
       "A real mid-size city — 80 breweries, a Level I trauma center downtown, same-day Amazon — that happens to be three and a half hours from your mom. Buy the neighborhood, not the city.",
@@ -1020,6 +1030,8 @@ export const RELOCATION_TOWNS = [
     coords: [42.2048, -83.4852],
     tier: "viable",
     verified: "split",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 116.6, "hrs": "2:11"},
+    costs: {"utility": "DTE Energy", "heatFuel": "natural gas", "winterHeat": 200.0, "summerBill": 30.0, "utilities": 265.0, "utilitiesNote": "DTE Energy; electric $165/mo, winter gas $200/mo, summer gas $30/mo", "internet": 35.0, "internetNote": "AT&T Fiber 300 Mbps", "cell": "Verizon coverage is generally reliable in the area, though indoor dead zones can occur depending on building materials.", "carIns2": 616.0, "carInsNote": "Bankrate Detroit-Warren-Dearborn MSA avg $3,696/yr per car ($616/mo for 2 cars)", "gasPrice": 3.45, "groceries": 639.0, "groceryNote": "MIT Living Wage Calculator for Wayne County; $7,669/yr for 2 adults", "groceryBasis": "MIT", "waterTrash": 65.0, "homeIns": 192.0, "extras": "Residents may be subject to municipal special assessments for infrastructure (roads, drains) levied by the City of Belleville, and HOA fees depending on the specific subdivision.", "basketTotal": 2019.0, "sources": "dteenergy.com, energysage.com, att.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, belleville.mi.us"},
     money: {"medianPrice": 194800, "effTax": 0.0189, "cityTax": 0, "taxState": "MI", "priceNote": "county median — the city figures conflict", "countyPrice": 194800},
     oneLiner:
       "A small lake town twenty minutes from DTW and Ann Arbor's hospitals, cheap by any coastal standard — with numbers too thin to trust until you have stood in it.",
@@ -1443,6 +1455,8 @@ export const RELOCATION_TOWNS = [
     coords: [43.3317, -83.7383],
     tier: "viable",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 153.3, "hrs": "2:53"},
+    costs: {"utility": "Consumers Energy", "heatFuel": "natural gas", "winterHeat": 140.0, "summerBill": 25.0, "utilities": 201.81, "utilitiesNote": "Consumers Energy; winter gas $140, summer $25", "internet": 84.99, "internetNote": "Spectrum 300 Mbps", "cell": "Verizon offers strong and reliable coverage throughout Frankenmuth with no major known dead zones.", "carIns2": 521.83, "carInsNote": "Bankrate MI avg $3,131/yr per car", "gasPrice": 3.96, "groceries": 603.33, "groceryNote": "MIT Living Wage Calculator for Saginaw County ($7,240/yr for 2 adults)", "groceryBasis": "MIT", "waterTrash": 80.0, "homeIns": 187.17, "extras": "Municipal special assessments for police and fire added to winter property tax bill; HOAs standard for condos but uncommon for single-family homes.", "basketTotal": 1916.73, "sources": "eia.gov, consumersenergy.com, spectrum.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, frankenmuthcity.com, valuepenguin.com"},
     money: {"medianPrice": 323000, "effTax": 0.0201, "cityTax": 0, "taxState": "MI", "countyPrice": 152800},
     oneLiner:
       "A prosperous, tidy, tight-knit Bavarian town — top-decile schools, 44 inches of snow, Costco half an hour away — that fills with tourists on weekends and empties politely on Sunday night.",
@@ -1871,6 +1885,8 @@ export const RELOCATION_TOWNS = [
     coords: [44.7631, -85.6206],
     tier: "viable",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 191.8, "hrs": "3:34"},
+    costs: {"utility": "Traverse City Light & Power / Consumers Energy", "heatFuel": "natural gas", "winterHeat": 88.0, "summerBill": 113.0, "utilities": 157.0, "utilitiesNote": "TCLP electric $113/mo; Consumers Energy winter gas $88, summer $0 (summer bill $113, winter bill $201)", "internet": 40.0, "internetNote": "Spectrum up to 500 Mbps", "cell": "Strong 4G/5G in main areas; dead zones near East Bay, airport, and wooded/hilly terrain outside city limits", "carIns2": 521.83, "carInsNote": "Bankrate MI state avg $3,131/yr per car ($6,262/yr for 2 cars)", "gasPrice": 3.98, "groceries": 658.67, "groceryNote": "MIT Living Wage Calculator for 2 working adults in Grand Traverse County ($7,904/yr)", "groceryBasis": "MIT", "waterTrash": 93.54, "homeIns": 190.0, "extras": "$0.90/month BEACON endpoint technology fee on water bill; private seasonal snow removal services", "basketTotal": 1943.84, "sources": "utility-rates.com, consumersenergy.com, spectrum.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, traversecitymi.gov"},
     money: {"medianPrice": 445000, "effTax": 0.0185, "cityTax": 0, "taxState": "MI", "countyPrice": 339400},
     oneLiner:
       "The northern Michigan town that actually works year-round: a 5-star hospital nine minutes from downtown, Costco and Target in town, 150 restaurants — priced accordingly, and 140 miles from a Trader Joe's.",
@@ -2304,6 +2320,8 @@ export const RELOCATION_TOWNS = [
     coords: [45.3733, -84.9553],
     tier: "viable",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 235.2, "hrs": "4:33"},
+    costs: {"utility": "City of Petoskey Electric Department / DTE Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 188.5, "utilitiesNote": "City of Petoskey Electric $61/mo; DTE Energy winter gas $225, summer $30", "internet": 35.0, "internetNote": "AT&T Internet 300 / Verizon 5G Home Internet (300 Mbps)", "cell": "Strong inside city limits, spotty/dead zones in wooded/hilly rural areas outside town", "carIns2": 440.0, "carInsNote": "The Zebra avg $2,640/yr per car due to MI no-fault PIP", "gasPrice": 4.17, "groceries": 683.67, "groceryNote": "MIT Living Wage Calculator for Emmet County (2 adults)", "groceryBasis": "MIT", "waterTrash": 80.0, "homeIns": 118.5, "extras": "Private road snow removal in rural areas, condo HOAs ($100-$1,000/mo), property tax uncapping upon purchase", "basketTotal": 1893.37, "sources": "petoskey.us, att.com, verizon.com, thezebra.com, gasprices.aaa.com, livingwage.mit.edu, policygenius.com, emmetcounty.org"},
     money: {"medianPrice": 472000, "effTax": 0.0168, "cityTax": 0, "taxState": "MI", "countyPrice": 315700},
     oneLiner:
       "Hemingway's summer country with the lowest violent crime on the list, the best fiber, and a hospital a mile away; the bill is 124 inches of snow and a 65-mile Costco run.",
@@ -2737,6 +2755,8 @@ export const RELOCATION_TOWNS = [
     coords: [42.2808, -83.743],
     tier: "viable",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 98.8, "hrs": "1:52"},
+    costs: {"utility": "DTE Energy", "heatFuel": "natural gas", "winterHeat": 275.0, "summerBill": 150.0, "utilities": 212.5, "utilitiesNote": "DTE Energy; winter gas $275, summer $150", "internet": 55.0, "internetNote": "AT&T Fiber 300 Mbps", "cell": "High reliability and extensive 4G/5G based on RootMetrics and FCC data. Dead zones: Specific indoor residential areas and near Ann Arbor-Saline Road.", "carIns2": 416.67, "carInsNote": "Insurify ZIP 48104 avg $2,500/yr per car; Michigan high no-fault rates", "gasPrice": 4.12, "groceries": 708.67, "groceryNote": "MIT Living Wage Calculator, Washtenaw County, 2 adults, $8,504/yr (Feb 2026); the research pass had used Numbeo", "groceryBasis": "MIT", "waterTrash": 79.18, "homeIns": 150.0, "extras": "Michigan property tax uncapping triggers significant tax increase year after sale; condo HOAs $190-$380, single-family rare", "basketTotal": 2055.55, "sources": "dteenergy.com, att.com, broadbandmap.fcc.gov, insurify.com, gasbuddy.com, numbeo.com, a2gov.org, policygenius.com"},
     money: {"medianPrice": 476000, "effTax": 0.0263, "cityTax": 0, "taxState": "MI", "countyPrice": 374100},
     oneLiner:
       "A college town with university-hospital healthcare, everything within four miles, and the highest property tax on the list — young, educated, expensive, and 4:41 from Palatine.",
@@ -3161,6 +3181,8 @@ export const RELOCATION_TOWNS = [
     coords: [42.9709, -82.4249],
     tier: "viable",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 196.5, "hrs": "3:30"},
+    costs: {"utility": "DTE Energy, SEMCO Energy Gas Company", "heatFuel": "natural gas", "winterHeat": 186.0, "utilities": 309.0, "utilitiesNote": "DTE Energy electric $123/mo; SEMCO Energy Gas Company winter gas $186/mo", "internet": 40.0, "internetNote": "Xfinity 300 Mbps", "cell": "Verizon coverage is excellent in Port Huron (~99% area coverage, no major dead zones)", "carIns2": 456.0, "carInsNote": "Insurify local avg full-coverage $2,736/yr per car ($228/mo) for two cars", "gasPrice": 3.89, "groceries": 741.0, "groceryNote": "MIT Living Wage Calculator annual food cost $8,892 for 2 adults in St. Clair County", "groceryBasis": "MIT", "waterTrash": 141.35, "homeIns": 192.0, "extras": "$23.75/mo trash/recycling assessment on property taxes; possible drain special assessments; HOAs uncommon", "basketTotal": 2112.75, "sources": "dteenergy.com, semcoenergygas.com, xfinity.com, verizon.com, insurify.com, gasbuddy.com, livingwage.mit.edu, porthuron.org, moneygeek.com, bsaonline.com"},
     money: {"medianPrice": 195000, "effTax": 0.0207, "cityTax": 0.01, "taxState": "MI", "countyPrice": 242500},
     oneLiner:
       "The cheapest viable town — $89k comfortable — on the St. Clair River across from Canada, with a hospital in town and a 1% city income tax; the trade is a working-class lake town, not a resort.",
@@ -3581,6 +3603,8 @@ export const RELOCATION_TOWNS = [
     coords: [43.9553, -86.4526],
     tier: "seasonal",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 146.6, "hrs": "2:41"},
+    costs: {"utility": "Consumers Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 262.5, "utilitiesNote": "Consumers Energy; electric $135, winter gas $225, summer gas $30", "internet": 35.0, "internetNote": "Verizon 5G Home Internet (300 Mbps)", "cell": "Verizon offers reliable coverage in the city, but users report localized dead zones and signal drops in surrounding areas and indoors", "carIns2": 533.0, "carInsNote": "Experian; avg $3,198/yr per car ($6,396/yr for 2 cars)", "gasPrice": 3.27, "groceries": 614.0, "groceryNote": "MIT Living Wage Calculator; 2-adult household in Mason County", "groceryBasis": "MIT", "waterTrash": 83.0, "homeIns": 191.0, "extras": "$2 municipal trash bag stickers, special assessments for neighborhood infrastructure, seasonal snow plowing fees", "basketTotal": 2012.2, "sources": "consumersenergy.com, broadbandnow.com, coveragemap.com, experian.com, gasbuddy.com, livingwage.mit.edu, ludington.mi.us, terrysmithagency.com, bsaonline.com"},
     money: {"medianPrice": 311000, "effTax": 0.0203, "cityTax": 0, "taxState": "MI", "countyPrice": 219600},
     oneLiner:
       "A car-ferry town on Lake Michigan with surprising fiber (55%), Meijer, Walmart and Aldi in town, a small hospital — and the nearest Costco 95 miles away.",
@@ -4002,6 +4026,8 @@ export const RELOCATION_TOWNS = [
     coords: [45.318, -85.2584],
     tier: "seasonal",
     verified: "split",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 226.6, "hrs": "4:29"},
+    costs: {"utility": "City of Charlevoix Electric Department / DTE Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 211.5, "utilitiesNote": "City of Charlevoix Electric ~$84/mo; DTE Energy winter gas avg ~$225/mo, summer gas ~$30/mo", "internet": 40.0, "internetNote": "Spectrum Internet Premier up to 500 Mbps", "cell": "Verizon provides reliable 4G LTE/5G in town, but coverage can be spotty with dead zones in rural wooded areas outside town.", "carIns2": 455.16, "carInsNote": "Insurify full-coverage avg $2,731/yr per vehicle in MI ($455.16/mo for 2 cars)", "gasPrice": 4.17, "groceries": 742.58, "groceryNote": "MIT Living Wage Calculator for 2 adults in Charlevoix County ($8,911/yr)", "groceryBasis": "MIT", "waterTrash": 100.84, "homeIns": 183.33, "extras": "Property tax uncapping to SEV upon sale, rural road maintenance/snow plowing agreements, and special village infrastructure assessments.", "basketTotal": 1956.11, "sources": "charlevoixmi.gov, dteenergy.com, spectrum.com, broadbandmap.fcc.gov, insurify.com, gasprices.aaa.com, livingwage.mit.edu, terrysmithagency.com, michigan.gov"},
     money: {"medianPrice": 378000, "effTax": 0.0167, "cityTax": 0, "taxState": "MI", "countyPrice": 276800},
     oneLiner:
       "The picture-book harbor between two lakes, quiet and safe, 39% of its houses empty in winter, and a PFAS site at the municipal well field to ask about first.",
@@ -4435,6 +4461,8 @@ export const RELOCATION_TOWNS = [
     coords: [44.8995, -85.9812],
     tier: "seasonal",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 210.2, "hrs": "4:05"},
+    costs: {"utility": "Cherryland Electric Cooperative", "heatFuel": "propane", "winterHeat": 316.0, "summerBill": 30.0, "utilities": 277.0, "utilitiesNote": "Cherryland Electric Cooperative; electric $119/mo, winter propane $316, summer $30, annualized heating $158/mo", "internet": 40.0, "internetNote": "Spectrum Internet Premier (up to 500 Mbps)", "cell": "4G/5G in village centers, but dead zones in low-lying areas, valleys, and dense forests within Sleeping Bear Dunes", "carIns2": 521.83, "carInsNote": "Bankrate 2025 estimate $3,131/yr per car ($521.83/mo for 2 cars)", "gasPrice": 3.98, "groceries": 980.0, "groceryNote": "MIT Living Wage Calculator annual food cost for 2 adults $11,760 ($980/mo)", "groceryBasis": "MIT", "waterTrash": 35.0, "homeIns": 191.41, "extras": "$30 annual county solid waste fee; $200-$500 annual private road maintenance agreements", "basketTotal": 2284.04, "sources": "cherrylandelectric.coop, eia.gov, michigan.gov, spectrum.com, verizon.com, bankrate.com, aaa.com, mit.edu, gflenv.com, policygenius.com"},
     money: {"medianPrice": 830000, "effTax": 0.0095, "cityTax": 0, "taxState": "MI", "priceNote": "blend of the two villages", "countyPrice": 458400},
     oneLiner:
       "Sleeping Bear's doorstep: the best nature on the list, 140 year-round residents, median age 71, a million-dollar median — a place to visit, or to retire to with money already made.",
@@ -4863,6 +4891,8 @@ export const RELOCATION_TOWNS = [
     coords: [45.7775, -84.7271],
     tier: "seasonal",
     verified: "split",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 287.6, "hrs": "5:10"},
+    costs: {"heatFuel": "propane", "utilities": 119.31, "utilitiesNote": "EIA MI average electric $119.31; propane $2.37/gal; heating bills NOT FOUND", "internet": 40.0, "internetNote": "Spectrum 500 Mbps", "cell": "100% area coverage on map, but users report spotty service due to terrain and distance from towers", "carIns2": 616.0, "carInsNote": "Bankrate Detroit-Warren-Dearborn avg $3,696/yr per car ($616/mo for 2 cars)", "gasPrice": 4.03, "groceries": 624.75, "groceryNote": "MIT Living Wage Calculator Cheboygan County ($7,497/yr for 2 adults)", "groceryBasis": "MIT", "homeIns": 119.0, "extras": "No village-wide HOA fees (depends on subdivision); seasonal/household fees NOT FOUND", "basketTotal": 1760.86, "sources": "eia.gov, spectrum.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, policygenius.com, mackinawcity.org"},
     money: {"medianPrice": 289000, "effTax": 0.0186, "cityTax": 0, "taxState": "MI", "countyPrice": 192500},
     oneLiner:
       "A bridgehead village of 704 people that runs on summer — 24% winter unemployment, Amazon in three to five days, the ER across the bridge in St. Ignace.",
@@ -5318,6 +5348,8 @@ export const RELOCATION_TOWNS = [
     coords: [45.8492, -84.6189],
     tier: "no",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 287.6, "hrs": "5:10 + ferry", "note": "Mackinaw City's drive, then the Star Line / Shepler's ferry"},
+    costs: {"utility": "Cloverland Electric Cooperative", "heatFuel": "mixed", "winterHeat": 213.33, "summerBill": 105.71, "utilities": 105.71, "utilitiesNote": "Cloverland Electric Cooperative; avg bill $105.71/mo, winter electric heat $213.33/mo, summer $105.71/mo", "internet": 40.0, "internetNote": "Spectrum Internet Premier (500 Mbps)", "cell": "Verizon: Excellent in downtown and populated areas, minor dead zones in remote wooded interior trails", "carIns2": 521.83, "carInsNote": "Bankrate Michigan avg $3,131/yr per car ($521.83/mo for 2 cars)", "gasPrice": 4.38, "groceries": 624.75, "groceryNote": "MIT Living Wage estimate for 2 adults in Mackinac County ($7,497/yr); excludes local island premium", "groceryBasis": "MIT", "homeIns": 191.67, "extras": "Mainland winter parking (Arnold Transit commuter lot $40/mo) and local freight/drayage fees", "basketTotal": 1746.76, "sources": "cloverland.com, eia.gov, spectrum.com, reddit.com, bankrate.com, gasbuddy.com, livingwage.mit.edu, cityofmi.org, moneygeek.com, arnoldtransitcompany.com"},
     money: {"medianPrice": 1300000, "effTax": 0.0127, "cityTax": 0, "taxState": "MI"},
     oneLiner:
       "No cars, 992 year-round residents, a medical center but no hospital, and a $1.3M median. Go for the fudge; do not move there.",
@@ -5737,6 +5769,8 @@ export const RELOCATION_TOWNS = [
     coords: [42.3314, -83.0458],
     tier: "no",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 140.5, "hrs": "2:37"},
+    costs: {"utility": "DTE Energy", "heatFuel": "natural gas", "utilities": 237.0, "utilitiesNote": "DTE Energy; electric $142, winter gas $200-$400, annualized gas $95", "internet": 75.0, "internetNote": "Xfinity 300 Mbps", "cell": "Verizon coverage is strong in 48226 with 4G LTE and 5G Ultra Wideband; highly rated by RootMetrics with no major dead-zones", "carIns2": 616.0, "carInsNote": "Bankrate Detroit area avg $3,696/yr per car, $7,392/yr for 2 cars ($616/mo)", "gasPrice": 4.17, "groceries": 639.08, "groceryNote": "MIT Living Wage Calculator, Wayne County, 2 adults, $7,669/yr (Feb 2026); the research pass had used Numbeo's higher minimum-food figure", "groceryBasis": "MIT", "waterTrash": 85.0, "homeIns": 193.91, "extras": "Annual Solid Waste Fee of $260-$270 (~$22.50/mo) on summer property tax bill for trash, recycling, and yard waste collection", "basketTotal": 2292.73, "sources": "dteenergy.com, utilitycheck.co, xfinity.com, verizon.com, rootmetrics.com, bankrate.com, gasprices.aaa.com, numbeo.com, detroitmi.gov, policygenius.com"},
     money: {"medianPrice": 110000, "effTax": 0.0321, "cityTax": 0.024, "taxState": "MI", "countyPrice": 194800},
     oneLiner:
       "The cheapest housing of any big American city, a Level I trauma center, Whole Foods a mile and a half away — and 18 violent crimes per 1,000 citywide with a 2.4% city income tax. Neighborhood is everything.",
@@ -6161,6 +6195,8 @@ export const RELOCATION_TOWNS = [
     coords: [42.9745, -82.4066],
     tier: "no",
     verified: "yes",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 199.4, "hrs": "3:36"},
+    costs: {"utility": "Bluewater Power / Enbridge Gas", "heatFuel": "natural gas", "winterHeat": 106.5, "summerBill": 28.4, "utilities": 159.75, "utilitiesNote": "Bluewater Power electric $130 CAD ($92.30 USD), Enbridge Gas winter $150 CAD ($106.50 USD), summer $40 CAD ($28.40 USD); converted at 0.71 CAD to USD", "internet": 46.15, "internetNote": "Oxio 300 Mbps (Cogeco lines)", "cell": "Roams on Bell/Rogers/Telus with solid coverage; variable signal near St. Clair River waterfront due to cross-border interference.", "carIns2": 206.61, "carInsNote": "Rates.ca avg $2,055 CAD/yr per car, $3,493 CAD/yr ($291 CAD/mo) for 2 cars with 15% discount; converted at 0.71 CAD to USD", "gasPrice": 3.84, "groceries": 651.78, "groceryNote": "Numbeo min food expense $459 CAD/person ($918 CAD/mo for 2 adults); converted at 0.71 CAD to USD", "groceryBasis": "Numbeo", "waterTrash": 60.35, "homeIns": 154.78, "extras": "None; trash and recycling covered by 1.73% property tax rate; HOA fees apply only to condos/townhouses.", "basketTotal": 1548.51, "sources": "oeb.ca, enbridgegas.com, cogeco.ca, verizon.com, rates.ca, gasbuddy.com, numbeo.com, sarnia.ca"},
     money: {"medianPrice": 352000, "effTax": 0.0125, "cityTax": 0, "taxState": null, "priceNote": "CA$495k at 0.71"},
     oneLiner:
       "A chemical-industry city across the bridge from Port Huron: cheap, flat, Costco 85 km away, and — first — a different country's immigration system.",
@@ -6553,6 +6589,8 @@ export const RELOCATION_TOWNS = [
     coords: [42.3149, -83.0364],
     tier: "no",
     verified: "split",
+    stryker: {"site": "Portage, MI (HQ)", "mi": 141.9, "hrs": "2:41"},
+    costs: {"utility": "Enwin Utilities / Enbridge Gas", "heatFuel": "natural gas", "winterHeat": 85.2, "summerBill": 28.4, "utilities": 163.3, "utilitiesNote": "CAD converted to USD at 0.71. Enwin Utilities electricity ~$106.50/mo ($150 CAD); Enbridge Gas (natural gas) winter ~$85.20 ($120 CAD), summer ~$28.40 ($40 CAD)", "internet": 41.17, "internetNote": "Cogeco 1 Gbps", "cell": "Verizon roams on Bell/Rogers/Telus in Canada with good coverage in urban areas; no native towers", "carIns2": 304.82, "carInsNote": "CAD converted to USD at 0.71. Rates.ca avg $2,576 CAD/yr per car, monthly for 2 cars is $304.82 USD ($429.33 CAD)", "gasPrice": 4.57, "groceries": 655.83, "groceryNote": "CAD converted to USD at 0.71. Numbeo estimated monthly food costs for 2 adults ($923.70 CAD)", "groceryBasis": "Numbeo", "waterTrash": 37.57, "homeIns": 147.5, "extras": "None; no HOA fees, trash/recycling included in property taxes, Land Transfer Tax is one-time closing cost", "basketTotal": 1624.32, "sources": "enwin.com, enbridgegas.com, cogeco.ca, verizon.com, rates.ca, gasbuddy.com, numbeo.com, citywindsor.ca"},
     money: {"medianPrice": 388000, "effTax": 0.021, "cityTax": 0, "taxState": null, "priceNote": "CA$510–579k at 0.71"},
     oneLiner:
       "Detroit's Canadian mirror with a Costco 4.5 miles away, a real hospital, and next-day Amazon.ca; a US citizen needs status before anything else counts.",

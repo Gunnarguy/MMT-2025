@@ -26,6 +26,7 @@ import { money } from "../lib/money";
  * researched figures; the raw numbers sit in each card's full workup.
  */
 const WORKUP_SECTIONS = [
+  ["bills", "🧾 Monthly bills, local averages"],
   ["demographics", "👥 Who lives here"],
   ["errands", "🛒 Groceries & errands"],
   ["shipping", "📦 Shipping & delivery"],
@@ -86,7 +87,7 @@ export default function ScoutView() {
   const [budget, setBudget] = useLocalState("scout-budget", DEFAULT_BUDGET);
   const [useCounty, setUseCounty] = useLocalState("scout-own-county", false);
   const monthOf = useMemo(
-    () => Object.fromEntries(RELOCATION_TOWNS.map((t) => [t.id, estimateMonth(budget, t, moneyOf[t.id], useCounty)])),
+    () => Object.fromEntries(RELOCATION_TOWNS.map((t) => [t.id, estimateMonth(budget, t, moneyOf[t.id], useCounty, SCOUT_CAMPBELL?.costs)])),
     [budget, moneyOf, useCounty],
   );
   const monthRows = useMemo(
@@ -418,8 +419,29 @@ export default function ScoutView() {
   );
 }
 
+function billsRows(c) {
+  if (!c) return null;
+  const $ = (n) => (n == null ? null : `$${Math.round(n).toLocaleString()}/mo`);
+  const rows = [
+    ["Electricity + heat", c.utilities != null ? `${$(c.utilities)}${c.utility ? ` · ${c.utility}` : ""}${c.heatFuel ? ` · ${c.heatFuel}` : ""}` : null],
+    ["Winter heating month", c.winterHeat != null ? `${$(c.winterHeat)}${c.summerBill != null ? ` (summer ${$(c.summerBill)})` : ""}` : null],
+    ["Internet", c.internet != null ? `${$(c.internet)}${c.internetNote ? ` · ${c.internetNote}` : ""}` : null],
+    ["Verizon here", c.cell || null],
+    ["Car insurance, 2 cars", c.carIns2 != null ? `${$(c.carIns2)}${c.carInsNote ? ` · ${c.carInsNote}` : ""}` : null],
+    ["Gas", c.gasPrice != null ? `$${c.gasPrice.toFixed(2)}/gal` : null],
+    ["Groceries, 2 adults", c.groceries != null ? `${$(c.groceries)}${c.groceryNote ? ` · ${c.groceryNote}` : ""}` : c.groceryIndex ? `index ${c.groceryIndex} vs US 100` : null],
+    ["Water / sewer / trash", $(c.waterTrash)],
+    ["Home insurance", $(c.homeIns)],
+    ["Fees a newcomer misses", c.extras || null],
+    ["Non-housing basket", c.basketTotal != null ? `${$(c.basketTotal)} before rent or mortgage` : null],
+  ].filter(([, v]) => v);
+  return rows.length ? rows : null;
+}
+
 function TownCard({ t, tier, weights, matchOf, moneyOf, monthOf = {}, useCounty = false, income, compare, toggleCompare, registerRef, isHome = false }) {
   const compared = compare.includes(t.id);
+  const bills = billsRows(t.costs);
+  const workup = t.workup ? { ...t.workup, bills: bills || undefined } : bills ? { bills } : null;
   return (
         <article
           key={t.id}
@@ -477,6 +499,9 @@ function TownCard({ t, tier, weights, matchOf, moneyOf, monthOf = {}, useCounty 
             {SUMMARY_ROWS.slice(0, 6).map(([k, get]) => (
               <FactRow key={k} k={k} v={get(t)} />
             ))}
+            {t.stryker && (
+              <FactRow k="Nearest Stryker site" v={`${t.stryker.site} · ${t.stryker.mi} mi${t.stryker.hrs ? ` · ${t.stryker.hrs}` : ""}`} />
+            )}
           </dl>
 
           <Daylight coords={t.coords} isHome={isHome} />
@@ -499,24 +524,24 @@ function TownCard({ t, tier, weights, matchOf, moneyOf, monthOf = {}, useCounty 
             </button>
           </div>
 
-          {t.workup && (
+          {workup && (
             <details className="scout-workup">
-              <summary>Full workup — errands, shipping, healthcare, schools, jobs, airports, lifestyle, climate, demographics</summary>
+              <summary>Full workup — monthly bills, errands, shipping, healthcare, schools, jobs, airports, lifestyle, climate, demographics</summary>
               {WORKUP_SECTIONS.map(([key, label]) =>
-                t.workup[key]?.length ? (
+                workup[key]?.length ? (
                   <div key={key} className="scout-workup-section">
                     <div className="eyebrow">{label}</div>
                     <dl className="scout-facts">
-                      {t.workup[key].map(([k, v]) => (
+                      {workup[key].map(([k, v]) => (
                         <FactRow key={k} k={k} v={v} />
                       ))}
                     </dl>
                   </div>
                 ) : null,
               )}
-              {t.workup.sources && (
+              {workup.sources && (
                 <p className="muted" style={{ fontSize: "var(--t-xs)", marginTop: "var(--s-2)" }}>
-                  {t.workup.sources}
+                  {workup.sources}
                 </p>
               )}
             </details>
@@ -528,7 +553,8 @@ function TownCard({ t, tier, weights, matchOf, moneyOf, monthOf = {}, useCounty 
 
 function Daylight({ coords, isHome = false }) {
   if (!coords) return null;
-  const d = daylightFor(coords[0], coords[1]);
+  // Campbell is Pacific time; every Michigan/Ontario town is Eastern (daylightFor default).
+  const d = isHome ? CAMPBELL : daylightFor(coords[0], coords[1]);
   const base = CAMPBELL;
   const dW = Math.round((d.winter.hours - base.winter.hours) * 60);
   const dS = Math.round((d.summer.hours - base.summer.hours) * 60);

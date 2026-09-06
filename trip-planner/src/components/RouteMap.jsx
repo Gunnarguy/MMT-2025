@@ -1039,7 +1039,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                 <br />
                 <span className="muted">{site.what}</span>
                 <br />
-                <span className="muted">{site.address}{site.approx ? " · position approximate" : ""}</span>
+                <span className="muted">{site.address}</span>
               </Popup>
             </Marker>
           ))}

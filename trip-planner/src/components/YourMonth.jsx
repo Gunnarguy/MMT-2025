@@ -10,22 +10,38 @@ import { money } from "../lib/money";
  */
 export const BUDGET_LINES = [
   ["housing", "Rent / mortgage", 1150, "Campbell: $1,150, renting from family"],
-  ["utilities", "Electricity + gas", 200, "PG&E runs $109–300"],
-  ["internet", "Internet", 70, ""],
+  ["utilities", "Electricity + gas", 200, "PG&E average is ~$329 — type yours"],
+  ["internet", "Internet", 70, "AT&T Fiber 300 is $35 after promo"],
   ["cell", "Cell (Verizon)", 140, "travels with you"],
-  ["carIns", "Car insurance, 2 cars", 140, "Santa Clara Co. $600–1,080/yr per car"],
-  ["gas", "Gasoline", 150, "at $3.98/gal"],
-  ["groceries", "Groceries", 800, ""],
-  ["waterTrash", "Water / sewer / trash", 0, "often inside rent"],
-  ["homeIns", "Renter / home insurance", 25, ""],
+  ["carIns", "Car insurance, 2 cars", 250, "Bankrate full-coverage metro avg is $494 — type yours"],
+  ["gas", "Gasoline", 150, "at $5.83/gal (AAA California)"],
+  ["groceries", "Groceries", 800, "MIT food line for two in Santa Clara Co. is $769"],
+  ["waterTrash", "Water / sewer / trash", 0, "inside rent now; ~$330 if you owned here"],
+  ["homeIns", "Renter / home insurance", 25, "owners here pay ~$105"],
   ["other", "Subscriptions & everything else", 400, "travels with you"],
 ];
 export const DEFAULT_BUDGET = Object.fromEntries(BUDGET_LINES.map(([k, , v]) => [k, v]));
-const CAMPBELL_GAS = 3.98;
+const CAMPBELL_GAS = 5.83;
 const CAMPBELL_GROCERY_INDEX = 143;
 
-export function estimateMonth(budget, town, r, useCounty) {
+/**
+ * Same-basis scaling: the local figure and Campbell's come from matched sources
+ * (Bankrate for insurance, AAA for gas, MIT for food, utility rate pages), so
+ * your ACTUAL bill is scaled by that ratio rather than replaced by an average
+ * you never paid. A line you pay $0 for now (water inside rent) becomes the
+ * local absolute, because owning means you would pay it.
+ */
+function moved(yours, local, campbell) {
+  if (local == null) return null;
+  if (yours > 0 && campbell) return Math.round((yours * local) / campbell);
+  return Math.round(local);
+}
+// Ratio-scaled: utilities, car insurance, gas, groceries (your consumption, their prices).
+// Absolute: internet, water/trash, home insurance (fixed local prices, or an owner's product).
+
+export function estimateMonth(budget, town, r, useCounty, campbellCosts = {}) {
   const c = town.costs || {};
+  const cc = campbellCosts || {};
   const own = r?.modeled ? (useCounty && r.countyMonthly ? r.countyMonthly : r.monthly) : null;
   const scale = (val, idx, base) => (idx && base ? Math.round((val * idx) / base) : val);
   const lines = BUDGET_LINES.map(([k, label]) => {
@@ -37,26 +53,40 @@ export function estimateMonth(budget, town, r, useCounty) {
         there = own == null ? yours : Math.round(own);
         note = own == null ? "not modeled" : useCounty && r.countyMonthly ? "owning the county median" : "owning the town median";
         break;
-      case "utilities":
-        if (c.utilities != null) { there = c.utilities; note = c.utilitiesNote || "local average"; } else note = "no local figure yet";
+      case "utilities": {
+        const v = moved(yours, c.utilities, cc.utilities);
+        if (v != null) { there = v; note = c.utilitiesNote || `${c.utility || "local"} vs PG&E`; } else note = "no local figure yet";
         break;
+      }
       case "internet":
-        if (c.internet != null) { there = c.internet; note = c.internetNote || "best local plan"; } else note = "no local figure yet";
+        // a plan price, not consumption: the local best plan replaces yours outright
+        if (c.internet != null) { there = Math.round(c.internet); note = c.internetNote || "best local plan"; } else note = "no local figure yet";
         break;
-      case "carIns":
-        if (c.carIns2 != null) { there = c.carIns2; note = "county average, 2 cars"; } else note = "no local figure yet";
+      case "carIns": {
+        const v = moved(yours, c.carIns2, cc.carIns2);
+        if (v != null) { there = v; note = `Bankrate: $${Math.round(c.carIns2)} vs $${Math.round(cc.carIns2 || 494)} here, for two cars`; } else note = "no local figure yet";
         break;
+      }
       case "gas":
-        if (c.gasPrice) { there = scale(yours, c.gasPrice, CAMPBELL_GAS); note = `at $${c.gasPrice.toFixed(2)}/gal`; }
+        if (c.gasPrice) { there = scale(yours, c.gasPrice, cc.gasPrice || CAMPBELL_GAS); note = `$${c.gasPrice.toFixed(2)}/gal vs $${(cc.gasPrice || CAMPBELL_GAS).toFixed(2)}`; }
         break;
       case "groceries":
-        if (c.groceryIndex) { there = scale(yours, c.groceryIndex, CAMPBELL_GROCERY_INDEX); note = `index ${c.groceryIndex} vs Campbell ${CAMPBELL_GROCERY_INDEX}`; }
+        if (c.groceries && cc.groceries) {
+          there = scale(yours, c.groceries, cc.groceries);
+          note = c.groceryBasis === "MIT"
+            ? `MIT food line $${Math.round(c.groceries)} vs $${Math.round(cc.groceries)} for two`
+            : `${c.groceryBasis || "local"} food figure $${Math.round(c.groceries)} vs MIT's $${Math.round(cc.groceries)} here — not the same scale`;
+        }
+        else if (c.groceryIndex) { there = scale(yours, c.groceryIndex, cc.groceryIndex || CAMPBELL_GROCERY_INDEX); note = `index ${c.groceryIndex} vs ${cc.groceryIndex || CAMPBELL_GROCERY_INDEX}`; }
+        else note = "no local figure yet";
         break;
       case "waterTrash":
-        if (c.waterTrash != null) { there = c.waterTrash; note = "municipal rates"; }
+        // owners pay the municipal schedule whatever they paid inside rent before
+        if (c.waterTrash != null) { there = Math.round(c.waterTrash); note = "municipal rates, as an owner"; }
         break;
       case "homeIns":
-        if (c.homeIns != null) { there = c.homeIns; note = "county average"; }
+        // a renter's policy and an owner's policy are different products
+        if (c.homeIns != null) { there = Math.round(c.homeIns); note = "owner's policy, county average"; }
         break;
       default:
         note = "travels with you";
@@ -85,9 +115,12 @@ export function MonthPanel({ budget, setBudget, rows, useCounty, setUseCounty })
         </button>
       </div>
       <p className="muted" style={{ fontSize: "var(--t-sm)", marginBottom: "var(--s-2)" }}>
-        Type your real bills. Housing becomes the cost of owning the median house in each town; utilities,
-        internet, car insurance, water and home insurance become that town's researched averages; groceries and
-        gasoline scale by the local index; the cell plan and everything else travel with you.
+        Type your real bills. Housing becomes the cost of owning the median house in each town. Every other
+        consumption-driven bill — power, car insurance, gas, groceries — is scaled by that town's researched
+        figure against Campbell's on the same source (the utilities' rate pages, Bankrate, AAA, MIT's food
+        line), so your habits travel and only the local price changes. Fixed prices are swapped outright: the
+        best local internet plan, the municipal water/trash schedule, an owner's insurance policy. Cell and
+        everything else travel with you.
       </p>
       <div className="budget-grid">
         {BUDGET_LINES.map(([k, label, , hint]) => (
