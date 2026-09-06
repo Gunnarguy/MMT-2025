@@ -13,6 +13,7 @@ import ClimateStrip from "./ClimateStrip";
 import { useLocalState } from "../hooks/useLocalState";
 import { CAMPBELL, daylightFor, fmtClock, fmtHours } from "../lib/daylight";
 import { MoneyBlock, MoneyPanel, moneyFor } from "./YourMoney";
+import { DEFAULT_BUDGET, MonthBlock, MonthPanel, estimateMonth } from "./YourMonth";
 import { money } from "../lib/money";
 
 /**
@@ -82,6 +83,16 @@ export default function ScoutView() {
       ),
     [income],
   );
+  const [budget, setBudget] = useLocalState("scout-budget", DEFAULT_BUDGET);
+  const [useCounty, setUseCounty] = useLocalState("scout-own-county", false);
+  const monthOf = useMemo(
+    () => Object.fromEntries(RELOCATION_TOWNS.map((t) => [t.id, estimateMonth(budget, t, moneyOf[t.id], useCounty)])),
+    [budget, moneyOf, useCounty],
+  );
+  const monthRows = useMemo(
+    () => RELOCATION_TOWNS.map((town) => ({ town, est: monthOf[town.id] })).sort((a, b) => a.est.thereTotal - b.est.thereTotal),
+    [monthOf],
+  );
   const moneyRows = useMemo(
     () =>
       RELOCATION_TOWNS.map((town) => ({ town, r: moneyOf[town.id] }))
@@ -149,6 +160,7 @@ export default function ScoutView() {
       </div>
 
       <MoneyPanel income={income} setIncome={setIncome} rows={moneyRows} campbell={SCOUT_CAMPBELL?.money} />
+      <MonthPanel budget={budget} setBudget={setBudget} rows={monthRows} useCounty={useCounty} setUseCounty={setUseCounty} />
 
       <section className="scout-prio">
         <div className="card card-pad">
@@ -347,6 +359,8 @@ export default function ScoutView() {
                   weights={weights}
                   matchOf={matchOf}
                   moneyOf={moneyOf}
+                  monthOf={monthOf}
+                  useCounty={useCounty}
                   income={income}
                   compare={compare}
                   toggleCompare={toggleCompare}
@@ -404,7 +418,7 @@ export default function ScoutView() {
   );
 }
 
-function TownCard({ t, tier, weights, matchOf, moneyOf, income, compare, toggleCompare, registerRef, isHome = false }) {
+function TownCard({ t, tier, weights, matchOf, moneyOf, monthOf = {}, useCounty = false, income, compare, toggleCompare, registerRef, isHome = false }) {
   const compared = compare.includes(t.id);
   return (
         <article
@@ -467,6 +481,7 @@ function TownCard({ t, tier, weights, matchOf, moneyOf, income, compare, toggleC
 
           <Daylight coords={t.coords} isHome={isHome} />
           <MoneyBlock r={moneyOf[t.id]} gross={income.a + income.b} />
+          {!isHome && <MonthBlock est={monthOf[t.id]} useCounty={useCounty} />}
           <ClimateStrip climate={t.climate} sf={isHome ? null : SCOUT_CAMPBELL_CLIMATE} baselineName="Campbell" color={tier.color} />
 
           <p style={{ fontSize: "var(--t-sm)", color: "var(--ink-2)" }}>{t.verdict}</p>

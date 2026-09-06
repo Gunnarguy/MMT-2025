@@ -32,6 +32,9 @@ export function moneyFor(town, income) {
     priceNote: m.priceNote,
     rent2br: m.rent2br || null,
     rentShare: m.rent2br && net ? m.rent2br / (net / 12) : null,
+    rentActual: m.rentActual || null,
+    rentActualShare: m.rentActual && net ? m.rentActual / (net / 12) : null,
+    rentActualNote: m.rentActualNote || null,
     modeled: m.taxState === "CA" || m.taxState === "MI",
   };
 }
@@ -67,6 +70,9 @@ export function MoneyPanel({ income, setIncome, rows, campbell }) {
     </label>
   );
   const rentShare = campbell?.rent2br && ca.net ? campbell.rent2br / (ca.net / 12) : null;
+  const actual = campbell?.rentActual || null;
+  const actualShare = actual && ca.net ? actual / (ca.net / 12) : null;
+  const discount = actual && campbell?.rent2br ? (campbell.rent2br - actual) * 12 : null;
   const buyCampbell = campbell?.medianPrice ? ownMonthly(campbell.medianPrice, campbell.effTax || 0.012) : null;
   const buyShare = buyCampbell && ca.net ? buyCampbell / (ca.net / 12) : null;
   return (
@@ -107,9 +113,20 @@ export function MoneyPanel({ income, setIncome, rows, campbell }) {
         at this income. The move is about housing.
         {campbell?.rent2br && (
           <>
-            {" "}In Campbell a median two-bedroom rents for <b>{money(campbell.rent2br)}</b> a month —{" "}
-            <b>{Math.round(rentShare * 100)}%</b> of take-home — and buying the {money(campbell.medianPrice)} median would run{" "}
-            <b>{money(buyCampbell)}</b> a month ({Math.round(buyShare * 100)}%).
+            {" "}
+            {actual ? (
+              <>
+                You pay <b>{money(actual)}</b> a month in Campbell ({campbell.rentActualNote}) — <b>{Math.round(actualShare * 100)}%</b> of take-home.
+                A median two-bedroom there rents for {money(campbell.rent2br)} ({Math.round(rentShare * 100)}%), so the family discount is worth about{" "}
+                <b>{money(discount)} a year</b> — the price of admission for any move. Buying the {money(campbell.medianPrice)} median would run{" "}
+                {money(buyCampbell)} a month ({Math.round(buyShare * 100)}%).
+              </>
+            ) : (
+              <>
+                In Campbell a median two-bedroom rents for <b>{money(campbell.rent2br)}</b> a month — <b>{Math.round(rentShare * 100)}%</b> of take-home —
+                and buying the {money(campbell.medianPrice)} median would run <b>{money(buyCampbell)}</b> a month ({Math.round(buyShare * 100)}%).
+              </>
+            )}
           </>
         )}
       </p>
@@ -121,13 +138,13 @@ export function MoneyPanel({ income, setIncome, rows, campbell }) {
           <tbody>
             {campbell?.rent2br && (
               <tr className="is-home">
-                <td>Campbell, CA — renting now</td>
+                <td>Campbell, CA — {actual ? "your actual rent" : "renting now"}</td>
                 <td>{money(campbell.medianPrice)} to buy</td>
-                <td>{money(campbell.rent2br)} rent</td>
-                <td>{Math.round(rentShare * 100)}%</td>
-                <td><Chip tone={verdictFor(rentShare).tone}>{verdictFor(rentShare).label}</Chip></td>
-                <td colSpan={3} className="muted">county median $1,490,600 — no cheaper ring to buy in</td>
-                <td>{money(ca.net / 12 - campbell.rent2br)}</td>
+                <td>{money(actual || campbell.rent2br)} rent</td>
+                <td>{Math.round((actual ? actualShare : rentShare) * 100)}%</td>
+                <td><Chip tone={verdictFor(actual ? actualShare : rentShare).tone}>{verdictFor(actual ? actualShare : rentShare).label}</Chip></td>
+                <td colSpan={3} className="muted">{actual ? `market 2BR ${money(campbell.rent2br)} (${Math.round(rentShare * 100)}%) · county median $1,490,600 to buy` : "county median $1,490,600 — no cheaper ring to buy in"}</td>
+                <td>{money(ca.net / 12 - (actual || campbell.rent2br))}</td>
               </tr>
             )}
             {rows.map(({ town, r }) => (
@@ -181,9 +198,18 @@ export function MoneyBlock({ r, gross }) {
               </dd>
             </div>
           )}
+          {r.rentActual && (
+            <div style={{ gridColumn: "1 / -1" }}>
+              <dt>What you actually pay ({r.rentActualNote})</dt>
+              <dd>
+                {money(r.rentActual)}/mo · {Math.round(r.rentActualShare * 100)}% of take-home{" "}
+                <Chip tone={verdictFor(r.rentActualShare).tone}>{verdictFor(r.rentActualShare).label}</Chip>
+              </dd>
+            </div>
+          )}
           {r.rent2br && (
             <div style={{ gridColumn: "1 / -1" }}>
-              <dt>Renting a 2BR instead</dt>
+              <dt>{r.rentActual ? "Market rent for a 2BR" : "Renting a 2BR instead"}</dt>
               <dd>
                 {money(r.rent2br)}/mo · {Math.round(r.rentShare * 100)}% of take-home{" "}
                 <Chip tone={verdictFor(r.rentShare).tone}>{verdictFor(r.rentShare).label}</Chip>

@@ -931,3 +931,14 @@
 .money-grid dd { margin: 0; font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
 
 .scout-card.is-home { background: linear-gradient(180deg, var(--accent-soft), var(--surface) 40%); }
+
+/* Map — Town Scout colour modes + legend */
+.layer-filter-btn.layer-sub { font-size: 0.72rem; padding: 0.2rem 0.5rem; opacity: 0.9; }
+.legend-scout { display: flex; flex-wrap: wrap; gap: 0.35rem 0.8rem; font-size: 0.72rem; margin-bottom: 0.35rem; align-items: center; }
+.legend-scout i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.3rem; vertical-align: middle; border: 1px solid rgba(0,0,0,0.15); }
+
+/* Town Scout — your month */
+.budget-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--s-2) var(--s-3); margin: var(--s-2) 0; }
+.budget-grid .money-field small { text-transform: none; letter-spacing: 0; font-size: var(--t-xs); }
+.budget-grid .money-input { width: 6rem; }
+.month-block { font-size: var(--t-xs); color: var(--ink-2); margin: 0 0 var(--s-3); padding: 0.4rem 0.6rem; border-radius: 8px; background: var(--surface-2); line-height: 1.5; }

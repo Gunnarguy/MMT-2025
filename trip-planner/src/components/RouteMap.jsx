@@ -20,7 +20,13 @@ import {
   MICROCLIMATES,
   calculateSunPosition,
 } from "../data/mapOverlays";
-import { RELOCATION_TOWNS, SCOUT_TIERS } from "../data/relocation";
+import { RELOCATION_TOWNS, SCOUT_TIERS, STRYKER_SITES } from "../data/relocation";
+import { moneyFor } from "./YourMoney";
+import { money } from "../lib/money";
+import { useLocalState } from "../hooks/useLocalState";
+
+const VERDICT_COLOR = { ok: "#2f855a", warn: "#b7791f", stop: "#c53030", ghost: "#6b7a86" };
+const DREAM_INCOME = { a: 95000, b: 0 };
 import { directionsHref, duration, shortDate } from "../lib/format";
 import ElevationRibbon from "./visuals/ElevationRibbon";
 import SunTracker from "./visuals/SunTracker";
@@ -531,6 +537,16 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     pinPx,
   ]);
 
+  // Town Scout pin colouring: by tier, or by what the median house does to the
+  // couple's budget on their current income or the one-job dream.
+  const [scoutMode, setScoutMode] = useLocalState("map-scout-mode", "now");
+  const [scoutIncome] = useLocalState("scout-income", { a: 65000, b: 56000 });
+  const scoutMoney = useMemo(
+    () => Object.fromEntries(RELOCATION_TOWNS.map((t) => [t.id, moneyFor(t, scoutIncome)])),
+    [scoutIncome],
+  );
+  const scoutDream = useMemo(() => Object.fromEntries(RELOCATION_TOWNS.map((t) => [t.id, moneyFor(t, DREAM_INCOME)])), []);
+
   const scoutPins = useMemo(() => {
     if (!layerFilter.scout) return [];
     const obstacles = [
@@ -935,52 +951,98 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             </Marker>
           ))}
 
-        {/* Town Scout Layer — relocation reconnaissance pins */}
+        {/* Town Scout Layer — relocation pins, county rings, Stryker sites */}
         {layerFilter.scout &&
           scoutPins.map((t) => {
             const tier = SCOUT_TIERS.find((x) => x.id === t.tier);
+            const rNow = scoutMoney[t.id];
+            const rDream = scoutDream[t.id];
+            const active = scoutMode === "dream" ? rDream : rNow;
+            const color = scoutMode === "tier" || !active?.modeled ? tier.color : VERDICT_COLOR[active.verdict.tone];
+            const ringTone = scoutMode !== "tier" && active?.modeled && active.countyShare ? active.countyVerdict.tone : null;
             return (
               <div key={t.id}>
+                {ringTone && (
+                  <Circle
+                    center={t.rawCoords || t.coords}
+                    radius={19000}
+                    pathOptions={{ color: VERDICT_COLOR[ringTone], weight: 1.2, dashArray: "5 5", opacity: 0.7, fillColor: VERDICT_COLOR[ringTone], fillOpacity: 0.07 }}
+                  />
+                )}
                 {t.isDispersed && (
                   <Polyline
                     positions={[t.rawCoords, t.displayCoords]}
-                    pathOptions={{
-                      color: tier.color,
-                      weight: 1.5,
-                      dashArray: "2 4",
-                      opacity: 0.45,
-                    }}
+                    pathOptions={{ color, weight: 1.5, dashArray: "2 4", opacity: 0.45 }}
                   />
                 )}
                 <Marker
                   position={t.displayCoords || t.coords}
-                  icon={pinIcon({ label: "⌂", color: tier.color, variant: "pin--scout", title: t.name })}
+                  icon={pinIcon({ label: "⌂", color, variant: "pin--scout", title: t.name })}
                 >
-                  <Popup>
-                    <b>{t.name}</b>
+                  <Popup maxWidth={320}>
+                    <b>{t.name}</b> <span className="muted">{t.county}</span>
                     <br />
                     <span style={{ color: tier.color, fontWeight: 700 }}>{tier.label}</span>
                     {" · "}
                     <span className="muted">{t.verified === "yes" ? "✓ verified" : "≈ sources split"}</span>
-                    <div style={{ marginTop: "4px", fontSize: "11px", lineHeight: 1.5 }}>
+                    {t.oneLiner && <div style={{ marginTop: "4px", fontSize: "11px", lineHeight: 1.45 }}>{t.oneLiner}</div>}
+                    <div style={{ marginTop: "5px", fontSize: "11px", lineHeight: 1.55 }}>
+                      {rNow?.modeled && (
+                        <>
+                          <b>Now ({money(scoutIncome.a + scoutIncome.b)}):</b> {money(rNow.monthly)}/mo · {Math.round(rNow.share * 100)}% ·{" "}
+                          <span style={{ color: VERDICT_COLOR[rNow.verdict.tone], fontWeight: 700 }}>{rNow.verdict.label}</span>
+                          {rNow.countyShare ? ` · county ring ${Math.round(rNow.countyShare * 100)}% ${rNow.countyVerdict.label}` : ""}
+                          <br />
+                        </>
+                      )}
+                      {rDream?.modeled && (
+                        <>
+                          <b>Dream ($95k solo):</b> {Math.round(rDream.share * 100)}% ·{" "}
+                          <span style={{ color: VERDICT_COLOR[rDream.verdict.tone], fontWeight: 700 }}>{rDream.verdict.label}</span>
+                          {rDream.countyShare ? ` · county ring ${Math.round(rDream.countyShare * 100)}% ${rDream.countyVerdict.label}` : ""}
+                          <br />
+                        </>
+                      )}
                       <b>Median:</b> {t.median}
                       <br />
-                      <b>Comfortable:</b> {t.comfort}
-                      <br />
-                      <b>Crime v/p:</b> {t.crime} · <b>Snow:</b> {t.snow}
-                      <br />
-                      <b>Tax:</b> {t.tax}
-                      <br />
+                      {t.climate && (
+                        <>
+                          <b>Snow / rain:</b> {t.climate.annual.snow}″ / {t.climate.annual.rain}″ · {Math.round(t.climate.annual.snowCover)} days with snow on the ground
+                          <br />
+                        </>
+                      )}
+                      {t.stryker && (
+                        <>
+                          <b>Stryker:</b> {t.stryker.site} · {t.stryker.mi} mi{t.stryker.hrs ? ` · ${t.stryker.hrs}` : ""}
+                          <br />
+                        </>
+                      )}
                       <b>To Palatine:</b> {t.drive}
                     </div>
                     <div className="muted" style={{ marginTop: "4px", fontSize: "11px" }}>
-                      Full workup on the Scout tab.
+                      Dashed ring ≈ 15 minutes out, coloured by what the county median does to your budget. Full workup on the Scout tab.
                     </div>
                   </Popup>
                 </Marker>
               </div>
             );
           })}
+        {layerFilter.scout &&
+          STRYKER_SITES.map((site) => (
+            <Marker
+              key={site.id}
+              position={site.coords}
+              icon={pinIcon({ label: "S", color: "#f2a900", variant: "pin--stryker", title: site.name })}
+            >
+              <Popup>
+                <b>{site.name}</b>
+                <br />
+                <span className="muted">{site.what}</span>
+                <br />
+                <span className="muted">{site.address}{site.approx ? " · position approximate" : ""}</span>
+              </Popup>
+            </Marker>
+          ))}
 
         {/* Microclimates Layer */}
         {layerFilter.climate &&
@@ -1243,6 +1305,22 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           >
             ⌂ Town Scout
           </button>
+          {layerFilter.scout &&
+            [
+              ["now", "colour: now"],
+              ["dream", "colour: dream"],
+              ["tier", "colour: tier"],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                className={`layer-filter-btn layer-sub${scoutMode === id ? " is-active" : ""}`}
+                onClick={() => setScoutMode(id)}
+                title="How Town Scout pins and county rings are coloured"
+              >
+                {label}
+              </button>
+            ))}
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.flight ? " is-active" : ""}`}
@@ -1256,6 +1334,19 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       {/* Day Selector Legend */}
       {!compact && (
         <div className="map-legend">
+          {layerFilter.scout && (
+            <div className="legend-scout">
+              {scoutMode === "tier"
+                ? SCOUT_TIERS.map((x) => (
+                    <span key={x.id}><i style={{ background: x.color }} />{x.label}</span>
+                  ))
+                : [["ok", "Comfortable"], ["warn", "A stretch"], ["stop", "Out of reach"]].map(([k, l]) => (
+                    <span key={k}><i style={{ background: VERDICT_COLOR[k] }} />{l}</span>
+                  ))}
+              <span><i style={{ background: "#f2a900" }} />Stryker</span>
+              <span className="muted">ring = county median, ~15 min out</span>
+            </div>
+          )}
           {DAYS.filter((d) => geometry[d.id] || d.id === "d4").map((d) => (
             <button
               key={d.id}

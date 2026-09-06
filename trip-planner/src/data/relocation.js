@@ -211,6 +211,8 @@ export const SCOUT_CAMPBELL = { ...{
     "cityTax": 0,
     "taxState": "CA",
     "rent2br": 3170,
+    "rentActual": 1150,
+    "rentActualNote": "renting from family — well under market",
     "rent1br": 3245,
     "acsRent": 2737,
     "priceNote": "Redfin median sold, July 2026"
@@ -532,6 +534,11 @@ export const SCOUT_SF_CLIMATE = {
     }
   ]
 };
+
+/** Stryker — Gunnar's employer. HQ is in Michigan; coordinates refined by geocoding once the research pass lands. */
+export const STRYKER_SITES = [
+  { id: "stryker-hq", name: "Stryker Corporate HQ", what: "Global headquarters", address: "2825 Airview Blvd, Portage, MI 49002", coords: [42.2318, -85.562], approx: true },
+];
 
 export const SCOUT_TIERS = [
   {
