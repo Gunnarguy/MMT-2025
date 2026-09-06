@@ -40,7 +40,7 @@ const WORKUP_SECTIONS = [
   ["gotchas", "⚠️ Mover gotchas"],
 ];
 
-const DEFAULT_WEIGHTS = Object.fromEntries(SCOUT_DIMENSIONS.map((d) => [d.key, 1]));
+export const DEFAULT_WEIGHTS = Object.fromEntries(SCOUT_DIMENSIONS.map((d) => [d.key, 1]));
 
 const SUMMARY_ROWS = [
   ["Median home", (t) => t.median],
@@ -55,7 +55,7 @@ const SUMMARY_ROWS = [
   ["Nights below 0°F", (t) => (t.climate ? `${Math.round(t.climate.annual.below0)}` : "—")],
 ];
 
-function matchPercent(town, weights) {
+export function matchPercent(town, weights) {
   let num = 0;
   let den = 0;
   for (const d of SCOUT_DIMENSIONS) {

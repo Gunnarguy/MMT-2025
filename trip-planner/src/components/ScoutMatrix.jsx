@@ -52,7 +52,7 @@ const findRow = (wk, section, re) => (wk?.[section] || []).find(([k]) => re.test
 const findRowWith = (wk, section, re, pred) => ((wk?.[section] || []).find(([k, v]) => re.test(k) && pred(v)) || [])[1] ?? null;
 const mid = (a, b) => (b ? (Number(a) + Number(b)) / 2 : Number(a));
 
-function rowFor(t, { r, est, match, isHome, budgetTotal }) {
+export function rowFor(t, { r, est, match, isHome, budgetTotal }) {
   const wk = t.workup || {};
   const c = t.costs || {};
   const a = t.climate?.annual || {};
@@ -158,7 +158,7 @@ export const GROUPS = [
   ["scores", "🎯 Scores"],
 ];
 
-const COLUMNS = [
+export const COLUMNS = [
   // Money
   { key: "price", group: "money", label: "Median home", unit: "sold / ACS", good: "low", get: (r) => r.price, fmt: usdK, title: "Median sold price, or ACS home value where sales are thin" },
   { key: "own", group: "money", label: "Own it", unit: "per month", good: "low", get: (r) => r.own, fmt: usd, sub: (r) => (r.isHome && r.r?.rentActual ? `you rent for ${usd(r.r.rentActual)}` : r.own == null ? "Canada · not modeled" : null), title: "30-yr at 6.66%, 20% down, plus property tax and insurance", win: "🏠 Cheapest to own" },
@@ -209,7 +209,7 @@ const COLUMNS = [
   ...SCOUT_DIMENSIONS.map((d) => ({ key: `s-${d.key}`, group: "scores", label: `${d.icon} ${d.label}`, unit: "0–10", good: "high", kind: "score", get: (r) => r.scores?.[d.key] ?? null, fmt: (n) => `${n}`, title: d.hint })),
 ];
 
-const WINNERS = COLUMNS.filter((c) => c.win);
+export const WINNERS = COLUMNS.filter((c) => c.win);
 
 /* rank-based heat: 1 = best end of the column, 0 = worst, 0.5 = median */
 function heatFor(rows) {
