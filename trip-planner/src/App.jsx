@@ -23,12 +23,14 @@ import RideView from "./components/RideView";
 import RouteMap from "./components/RouteMap";
 import ScoutView from "./components/ScoutView";
 import StaysView from "./components/StaysView";
+import TodayView from "./components/TodayView";
 import EmergencyDrawer from "./components/visuals/EmergencyDrawer";
 import { DAYS, TRIP } from "./data/trip";
 import { useLocalState } from "./hooks/useLocalState";
 import { daysUntil } from "./lib/format";
 
 const TABS = [
+  { id: "today", label: "Today", icon: "☀" },
   { id: "overview", label: "Overview", icon: "◆" },
   { id: "loose", label: "Checklist", icon: "◈" },
   { id: "days", label: "Day by day", icon: "▤" },
@@ -53,8 +55,12 @@ function useHashRoute() {
     const raw = window.location.hash.replace(/^#\/?/, "");
     const [head, param] = raw.split("/");
     if (head === "day" && param) return { tab: "days", dayId: param };
+    if (head === "today") return { tab: "today", dayId: param || null };
     if (TABS.some((t) => t.id === head)) return { tab: head, dayId: null };
-    return { tab: "overview", dayId: null };
+    // Bare "#/" lands on Today while the trip is ahead or running, because that
+    // is the only tab that answers "what now". Once it is over, Today is a dead
+    // end and Overview is the better front door.
+    return { tab: daysUntil(TRIP.end) >= 0 ? "today" : "overview", dayId: null };
   };
 
   const [route, setRoute] = useState(read);
@@ -69,7 +75,8 @@ function useHashRoute() {
   }, []);
 
   const go = useCallback((tab, dayId) => {
-    window.location.hash = dayId ? `#/day/${dayId}` : `#/${tab}`;
+    if (tab === "today") window.location.hash = dayId ? `#/today/${dayId}` : "#/today";
+    else window.location.hash = dayId ? `#/day/${dayId}` : `#/${tab}`;
   }, []);
 
   return [route, go];
@@ -181,6 +188,7 @@ export default function App() {
             <RouteMap />
           </>
         )}
+        {route.tab === "today" && <TodayView forcedDayId={route.dayId} />}
         {route.tab === "stays" && <StaysView />}
         {route.tab === "ride" && <RideView />}
         {route.tab === "money" && <MoneyView />}

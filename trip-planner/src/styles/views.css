@@ -1004,3 +1004,50 @@
   .mx-toolbar { gap: 0.4rem 0.6rem; }
   .mx-win { flex: 1 1 8rem; }
 }
+
+/* ── Today: the road view ──────────────────────────────────────────────
+   Sized for a phone held at arm's length in a moving car, so every rule
+   here trades density for reach: bigger type, taller tap targets, and a
+   single column at every width. */
+.tv { max-width: 46rem; }
+.tv-head { margin-bottom: var(--s-5); }
+.tv-head h1 { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.05; margin: 0.2em 0 0.15em; }
+.tv-date { font-family: var(--font-mono); font-size: var(--t-sm); color: var(--day, var(--accent)); font-weight: 700; letter-spacing: 0.04em; }
+.tv-lede { font-size: var(--t-base); color: var(--ink-2); margin-top: var(--s-2); line-height: 1.55; }
+.tv-metrics { display: flex; gap: var(--s-4); flex-wrap: wrap; padding: var(--s-3) 0; border-block: 1px solid var(--line); margin-bottom: var(--s-4); }
+.tv-metrics div { display: flex; flex-direction: column; }
+.tv-metrics b { font-family: var(--font-display); font-size: 1.5rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.tv-metrics span { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-top: 0.2rem; }
+
+.tv-rail { list-style: none; margin: var(--s-4) 0; padding: 0 0 0 var(--s-4); border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: var(--s-4); }
+.tv-leg, .tv-stop { position: relative; display: grid; gap: 0.15rem; }
+.tv-leg { grid-template-columns: 4.5rem 1fr; align-items: start; gap: var(--s-3); color: var(--ink-2); }
+.tv-leg-time { font-family: var(--font-mono); font-size: var(--t-sm); font-weight: 700; color: var(--day, var(--accent)); font-variant-numeric: tabular-nums; }
+.tv-leg-mi { color: var(--ink-3); font-size: var(--t-sm); }
+.tv-stop { padding-left: var(--s-3); }
+.tv-dot { position: absolute; left: calc(-1 * var(--s-4) - 6px); top: 0.45rem; width: 10px; height: 10px; border-radius: 50%; background: var(--day, var(--accent)); box-shadow: 0 0 0 3px var(--surface); }
+.tv-stop-head { display: flex; gap: 0.45rem; align-items: baseline; flex-wrap: wrap; }
+.tv-stop-head b { font-size: var(--t-lg); }
+.tv-where { font-size: var(--t-sm); color: var(--ink-2); }
+.tv-note { font-size: var(--t-sm); color: var(--ink-3); line-height: 1.5; }
+.tv-fix { font-size: var(--t-sm); color: var(--ink); margin-top: 0.2rem; }
+
+.tv-fuel { padding: var(--s-3); border-radius: var(--radius); background: var(--surface-2); margin-bottom: var(--s-3); }
+.tv-bed { padding: var(--s-4); border-radius: var(--radius-lg); background: var(--surface-2); border: 1px solid var(--line); margin: var(--s-4) 0; }
+.tv-bed h3 { font-size: var(--t-xl); margin: 0.15em 0 0.2em; }
+.tv-bed--home { background: transparent; border-style: dashed; }
+.tv-conf { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: var(--s-2) 0; }
+.tv-next { padding: var(--s-3) var(--s-4); border-radius: var(--radius); border: 1px dashed var(--line); margin-top: var(--s-4); }
+.tv-next b { display: block; font-size: var(--t-lg); margin: 0.15em 0 0.15em; }
+.tv-foot { font-size: var(--t-xs); color: var(--ink-3); margin-top: var(--s-5); line-height: 1.6; }
+
+.tv-punch { list-style: none; margin: var(--s-4) 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-3); }
+.tv-punch li { padding: var(--s-4); border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--surface); }
+.tv-punch li.is-conf { border-left: 4px solid var(--stop); }
+.tv-punch-head { display: flex; gap: 0.5rem; align-items: baseline; justify-content: space-between; flex-wrap: wrap; margin-bottom: 0.3rem; }
+.tv-punch-head b { font-size: var(--t-lg); }
+@media (max-width: 640px) {
+  .tv-leg { grid-template-columns: 3.6rem 1fr; }
+  .tv-punch li, .tv-bed { padding: var(--s-3); }
+}
+.tv-h2 { display: flex; align-items: baseline; gap: 0.5rem; font-size: var(--t-xl); margin: var(--s-5) 0 0.3rem; }

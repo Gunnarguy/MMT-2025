@@ -25,7 +25,7 @@ import { CALENDAR_EVENTS, downloadIcsFile } from "../lib/calendarExport";
  * Legs are emitted in order, and any left over (the last run into the hotel
  * town) land at the end.
  */
-function timeline(day) {
+export function timeline(day) {
   const stops = day.stops || [];
   const legs = day.legs || [];
   const items = [];
