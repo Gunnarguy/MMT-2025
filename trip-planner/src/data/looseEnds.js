@@ -53,20 +53,6 @@ export const LOOSE_ENDS = [
     urlLabel: "Car & flight details",
   },
   {
-    id: "second-driver",
-    kind: "action",
-    dayId: "d0",
-    when: "Mon 9/14, 9:00 PM",
-    title: "Add Mikaela as driver on rental agreement",
-    problem:
-      "Costco Travel bookings include an additional driver at no extra charge.",
-    answer:
-      "Add Mikaela to the rental agreement at the O'Hare Budget counter at pickup for shared driving.",
-    deadline: "At vehicle pickup Monday 9pm",
-    url: "#/ride",
-    urlLabel: "Rental details",
-  },
-  {
     id: "monday-home",
     kind: "action",
     dayId: "d7",
