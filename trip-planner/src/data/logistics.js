@@ -176,6 +176,16 @@ export const DEFAULT_FLIGHTS = [
     depTime: "13:29",
     to: "ORD",
     arrTime: "20:21",
+    aircraft: "Boeing 737-800 / 737 MAX 8",
+    specs: "172 seats · 3-3 layout · 110V AC + 5V USB-A · Viasat Wi-Fi",
+    depTerminal: "SFO Terminal 1 (Harvey Milk)",
+    depGate: "Gates B1–B27",
+    arrTerminal: "ORD Terminal 3",
+    arrGate: "Concourse H / K",
+    boardingCutoff: "1:14 PM PDT (T-15m strict door closure)",
+    flightTime: "4h 52m flight time · 1,846 miles",
+    seatTactics: "Tandem Aisle Strategy: Gunnar (18D) & Mikaela (19D). Starboard aisle, overhead bin claim, no middle seat, fast deplane queue.",
+    baggageClaim: "ORD Terminal 3 Lower Level, Carousels 1–6",
     passengers: [
       { name: "Gunnar Hostetler", record: "QPJBXO", seat: "18D" },
       { name: "Mikaela Hostetler", record: "YBEEOU", seat: "19D" },
@@ -192,11 +202,37 @@ export const DEFAULT_FLIGHTS = [
     depTime: "15:20",
     to: "SFO",
     arrTime: "18:09",
+    aircraft: "Boeing 737 / Airbus A321",
+    specs: "Transcon layout · 110V AC + 5V USB-A · High-Speed Wi-Fi",
+    depTerminal: "ORD Terminal 3",
+    depGate: "Concourse H / K",
+    arrTerminal: "SFO Terminal 1 (Harvey Milk)",
+    arrGate: "Gates B1–B27",
+    boardingCutoff: "3:05 PM CDT (T-15m strict door closure)",
+    flightTime: "4h 49m flight time · 1,846 miles",
+    seatTactics: "Side-by-side pair: Gunnar (22E, middle) & Mikaela (22D, aisle). Starboard side behind overwing exit.",
+    baggageClaim: "SFO Terminal 1 Lower Level, Carousels 1–4",
     passengers: [
       { name: "Gunnar Hostetler", record: "QPJBXO", seat: "22E" },
       { name: "Mikaela Hostetler", record: "YBEEOU", seat: "22D" },
     ],
   },
+];
+
+/**
+ * Monday the 14th: Inbound tactical flight runway working forward from SFO
+ * to Palatine arrival.
+ */
+export const RUN_INBOUND = [
+  { at: "12:45 PM PDT", what: "Boarding Commences (SFO T1 Harvey Milk)", detail: "Groups 1–4 overhead bin space defense; carry-on bags stowed above rows 18/19." },
+  { at: "1:14 PM PDT", what: "Gate Door Closes (T-15 min)", detail: "Strict AA cutoff. Mobile boarding passes scanned, seats 18D & 19D settled." },
+  { at: "1:29 PM PDT", what: "AA 2358 Pushback & Wheels Up", detail: "Depart SFO runway 01L/28R. En route FL350–FL370 (~520 mph). Clock jumps +2 hrs into Central Time." },
+  { at: "8:21 PM CDT", what: "Wheels Down Chicago O'Hare (ORD T3)", detail: "Touchdown runway 10C/27L or 09L/27R. Taxi to Terminal 3 Concourse H/K." },
+  { at: "8:35 PM CDT", what: "Deplane & Transit to ATS People-Mover", detail: "Exit rows 18/19. Skip baggage claim if carry-on only; take pedestrian bridge to ATS Station." },
+  { at: "8:45 PM CDT", what: "Board Automated ATS Train to MMF", detail: "Free 24/7 automated train. 9–11 minute direct ride to the Multi-Modal Facility (MMF)." },
+  { at: "9:00 PM CDT", what: "Budget Rental Counter (Level 1 MMF)", detail: "Fastbreak desk. Key request: 'Please issue the free Canadian Non-Resident Insurance Card for Ontario.'" },
+  { at: "9:25 PM CDT", what: "Vehicle Inspection & Departure", detail: "Photograph all panels, odometer, and full tank in garage. Exit Zemke Blvd to I-90 West." },
+  { at: "10:00 PM CDT", what: "Arrive Palatine (2020 Crestwood Ln)", detail: "Drop bags, decompress, and rest for Tuesday morning's 6:45 AM departure to Grand Rapids." },
 ];
 
 /**
@@ -213,4 +249,23 @@ export const RUN_HOME = [
   { at: "12:45 PM CT", what: "O'Hare, Multi-Modal Facility. Return the car." },
   { at: "1:30 PM CT", what: "Terminal 3, bags checked, through security." },
   { at: "3:20 PM CT", what: "AA 1253 pushes back." },
+];
+
+export const SWEATY_FLIGHT_TIPS = [
+  {
+    title: "Dual-Aisle Tandem Seating (18D & 19D)",
+    body: "By booking tandem aisle seats (Gunnar in 18D, Mikaela in 19D) on the starboard aisle, you avoid the middle-seat shoulder pinch, secure overhead bin space directly above your row upon boarding, and can pass items through the seat gap while deplaning in seconds.",
+  },
+  {
+    title: "ORD ATS People-Mover Transfer Protocol",
+    body: "Don't take ground shuttles or walk outside. Follow overhead signs from T3 arrivals to the ATS (Airport Transit System). Trains depart every 3–5 minutes from the station between T2 and T3. The direct ride to the Multi-Modal Facility (MMF) takes 10 minutes flat.",
+  },
+  {
+    title: "Verbatim Budget Desk Script for Canada",
+    body: "At the MMF Level 1 Budget counter, say: 'We are driving into Ontario this Saturday through Port Huron and returning through Detroit. Please print and sign the Canadian Non-Resident Insurance Card to keep in our glovebox.' It is 100% free under Budget's US/Canada cross-border policy.",
+  },
+  {
+    title: "In-Flight Power & Telemetry",
+    body: "AA's 737-800 transcon fleet features 110V AC power under the center of each seat group and 5V USB-A in the seatback. Free live satellite flight tracking, Apple Music streaming, and messaging over Viasat Wi-Fi without buying full internet.",
+  },
 ];

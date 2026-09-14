@@ -7,6 +7,7 @@ import { duration, longDate, daysUntil, parseDay } from "../lib/format";
 import { Chip, Flag, ActionRow } from "./bits";
 import { timeline } from "./DayPanel";
 import TripForecast from "./TripForecast";
+import FlightRunway from "./visuals/FlightRunway";
 import { useTripWeather } from "../hooks/useTripWeather";
 import { dateAt } from "../lib/tripWeather";
 
@@ -88,6 +89,8 @@ function Leg({ leg }) {
 }
 
 function Stop({ stop }) {
+  const isFlight = stop.id === "d0-flight" || stop.id === "d7-flight";
+  const flightNum = isFlight ? (stop.id === "d0-flight" ? "2358" : "1253") : null;
   return (
     <li className="tv-stop">
       <span className="tv-dot" aria-hidden="true" />
@@ -98,6 +101,34 @@ function Stop({ stop }) {
         </div>
         {stop.where && <div className="tv-where">{stop.where}</div>}
         {stop.hours && <div className="tv-note">Hours: {stop.hours}</div>}
+        {stop.blurb && <div className="tv-note" style={{ margin: "4px 0" }}>{stop.blurb}</div>}
+        {stop.tips && stop.tips.length > 0 && (
+          <ul style={{ margin: "4px 0 6px 16px", padding: 0, fontSize: "var(--t-xs)", color: "var(--fg-muted)" }}>
+            {stop.tips.map((t, idx) => <li key={idx}>{t}</li>)}
+          </ul>
+        )}
+        {isFlight && (
+          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", margin: "6px 0" }}>
+            <a
+              href={`https://www.flightaware.com/live/flight/AAL${flightNum}`}
+              target="_blank"
+              rel="noreferrer"
+              className="action action--nav"
+              style={{ fontSize: "11px", padding: "4px 8px" }}
+            >
+              ✈️ Live Radar #{flightNum}
+            </a>
+            <a
+              href={`https://www.aa.com/travelInformation/flights/status/detail?flightNumber=${flightNum}`}
+              target="_blank"
+              rel="noreferrer"
+              className="action action--web"
+              style={{ fontSize: "11px", padding: "4px 8px" }}
+            >
+              📋 AA Status &amp; Gate
+            </a>
+          </div>
+        )}
         <ActionRow phone={stop.phone} mapQuery={stop.address} url={stop.url} />
       </div>
     </li>
@@ -161,6 +192,12 @@ function DayBody({ day }) {
           it.type === "leg" ? <Leg key={it.key} leg={it.leg} /> : <Stop key={it.key} stop={it.stop} />,
         )}
       </ol>
+
+      {(day.id === "d0" || day.id === "d7") && (
+        <div style={{ margin: "var(--s-4) 0" }}>
+          <FlightRunway initialMode={day.id === "d0" ? "inbound" : "return"} />
+        </div>
+      )}
 
       {fuel.map((f) => (
         <div key={f.id} className="tv-fuel">

@@ -9,6 +9,7 @@ import {
   PASSENGER_FIELDS,
   RENTAL,
   RUN_HOME,
+  SWEATY_FLIGHT_TIPS,
   VEHICLE_FIELDS,
   VEHICLE_NOTES,
 } from "../data/logistics";
@@ -109,6 +110,15 @@ export default function RideView() {
   // and a stored v1 would otherwise shadow them forever.
   const [flights, setFlights] = useLocalState("mi26.flights.v2", DEFAULT_FLIGHTS);
   const [copied, setCopied] = useState(false);
+  const [copiedPnr, setCopiedPnr] = useState(null);
+
+  const copyPnr = useCallback((record) => {
+    if (!record) return;
+    navigator.clipboard?.writeText(record).then(() => {
+      setCopiedPnr(record);
+      setTimeout(() => setCopiedPnr(null), 2000);
+    });
+  }, []);
 
   const setV = useCallback(
     (key, value) => setVehicle((p) => ({ ...p, [key]: value })),
@@ -326,11 +336,38 @@ export default function RideView() {
 
         {flights.map((f) => {
           const verdict = check(f);
+          const flightNum = (f.number || f.flight || "").replace(/\D/g, "");
           return (
             <div className="ride-card" key={f.id}>
-              <div className="ride-card-head">
+              <div className="ride-card-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: "8px" }}>
                 <h3>{f.label}</h3>
+                {f.aircraft && <span className="chip chip--ghost" style={{ fontSize: "11px" }}>✈ {f.aircraft}</span>}
               </div>
+
+              {f.specs && (
+                <div className="ride-flight-specs" style={{ fontSize: "var(--t-xs)", color: "var(--fg-muted)", padding: "4px 0 8px 0" }}>
+                  <b>Cabin Profile:</b> {f.specs} {f.flightTime ? `· ${f.flightTime}` : ""}
+                </div>
+              )}
+
+              {f.depTerminal && (
+                <div className="ride-flight-gates" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "8px", margin: "6px 0 12px 0", padding: "8px 12px", background: "var(--bg-subtle)", borderRadius: "var(--r-md)", fontSize: "var(--t-xs)" }}>
+                  <div>
+                    <b>Departure:</b> {f.depTerminal}
+                    <div className="muted">{f.depGate} · Door cutoff: {f.boardingCutoff || "T-15m"}</div>
+                  </div>
+                  <div>
+                    <b>Arrival:</b> {f.arrTerminal}
+                    <div className="muted">{f.arrGate} · Bag claim: {f.baggageClaim || "Baggage Level"}</div>
+                  </div>
+                </div>
+              )}
+
+              {f.seatTactics && (
+                <div className="ride-seat-tactics" style={{ fontSize: "var(--t-xs)", background: "rgba(38, 112, 68, 0.08)", borderLeft: "3px solid var(--ok)", padding: "6px 10px", margin: "6px 0 12px 0", borderRadius: "0 6px 6px 0" }}>
+                  <strong>Seat Strategy:</strong> {f.seatTactics}
+                </div>
+              )}
 
               <div className="fld-grid">
                 {FLIGHT_FIELDS.map((def) => (
@@ -344,40 +381,63 @@ export default function RideView() {
               </div>
 
               {(f.passengers || []).map((pax, i) => (
-                <div className={`ride-pax${i === 0 ? " is-first" : ""}`} key={pax.name || i}>
-                  {PASSENGER_FIELDS.map((def) => (
-                    <Field
-                      key={def.key}
-                      def={def}
-                      value={pax[def.key]}
-                      onChange={(k, v) => setP(f.id, i, k, v)}
-                    />
-                  ))}
+                <div className={`ride-pax${i === 0 ? " is-first" : ""}`} key={pax.name || i} style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+                  <div style={{ flex: 1, minWidth: "220px" }}>
+                    {PASSENGER_FIELDS.map((def) => (
+                      <Field
+                        key={def.key}
+                        def={def}
+                        value={pax[def.key]}
+                        onChange={(k, v) => setP(f.id, i, k, v)}
+                      />
+                    ))}
+                  </div>
+                  {pax.record && (
+                    <button
+                      type="button"
+                      className="action"
+                      onClick={() => copyPnr(pax.record)}
+                      title="Copy 6-character PNR record locator to clipboard"
+                      style={{ fontSize: "11px", padding: "6px 10px", height: "32px", alignSelf: "center", marginTop: "12px" }}
+                    >
+                      {copiedPnr === pax.record ? "PNR Copied ✓" : `Copy PNR ${pax.record} ⧉`}
+                    </button>
+                  )}
                 </div>
               ))}
 
               <div className="flight-tracker-actions" style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "var(--s-3)" }}>
-                {f.flight && (
+                {flightNum && (
                   <>
                     <a
-                      href={`https://www.flightaware.com/live/flight/AAL${f.flight.replace(/\D/g, "")}`}
+                      href={`https://www.flightaware.com/live/flight/AAL${flightNum}`}
                       target="_blank"
                       rel="noreferrer"
                       className="action action--nav"
                       title="Live radar & inbound aircraft tracking on FlightAware"
                     >
                       <span aria-hidden="true">✈️</span>
-                      Track Flight #{f.flight} on FlightAware
+                      FlightAware Radar (#{flightNum})
                     </a>
                     <a
-                      href={`https://www.aa.com/travelInformation/flights/status/detail?flightNumber=${f.flight.replace(/\D/g, "")}`}
+                      href={`https://www.flightradar24.com/data/flights/aa${flightNum}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="action action--nav"
+                      title="Live telemetry & playback on Flightradar24"
+                    >
+                      <span aria-hidden="true">📡</span>
+                      Flightradar24 Telemetry
+                    </a>
+                    <a
+                      href={`https://www.aa.com/travelInformation/flights/status/detail?flightNumber=${flightNum}`}
                       target="_blank"
                       rel="noreferrer"
                       className="action action--web"
                       title="Official American Airlines gate, baggage & status"
                     >
                       <span aria-hidden="true">📋</span>
-                      AA.com Flight Status
+                      AA.com Official Status
                     </a>
                   </>
                 )}
@@ -392,29 +452,39 @@ export default function RideView() {
           );
         })}
 
+        <div className="flight-nas-strip" style={{ display: "flex", gap: "10px", flexWrap: "wrap", margin: "var(--s-3) 0", padding: "10px 14px", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", fontSize: "var(--t-xs)", alignItems: "center" }}>
+          <b>Airspace &amp; Security Feeds:</b>
+          <a href="https://nasstatus.faa.gov/" target="_blank" rel="noreferrer" className="action action--web" style={{ fontSize: "11px", padding: "4px 8px" }}>
+            🚦 FAA NAS Airspace Delay Status ↗
+          </a>
+          <a href="https://www.flychicago.com/ohare/myflight/security/pages/default.aspx" target="_blank" rel="noreferrer" className="action action--web" style={{ fontSize: "11px", padding: "4px 8px" }}>
+            ⏱️ O'Hare (ORD) TSA Security Wait Times ↗
+          </a>
+        </div>
+
         <button type="button" className="le-disclose" onClick={copy}>
           {copied ? "Copied to the clipboard" : "Copy the car and flights as text"}
           <span aria-hidden="true">{copied ? "✓" : "⧉"}</span>
         </button>
+
+        <div className="stack" style={{ gap: "var(--s-3)", marginTop: "var(--s-4)", marginBottom: "var(--s-4)" }}>
+          <h3 style={{ fontSize: "var(--t-sm)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--fg-muted)" }}>Sweaty Flight Ops Playbook</h3>
+          {SWEATY_FLIGHT_TIPS.map((n) => (
+            <div className="note-strip" key={n.title}>
+              <b>{n.title}:</b> {n.body}
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* ── Monday, backwards from the gate ─────────────────────────────── */}
+      {/* ── Flight Runway Timelines ─────────────────────────────────────── */}
       <section className="section">
-        <h2>Monday, backwards from the gate</h2>
+        <h2>Tactical Flight Runways</h2>
         <p className="section-lede">
-          The schedule the return flight actually imposes. It is not the one on the
-          day page, and Ann Arbor is the only stop that survives it.
+          Minute-by-minute execution runways. Toggle between today's inbound arrival sprint and Monday's return flight deadline.
         </p>
-        <ol className="ride-run">
-          {RUN_HOME.map((r) => (
-            <li key={r.at}>
-              <b>{r.at}</b>
-              <span>{r.what}</span>
-            </li>
-          ))}
-        </ol>
 
-        <FlightRunway />
+        <FlightRunway initialMode="inbound" />
       </section>
     </>
   );

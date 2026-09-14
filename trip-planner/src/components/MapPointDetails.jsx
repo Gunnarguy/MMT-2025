@@ -70,13 +70,36 @@ export function FlightPointDetails({ slot, airport = false }) {
   const [flights] = useLocalState("mi26.flights.v2", DEFAULT_FLIGHTS);
   const flight = flights.find(f => f.slot === slot);
   if (!flight) return <p>No flight saved for this leg. <a href="#/ride">Open Car & flights</a></p>;
+  const flightNum = (flight.number || "").replace(/\D/g, "");
   return <div className="point-details">
-    <PointFacts rows={[["Flight", `${flight.airline} · ${flight.number}`], ["Date", flight.date], ["Departure", `${flight.from} ${flight.depTime} · airport local time`], ["Arrival", `${flight.to} ${flight.arrTime} · airport local time`], ["Terminal", flight.terminal], ["Gate", flight.gate || "Check airline / airport displays"]]} />
-    <p>Saved itinerary, not live flight tracking. Flight arcs are illustrative.</p>
+    <PointFacts rows={[
+      ["Flight", `${flight.airline} · ${flight.number}`],
+      ["Aircraft", flight.aircraft],
+      ["Cabin & Power", flight.specs],
+      ["Date", flight.date],
+      ["Departure", `${flight.from} ${flight.depTime} · ${flight.depTerminal || ""}`],
+      ["Arrival", `${flight.to} ${flight.arrTime} · ${flight.arrTerminal || ""}`],
+      ["Boarding Cutoff", flight.boardingCutoff],
+      ["Seating Strategy", flight.seatTactics],
+      ["Baggage Claim", flight.baggageClaim],
+    ]} />
+    {flight.passengers && (
+      <p className="point-context" style={{ margin: "6px 0" }}>
+        <strong>Passengers:</strong> {flight.passengers.map(p => `${p.name} (Seat ${p.seat}, PNR ${p.record})`).join(" · ")}
+      </p>
+    )}
+    <div className="point-actions" style={{ marginTop: "6px" }}>
+      {flightNum && (
+        <>
+          <a href={`https://www.flightaware.com/live/flight/AAL${flightNum}`} target="_blank" rel="noreferrer">FlightAware Radar ↗</a>
+          <a href={`https://www.flightradar24.com/data/flights/aa${flightNum}`} target="_blank" rel="noreferrer">Flightradar24 ↗</a>
+          <a href={`https://www.aa.com/travelInformation/flights/status/detail?flightNumber=${flightNum}`} target="_blank" rel="noreferrer">AA Status ↗</a>
+        </>
+      )}
+    </div>
     {airport && <p>{slot === "arrive" ? ANCHORS.arrive.why : ANCHORS.depart.why}</p>}
     {slot === "depart" && <details><summary>Return-day timing</summary><PointFacts rows={RUN_HOME.map(r => [r.at, r.what])} /></details>}
-    <PointActions url="https://www.aa.com/travelInformation/flights/status" urlLabel="Live airline status" />
-    <a href="#/ride">Car & flights · seats and booking details →</a>
+    <a href="#/ride">Car & flights · full ops deck & runways →</a>
   </div>;
 }
 
