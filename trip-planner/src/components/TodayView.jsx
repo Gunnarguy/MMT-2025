@@ -1,7 +1,8 @@
+import { useChecklist } from "../hooks/useLocalState";
 import { DAYS, HOME, TRIP } from "../data/trip";
 import { LODGING } from "../data/lodging";
 import { FUEL_STOPS } from "../data/fuel";
-import { LOOSE_ENDS } from "../data/looseEnds";
+import { outstandingLooseEnds } from "../data/looseEnds";
 import { duration, longDate, daysUntil, parseDay } from "../lib/format";
 import { Chip, Flag, ActionRow } from "./bits";
 import { timeline } from "./DayPanel";
@@ -40,7 +41,7 @@ const lodgingFor = (day) => (day?.sleep ? LODGING.find((l) => l.name === day.sle
  */
 const DATED = /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/;
 
-export function punchList() {
+export function punchList(checked = {}) {
   const missing = LODGING.filter((l) => !l.conf).map((l) => ({
     id: `conf-${l.id}`,
     kind: "conf",
@@ -53,7 +54,7 @@ export function punchList() {
     now: true,
   }));
 
-  const ends = LOOSE_ENDS.filter((e) => e.kind !== "border").map((e) => {
+  const ends = outstandingLooseEnds(checked).filter((e) => e.kind !== "border").map((e) => {
     const day = DAYS.find((d) => d.id === e.dayId);
     return {
       id: e.id,
@@ -203,7 +204,8 @@ function PunchItem({ item, showCountdown }) {
 
 /** Before departure: the only screen that matters is what is not done yet. */
 function Countdown({ out }) {
-  const { before, onDay } = punchList();
+  const { checked } = useChecklist("mi26.looseends");
+  const { before, onDay } = punchList(checked);
   const first = DAYS[0];
   return (
     <>

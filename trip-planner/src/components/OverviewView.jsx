@@ -1,5 +1,6 @@
+import { useChecklist } from "../hooks/useLocalState";
 import { budgetTotals } from "../data/budget";
-import { KINDS, KIND_ORDER, LOOSE_ENDS, looseEndTotals } from "../data/looseEnds";
+import { KINDS, KIND_ORDER, outstandingLooseEnds, looseEndTotals } from "../data/looseEnds";
 import { DAYS, HIGHLIGHTS, TRIP } from "../data/trip";
 import { daysUntil, money } from "../lib/format";
 import { downloadIcsFile } from "../lib/calendarExport";
@@ -12,8 +13,9 @@ export default function OverviewView({ onGo }) {
   const totalDrive = DAYS.reduce((n, d) => n + (d.driveMinutes || 0), 0);
   const drivingDays = DAYS.filter((d) => (d.driveMinutes || 0) > 0).length;
   const { perPerson } = budgetTotals();
-  const totals = looseEndTotals();
-  const keyActionItems = LOOSE_ENDS.slice(0, 3);
+  const { checked } = useChecklist("mi26.looseends");
+  const totals = looseEndTotals(checked);
+  const keyActionItems = outstandingLooseEnds(checked).slice(0, 3);
 
   return (
     <>
@@ -108,7 +110,7 @@ export default function OverviewView({ onGo }) {
       <section className="section">
         <h2>Key Action Items & Reservations</h2>
         <p className="section-lede">
-          The essential reservations, rental counter requests, and border requirements for the trip.
+          {totals.done} completed · {totals.open} remaining. Progress is saved on this device, online or offline.
         </p>
 
         <div className="le-filters" style={{ marginBottom: "var(--s-4)" }}>
@@ -126,6 +128,7 @@ export default function OverviewView({ onGo }) {
           ))}
         </div>
 
+        {totals.open === 0 && <p>All checklist items are complete. You can review or uncheck them in Checklist.</p>}
         <div className="le-stack">
           {keyActionItems.map((d) => (
             <button

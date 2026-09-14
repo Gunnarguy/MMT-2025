@@ -131,10 +131,15 @@ export const LOOSE_ENDS = [
 ];
 
 /** Counts by kind, plus how many are completed. */
-export function looseEndTotals() {
+export function outstandingLooseEnds(checked = {}) {
+  return LOOSE_ENDS.filter(item => !checked[item.id]);
+}
+
+export function looseEndTotals(checked = {}) {
+  const pending = outstandingLooseEnds(checked);
   const byKind = {};
   KIND_ORDER.forEach((k) => {
-    byKind[k] = LOOSE_ENDS.filter((e) => e.kind === k).length;
+    byKind[k] = pending.filter((e) => e.kind === k).length;
   });
-  return { byKind, open: LOOSE_ENDS.length, total: LOOSE_ENDS.length, done: 0 };
+  return { byKind, open: pending.length, total: LOOSE_ENDS.length, done: LOOSE_ENDS.length - pending.length };
 }
