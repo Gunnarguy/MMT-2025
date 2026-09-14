@@ -2,8 +2,8 @@
 
 Updated: 2026-09-14 (trip day 0, arrival night)
 Branch/worktree: main (no worktrees)
-Last verified commit: dc05708 (built, deployed; served hash `assets/index-ByVHghW0.js`, bundle contains
-"Buying here, realistically" and "HUD FMR FY2027"). Working tree clean at the time of writing.
+Last verified commit: c13d99d (built, deployed; served hash `assets/index-B3qYH0F0.js`, bundle contains
+"no fabricated or mislabelled figure was found"). Working tree clean at the time of writing.
 
 Older notes: [MOBILE.md](MOBILE.md) (offline saving, map access) and [ROUTE-OPTIONS.md](ROUTE-OPTIONS.md)
 (SkyBridge comparison, live weather).
@@ -17,11 +17,13 @@ of the field guide, shipped in 80fe470 and is live.
 
 ## Status
 
-Objective 2 is LIVE as of commit dc05708: every town's housing and bills refreshed from September
-2026 sources, a "Buying here, realistically" workup section per town, HUD FMR FY2027 rents on one
-scale, one documented comfort formula, mortgage rate 6.76%. The four adversarial verifiers
-(`scout-verify-{A,B,C,D}.json` in the scratchpad) had NOT finished when it shipped; the Scout
-footer says so. Their findings are the one open follow-up.
+Both objectives are complete and live. The Scout refresh shipped in dc05708 and was corrected in
+8a9ccf6, 11888b1 and c13d99d as the four adversarial verifiers returned: no fabricated or
+mislabelled figure was found in any batch; their representativeness calls (Charlevoix $450,055 and
+Mackinaw City $275,000 twelve-month public-records medians, Traverse City's city-proper $453,375,
+Ludington's and Traverse City's own millage sheets, city-level insurance, Windsor's active
+inventory, Campbell labelled as the Campbell area) are applied and explained in each town's
+"Buying here, realistically" rows. There is no active objective.
 
 ## Completed
 
@@ -80,21 +82,19 @@ From `trip-planner/`, every line observed this session:
 
 ## Blockers / Unknowns
 
-- Research results are not in yet. Check `ls <scratchpad>/scout-research-*.json`. Partial batches
-  are usable on their own; a missing batch means those towns keep the 2026-08-28 figures and the
-  footer must not claim a full refresh for them.
-- Five hotel confirmation numbers are still `conf: null` in `src/data/lodging.js` (needs the user).
+- Five hotel confirmation numbers are still `conf: null` in `src/data/lodging.js` (`ludington`,
+  `traverse-city`, `mackinaw-city`, `sarnia`, `belleville`). Needs the user; every surface shows a
+  loud fallback.
+- Two figures nobody could source this round and the priors stand: Campbell's Prop 13 tax-rate-area
+  rate (1.3%; the county rate book is Cloudflare-gated) and car insurance everywhere (Bankrate
+  unfetchable; the 2026-08-28 Bankrate figures stay so the CA/MI comparison is like for like).
+- Small items the verifiers noted but that are not in the data: Detroit's DTE Gas "from Oct 1" date
+  is not in the cited release; Windsor's marketNote quotes a 10.1% unemployment rate that matches
+  no StatCan month. Both sit in the towns' "Verification notes" rows.
 
 ## Exact Next Action
 
-When `<scratchpad>/scout-verify-{A,B,C,D}.json` exist (a Monitor was watching for them): read each
-issue with severity fabricated/mislabelled/implausible, decide per field, then re-run
-`node <scratchpad>/scout-curate.mjs` (it reads the verify files and falls back to the prior for
-flagged fields, adding a "Verification notes" row) and
-`python3 <scratchpad>/scout-patch.py <scratchpad>/scout-final.json` (idempotent), then from
-`trip-planner/`: `npx --no-install eslint src && npm run build && node --test scripts/*.test.mjs`,
-commit, push, `gh run watch ... --exit-status`, confirm the served hash moves off
-`assets/index-ByVHghW0.js`, and change the footer sentence "an independent re-sourcing pass was
-still running when this went live" in the META `refreshMethod` (set in scout-curate.mjs) to state
-what the pass found. If the scratchpad is gone, the research must be redone from the brief in the
-memory note `scout-refresh-method`.
+None. Both objectives are complete and verified live. There is no active objective; ask the user
+what to pick up. If the Scout figures are ever refreshed again, start from the memory note
+`scout-refresh-method` (sources that work, ones that block, the geography trap, the comfort
+formula); the scratchpad pipeline is session-scoped and will be gone.
