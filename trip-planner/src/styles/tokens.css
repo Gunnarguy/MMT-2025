@@ -40,6 +40,23 @@
   --gutter: clamp(1rem, 3.5vw, 2.5rem);
   --measure: 68ch;
   --shell: 1180px;
+  --t-md: clamp(1rem, 0.95rem + 0.25vw, 1.1rem);
+  --radius-md: var(--radius);
+
+  /* ── Aliases ──────────────────────────────────────────────────────────
+     The newer widgets (daylight ribbon, fuel planner, co-pilot, map tools)
+     were written against a second vocabulary: --fg, --border, --bg-card.
+     They resolve to the one palette above, so every surface follows the
+     theme instead of silently falling back to transparent. */
+  --fg: var(--ink);
+  --ink-1: var(--ink);
+  --fg-muted: var(--ink-3);
+  --border: var(--line);
+  --rule: var(--line);
+  --bg-card: var(--surface);
+  --bg-subtle: var(--surface-2);
+  --bg-sun-track: var(--surface-3);
+  --water: var(--brand);
 
   /* ── Route palette ────────────────────────────────────────────────────── */
   /* One hue per travel day, walking the route south→north→south. Used for the
@@ -64,6 +81,11 @@
   --info-bg: #e4f0f6;
   --locked: #5b4b8a;
   --locked-bg: #ece8f7;
+
+  /* Sun, golden hour and food-stop gold. Deliberately not a --day-N colour:
+     the route palette means "one day" and nothing else. */
+  --sun: #d3931d;
+  --ok-ink: #ffffff;
 }
 
 /* ── Light theme (default) ──────────────────────────────────────────────── */
@@ -129,6 +151,8 @@
     --info-bg: #102c38;
     --locked: #a99ae0;
     --locked-bg: #221d3a;
+    --sun: #f0b84a;
+    --ok-ink: #06231a;
 
     --day-0: #8496a3;
     --day-1: #4bb3c9;
@@ -178,6 +202,8 @@
   --info-bg: #102c38;
   --locked: #a99ae0;
   --locked-bg: #221d3a;
+  --sun: #f0b84a;
+  --ok-ink: #06231a;
 
   --day-0: #8496a3;
   --day-1: #4bb3c9;

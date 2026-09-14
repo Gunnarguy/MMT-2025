@@ -33,7 +33,7 @@ export default function ThursdayOptions() {
   const coast = geometry.routes.coast;
 
   return (
-    <section className="trip-options" aria-labelledby="thursday-options-title">
+    <section className="trip-options" id="thursday-options" aria-labelledby="thursday-options-title">
       <div className="eyebrow">Thursday, September 17 · Explore a different route</div>
       <h2 id="thursday-options-title">What if we went to SkyBridge?</h2>
       <p>Turn inland from Traverse City for Boyne Mountain, then head up to Mackinaw City.

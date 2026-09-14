@@ -13,7 +13,7 @@ export default function DuneCrossSection() {
   return (
     <div className="dune-card">
       <div className="dune-card-head">
-        <div className="eyebrow" style={{ color: "#0d9488" }}>Topographic Reality Check</div>
+        <div className="eyebrow" style={{ color: "var(--brand)" }}>Topographic Reality Check</div>
         <h3>Sleeping Bear Dunes — Elevation & Trail Profile</h3>
         <p className="muted" style={{ fontSize: "var(--t-xs)", margin: 0 }}>
           Why the “Dune Climb” is a 20-minute turnaround and the Stop 9 Overlook is viewed from the top.

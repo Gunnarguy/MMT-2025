@@ -79,8 +79,11 @@ excluded. Update its waypoints in `src/data/thursdayOptions.js`, then run:
 node scripts/build-thursday-geometry.mjs
 ```
 
-Pack (`#/pack`), Today, every day page and the map weather pins share one
+Weather & pack (`#/pack`), Today, every day page and the map weather pins share one
 automatically refreshed Open-Meteo forecast store for 19 US and Ontario locations.
+Today and each day page render it as a compact strip, one tile per place the day
+passes through (glyph, high/low, peak rain chance, peak wind); the full table with
+hourly rain and wind, current conditions and provenance lives on Weather & pack.
 It fetches on opening, every 15 minutes while visible, on return/focus, and when
 connectivity resumes. Rapid repeat events are coalesced within a minute; manual
 Refresh bypasses that throttle. No API key, geolocation, account or backend is used.

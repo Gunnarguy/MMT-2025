@@ -1,11 +1,38 @@
 import { useChecklist } from "../hooks/useLocalState";
+import { useTripWeather } from "../hooks/useTripWeather";
 import { budgetTotals } from "../data/budget";
 import { KINDS, KIND_ORDER, outstandingLooseEnds, looseEndTotals } from "../data/looseEnds";
 import { DAYS, HIGHLIGHTS, TRIP } from "../data/trip";
 import { daysUntil, money } from "../lib/format";
+import { dateAt } from "../lib/tripWeather";
 import { downloadIcsFile } from "../lib/calendarExport";
 import RouteMap from "./RouteMap";
 import { Chip } from "./bits";
+
+/** The strip that points at Today while the trip is running. Subscribes to the
+ * minute clock on its own so the hero, and the map below it, do not. */
+function HeroLive({ onGo }) {
+  const { now } = useTripWeather();
+  const live = DAYS.find((d) => d.date === dateAt(now, "America/Detroit"));
+  if (!live) return null;
+  return (
+    <a
+      className="hero-live"
+      href="#/today"
+      onClick={(e) => {
+        e.preventDefault();
+        onGo("today");
+      }}
+    >
+      <span className="hero-live-dot" aria-hidden="true" />
+      <span className="hero-live-text">
+        <small>Today · {live.index === 0 ? "Arrival night" : `Day ${live.index} of 7`}</small>
+        <b>{live.title}</b>
+      </span>
+      <span className="hero-live-go" aria-hidden="true">&rarr;</span>
+    </a>
+  );
+}
 
 export default function OverviewView({ onGo }) {
   const out = daysUntil(TRIP.start);
@@ -43,14 +70,15 @@ export default function OverviewView({ onGo }) {
           </div>
         )}
 
-        <div style={{ marginTop: "var(--s-4)", display: "flex", gap: "var(--s-3)", flexWrap: "wrap" }}>
+        <HeroLive onGo={onGo} />
+
+        <div className="hero-actions">
           <button
             type="button"
-            className="dispatch-copy-btn"
-            style={{ padding: "8px 16px", fontSize: "12px" }}
+            className="hero-btn"
             onClick={() => downloadIcsFile("Michigan-2026-Full-Itinerary.ics")}
           >
-            📅 Export All Trip Events to Apple / Google Calendar (.ics)
+            <span aria-hidden="true">📅</span> Add the whole trip to your calendar
           </button>
         </div>
 

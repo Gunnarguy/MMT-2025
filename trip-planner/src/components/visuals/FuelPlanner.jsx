@@ -17,7 +17,7 @@ export default function FuelPlanner({ dayId = null }) {
   return (
     <div className="fuel-planner-card">
       <div className="dune-card-head">
-        <div className="eyebrow" style={{ color: "#2563eb" }}>Fuel & Range Strategy</div>
+        <div className="eyebrow" style={{ color: "var(--brand)" }}>Fuel & Range Strategy</div>
         <h3>
           {dayId
             ? `Gas & Refueling Plan — ${stopsToShow.length === 1 ? "Suggested Stop" : "Suggested Stops"}`
@@ -47,7 +47,7 @@ export default function FuelPlanner({ dayId = null }) {
         </div>
         <div className="fuel-metric-box">
           <span className="fuel-metric-label">Border Gas Strategy</span>
-          <b className="fuel-metric-val" style={{ color: "#0d9488" }}>Compare pump prices</b>
+          <b className="fuel-metric-val" style={{ color: "var(--brand)" }}>Compare pump prices</b>
           <span className="fuel-metric-sub">No live price or guaranteed saving</span>
         </div>
       </div>

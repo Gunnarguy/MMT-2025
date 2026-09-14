@@ -99,6 +99,16 @@
   font-size: var(--t-lg);
 }
 
+@media (max-width: 700px) {
+  .dayrail-track {
+    padding-block: 0.4rem;
+  }
+  .daytab {
+    width: 3.2rem;
+    padding-block: 0.25rem 0.3rem;
+  }
+}
+
 /* "All" goes back to the index; it has no date and no day colour. */
 .daytab--all {
   --day: var(--accent);

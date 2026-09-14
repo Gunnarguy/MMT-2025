@@ -30,20 +30,26 @@ import EmergencyDrawer from "./components/visuals/EmergencyDrawer";
 import { DAYS, TRIP } from "./data/trip";
 import { useLocalState } from "./hooks/useLocalState";
 import { daysUntil } from "./lib/format";
-import { WeatherRefresh } from "./hooks/useTripWeather";
+import { dateAt } from "./lib/tripWeather";
+import { WeatherRefresh, useTripWeather } from "./hooks/useTripWeather";
 
+/**
+ * Section order is the order a phone shows them: only the first four fit on a
+ * 375px screen, so those four are the ones a driver reaches for on the road.
+ * Planning surfaces follow.
+ */
 const TABS = [
-  { id: "today", label: "Today", icon: "☀" },
-  { id: "overview", label: "Overview", icon: "◆" },
-  { id: "loose", label: "Checklist", icon: "◈" },
-  { id: "days", label: "Day by day", icon: "▤" },
-  { id: "map", label: "Map", icon: "◎" },
-  { id: "stays", label: "Stays", icon: "▮" },
-  { id: "ride", label: "Car & flights", icon: "✈" },
-  { id: "money", label: "Money", icon: "$" },
-  { id: "border", label: "Border", icon: "⚑" },
-  { id: "pack", label: "Pack", icon: "✓" },
-  { id: "scout", label: "Scout", icon: "⌂" },
+  { id: "today", label: "Today" },
+  { id: "days", label: "Day by day" },
+  { id: "map", label: "Map" },
+  { id: "stays", label: "Stays" },
+  { id: "border", label: "Border" },
+  { id: "loose", label: "Checklist" },
+  { id: "overview", label: "Overview" },
+  { id: "ride", label: "Car & flights" },
+  { id: "money", label: "Money" },
+  { id: "pack", label: "Weather & pack" },
+  { id: "scout", label: "Scout" },
 ];
 
 /**
@@ -85,6 +91,39 @@ function useHashRoute() {
   return [route, go];
 }
 
+/**
+ * Where the trip is right now, and the shortcut back to Today from anywhere.
+ *
+ * A leaf component on purpose: it subscribes to the weather store's clock,
+ * which ticks once a minute, and nothing above it (the map, every day page)
+ * should re-render on that tick.
+ */
+function TripPill({ onGo }) {
+  const { now } = useTripWeather();
+  const out = daysUntil(TRIP.start);
+  const home = daysUntil(TRIP.end);
+  const liveDay = DAYS.find((d) => d.date === dateAt(now, "America/Detroit"));
+  const pill =
+    out > 0
+      ? { text: "days out", value: out, live: false }
+      : liveDay
+        ? { text: liveDay.index === 0 ? "Arrival night" : `Day ${liveDay.index} of 7`, value: null, live: true }
+        : home >= 0
+          ? { text: "on the road", value: null, live: true }
+          : { text: "home", value: null, live: false };
+  return (
+    <button
+      type="button"
+      className={`countdown-pill${pill.live ? " is-live" : ""}`}
+      onClick={() => onGo("today")}
+      title="Open Today"
+    >
+      {pill.value != null && <b>{pill.value}</b>}
+      {pill.text}
+    </button>
+  );
+}
+
 function ThemeToggle() {
   const [theme, setTheme] = useLocalState("mi26.theme", "auto");
 
@@ -118,20 +157,30 @@ export default function App() {
     const active = rail?.querySelector('[aria-selected="true"]');
     if (active) rail.scrollTo({ left: active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2 });
   }, [route.tab]);
-  const out = useMemo(() => daysUntil(TRIP.start), []);
-  const home = useMemo(() => daysUntil(TRIP.end), []);
+  // The rail scrolls sideways on a phone. Fades at whichever edge still has
+  // tabs hidden behind it are the only hint that more sections exist.
+  useEffect(() => {
+    const rail = tabrailRef.current;
+    if (!rail) return undefined;
+    const edges = () => {
+      const wrap = rail.parentElement;
+      wrap.dataset.atStart = rail.scrollLeft <= 2 ? "true" : "false";
+      wrap.dataset.atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2 ? "true" : "false";
+    };
+    edges();
+    rail.addEventListener("scroll", edges, { passive: true });
+    const sized = new ResizeObserver(edges);
+    sized.observe(rail);
+    return () => {
+      rail.removeEventListener("scroll", edges);
+      sized.disconnect();
+    };
+  }, []);
   const activeDay = route.dayId ? DAYS.find((d) => d.id === route.dayId) : null;
   const totalMiles = useMemo(
     () => DAYS.reduce((n, d) => n + (d.miles || 0), 0),
     [],
   );
-
-  const countdown =
-    out > 0
-      ? { text: "days out", value: out, live: false }
-      : home >= 0
-        ? { text: "on the road", value: null, live: true }
-        : { text: "home", value: null, live: false };
 
   return (
     <div className="app">
@@ -148,10 +197,7 @@ export default function App() {
             </button>
             <div className="topbar-spacer" />
             <div className="topbar-actions">
-              <span className={`countdown-pill${countdown.live ? " is-live" : ""}`}>
-                {countdown.value != null && <b>{countdown.value}</b>}
-                {countdown.text}
-              </span>
+              <TripPill onGo={go} />
               <ThemeToggle />
             </div>
           </div>
@@ -168,9 +214,6 @@ export default function App() {
                 className="tab"
                 onClick={() => go(t.id)}
               >
-                <span className="tab-icon" aria-hidden="true">
-                  {t.icon}
-                </span>
                 {t.label}
               </button>
             ))}
@@ -192,8 +235,9 @@ export default function App() {
               <div className="eyebrow">The whole line</div>
               <h1>{totalMiles.toLocaleString()} miles, drawn to the road</h1>
               <p>
-                Every segment below is the actual driving route, not a straight line
-                between towns. Tap a named group to explore its places, or choose a day.
+                Every segment is the actual driving route, not a straight line between
+                towns. Pick a day to isolate it, tap a group to open its places, or
+                search for any stop, hotel or gas station.
               </p>
             </div>
             <RouteMap />

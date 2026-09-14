@@ -423,7 +423,7 @@ table.data tr.total td {
 /* ── In-Car Passenger Co-Pilot HUD ────────────────────────────────────────── */
 .copilot-hud {
   background: var(--surface);
-  border: 1.5px solid var(--brand, #0284c7);
+  border: 1.5px solid var(--brand);
   border-radius: var(--radius-md, 12px);
   margin-top: var(--s-4);
   margin-bottom: var(--s-4);
@@ -433,7 +433,7 @@ table.data tr.total td {
 
 .copilot-head {
   padding: 10px 14px;
-  background: linear-gradient(90deg, rgba(2, 132, 199, 0.12) 0%, rgba(2, 132, 199, 0.03) 100%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 12%, transparent) 0%, color-mix(in srgb, var(--brand) 3%, transparent) 100%);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -448,30 +448,30 @@ table.data tr.total td {
   gap: 6px;
   font-weight: 700;
   font-size: var(--t-sm);
-  color: var(--brand, #0284c7);
+  color: var(--brand);
 }
 
 .copilot-radar {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  background: var(--ok);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 70%, transparent);
   animation: radarPulse 2s infinite;
 }
 
 @keyframes radarPulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 70%, transparent);
   }
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 6px transparent;
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
@@ -556,7 +556,7 @@ table.data tr.total td {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--brand, #0284c7);
+  color: var(--brand);
 }
 
 .copilot-target-name {
@@ -599,31 +599,27 @@ table.data tr.total td {
 }
 
 .copilot-btn--apple {
-  background: #000000;
+  /* Apple's own button is black in both themes. */
+  background: #16242c;
   color: #ffffff;
-  border: 1px solid #333333;
-}
-
-[data-theme="dark"] .copilot-btn--apple {
-  background: #27272a;
-  border-color: #3f3f46;
+  border: 1px solid #16242c;
 }
 
 .copilot-btn--google {
-  background: #2563eb;
-  color: #ffffff;
-  border: 1px solid #1d4ed8;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand);
 }
 
 .copilot-btn--call {
-  background: #16a34a;
-  color: #ffffff;
-  border: 1px solid #15803d;
+  background: var(--ok);
+  color: var(--ok-ink);
+  border: 1px solid var(--ok);
 }
 
 .copilot-tip-box {
   background: var(--surface);
-  border-left: 3.5px solid var(--brand, #0284c7);
+  border-left: 3.5px solid var(--brand);
   padding: 8px 12px;
   border-radius: 4px;
   font-size: var(--t-xs);
@@ -633,7 +629,7 @@ table.data tr.total td {
 
 .copilot-tip-tag {
   font-weight: 700;
-  color: var(--brand, #0284c7);
+  color: var(--brand);
   margin-right: 4px;
 }
 
@@ -659,13 +655,13 @@ table.data tr.total td {
 }
 
 .action--tel {
-  background: rgba(22, 163, 74, 0.08);
-  border-color: rgba(22, 163, 74, 0.3);
-  color: #15803d;
+  background: var(--ok-bg);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+  color: var(--ok);
 }
 
 .action--tel:hover {
-  background: #16a34a;
-  color: #ffffff;
-  border-color: #16a34a;
+  background: var(--ok);
+  color: var(--ok-ink);
+  border-color: var(--ok);
 }

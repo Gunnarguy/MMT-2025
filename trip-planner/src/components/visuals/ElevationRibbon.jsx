@@ -81,8 +81,8 @@ export default function ElevationRibbon({ onHoverPoint, activeDayId = null, onCl
           {/* Gradient definition */}
           <defs>
             <linearGradient id="elevGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#0284c7" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#0284c7" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="var(--brand)" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="var(--brand)" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -90,7 +90,7 @@ export default function ElevationRibbon({ onHoverPoint, activeDayId = null, onCl
           <polyline
             points={pointsSvg}
             fill="none"
-            stroke="#0284c7"
+            stroke="var(--brand)"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -113,7 +113,7 @@ export default function ElevationRibbon({ onHoverPoint, activeDayId = null, onCl
                   cx={x}
                   cy={y}
                   r={isHover ? 6 : 3.5}
-                  fill={isHover ? "#f59e0b" : "#0284c7"}
+                  fill={isHover ? "var(--accent)" : "var(--brand)"}
                   stroke="#fff"
                   strokeWidth="1.5"
                   style={{ cursor: "pointer", transition: "r 0.15s ease" }}

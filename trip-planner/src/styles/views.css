@@ -142,6 +142,88 @@
   color: #9dc6d1;
 }
 
+/* Where the trip is right now, inside the hero. Only renders during the trip. */
+.hero-live {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.hero-live:hover {
+  background: rgb(255 255 255 / 0.16);
+}
+
+.hero-live-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f0b46a;
+  box-shadow: 0 0 0 4px rgb(240 180 106 / 0.25);
+}
+
+.hero-live-text {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.hero-live-text small {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c5e2e9;
+}
+
+.hero-live-text b {
+  font-family: var(--font-display);
+  font-size: var(--t-lg);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.hero-live-go {
+  margin-left: auto;
+  flex: none;
+  font-size: var(--t-xl);
+  color: #f0b46a;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  margin-top: var(--s-4);
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  background: rgb(255 255 255 / 0.08);
+  color: #eaf5f7;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.hero-btn:hover {
+  background: rgb(255 255 255 / 0.16);
+}
+
 /* Big countdown block */
 .countdown-big {
   display: flex;
@@ -328,9 +410,9 @@
 }
 
 .layer-filter-btn.is-active {
-  background: #2563eb;
-  color: #fff;
-  border-color: #2563eb;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
 }
 
 .mapwrap .leaflet-tile-pane {
@@ -1023,7 +1105,7 @@
 .tv-leg, .tv-stop { position: relative; display: grid; gap: 0.15rem; }
 .tv-leg { grid-template-columns: 4.5rem 1fr; align-items: start; gap: var(--s-3); color: var(--ink-2); }
 .tv-leg-time { font-family: var(--font-mono); font-size: var(--t-sm); font-weight: 700; color: var(--day, var(--accent)); font-variant-numeric: tabular-nums; }
-.tv-leg-mi { color: var(--ink-3); font-size: var(--t-sm); }
+.tv-leg-mi { color: var(--ink-3); font-size: var(--t-sm); white-space: nowrap; }
 .tv-stop { padding-left: var(--s-3); }
 .tv-dot { position: absolute; left: calc(-1 * var(--s-4) - 6px); top: 0.45rem; width: 10px; height: 10px; border-radius: 50%; background: var(--day, var(--accent)); box-shadow: 0 0 0 3px var(--surface); }
 .tv-stop-head { display: flex; gap: 0.45rem; align-items: baseline; flex-wrap: wrap; }
@@ -1033,9 +1115,10 @@
 .tv-fix { font-size: var(--t-sm); color: var(--ink); margin-top: 0.2rem; }
 
 .tv-fuel { padding: var(--s-3); border-radius: var(--radius); background: var(--surface-2); margin-bottom: var(--s-3); }
-.tv-bed { padding: var(--s-4); border-radius: var(--radius-lg); background: var(--surface-2); border: 1px solid var(--line); margin: var(--s-4) 0; }
+.tv-full { display: inline-block; margin-top: var(--s-3); font-size: var(--t-sm); font-weight: 600; }
+.tv-bed { padding: var(--s-4); border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--day, var(--accent)); box-shadow: var(--shadow-sm); margin: var(--s-4) 0; }
 .tv-bed h3 { font-size: var(--t-xl); margin: 0.15em 0 0.2em; }
-.tv-bed--home { background: transparent; border-style: dashed; }
+.tv-bed--home { background: transparent; border-style: dashed; border-left: 1px dashed var(--line-2); box-shadow: none; }
 .tv-conf { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: var(--s-2) 0; }
 .tv-next { padding: var(--s-3) var(--s-4); border-radius: var(--radius); border: 1px dashed var(--line); margin-top: var(--s-4); }
 .tv-next b { display: block; font-size: var(--t-lg); margin: 0.15em 0 0.15em; }
@@ -1051,3 +1134,8 @@
   .tv-punch li, .tv-bed { padding: var(--s-3); }
 }
 .tv-h2 { display: flex; align-items: baseline; gap: 0.5rem; font-size: var(--t-xl); margin: var(--s-5) 0 0.3rem; }
+
+/* ── Day page: the tools group after the timeline ───────────────────────── */
+.daytools { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+.daytools > h3 { font-size: var(--t-xl); margin-bottom: var(--s-1); }
+.daytools > .section-lede { max-width: var(--measure); color: var(--ink-2); font-size: var(--t-sm); margin-bottom: var(--s-3); }

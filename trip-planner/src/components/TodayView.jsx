@@ -150,7 +150,7 @@ function DayBody({ day }) {
       </div>
 
       <TripForecast dayId={day.id} compact />
-      {day.id === "d3" && <a className="trip-option-link" href="#/day/d3">Explore Thursday: SkyBridge instead of Charlevoix, with an option to keep Petoskey →</a>}
+      {day.id === "d3" && <a className="trip-option-link" href="#/day/d3">Thinking about SkyBridge instead of Charlevoix? Compare the three Thursday routes &rarr;</a>}
 
       {(day.flags || []).map((f) => (
         <Flag key={f.title} level={f.level} title={f.title}>{f.body}</Flag>
@@ -289,11 +289,14 @@ export default function TodayView({ forcedDayId }) {
         <h1>{day.title}</h1>
         <div className="tv-date">{longDate(day.date)}</div>
         <p className="tv-lede">{day.route}</p>
+        <a className="tv-full" href={`#/day/${day.id}`}>
+          Full day page: hours, tips, sources and the map &rarr;
+        </a>
       </header>
       <DayBody day={day} />
       <p className="tv-foot">
-        Everything here is also on the Day by day tab, with sources. Tap a phone number to dial, an
-        address to navigate. The page works with no signal once it has loaded once.
+        Tap a phone number to dial and an address to navigate. This page keeps working with no
+        signal once it has loaded.
       </p>
     </div>
   );

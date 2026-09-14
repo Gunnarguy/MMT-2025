@@ -121,13 +121,10 @@ export default function DayPanel({ day }) {
         </div>
       </header>
 
+      {/* Reading order is the order the day happens: what the sky is doing,
+          what could bite, the schedule, then the stops with everything you
+          need at each one. Tools, deep dives and Mom's own words follow. */}
       <TripForecast dayId={day.id} compact />
-      {day.id === "d3" && <ThursdayOptions />}
-      {day.id === "d3" && <h3>Original Thursday itinerary</h3>}
-      <DaylightRibbon dayId={day.id} />
-      <MorningDispatch day={day} />
-
-      {["d5", "d6"].includes(day.id) && <OntarioToolkit />}
 
       {open.length > 0 && (
         <a className="daylooseends" href="#/loose">
@@ -154,7 +151,19 @@ export default function DayPanel({ day }) {
         </div>
       )}
 
-      {day.stops?.length > 0 && <CoPilotHUD day={day} stops={day.stops} />}
+      {day.id === "d3" && (
+        <button
+          type="button"
+          className="trip-option-link"
+          onClick={() =>
+            document.getElementById("thursday-options")?.scrollIntoView({ behavior: "smooth", block: "start" })
+          }
+        >
+          Thinking about SkyBridge instead of Charlevoix? Compare the three Thursday routes &darr;
+        </button>
+      )}
+
+      <DaylightRibbon dayId={day.id} />
 
       <section className="timeline">
         {timeline(day).map((item) =>
@@ -179,6 +188,9 @@ export default function DayPanel({ day }) {
         )}
       </section>
 
+      {["d5", "d6"].includes(day.id) && <OntarioToolkit />}
+
+      {day.id === "d3" && <ThursdayOptions />}
       {day.id === "d2" && <DuneCrossSection />}
       {day.id === "d4" && <MackinacTrack />}
       {day.id === "d5" && <BlueWaterBridgeSteps />}
@@ -191,6 +203,16 @@ export default function DayPanel({ day }) {
       {day.id === "d7" && <FlightRunway />}
 
       {["d2", "d5", "d7"].includes(day.id) && <FuelPlanner dayId={day.id} />}
+
+      <section className="daytools">
+        <h3>Ride-along tools</h3>
+        <p className="section-lede">
+          Step through the stops with one-tap directions from the passenger seat, or send the
+          morning plan to the group chat.
+        </p>
+        {day.stops?.length > 0 && <CoPilotHUD day={day} stops={day.stops} />}
+        <MorningDispatch day={day} />
+      </section>
 
       {day.momSaid && (
         <div style={{ marginTop: "var(--s-5)" }}>

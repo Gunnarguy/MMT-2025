@@ -62,16 +62,11 @@
 .ribbon-track {
   position: relative;
   height: 36px;
-  background: var(--bg-sun-track, #e2e8f0);
+  background: var(--bg-sun-track);
   border-radius: 999px;
   overflow: hidden;
   display: flex;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="dark"] .ribbon-track {
-  background: #1e293b;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .ribbon-block {
@@ -124,7 +119,7 @@
 
 /* Category Gradients */
 .ribbon-block--drive {
-  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(180deg, var(--brand) 0%, var(--brand-2) 100%);
 }
 
 .ribbon-block--anchor {
@@ -132,7 +127,7 @@
 }
 
 .ribbon-block--food {
-  background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+  background: linear-gradient(180deg, var(--sun) 0%, var(--warn) 100%);
 }
 
 .ribbon-block--flight {
@@ -181,7 +176,7 @@
 }
 
 [data-theme="dark"] .ribbon-glass-popover {
-  background: #1e293b;
+  background: var(--surface-3);
   border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
 }
@@ -233,7 +228,7 @@
 .ribbon-popover-time {
   font-family: var(--font-mono);
   font-weight: 600;
-  color: var(--brand, #2563eb);
+  color: var(--brand);
 }
 
 .ribbon-popover-detail {
@@ -285,23 +280,23 @@
 }
 
 .ribbon-milestone-card--drive {
-  border-left-color: #2563eb;
+  border-left-color: var(--info);
 }
 
 .ribbon-milestone-card--anchor {
-  border-left-color: #0d9488;
+  border-left-color: var(--brand);
 }
 
 .ribbon-milestone-card--food {
-  border-left-color: #d97706;
+  border-left-color: var(--warn);
 }
 
 .ribbon-milestone-card--flight {
-  border-left-color: #7c3aed;
+  border-left-color: var(--locked);
 }
 
 .ribbon-milestone-card--sunset {
-  border-left-color: #ea580c;
+  border-left-color: var(--accent);
 }
 
 .ribbon-milestone-card--stay {
@@ -353,7 +348,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #f59e0b;
+  background: var(--sun);
   z-index: 3;
 }
 
@@ -363,14 +358,14 @@
   top: -14px;
   left: -6px;
   font-size: 11px;
-  color: #f59e0b;
+  color: var(--sun);
 }
 
 .ribbon-sun-marker--sunset::after {
   content: "☾";
   top: auto;
   bottom: -14px;
-  color: #ea580c;
+  color: var(--accent);
 }
 
 .ribbon-ticks {
@@ -462,11 +457,11 @@
 }
 
 .dune-legend-box--warn {
-  border-left: 3px solid #e11d48;
+  border-left: 3px solid var(--stop);
 }
 
 .dune-legend-box--ok {
-  border-left: 3px solid #0d9488;
+  border-left: 3px solid var(--ok);
 }
 
 /* ── Mackinac M-185 Milepost Track (Day 4) ─────────────────────────────── */
@@ -497,7 +492,7 @@
   font-family: var(--font-mono, monospace);
   font-size: var(--t-xs);
   font-weight: 700;
-  color: #0d9488;
+  color: var(--brand);
   text-transform: uppercase;
   margin-bottom: 2px;
 }
@@ -553,7 +548,7 @@
 .border-step-num {
   font-size: var(--t-xs);
   font-weight: 700;
-  color: #2563eb;
+  color: var(--brand);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -611,17 +606,17 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--brand);
   border: 2px solid var(--bg-card);
 }
 
 .runway-node-dot--flight {
-  background: #7c3aed;
-  box-shadow: 0 0 0 2px #7c3aed;
+  background: var(--locked);
+  box-shadow: 0 0 0 2px var(--locked);
 }
 
 .runway-node-dot--warn {
-  background: #ea580c;
+  background: var(--accent);
 }
 
 .runway-time {
@@ -663,8 +658,8 @@
 }
 
 .comparator-card--recommended {
-  border-color: #0d9488;
-  box-shadow: 0 0 0 1px #0d9488;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
 }
 
 .comparator-badge {
@@ -680,13 +675,13 @@
 }
 
 .comparator-badge--teal {
-  background: rgba(13, 148, 136, 0.15);
-  color: #0d9488;
+  background: color-mix(in srgb, var(--brand) 14%, transparent);
+  color: var(--brand);
 }
 
 .comparator-badge--amber {
-  background: rgba(217, 119, 6, 0.15);
-  color: #d97706;
+  background: var(--warn-bg);
+  color: var(--warn);
 }
 
 .comparator-title {
@@ -809,8 +804,8 @@
 .fuel-stop-badge {
   font-size: 11px;
   font-weight: 700;
-  color: #2563eb;
-  background: rgba(37, 99, 235, 0.1);
+  color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
   padding: 2px 8px;
   border-radius: 4px;
 }
@@ -836,7 +831,7 @@
   background: rgba(0,0,0,0.02);
   padding: var(--s-2) var(--s-3);
   border-radius: var(--radius-sm);
-  border-left: 3px solid #2563eb;
+  border-left: 3px solid var(--brand);
 }
 
 [data-theme="dark"] .fuel-stop-why {
@@ -849,7 +844,7 @@
   gap: var(--s-1);
   font-size: var(--t-xs);
   font-weight: 600;
-  color: #2563eb;
+  color: var(--brand);
   text-decoration: none;
   margin-top: var(--s-1);
 }
@@ -970,17 +965,17 @@
 
 .elevation-live-badge {
   font-size: var(--t-xs);
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
+  background: var(--info-bg);
+  color: var(--brand-2);
+  border: 1px solid var(--info);
   border-radius: 999px;
   padding: 2px 10px;
 }
 
 [data-theme="dark"] .elevation-live-badge {
-  background: #1e3a8a;
-  color: #bfdbfe;
-  border-color: #3b82f6;
+  background: var(--info-bg);
+  color: var(--info);
+  border-color: var(--brand);
 }
 
 .elevation-svg-wrap {
@@ -1014,7 +1009,7 @@
 }
 
 .sun-tracker-card.is-golden-hour {
-  border-color: #f59e0b;
+  border-color: var(--sun);
   background: linear-gradient(to right, rgba(245, 158, 11, 0.08), rgba(217, 119, 6, 0.04));
   box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
 }
@@ -1057,7 +1052,7 @@
 .sun-range-slider {
   width: 100%;
   cursor: pointer;
-  accent-color: #f59e0b;
+  accent-color: var(--sun);
 }
 
 .sun-slider-ticks {
@@ -1068,7 +1063,7 @@
 }
 
 .sun-slider-ticks .tick-golden {
-  color: #d97706;
+  color: var(--warn);
   font-weight: 700;
 }
 
@@ -1079,11 +1074,11 @@
   background: rgba(245, 158, 11, 0.15);
   border: 1px solid rgba(245, 158, 11, 0.3);
   font-size: var(--t-xs);
-  color: #b45309;
+  color: var(--warn);
 }
 
 [data-theme="dark"] .golden-hour-alert {
-  color: #fde68a;
+  color: var(--warn);
   background: rgba(245, 158, 11, 0.25);
   border-color: rgba(245, 158, 11, 0.4);
 }
@@ -1146,8 +1141,8 @@
 }
 
 .map-overlay-close-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  background: var(--stop-bg);
+  color: var(--stop);
   border-color: rgba(239, 68, 68, 0.3);
 }
 
@@ -1169,7 +1164,7 @@
 .elev-pulse-circle {
   width: 14px;
   height: 14px;
-  background: #f59e0b;
+  background: var(--sun);
   border: 2.5px solid #ffffff;
   border-radius: 50%;
   box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.45), 0 3px 8px rgba(0, 0, 0, 0.4);
@@ -1245,8 +1240,8 @@
 }
 
 .playback-btn {
-  background: #2563eb;
-  color: #fff;
+  background: var(--brand);
+  color: var(--brand-ink);
   border: none;
   border-radius: 999px;
   padding: 5px 12px;
@@ -1260,7 +1255,7 @@
 }
 
 .playback-btn:hover {
-  background: #1d4ed8;
+  background: var(--brand-2);
   transform: translateY(-1px);
 }
 
@@ -1276,16 +1271,16 @@
 }
 
 .playback-speed-pill.is-active {
-  background: #2563eb;
-  color: #fff;
-  border-color: #2563eb;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
 }
 
 .playback-scrubber {
   width: 100%;
   height: 6px;
   cursor: pointer;
-  accent-color: #2563eb;
+  accent-color: var(--brand);
   -webkit-appearance: none;
   appearance: none;
   background: var(--line-2, rgba(0, 0, 0, 0.15));
@@ -1300,7 +1295,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #2563eb;
+  background: var(--brand);
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   border: 2px solid #ffffff;
@@ -1310,7 +1305,7 @@
   width: 100%;
   height: 6px;
   cursor: pointer;
-  accent-color: #f59e0b;
+  accent-color: var(--sun);
   -webkit-appearance: none;
   appearance: none;
   background: var(--line-2, rgba(0, 0, 0, 0.15));
@@ -1325,7 +1320,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #f59e0b;
+  background: var(--sun);
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   border: 2px solid #ffffff;
@@ -1414,14 +1409,15 @@
 }
 
 .dispatch-copy-btn {
-  background: #2563eb;
-  color: #fff;
-  border-color: #2563eb;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
 }
 
 .dispatch-copy-btn.is-copied {
-  background: #16a34a;
-  border-color: #16a34a;
+  background: var(--ok);
+  color: var(--ok-ink);
+  border-color: var(--ok);
 }
 
 .dispatch-sms-btn {
@@ -1532,7 +1528,7 @@
 
 .calc-result b {
   font-size: var(--t-md);
-  color: #16a34a;
+  color: var(--ok);
   font-family: var(--font-mono);
 }
 
@@ -1557,7 +1553,7 @@
 }
 
 .speed-pill b {
-  color: #2563eb;
+  color: var(--brand);
   font-family: var(--font-mono);
 }
 
@@ -1579,9 +1575,9 @@
   width: 100%;
   padding: var(--s-3) var(--s-4);
   border-radius: var(--radius);
-  border: 1px solid #ef4444;
-  background: rgba(239, 68, 68, 0.08);
-  color: #b91c1c;
+  border: 1px solid var(--stop);
+  background: var(--stop-bg);
+  color: var(--stop);
   font-size: var(--t-sm);
   font-weight: 700;
   cursor: pointer;
@@ -1589,18 +1585,18 @@
 }
 
 .emergency-trigger-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
+  background: color-mix(in srgb, var(--stop) 18%, var(--surface));
 }
 
 [data-theme="dark"] .emergency-trigger-btn {
-  background: rgba(239, 68, 68, 0.18);
-  color: #fca5a5;
-  border-color: #ef4444;
+  background: var(--stop-bg);
+  color: var(--stop);
+  border-color: var(--stop);
 }
 
 .emergency-modal {
   background: var(--surface);
-  border: 1px solid #ef4444;
+  border: 1px solid var(--stop);
   border-radius: var(--radius);
   padding: var(--s-4);
   margin-top: var(--s-3);
@@ -1617,11 +1613,11 @@
 .emergency-modal-head h3 {
   font-size: var(--t-md);
   margin: 0;
-  color: #b91c1c;
+  color: var(--stop);
 }
 
 [data-theme="dark"] .emergency-modal-head h3 {
-  color: #fca5a5;
+  color: var(--stop);
 }
 
 .emergency-close-btn {
@@ -1669,8 +1665,8 @@
 .emergency-dial-btn {
   font-size: 11px;
   font-weight: 700;
-  background: #16a34a;
-  color: #fff;
+  background: var(--ok);
+  color: var(--ok-ink);
   padding: 4px 10px;
   border-radius: 999px;
   text-decoration: none;
@@ -1710,9 +1706,9 @@
 }
 
 .delay-pill.is-active {
-  background: #f59e0b;
-  color: #000;
-  border-color: #d97706;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
   font-weight: 700;
 }
 
@@ -1720,16 +1716,16 @@
   margin-left: auto;
   padding: 4px 12px;
   border-radius: 999px;
-  border: 1px solid #2563eb;
-  background: #2563eb;
-  color: #fff;
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: var(--brand-ink);
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
 }
 
 .cal-export-btn:hover {
-  background: #1d4ed8;
+  background: var(--brand-2);
 }
 
 /* 5. Pack View Extras */
@@ -1755,14 +1751,14 @@
 
 .trunk-stat {
   font-size: 11px;
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--info-bg);
+  color: var(--info);
   padding: 2px 8px;
   border-radius: 999px;
   font-weight: 700;
 }
 
 [data-theme="dark"] .trunk-stat {
-  background: #1e3a8a;
-  color: #bfdbfe;
+  background: var(--info-bg);
+  color: var(--info);
 }

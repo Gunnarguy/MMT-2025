@@ -42,7 +42,7 @@ export default function MackinacTrack() {
   return (
     <div className="mackinac-track">
       <div className="dune-card-head">
-        <div className="eyebrow" style={{ color: "#0d9488" }}>The Car-Free Highway</div>
+        <div className="eyebrow" style={{ color: "var(--brand)" }}>The Car-Free Highway</div>
         <h3>M-185 Perimeter Loop — Mile-by-Mile Guide (8.2 Miles)</h3>
         <p className="muted" style={{ fontSize: "var(--t-xs)", margin: 0 }}>
           Flat, paved, counter-clockwise loop. Biking takes ~1.5–2 hours with scenic photo stops.

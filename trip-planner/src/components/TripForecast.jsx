@@ -7,6 +7,69 @@ import "../styles/trip-options.css";
 const number = (n, suffix = "", digits = 0) => Number.isFinite(n) ? `${n.toFixed(digits)}${suffix}` : "—";
 const stamp = (time, timezone) => time ? new Date(time).toLocaleString("en-US", { timeZone: timezone, month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }) : "not available";
 const clock = (time, timezone) => new Date(time).toLocaleTimeString("en-US", { timeZone: timezone, hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+const shortClock = (time, timezone) => time ? new Date(time).toLocaleTimeString("en-US", { timeZone: timezone, hour: "numeric", minute: "2-digit" }) : "—";
+
+/** One glyph per Open-Meteo summary (see weatherDescription in lib/tripWeather). */
+const GLYPH = { "Clear": "☀️", "Mostly clear": "🌤️", "Partly cloudy": "⛅", "Overcast": "☁️", "Fog": "🌫️", "Drizzle": "🌦️", "Rain": "🌧️", "Rain showers": "🌧️", "Snow": "🌨️", "Thunderstorms": "⛈️" };
+const weatherGlyph = (summary) => GLYPH[summary] || "🌡️";
+
+/**
+ * The road-view forecast: one tile per place the day passes through, readable
+ * at arm's length. The full table with hourly rain, wind and provenance stays
+ * on the Weather & pack tab; this only has to answer "coat or no coat".
+ * Without a dayId it shows the next trip day that has not passed yet.
+ */
+export function WeatherStrip({ dayId }) {
+  const { data, now, refreshing, error, offline, refresh } = useTripWeather();
+  const today = dateAt(now, "America/Detroit");
+  let rows = WEATHER_STOPS.filter((stop) => stop.dayId === dayId);
+  if (!dayId) {
+    const upcoming = WEATHER_STOPS.filter((stop) => stop.date >= today);
+    rows = upcoming.filter((stop) => stop.date === upcoming[0]?.date);
+  }
+  const stale = offline || error || !data.checkedAt || now - data.checkedAt > WEATHER_STALE_MS;
+  const weekday = rows[0] ? new Date(`${rows[0].date}T12:00:00`).toLocaleDateString("en-US", { weekday: "long" }) : "";
+  const status = offline ? "Offline · saved forecast"
+    : refreshing ? "Refreshing…"
+    : stale ? "Saved forecast · refresh when you have signal"
+    : `Forecast · updated ${shortClock(data.checkedAt, "America/Detroit")}`;
+  return (
+    <section className="wx" aria-label="Weather along the route">
+      <div className="wx-head">
+        <div>
+          <div className="eyebrow">{status}</div>
+          <h2>{rows.length ? `${weekday}'s weather, stop by stop` : "Weather"}</h2>
+        </div>
+        <button type="button" className="action wx-refresh" disabled={refreshing || offline} onClick={() => refresh(true)} aria-label="Refresh weather" title="Refresh weather">
+          <span aria-hidden="true">↻</span>
+        </button>
+      </div>
+      {rows.length ? (
+        <div className="wx-strip scroll-x">
+          {rows.map((row) => {
+            const place = WEATHER_LOCATIONS.find((p) => p.id === row.locationId);
+            const day = data.locations[row.locationId]?.daily?.[row.date];
+            return (
+              <div className="wx-tile" key={row.locationId}>
+                <div className="wx-place">{place.name}{row.locationId === "skybridge" && <small>route option</small>}</div>
+                <div className="wx-glyph" aria-hidden="true">{day ? weatherGlyph(day.summary) : "…"}</div>
+                <div className="wx-summary">{day?.summary || "No forecast yet"}</div>
+                <div className="wx-temps"><b>{number(day?.high, "°")}</b> / {number(day?.low, "°")}</div>
+                <div className="wx-rain">☔ {number(day?.peakRainChance, "%")} · 💨 {number(day?.wind)} mph</div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="wx-foot">The trip is over; every day&rsquo;s saved forecast is on the Weather &amp; pack tab.</p>
+      )}
+      <p className="wx-foot">
+        {error ? `${error} ` : ""}Highest hourly rain chance and peak wind for the day, from weather models rather than radar.{" "}
+        <a href="#/pack">Hourly detail and every stop &rarr;</a>
+      </p>
+    </section>
+  );
+}
 
 export function LocationWeather({ locationId }) {
   const { data, now, error, offline } = useTripWeather();
@@ -39,6 +102,11 @@ function Hourly({ saved, date, place, now }) {
 }
 
 export default function TripForecast({ dayId, compact = false }) {
+  if (compact) return <WeatherStrip dayId={dayId} />;
+  return <ForecastTable dayId={dayId} />;
+}
+
+function ForecastTable({ dayId }) {
   const { data, now, refreshing, error, offline, refresh } = useTripWeather();
   const [includePast, setIncludePast] = useState(false);
   const matching = WEATHER_STOPS.filter((stop) => !dayId || stop.dayId === dayId);
@@ -46,7 +114,7 @@ export default function TripForecast({ dayId, compact = false }) {
   const rows = matching.filter((stop) => dayId || includePast || stop.date >= dateAt(now, WEATHER_LOCATIONS.find((p) => p.id === stop.locationId).timezone));
   const stale = !data.checkedAt || now - data.checkedAt > WEATHER_STALE_MS;
   return (
-    <section className={`trip-forecast${compact ? " trip-forecast--compact" : ""}`} aria-label="Automatically updating trip weather">
+    <section className="trip-forecast" aria-label="Automatically updating trip weather">
       <div className="weather-heading">
         <div><div className="eyebrow">{offline ? "Offline · saved weather" : refreshing ? "Refreshing weather…" : error ? "Refresh incomplete · check timestamps" : stale ? "Saved weather · refresh needed" : "Weather updates automatically"}</div>
           <h2>{dayId ? "Weather for this day's route" : "Weather for the whole trip"}</h2></div>
@@ -55,7 +123,7 @@ export default function TripForecast({ dayId, compact = false }) {
       <p className="trip-options-note">Last successful fetch: {stamp(data.checkedAt, "America/Detroit")}. Refreshes every 15 minutes while open, when you return, and when service comes back. Conditions below are weather-model estimates, not a live radar or station reading.</p>
       {(offline || error || stale) && <p className="trip-forecast-stale" role="status">{offline ? "You're offline. Saved weather remains available; check the timestamps before using it." : error || "The saved forecast is over an hour old or unavailable. Try refreshing before making weather-sensitive plans."}</p>}
       {!dayId && <p>U.S. and Ontario stops, including both Thursday routes and the drive back to O&rsquo;Hare. Forecasts change as each trip day approaches; longer-range days are less certain.</p>}
-      {(!compact || dayId) && <>
+      <>
         {!dayId && pastCount > 0 && <label className="weather-past-toggle"><input type="checkbox" checked={includePast} onChange={(e) => setIncludePast(e.target.checked)} /> Show completed trip days (saved forecasts)</label>}
         {!rows.length && <p>All trip days have passed. Show completed days to review saved forecasts.</p>}
         <div className="trip-table-scroll" role="region" aria-label="Forecast by trip stop" tabIndex={0}>
@@ -81,10 +149,8 @@ export default function TripForecast({ dayId, compact = false }) {
             })}</tbody>
           </table>
         </div>
-      </>}
-      <p className="trip-options-note">Source: <a href="https://open-meteo.com/en/docs" target="_blank" rel="noreferrer">Open-Meteo forecast models</a>. The fetch time is when this device received data, not the model&rsquo;s issue time. No forecast guarantees ferry or SkyBridge operation.
-        {compact && <> <a href="#/pack">Full trip weather and hourly detail →</a></>}
-      </p>
+      </>
+      <p className="trip-options-note">Source: <a href="https://open-meteo.com/en/docs" target="_blank" rel="noreferrer">Open-Meteo forecast models</a>. The fetch time is when this device received data, not the model&rsquo;s issue time. No forecast guarantees ferry or SkyBridge operation.</p>
     </section>
   );
 }

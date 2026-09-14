@@ -62,14 +62,17 @@ export default function OfflineAccess() {
     finally { setChecking(false); }
   }
 
-  const label = updateReady ? "Update ready — reload the guide" : status === "ready"
-    ? `${online ? "Saved for offline" : "Offline — saved guide available"}`
-    : status === "preview" ? "Local preview — offline saving is available on the published site"
-    : status === "unavailable" ? "Offline save not verified — tap to retry"
-    : "Saving this guide for offline use…";
+  const state = updateReady ? "update" : status;
+  const label = {
+    update: "Update ready · tap to reload",
+    ready: online ? "Saved for offline" : "Offline · using the saved guide",
+    preview: "Preview build · offline saving works on the published site",
+    unavailable: "Offline save not verified · tap to retry",
+    saving: "Saving for offline…",
+  }[state] || "Saving for offline…";
 
-  return <details className="offline-access" data-offline={!online}>
-    <summary><span role="status">{label}</span></summary>
+  return <details className="offline-access" data-offline={!online} data-state={state}>
+    <summary><span className="offline-dot" aria-hidden="true" /><span role="status">{label}</span></summary>
     <div className="offline-access-body">
       <p><b>Keep the trip on your iPhone:</b> open this site in Safari, tap Share → Add to Home Screen, and choose Open as Web App if shown. Open that new icon while connected and wait for “Saved for offline.”</p>
       <p>The saved guide includes every day, route line, map point and its details, hotels, checklists and border information. Weather keeps its last saved forecast and timestamp. New weather, directions apps, external links, street tiles and satellite imagery need a connection; previously viewed tiles may still be available.</p>

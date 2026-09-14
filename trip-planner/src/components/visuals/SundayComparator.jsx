@@ -33,7 +33,7 @@ export default function SundayComparator() {
             <b>5:30 PM</b> Belleville arrival (Julia's / Hampton Inn)
           </li>
         </ul>
-        <div className="comparator-verdict" style={{ color: "#0d9488" }}>
+        <div className="comparator-verdict" style={{ color: "var(--brand)" }}>
           ✓ Low stress · Preserves Mom's full Canada & Detroit itinerary · Cuts 5-hr museum.
         </div>
       </div>
@@ -60,7 +60,7 @@ export default function SundayComparator() {
             <b>6:30 PM</b> Belleville arrival
           </li>
         </ul>
-        <div className="comparator-verdict" style={{ color: "#d97706" }}>
+        <div className="comparator-verdict" style={{ color: "var(--warn)" }}>
           ✓ Deep dive into Rosa Parks / Kennedy limo · Cuts Windsor & Belle Isle Aquarium.
         </div>
       </div>

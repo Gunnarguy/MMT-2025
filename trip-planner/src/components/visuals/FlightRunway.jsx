@@ -49,7 +49,7 @@ export default function FlightRunway() {
   return (
     <div className="runway-card">
       <div className="dune-card-head">
-        <div className="eyebrow" style={{ color: "#7c3aed" }}>The Hard Deadline</div>
+        <div className="eyebrow" style={{ color: "var(--locked)" }}>The Hard Deadline</div>
         <h3>Monday Reverse Departure Runway (Flight AA 1253)</h3>
         <p className="muted" style={{ fontSize: "var(--t-xs)", margin: 0 }}>
           Working backward from the 3:20 PM gate departure at O’Hare.
