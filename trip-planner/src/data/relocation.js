@@ -301,6 +301,10 @@ export const SCOUT_CAMPBELL = { ...{
         "This is the baseline row, so the relevant number is what staying and buying costs. At Freddie Mac's 6.76% (PMMS, Sep 10, 2026) with 20% down ($365,480, a jumbo loan of $1,461,921): P&I $9,492 + property tax $1,980 at the prior 1.3% ($1,904 at 1.25%) + insurance ~$138 = about $11,600/month before PG&E (~$285) and HOA. Prop 13 resets the assessed value to the purchase price and then caps growth at 2%/yr; there is no uncapping surprise beyond that reset. Renting the 2BR instead is $3,386-3,437 asking (Zumper/RentCafe) against a HUD FMR that falls from $3,483 to $3,272 on Oct 1, 2026, a sign asking rents in the metro have stopped rising. Campbell's sales tax is 10.5% (Measure A, unchanged from prior)."
       ],
       [
+        "Verification notes",
+        "soldMedian (minor): Geography is wider than 'City of Campbell proper': Redfin's own page counts 79 August sales, 2.8x the MLS city closings (SCCAOR August 2026 report: 20 single-family + 8 condo/townhome = 28; MLSListings 95008 single-family: 19 closed), and Redfin's Campbell 'recently sold' list includes 2260 Gunar Dr, San Jose 95124. The level is still plausible: $1,827,401 sits between SCCAOR's city SFR median $1,995,000 and condo/TH $1,106,188 and within 5% of Houzeo's MLS all-types $1,737,500. Label it 'Redfin Campbell area (all home types)' rather than city proper."
+      ],
+      [
         "Not found this round",
         "Median list price (city and county); Campbell tax-rate-area total rate from the County Tax Rate Book (Cloudflare-gated); Bankrate 2026 California car and home insurance (site unfetchable; substitutes used); Apartments.com Campbell rent (403); Zillow Observed Rent Index / ZHVI (bot wall)"
       ],
@@ -670,7 +674,7 @@ export const RELOCATION_TOWNS = [
     tier: "viable",
     verified: "yes",
     stryker: {"site": "Portage, MI (HQ)", "mi": 50.5, "hrs": "0:57"},
-    costs: {"utility": "Consumers Energy", "heatFuel": "natural gas", "winterHeat": 200.0, "summerBill": 25.0, "utilities": 263.27, "utilitiesNote": "Consumers Energy; electric $150.77, winter gas $200, summer $25", "internet": 40.0, "internetNote": "Xfinity 300 Mbps", "cell": "RootMetrics ranks Grand Rapids highly for speed and reliability, but local users report dead-zones on West Side, Ada, and Lowell", "carIns2": 238.17, "carInsNote": "MonitorBankRates avg $1,429/yr per car ($2,858/yr for 2 cars)", "gasPrice": 4.03, "groceries": 656.92, "groceryNote": "MIT Living Wage Calculator $7,883/yr for 2 adults", "groceryBasis": "MIT", "waterTrash": 110.0, "homeIns": 243.67, "extras": "City Special Assessments on summer tax bills; HOA fees $50-$150/mo in some subdivisions", "basketTotal": 1881.33, "sources": "eia.gov, bridgemi.com, xfinity.com, rootmetrics.com, monitorbankrates.com, aaa.com, mit.edu, grandrapidsmi.gov, insure.com"},
+    costs: {"utility": "Consumers Energy", "heatFuel": "natural gas", "winterHeat": 200.0, "summerBill": 25.0, "utilities": 263.27, "utilitiesNote": "Consumers Energy; electric $150.77, winter gas $200, summer $25", "internet": 40.0, "internetNote": "Xfinity 300 Mbps", "cell": "RootMetrics ranks Grand Rapids highly for speed and reliability, but local users report dead-zones on West Side, Ada, and Lowell", "carIns2": 238.17, "carInsNote": "MonitorBankRates avg $1,429/yr per car ($2,858/yr for 2 cars)", "gasPrice": 4.03, "groceries": 656.92, "groceryNote": "MIT Living Wage Calculator $7,883/yr for 2 adults", "groceryBasis": "MIT", "waterTrash": 110.0, "homeIns": 211.67, "extras": "City Special Assessments on summer tax bills; HOA fees $50-$150/mo in some subdivisions", "basketTotal": 1849.33, "sources": "eia.gov, bridgemi.com, xfinity.com, rootmetrics.com, monitorbankrates.com, aaa.com, mit.edu, grandrapidsmi.gov, insure.com"},
     money: {"medianPrice": 309795, "effTax": 0.0166, "cityTax": 0.015, "taxState": "MI", "countyPrice": 289900, "priceNote": "redfin.com median sold, Aug 2026", "rent2br": 1630, "rentNote": "HUD FMR FY2027 · FY2027 (effective Oct 1 2026)"},
     oneLiner:
       "A real mid-size city — 80 breweries, a Level I trauma center downtown, same-day Amazon — that happens to be three and a half hours from your mom. Buy the neighborhood, not the city.",
@@ -700,7 +704,7 @@ export const RELOCATION_TOWNS = [
       ]
     },
     median: "$309,795 sold (Aug 2026) · $244,500 ACS value",
-    comfort: "$91k in town · $87k in county",
+    comfort: "$90k in town · $87k in county",
     crime: "9.0 / 24.4–24.8",
     snow: '77.6"',
     fiber: "30% fiber · 99% cable",
@@ -781,6 +785,14 @@ export const RELOCATION_TOWNS = [
           "$657/mo · MIT 2026 (updated 2026-02-15) · livingwage.mit.edu. Kent County, 2 adults (both working), 0 children: food $7,883/yr. Unchanged from prior."
         ],
         [
+          "Home insurance, Grand Rapids",
+          "$211.67/mo ($2,540/yr) · 2026 · insurance.com city table, updated Feb 24, 2026; the statewide average is $243.67"
+        ],
+        [
+          "City-proper sanity check",
+          "Zillow's median sale price for the City of Grand Rapids was $298,521 in May 2026 (relayed by holdengr.com; Zillow blocks fetches). Redfin's polygon sold 688 of Kent County's 707 August homes, so the $309,795 headline is a metro-core figure about 4% above the city proper"
+        ],
+        [
           "What the median buys",
           "Redfin closings Jul-Sep 2026 near the $310K median: 1549 Griggs St SE, 2 bd/1 ba, 1,117 sq ft brick ranch, $286,200 (Aug 28); 1155 Northwood St NE, 4 bd/2 ba, 1,722 sq ft, $340,000 (Jul 24); 2840 Stonewood Ct NW, 3 bd/2 ba, 1,712 sq ft, $275,000 (Jul 16, cash sale, needs work); 3372 Evert St NW, 4 bd/1 ba, 1,358 sq ft, $280,000 (Sep 10, 2% over list, 21 days); 1749 Jefferson Ave SE, 3 bd/2 ba, 1,500 sq ft, $215,000 (Sep 11). Mostly pre-1960 stock; the east side (49506) runs $425K-$528K (1621 Woodcliff Ave SE 3/2 1,638 sq ft $425,000; 15 Auburn Ave SE 4/1.5 1,978 sq ft $528,000). Sources: https://www.redfin.com/city/8694/MI/Grand-Rapids/recently-sold and the housing-market page."
         ],
@@ -791,6 +803,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "Uncapped first-year tax on the $309,795 median at 33.1249 PRE mills is about $5,131 (the seller's capped bill will be lower), plus the 1.5% resident city income tax on wages. Heat is natural gas (DTE Gas, which won a $74.52M increase on Sep 10 2026; Consumers Energy electric rose 6.1%/$6.46 a month on May 1 2026). Michigan transfer tax ($3.75 + $0.55 per $500 = 0.86%, about $2,664 here) is the seller's by default. At 6.76% (Freddie Mac PMMS, Sep 10 2026) with 20% down ($61,959), P&I on a $247,836 loan is about $1,609/mo; with ~$428/mo tax and ~$200-245/mo insurance the carry is roughly $2,240-2,280/mo before utilities."
+        ],
+        [
+          "Verification notes",
+          "soldMedian (minor): Redfin's 'Grand Rapids' polygon is larger than 'postal city' implies: the page reports 688 August sales while Redfin's own Kent County page reports 707 for the whole county and GRAR's August report shows 706 total Kent County closings. The $309,795 therefore behaves like a county-core number, not a city number. Price level still holds: Zillow's city-of-Grand-Rapids median sale price was $298,521 (May 2026, via holdengr.com blog, secondary; Zillow itself returns 403), 3.6% lower; grrealestateinfo.com August 2026 'Grand Rapids' median $345,000 (n=295, area undefined) is 11% higher. · homeIns (minor): Field value is the Michigan statewide Insurance.com figure ($2,924/yr = $243.67/mo, confirmed, page updated Feb 24 2026) while the drift line reports the Grand Rapids-specific $211.67 ($2,540/yr, confirmed on the same page). The two disagree by 15%; the city figure is the one that matches the brief. · carIns2 (minor): Statewide Insurify $2,731/yr ($455.17 for two) used although the same page gives Grand Rapids $208/mo per car = $416 for two (confirmed, page updated Sep 13 2026). Source spread is real and documented: MoneyGeek $1,652, Insurify $2,731, Bankrate $3,207 (snippet only), Experian full coverage $3,862 (confirmed; Experian's $2,703 is its blended full+minimum figure). · utilities (minor): $214.46 is a statewide construct, not a town bill, as labelled. EIA Table 5.A 2024 Michigan row confirmed (618 kWh, 19.30 c/kWh, $119.31) and 2025 residential gas $10.92/Mcf confirmed (2024 $10.76); the June 2026 22.99 c/kWh could not be checked because EIA's monthly table returned a maintenance error at check time."
         ],
         [
           "Not found this round",
@@ -1247,13 +1263,13 @@ export const RELOCATION_TOWNS = [
     crime: "3.10 / 10.1–10.3",
     snow: '45"',
     fiber: "7% fiber · 97% cable",
-    tax: "49.13 mills (2.46%) incl. an 11.25-mill special assessment; 37.88 base — Van Buren Twp 36.64",
+    tax: "49.13 mills (2.46%) incl. the 11.25-mill Public Safety Millage; 37.88 base — Van Buren Twp 36.64",
     drive: "≈287 mi · 4:34",
     workup: {
       "housing": [
         [
           "Median sold price",
-          "$328,782 · Aug 2026 · redfin.com · Redfin 'Belleville, MI' city page (all home types), 17 sales in Aug 2026: a narrow boundary approximating the 1. Redfin median sale price, all home types, +4.4% YoY; 17 homes sold in Aug 2026 (17 in Aug 2025); three-month median $329K; 39 days to pending (15 last year). Read via the browser pane 2026-09-14. n is small; use with the ZIP figure."
+          "$328,782 · Aug 2026 · redfin.com · Redfin 'Belleville, MI' (17 August sales) and Redfin ZIP 48111 (130 sales) list the same Van Buren Township parcels, so both are the 48111 postal area rather than the 1. Redfin median sale price, all home types, +4.4% YoY; 17 homes sold in Aug 2026 (17 in Aug 2025); three-month median $329K; 39 days to pending (15 last year). Read via the browser pane 2026-09-14. n is small; use with the ZIP figure."
         ],
         [
           "Second source",
@@ -1320,6 +1336,14 @@ export const RELOCATION_TOWNS = [
           "$639/mo · MIT 2026 (data dated Feb 15, 2026) · livingwage.mit.edu. Wayne County, 2 adults (both working), 0 children: $7,669/yr = $639.08/mo."
         ],
         [
+          "What the 11.25 mills are",
+          "The City of Belleville's Public Safety Millage (police and fire), an ad valorem special assessment; the 2024 sheet showed 45.31 / 49.31 all-in, so the total barely moved while 7.25 operating mills shifted into it (Wayne County 2024 and 2025 rate sheets, city FY2025-26 budget)"
+        ],
+        [
+          "Other ZIP medians",
+          "Movoto 48111 $310,000 (Aug 2026, 167 sold, 212 active); RealtyTrac ZIP $291,000 (public records, July 2026)"
+        ],
+        [
           "What the median buys",
           "Redfin recently sold on the Belleville and 48111 pages (Sept 14, 2026): 590 Thornhill Ct, Belleville, 3 bd / 2.5 ba, 2,294 sq ft, $314,500 at list after 93 days; 28205 Elwell Rd, 4 bd / 2.5 ba, 2,037 sq ft, $380,000 at list, 42 days; 26996 Sumpter Rd, 3 bd / 2 ba, 1,820 sq ft, $250,000 (9% under list, 136 days); 6390 Briarcliff Dr, Van Buren Twp, 4 bd / 2.5 ba, 3,672 sq ft, $390,000; 10696 Van Buren Ln, 3 bd / 1 ba, 1,163 sq ft, $205,000. The median buys a 1990s-2000s 3-4 bedroom colonial or ranch of 1,800-2,300 sq ft in a subdivision; Belleville Lake frontage runs $500K+ (24294 Martinsville Rd sold 10% over list at $550,000; 47969 Merle Ct $525,000). https://www.redfin.com/city/1829/MI/Belleville/housing-market"
         ],
@@ -1330,6 +1354,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "On the $328,782 median with 20% down at 6.76%: P&I $1,708/month; first-year tax $8,077/yr ($673/mo) inside the city with the 11.25-mill assessment, or $6,023/yr ($502/mo) for the same house in Van Buren Township; insurance about $241/mo; total about $2,622/month in the city or $2,451 in the township, before utilities (~$211 DTE gas and electric) and $456 for two cars. No city income tax. Seller pays the 0.86% transfer tax. Check whether a listing is in the city or the township: the address says Belleville either way and the tax bill differs by roughly $2,054 a year."
+        ],
+        [
+          "Verification notes",
+          "geography (minor): The claim that Redfin's 'Belleville, MI' page (17 sales) approximates the 1.2 sq mi city proper is not supported by the page: its recently-sold module is identical to the 48111 ZIP page's and lists Van Buren Township parcels (47969 Merle Ct, 10696 Van Buren Ln, 6390 Briarcliff Dr, 14215 Red Oak Dr) and Sumpter Township roads (Sumpter Rd, Elwell Rd, Martinsville Rd) that carry Belleville mailing addresses. 17 sales a month is about 9.4% a year of the city's 2,162 housing units (ACS 2020-2024 B25001), roughly double normal turnover, so the polygon is probably wider than the city. The number is unaffected (ZIP figure within 0.3%), but 'city proper' should not be attached to it and typicalHome labels the Elwell Rd and Sumpter Rd sales as Belleville sales. Only the ACS $148,300 (MOE +/-$30,251) is truly city-proper. · soldMedian (minor): Both Redfin pages confirmed live: city $328,782 (+4.4%, 17 sold, 39 days, 99.2%, $163/sqft +28.2%) and ZIP 48111 $329,857 (-10.2%, 130 sold, 28 days, 98.7%, $147/sqft -8.1%, Compete 54); the agreement claim holds. Independent ZIP sources are lower: Movoto 48111 $310,000 (Aug 2026, 167 sold, 212 active, 50 cuts) and Realtytrac 48111 $291,300 (July 2026, 114 sales, public records). The headline rests on n=17 and sits at the top of a $291K-$330K range; present $310K-$330K. · rent2br (minor): $1,459 is the Detroit HMFA FMR, 19% above Zumper Belleville 2BR $1,229 (Sept 14, 2026) and 35% above ACS gross rent $1,079; Van Buren Twp ACS gross rent is $1,230 +/-$49 (Census Reporter API). Disclosed, but a metro number in the town's slot and identical to Detroit's and Port Huron's."
         ],
         [
           "Not found this round",
@@ -1848,6 +1876,10 @@ export const RELOCATION_TOWNS = [
           "On the $339,775 median with 20% down at 6.76% (PMMS Sept 10, 2026) principal and interest is $1,765/month. Add first-year uncapped tax $6,844/yr ($570/mo, the seller's advertised bill will be lower because their taxable value was capped) and home insurance about $241/mo, for roughly $2,576/month before utilities (~$243 on Consumers gas and electric) and $456 for two cars. No city income tax. Buyer closing costs are lender and title fees only; Michigan's 0.86% transfer tax (0.75% state + 0.11% county) is paid by the seller. The 5-mill public-safety assessment is billed like a tax and shows on the same bill."
         ],
         [
+          "Verification notes",
+          "rent2br (minor): Value is the HUD FY2027 Saginaw MSA (county-wide) FMR, 15% above the town's own asking rent; the note discloses Zumper Frankenmuth 2BR $995. Kind and geography are labelled, so this is a presentation choice, but one county/metro FMR cannot distinguish towns inside the same FMR area. HUD figure itself confirmed from the FY27 workbook (0BR 795 / 1BR 893 / 2BR 1,141; FY26 2BR 1,117)."
+        ],
+        [
           "Not found this round",
           "listMedian (city level); Zillow ZORI (zillow.com not fetchable); Bankrate 2026 insurance pages (403 on every route; snippets only); city-proper sold median distinct from the postal area"
         ],
@@ -2249,8 +2281,8 @@ export const RELOCATION_TOWNS = [
     tier: "viable",
     verified: "yes",
     stryker: {"site": "Portage, MI (HQ)", "mi": 191.8, "hrs": "3:34"},
-    costs: {"utility": "Traverse City Light & Power / Consumers Energy", "heatFuel": "natural gas", "winterHeat": 88.0, "summerBill": 113.0, "utilities": 157.0, "utilitiesNote": "TCLP electric $113/mo; Consumers Energy winter gas $88, summer $0 (summer bill $113, winter bill $201)", "internet": 40.0, "internetNote": "Spectrum up to 500 Mbps", "cell": "Strong 4G/5G in main areas; dead zones near East Bay, airport, and wooded/hilly terrain outside city limits", "carIns2": 521.83, "carInsNote": "Bankrate MI state avg $3,131/yr per car ($6,262/yr for 2 cars)", "gasPrice": 3.98, "groceries": 658.67, "groceryNote": "MIT Living Wage Calculator for 2 working adults in Grand Traverse County ($7,904/yr)", "groceryBasis": "MIT", "waterTrash": 93.54, "homeIns": 243.67, "extras": "$0.90/month BEACON endpoint technology fee on water bill; private seasonal snow removal services", "basketTotal": 1997.51, "sources": "utility-rates.com, consumersenergy.com, spectrum.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, traversecitymi.gov"},
-    money: {"medianPrice": 484679, "effTax": 0.0185, "cityTax": 0, "taxState": "MI", "countyPrice": 339400, "priceNote": "redfin.com median sold, Aug 2026", "rent2br": 1436, "rentNote": "HUD FMR FY2027 · FY2027 (effective Oct 1 2026)"},
+    costs: {"utility": "Traverse City Light & Power / Consumers Energy", "heatFuel": "natural gas", "winterHeat": 88.0, "summerBill": 113.0, "utilities": 157.0, "utilitiesNote": "TCLP electric $113/mo; Consumers Energy winter gas $88, summer $0 (summer bill $113, winter bill $201)", "internet": 40.0, "internetNote": "Spectrum up to 500 Mbps", "cell": "Strong 4G/5G in main areas; dead zones near East Bay, airport, and wooded/hilly terrain outside city limits", "carIns2": 521.83, "carInsNote": "Bankrate MI state avg $3,131/yr per car ($6,262/yr for 2 cars)", "gasPrice": 3.98, "groceries": 658.67, "groceryNote": "MIT Living Wage Calculator for 2 working adults in Grand Traverse County ($7,904/yr)", "groceryBasis": "MIT", "waterTrash": 93.54, "homeIns": 226.58, "extras": "$0.90/month BEACON endpoint technology fee on water bill; private seasonal snow removal services", "basketTotal": 1980.42, "sources": "utility-rates.com, consumersenergy.com, spectrum.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, traversecitymi.gov"},
+    money: {"medianPrice": 453375, "effTax": 0.0188, "cityTax": 0, "taxState": "MI", "countyPrice": 339400, "priceNote": "City proper, 6-month median to Sep 6, 2026 (Resideline, 207 closings); Redfin's postal-area figure is $484,679", "rent2br": 1436, "rentNote": "HUD FMR FY2027 · FY2027 (effective Oct 1 2026)"},
     oneLiner:
       "The northern Michigan town that actually works year-round: a 5-star hospital nine minutes from downtown, Costco and Target in town, 150 restaurants — priced accordingly, and 140 miles from a Trader Joe's.",
     scores: {
@@ -2279,18 +2311,18 @@ export const RELOCATION_TOWNS = [
         "2% rental vacancy"
       ]
     },
-    median: "$484,679 sold (Aug 2026) · $415,400 ACS value",
-    comfort: "$121k in town · $98k in county",
+    median: "$453,375 sold (6 months to Sep 6, 2026) · $415,400 ACS value",
+    comfort: "$116k in town · $97k in county",
     crime: "2.8–3.2 / 9.9–12.9",
     snow: '101"',
     fiber: "0.3% fiber · 90% cable",
-    tax: "37.07 mills city proper (1.85%) — the oft-quoted 26.8 is Acme Twp",
+    tax: "37.68 mills (1.88%) on the county's 2025 sheet; the Treasury compilation prints 37.07 — the oft-quoted 26.8 is Acme Twp",
     drive: "≈350 mi · 5:57",
     workup: {
       "housing": [
         [
           "Median sold price",
-          "$484,679 · Aug 2026 · redfin.com · Redfin 'Traverse City, MI' = postal area (ZIPs 49684, 49685, 49686, 49696) spanning the city proper and Garfield, East Bay, Long Lake, Peninsula and Blair townships (Grand Traverse Co. Redfin median sale price, all home types, Aug 2026; +19.7% YoY; 122 homes sold in Aug 2026 (123 in Aug 2025); trailing 3-month median $485K"
+          "$453,375 · 6 months to Sep 6, 2026 · resideline.com · Redfin 'Traverse City, MI' = postal area (ZIPs 49684, 49685, 49686, 49696) spanning the city proper and Garfield, East Bay, Long Lake, Peninsula and Blair townships (Grand Traverse Co. City of Traverse City proper: 207 closed sales inside the incorporated city (Resideline, an aggregator, so labelled). Redfin's postal-area 3-month median (ZIPs 49684/85/86/96, 122 August sales) is $484,679, +19.7% YoY; Grand Traverse County H1 2026 median $420,000 (Oltersdorf, MLS); Redfin county 3-month $504,063. Honest range for 'Traverse City' is $420,000 to $485,000"
         ],
         [
           "Second source",
@@ -2361,6 +2393,14 @@ export const RELOCATION_TOWNS = [
           "$659/mo · MIT 2026 (updated 2026-02-15) · livingwage.mit.edu. Grand Traverse County, 2 adults (both working), 0 children: food $7,904/yr. Unchanged from prior."
         ],
         [
+          "Home insurance, Grand Traverse County",
+          "$226.58/mo ($2,719/yr) · 2026 · insurance.com county table, updated Feb 24, 2026"
+        ],
+        [
+          "First-year tax at the county sheet rate",
+          "$8,541 = $453,375 × 0.5 × 37.6775 / 1000 inside the city (Grand Traverse County 2025 Total Millages Report); Garfield Township 26.6921 mills gives $6,051 on the same house"
+        ],
+        [
           "What the median buys",
           "Redfin closings Jul-Sep 2026 near the $485K median: 2722 Ruby St (49684, in town), 3 bd/2.5 ba, 2,261 sq ft, $425,000 (Sep 10, at list, 36 days); 6109 Dover Ln (49685, Garfield/Long Lake), 3 bd/2 ba, 1,961 sq ft, $454,000 (Sep 11, 1% under, 52 days); 10062 E Claremont Dr (Elmwood Twp, on the TART trail), 3 bd/2 ba, 1,444 sq ft one-owner ranch, $427,500 (Jul 31); 7128 S Whispering Hills Dr, 3 bd/2 ba, 1,610 sq ft, $487,500; 18706 Cedar Run Rd, 3 bd/2 ba, 1,832 sq ft ranch, $528,000 (Jun 29). Entry level: 5266 Brown Bridge Rd (East Bay), 2 bd/1 ba, 864 sq ft, $299,000. West Bay and Lake Leelanau frontage $1.2M-$2.0M. Sources: https://www.redfin.com/city/20162/MI/Traverse-City/recently-sold and the housing-market page."
         ],
@@ -2371,6 +2411,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "Uncapped first-year tax on the $484,679 median at 37.0733 city mills is about $8,984/yr ($749/mo); the same house in Garfield Township would be about $6,469, which is why 'Traverse City' addresses outside the city line are cheaper to own. Natural gas heat (DTE Gas, which won a >4% residential increase on Sep 10 2026). Michigan transfer tax 0.86% (about $4,168) is the seller's. At 6.76% (Freddie Mac, Sep 10 2026) with 20% down ($96,936), P&I on $387,743 is about $2,517/mo; with ~$749/mo tax and ~$200-245/mo insurance the carry is roughly $3,470-3,510/mo before utilities. Two-bedroom asking rent (Zumper $1,745) runs well above the FY2027 FMR ($1,436)."
+        ],
+        [
+          "Verification notes",
+          "soldMedian (implausible): $484,679 (+19.7%) is confirmed verbatim but it is a 3-month rolling postal-area median (ZIPs 49684/85/86/96, 122 August sales) and every city- or county-level measure sits lower: Resideline city-proper 6-month median $453,375 (207 closings inside the incorporated city, updated Sep 6 2026), Oltersdorf H1 2026 Grand Traverse County median $420,000 (571 sales vs 652), Aspire North Feb 2026 median $415,000 (search summary only). Only Movoto ($485,000 on 1,205 region-wide sales) and Redfin's county page ($504,063, +20.6%, with closings down from 203 to 148) agree, and both share the mix shift. Present $485K as an August peak with the $420K to $453K range beside it. · millage (minor): Headline 37.0733 comes from the Treasury compilation, which michigan.gov would not serve (403), and it disagrees with Grand Traverse County's own 2025 Total Millages Report: Traverse City / TCAPS homestead 33.5222 summer + 4.1553 winter = 37.6775 (56.6612 non-homestead; DDA 1.5879 downtown only). The county sheet is the levied rate: $9,131 on the median, $147 more than shown. All six township rates quoted (25.3866 to 27.2460) match the county sheet. · soldMedianAlt (minor): Zillow ZHVI $446,706 (+1.9%) unverified: zillow.com 403 on every path. Movoto active count reads 1,081 on the page today vs 1,077 written (page moves daily)."
         ],
         [
           "Not found this round",
@@ -3942,6 +3986,10 @@ export const RELOCATION_TOWNS = [
           "On the $185,327 median with 20% down at 6.76%: principal and interest $963/month, first-year uncapped tax $3,828/yr ($319/mo), home insurance about $241/mo, total about $1,523/month before utilities and cars. The 1.0% resident city income tax applies to all earned income including remote-work wages once you are domiciled in the city. Heat is SEMCO gas (rate case pending), electric is DTE; budget the prior's $309/mo until a SEMCO typical bill is sourced. Seller pays the 0.86% transfer tax. At this price the tax bill is modest in dollars even though the 41.31-mill rate is among the higher ones on the list."
         ],
         [
+          "Verification notes",
+          "soldMedian (minor): Redfin $185,327 confirmed live (117 sold, +15.8% YoY, 99.1%, 14 days). Independent sources sit lower: Movoto $174,900 (Aug 2026, 176 sold, -5.6%) and Realtytrac ZIP 48060 $149,000 (July 2026, 275 public-record transfers, -19.6%; includes non-MLS deeds so not like-for-like). The headline is the top of a $149K-$185K range after a +15.8% jump on one month; present with Movoto as the floor. · acsValue (minor): Value $149,300 +/-$9,147 is correct (Census Reporter API acs2024_5yr). The drift note's explanation ('prior appears to have been a different vintage') cannot be right: Port Huron (pop. ~28k) has no 1-year ACS and no older 5-year vintage is higher. The prior $156,700 matches Zillow's Port Huron typical home value ($156,372 in a Sept 2026 search snippet; Zillow itself not fetchable: 403 to the fetcher, bot-check in the browser) within 0.2%, so the prior was almost certainly a modeled value filed as ACS. No change to the new figure. · rent2br (minor): $1,459 is the Detroit-Warren-Livonia HMFA figure (St. Clair County is in it; confirmed from FY27_FMRs.xlsx) and is 30% above Port Huron asking rent (Zumper 2BR $1,120, updated Sept 14, 2026) and 49% above ACS gross rent $982. Disclosed in the note, but it is a five-county metro number in the town's rent slot and is identical for Detroit and Belleville in this file."
+        ],
+        [
           "Not found this round",
           "listMedian (city level); utilities (SEMCO typical residential gas bill); Zillow ZORI; Bankrate 2026 insurance pages"
         ],
@@ -4336,7 +4384,7 @@ export const RELOCATION_TOWNS = [
     verified: "yes",
     stryker: {"site": "Portage, MI (HQ)", "mi": 146.6, "hrs": "2:41"},
     costs: {"utility": "Consumers Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 262.5, "utilitiesNote": "Consumers Energy; electric $135, winter gas $225, summer gas $30", "internet": 35.0, "internetNote": "Verizon 5G Home Internet (300 Mbps)", "cell": "Verizon offers reliable coverage in the city, but users report localized dead zones and signal drops in surrounding areas and indoors", "carIns2": 533.0, "carInsNote": "Experian; avg $3,198/yr per car ($6,396/yr for 2 cars)", "gasPrice": 3.27, "groceries": 614.08, "groceryNote": "MIT Living Wage Calculator; 2-adult household in Mason County", "groceryBasis": "MIT", "waterTrash": 83.0, "homeIns": 243.67, "extras": "$2 municipal trash bag stickers, special assessments for neighborhood infrastructure, seasonal snow plowing fees", "basketTotal": 2064.95, "sources": "consumersenergy.com, broadbandnow.com, coveragemap.com, experian.com, gasbuddy.com, livingwage.mit.edu, ludington.mi.us, terrysmithagency.com, bsaonline.com"},
-    money: {"medianPrice": 334778, "effTax": 0.0203, "cityTax": 0, "taxState": "MI", "countyPrice": 219600, "priceNote": "redfin.com median sold, Aug 2026", "rent2br": 1085, "rentNote": "HUD FMR FY2027 · FY2027 (effective Oct 1 2026)"},
+    money: {"medianPrice": 334778, "effTax": 0.0198, "cityTax": 0, "taxState": "MI", "countyPrice": 219600, "priceNote": "redfin.com median sold, Aug 2026", "rent2br": 1085, "rentNote": "HUD FMR FY2027 · FY2027 (effective Oct 1 2026)"},
     oneLiner:
       "A car-ferry town on Lake Michigan with surprising fiber (55%), Meijer, Walmart and Aldi in town, a small hospital — and the nearest Costco 95 miles away.",
     scores: {
@@ -4370,7 +4418,7 @@ export const RELOCATION_TOWNS = [
     crime: "2.1–2.6 / 9.4–10.6",
     snow: '86"',
     fiber: "55% fiber · 75% cable",
-    tax: "40.67 mills (2.03%)",
+    tax: "39.65 mills (1.98%) on the city's 2026 sheet; 40.67 in the 2025 compilation",
     drive: "≈275 mi · 4:21",
     workup: {
       "housing": [
@@ -4447,6 +4495,18 @@ export const RELOCATION_TOWNS = [
           "$614/mo · MIT 2026 (updated 2026-02-15) · livingwage.mit.edu. Mason County, 2 adults (both working), 0 children: food $7,369/yr. Prior $614 unchanged."
         ],
         [
+          "First-year tax on the 2026 sheet",
+          "$6,636 = $334,778 × 0.5 × 39.6456 / 1000 · City of Ludington 2026 millage sheet (winter estimated); the same house in Hamlin Township is about $4,214"
+        ],
+        [
+          "MLS average, one month",
+          "$332,550 average sale (not median) · Aug 14 to Sep 14, 2026 · greenridge.com (MichRIC/LogicMLS), $200/sq ft"
+        ],
+        [
+          "Read the +36.6% with care",
+          "It is Redfin's 3-month median on 33 sales with price per sq ft down 27%: composition, not appreciation"
+        ],
+        [
           "What the median buys",
           "Redfin closings Jul-Sep 2026 near the $335K median: 819 E Loomis St, 4 bd/2 ba, 1,888 sq ft, $340,000; 1555 Marilyn Ave, 3 bd/2 ba, 1,364 sq ft, $360,000; 311 N James St, 4 bd/2 ba, 1,888 sq ft, $280,000 (Sep 4, 2% under list, 24 days); 5959 Barnhart Rd (Hamlin Twp), 4 bd/2 ba, 1,644 sq ft mobile home with Hamlin Lake access, $315,000 (Jul 31); 4599 Ariel Ave (Hamlin Twp), 3 bd/2.5 ba, 2,000 sq ft slab ranch near Hamlin Lake, $420,000 (Jul 30). Lakefront/lake-view runs $595K-$800K (1824 S Pere Marquette Hwy 4/3 2,938 sq ft $595,000; 150 Harbor Dr 3/3 1,646 sq ft $775,000, 11% over list). Sources: https://www.redfin.com/city/12731/MI/Ludington/recently-sold and the housing-market page."
         ],
@@ -4457,6 +4517,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "Inside the city the uncapped first-year tax on the $334,778 median at 40.6725 mills is about $6,808 (the city's 2026 sheet at 39.6456 gives $6,636); the same price in Hamlin Township is about $4,214. Natural gas heat. Michigan transfer tax 0.86% (about $2,879) is the seller's. At 6.76% (Freddie Mac, Sep 10 2026) with 20% down ($66,956), P&I on $267,822 is about $1,739/mo; with ~$567/mo tax and ~$200-245/mo insurance the carry is roughly $2,500-2,550/mo before utilities. The car ferry is seasonal, so year-round errands beyond the town mean a 1.5-2 hour drive to Muskegon or Grand Rapids."
+        ],
+        [
+          "Verification notes",
+          "yoy (implausible): +36.6% is Redfin's 3-month rolling median on 33 August sales (confirmed verbatim, 34 last year) with $/sq ft down 27.3%, so it is composition, not appreciation; the prior $311,000 (Jul) to $334,778 (Aug) is a 7.6% move in one month of the window. Redfin's Mason County page shows the same artefact (+41.2% on 41 sales). The researcher labels it mix-driven, but the value must not feed any trend or appreciation line. · soldMedian (minor): Level corroborated within 10% by two other sources but each covers a different area: Movoto 'Ludington' $362,450 (Aug 2026, n=107, +8.3%, confirmed) and Greenridge/MichRIC average sale $332,550 (Aug 14 to Sep 14 2026, confirmed). Redfin's ZIP 49431 recently-sold list includes land parcels ('Parcel A Ridgewood Dr' $410,000, a $45,000 0-bed sale), so n=33 is thin and heterogeneous. Display with n. · millage (minor): 2025 PRE 40.6725 is confirmed only through the indexed text of the city's own 2025 sheet (non-PRE 58.6725 = 40.6725 + 18.0; same DocumentCenter ID now serves the 2026 sheet); the Treasury PDF returns 403. The current 2026 sheet (confirmed line by line: city 15.2944, summer PRE 36.8900, est. winter 2.7556, total 39.6456 PRE / 57.6456 non-PRE, DDA 1.5324, IRM 1.027) is what a post-September-2026 buyer actually pays: $6,636, not $6,808. Ludington Daily News reports the adopted 2026 operating levy at 11.0603 vs 10.9231 on the sheet (+0.14 mill, immaterial). · soldMedianAlt (minor): The Zillow ZHVI $307,090 (+7.0%) could not be verified: zillow.com returned 403 to every fetch path here too. Not contradicted, just unchecked."
         ],
         [
           "Not found this round",
@@ -5489,7 +5553,7 @@ export const RELOCATION_TOWNS = [
         ],
         [
           "What the median buys",
-          "Empire (Redfin, Jul-Sep 2026): 11566 S Sunset Dr, 3 bd/2.5 ba, 1,260 sq ft, $515,000 (Aug 27, 2% under list, 120 days); 10176 Niagara St, 3 bd/1 ba, 2,724 sq ft, $550,000 (Aug 21, 10% over list, 28 days); 11530 S Benzonia Trl, 3 bd/2 ba, 1,200 sq ft, $400,000 (Aug 13, at list, 31 days); 11256 S Lacore Rd, 3 bd/3 ba, 1,353 sq ft, $880,000 (Jul 20); 7345 W Glenmere Rd $1,675,000 (Sep 8). Glen Arbor: The Homestead resort condos $300K-$490K (1A/1H Fish House 3 bd/2.5 ba 1,808 sq ft $300,000-$350,000; 13 Hawks Nest 1 bd 600 sq ft $380,000; 4 Tall Timber 400 sq ft $450,000); 23 South Beach, 4 bd/3 ba, 2,160 sq ft, $1,400,000 (Sep 3, 7% under, 53 days); lakefront 4515 W Glen Eden Dr 2 bd/2 ba 1,692 sq ft $2,102,000 (20% over list), 4868 W Whispering Pines Ln 4 bd/5 ba 4,041 sq ft $3,450,000, 7566 W Harbor Hwy 4 bd/2.5 ba 1,717 sq ft $3,795,000. Sources: https://www.redfin.com/zipcode/49630/housing-market and https://www.redfin.com/zipcode/49636/housing-market"
+          "Empire (Redfin ZIP 49630, Jul-Sep 2026): 11566 S Sunset Dr, 3 bd / 2.5 ba, 1,260 sq ft, $515,000 (Aug 27, 2% under list, 120 days); 10176 Niagara St, 3 bd / 1 ba, 2,724 sq ft, $550,000 (Aug 21, 10% over list, 28 days); 11530 S Benzonia Trl, 3 bd / 2 ba, 1,200 sq ft, $400,000 (Aug 13, at list, 31 days). Glen Arbor (Redfin ZIP 49636): Homestead resort condos trade around $300,000 to $490,000, e.g. D2 Tall Timber, 1 bd, 297 sq ft, $385,000 (Jun 18, 2026); Glen Lake and Lake Michigan frontage runs $2M to $4M, which is what the six-sale $2.77M 'median' is made of"
         ],
         [
           "The market right now",
@@ -5498,6 +5562,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "Millage is the lowest on the list but the base is high: an Empire village purchase at $562,257 uncaps to about $7,461/yr (26.5378 mills; $5,586 in Empire Twp), and a Glen Arbor ZIP-median lakefront at $2.77M to about $24,490 (17.6516 mills; $28,236 with the township special assessment). No natural gas: Cherryland Electric (2026: $36.50 + 13.1 cents/kWh) plus propane at about $2.37/gal (EIA, Mar 2026). Michigan transfer tax 0.86% ($4,835 on the Empire median) is the seller's. At 6.76% (Freddie Mac, Sep 10 2026) with 20% down ($112,451), P&I on $449,806 is about $2,920/mo; with ~$622/mo tax and ~$200-245/mo insurance the carry is roughly $3,740-3,790/mo before utilities. Leelanau's MIT food line ($980/mo) is the highest of the four."
+        ],
+        [
+          "Verification notes",
+          "soldMedianGlenArbor (implausible): $2,774,799 is Redfin's 3-month median for ZIP 49636 on 6 August sales (confirmed verbatim: +132.2%, $853/sq ft +136.3%, 21 days, 101.2%); the Redfin village page rests on 1 sale ($3.9M, +143.4%, confirmed). The researcher already calls it noise and refuses to blend; the only wider-area number is Movoto's $822,000 on 32 sales (confirmed) and the county's $682,715 (confirmed). Never display a Glen Arbor figure without n. · typicalHome (uncited): Two Homestead condo examples ('13 Hawks Nest 1 bd 600 sq ft $380,000' and '4 Tall Timber 400 sq ft $450,000') are not on the cited 49636 page, which shows D2 Tall Timber, 1 bd 297 sq ft, $385,000 (Jun 18 2026). The township's Jan 2026 AOR lists 2025 Hawks Nest sales at $335,000 to $625,000, so the range is plausible but those two units are unverified. · irm2026 (minor): The note copies the township AOR's inverted ratio ('311.547/319.9966 = 2.7%'); 319.9966/311.547 = 1.0271. Cosmetic: the multiplier 1.027 is right per STC Bulletin 14 of 2025, and the AOR's 46.56% ratio, $86M mark-to-market and 45.74% prior-year ratio are confirmed in the PDF. · utilities (minor): Cherryland's 2026 Schedule A ($36.50 + 13.1 c/kWh) could not be checked: the MPSC rate book returned 403. The $277 prior stands as the researcher says; no annual propane gallons figure exists anywhere I looked either."
         ],
         [
           "Not found this round",
@@ -7070,6 +7138,18 @@ export const RELOCATION_TOWNS = [
           "$639/mo · MIT 2026 (data dated Feb 15, 2026) · livingwage.mit.edu. Wayne County, 2 adults (both working), 0 children: $7,669/yr = $639.08/mo."
         ],
         [
+          "MLS median, City of Detroit",
+          "$92,500 · Aug 2026 · RE/MAX of Southeastern Michigan monthly report via dbusiness.com (366 MLS sales; Aug 2025 $110,000). Redfin's $104,931 sits 13% above it; Movoto $100,000. The honest range is $92,500 to $105,000"
+        ],
+        [
+          "ACS vintages",
+          "$83,900 is the 2020-2024 5-year value; $95,900 (±$7,548) is the ACS 2024 1-year estimate, which is what the previous figure was. Both are current"
+        ],
+        [
+          "Car insurance spread",
+          "Two cars full coverage: Insurify Detroit $836/mo (Sep 13, 2026), Experian $732, MoneyGeek $578 (Aug 29, 2026). The matrix keeps the August Bankrate-based figure; Detroit ZIPs run roughly double the state"
+        ],
+        [
           "Neighbourhood: University District",
           "$461,277 · Aug 2026 · redfin.com. Redfin neighbourhood page; 12 homes sold in Aug 2026 (6 last year); 52 days to pending; sale-to-list 104.2% (+5.0 pt); $118/sq ft (-37.2%); Compete Score 47. Geography: Redfin's University District polygon (Livernois to Wyoming, McNichols to 7 Mile). First-year tax $461,277 x 0.5 x 64.1844 / 1000 = $14,803/yr"
         ],
@@ -7100,6 +7180,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "Citywide median $104,931 with 20% down at 6.76%: P&I $545/month, tax $3,367/yr ($281/mo), insurance about $304/mo, total about $1,129/month. A University District house at $461,277: P&I $2,396, tax $14,803/yr ($1,234/mo), insurance $304, about $3,933/month before utilities. The 64.18-mill rate is the highest on the list and uncaps on sale; the 2.4% resident income tax applies to remote-work wages; auto insurance in Detroit ZIPs is roughly double the state average. Heat is DTE gas (rate up 3.34% Oct 1, 2026). Seller pays the 0.86% transfer tax."
+        ],
+        [
+          "Verification notes",
+          "soldMedian (minor): Redfin $104,931 (-2.8% YoY, 1,449 sold) confirmed live. RE/MAX of Southeastern Michigan's August 2026 report (MLS-based, reported by DBusiness on Sept 14, 2026) puts the City of Detroit median at $92,500 on 366 sales, down from $110,000 a year earlier (-15.9%); Movoto says $100,000. Redfin is 13% above RE/MAX and its YoY reading differs in size, so the 'flat to down' story is source-dependent; present $92.5K-$105K. · acsValue (minor): $83,900 +/-$1,317 is the correct ACS 2020-2024 5-year value (Census Reporter API), but the drift line 'prior $95,900 -> $83,900' reads as a fall. $95,900 +/-$7,548 is the ACS 2024 1-year estimate for Detroit (Census Reporter profile, 'ACS 2024 1-year'); both are current, different vintages. The county drift ($194,800 -> $178,500) is the same 1-year-to-5-year switch ($194,800 is Wayne County ACS 2024 1-year). · carIns2 (minor): $836 = Insurify Detroit quote average $418/mo x 2, confirmed on the page (which says last updated Sept 13, 2026, not Aug 31). It is the top of a 45% spread: MoneyGeek Detroit full coverage $289/mo x 2 = $578 (Aug 29, 2026), Experian marketplace Detroit $4,390/yr per car = $732 for two (Aug 2026). The researcher disclosed the spread but the table value is the maximum; show $578-$836 or the midpoint. · utilities (minor): The DTE Gas figure ($2.87 = 3.34% on 75 ccf, implying $85.93 -> $88.80) is verified in the MPSC Sept 10, 2026 release, but the release states no effective date for it; the only date in it is 'starting January 1, 2027' for a separate 68-cent IRM surcharge. The 'from Oct 1, 2026' in the note and movingNote is unsupported. Electric side (24.35 c at 500 kWh, Aug 1, 2026 comparison) confirmed. · rent2br (minor): $1,459 is the five-county HMFA FMR; Detroit asking rent is Zumper 2BR $1,150 (Sept 14, 2026) and ACS gross rent $1,074, so the metro figure overstates the city by 27%. Disclosed in the note; same value reused for Port Huron and Belleville."
         ],
         [
           "Not found this round",
@@ -7590,6 +7674,10 @@ export const RELOCATION_TOWNS = [
           "Keep the existing note: a US citizen needs a work permit or permanent residence to live there. On the purchase itself two extra costs apply to a non-citizen/non-PR buyer: Canada's Prohibition on the Purchase of Residential Property by Non-Canadians Act runs to January 1, 2027 (https://www.canada.ca/en/department-finance/news/2024/02/government-announces-two-year-extension-to-ban-on-foreign-ownership-of-canadian-housing.html), and Ontario's Non-Resident Speculation Tax is 25% of the price province-wide (CA$133,955 on the Aug average), rebatable only if the buyer becomes a permanent resident within four years (https://www.ontario.ca/document/non-resident-speculation-tax). Ontario land transfer tax on CA$535,819 is CA$7,191 (buyer pays). Property tax is on the 2016-base MPAC assessment, so a typical detached bill is ~CA$3,900, not 1.8% of price. Financing: Ratehub's lowest 5-year fixed is 4.09% (insured, as of Sep 14, 2026, BoC overnight 2.25%, https://www.ratehub.ca/best-mortgage-rates/5-year/fixed); 80% of the Aug average = CA$428,655, P&I CA$2,284/mo on a 25-year amortization (~US$1,647), or CA$2,783 at the brief's 6.76% US rate for comparison. Heat is Enbridge natural gas; power is Bluewater Power at OEB regulated prices."
         ],
         [
+          "Verification notes",
+          "taxOnMedian (minor): CA$3,917 is the November 2025 PROPOSED-budget estimate for the detached example (assessed CA$219,737). The adopted 2026 total residential rate on sarnia.ca is 1.797234%, and 1.797234% x 219,737 = CA$3,949, about CA$32 above the figure used; the same arithmetic for 2025 (1.733719% x 219,737 = CA$3,810) reproduces the budget's 2025 line exactly, which confirms the method and that the 2026 example predates the adopted rate. Figures $3,917, $1,782, $2,652, $3,723 and the assessed values are all present in the budget PDF. · rent2br (minor): Asking-rent sources diverge by 13%: Zumper 2BR CA$1,550 (page confirmed, Sep 14 2026) vs Apartments.com 2BR CA$1,751 (Sep 2026, CoStar average; all-units CA$1,472). CMHC's Oct 2025 purpose-built row/apartment 2BR average of CA$1,502 supports the lower figure, so the Zumper number is defensible but is the low end of the range."
+        ],
+        [
           "Not found this round",
           "Median list price; Price per sq ft; Days on market; Sale-to-list; CMHC 2025 Sarnia 2BR average rent; Rentals.ca report (403); Typical-home listing example; Combined utilities total; Two-adult food line; Sarnia average MPAC assessed value (city gives a CA$219,737 detached example instead)"
         ],
@@ -8047,6 +8135,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "Keep the existing note: a US citizen needs a work permit or permanent residence to live there. Purchase costs for a non-citizen/non-PR: the federal foreign-buyer prohibition runs to January 1, 2027 (canada.ca release of Feb 4, 2024) and Ontario's 25% Non-Resident Speculation Tax applies province-wide (CA$140,993 on the Aug average; rebatable if permanent residence is obtained within four years, ontario.ca). Ontario land transfer tax on CA$563,971 is CA$7,754 (buyer pays). Property tax is on the 2016-base assessment: 2.096514% total rate, and the city says the average household's total residential charges including water are CA$5,402/yr. Financing at Ratehub's 4.09% 5-year fixed (insured, Sep 14, 2026): 80% of the Aug average = CA$451,177, P&I CA$2,404/mo on 25 years (~US$1,734), or CA$2,929 at the brief's 6.76%. Heat is Enbridge natural gas; power is ENWIN at OEB regulated prices; rates.ca puts Windsor home insurance above every other large Ontario city because of flood exposure."
+        ],
+        [
+          "Verification notes",
+          "inventory (mislabelled): 1,127 is WECAR's count of NEW listings in August 2026, not active inventory: AM800 (Sep 3 2026) writes '1,127 new listings last month, down 3.34 per cent compared to the 1,166 listings in August 2025', and jpcorrent.com republishes the same line. The last published active count for the whole WECAR area is CREA's 2,307 at the end of July 2026 (4.4 months of inventory). The sub-area figure (1,390 active, 825 new, 4.9 months for Windsor + LaSalle + Tecumseh) is correctly stated per mattbiggley.ca. · marketNote (minor): The sentence 'Windsor's October 2025 unemployment rate of 10.1% was the highest of any Canadian metro' matches no fetched source: AM800's Oct 10 2025 article gives September 2025 at 10.4% (from 11.1% in August), CBC (search result, not fetched) gives October 2025 at 9.6%, and the cited am800 rent article of Dec 15 2025 gives 8.1%. Narrative only; no table field depends on it."
         ],
         [
           "Not found this round",
