@@ -64,3 +64,33 @@ References used during implementation:
 
 Deployment must still be verified by successful Actions and the changed served
 asset hash; do not infer publication from this document.
+
+## Map readability follow-up — September 13, 2026
+
+The user's phone screenshot showed a confusing field of numbered pins. Replaced
+geographic dispersal with Leaflet.markercluster groups labeled by nearby area.
+The whole-trip phone overview starts with seven groups covering 54 default points.
+Category symbols replace repeating stop numbers, and closer zooms show place
+names. All optional layers remain available (91 points with everything enabled).
+The native Map day selector sits above the map. Touch-device navigation also uses
+the section picker when Safari reports a wide layout viewport.
+
+Search indexes the cluster group's full marker collection, sorts by place name,
+and opens the selected popup even for co-located points. Non-animated cluster
+zooms can collapse a just-revealed spiderfy during their remaining zoom handlers;
+search now reveals the final cluster after that event completes. Marker position
+arrays remain stable across zoom renders so React does not re-add unchanged pins.
+Circles, route lines and transient vehicle/elevation pointers stay outside the
+marker cluster layer container.
+
+Validation: all 91 point popups opened on the first search selection in the phone
+layout; Mackinac Straits separated into Mackinac Island and Mackinaw City groups;
+Thursday's native day selector isolated its route. Lint, production build and all
+13 weather/offline tests pass. The new cluster JS/CSS are included in the verified
+worker asset list. No canonical itinerary, lodging, budget or road geometry changed.
+
+With the production preview server stopped, the saved build reloaded, opened
+Border and returned to Map, and opened a shared-location Lighthouse View Motel
+popup. All eight day selections also had no document overflow at 440×956.
+Third-party internet remained available; worker tests independently reject all
+network requests for app assets.

@@ -57,7 +57,7 @@ input[type="checkbox"], input[type="radio"] { min-width: 20px; min-height: 20px;
 .offline-access-body button { padding: 8px 14px; margin: 10px 8px 0 0; border: 1px solid var(--line-2); border-radius: 8px; }
 .offline-access[data-offline="true"] { border-color: var(--accent); }
 
-@media (max-width: 700px) {
+@media (max-width: 700px), (hover: none) and (pointer: coarse) {
   .mobile-section-picker { display: flex; align-items: center; gap: 8px; padding: 4px var(--safe-left) 8px var(--safe-right); font-size: 13px; }
   .mobile-section-picker select { flex: 1; width: 0; min-height: 44px; padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
   .topbar-inner { padding-block: 6px; }
@@ -95,7 +95,20 @@ input[type="checkbox"], input[type="radio"] { min-width: 20px; min-height: 20px;
 .elevation-point-picker select { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--line); border-radius: 8px; padding: 6px; background: var(--surface); }
 .comparison-map-point { display: grid !important; place-items: center; background: transparent; border: 0; }
 .comparison-map-point span { width: 18px; height: 18px; border: 3px solid; border-radius: 50%; background: white; }
-@media (max-width: 700px) { .elevation-ribbon-head { flex-wrap: wrap; } .elevation-title { min-width: 0; } }
+@media (max-width: 700px), (hover: none) and (pointer: coarse) { .elevation-ribbon-head { flex-wrap: wrap; } .elevation-title { min-width: 0; } }
 
 .crossing .chip { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 .crossing > div { min-width: 0; }
+
+/* Geographic groups replace scattered numbered pins. */
+.map-place-cluster { display: flex !important; flex-direction: column; justify-content: center; align-items: center; padding: 5px 8px; background: #123e4e; color: #fff; border: 2px solid #fff; border-radius: 12px; box-shadow: 0 2px 9px #102c3c55; text-align: center; font: 600 12px/1.2 var(--font-ui); }
+.map-cluster-title { display: block; width: 100%; overflow-wrap: anywhere; }
+.map-cluster-count { display: flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 500; margin-top: 4px; color: #d9edf1; }
+.map-cluster-count span { font-weight: 700; color: #fff; }
+.map-place-label { max-width: 160px; white-space: normal; text-align: center; background: #fff; color: #142d37; border: 1px solid #b2c3c9; border-radius: 6px; font: 600 12px/1.25 var(--font-ui); box-shadow: 0 2px 5px #102c3c30; padding: 5px 7px; }
+.map-day-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); border-block: 1px solid var(--line); font-size: 14px; font-weight: 600; }
+.map-day-picker select { flex: 1; min-width: 0; max-width: 100%; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
+.map-reading-key { display: flex; flex-wrap: wrap; gap: 8px 14px; padding: 10px 14px; background: var(--surface); color: var(--ink-2); font-size: 13px; }
+.map-reading-key span:last-child { color: var(--brand); }
+.map-point-finder li small { display: block; font-size: 12px; color: var(--ink-3); font-weight: 400; }
+.mapwrap.is-expanded .map-day-picker { padding-block: 5px; }

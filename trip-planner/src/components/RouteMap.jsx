@@ -9,6 +9,8 @@ import {
   useMap,
 } from "react-leaflet";
 
+import MapClusters from "./MapClusters";
+import { escapeMapHtml } from "../lib/mapLabels";
 import { MapAccess, NamedMarker as Marker, PointFinder } from "./MapAccess";
 import { DAYS, HOME } from "../data/trip";
 import geometry from "../data/routeGeometry.json";
@@ -124,7 +126,7 @@ function pinIcon({ label, color, variant = "", title = "" }) {
   }
 
   const html = `
-    <div class="map-pointer-pin ${variant}" style="--pin-bg: ${bg};" title="${title || label || ""}">
+    <div class="map-pointer-pin ${variant}" style="--pin-bg: ${bg};" title="${escapeMapHtml(title || label || "")}">
       <div class="pin-bubble">
         <span class="pin-symbol">${glyph}</span>
       </div>
@@ -139,130 +141,6 @@ function pinIcon({ label, color, variant = "", title = "" }) {
     iconSize: [44, 48],
     iconAnchor: [22, 48], // Downward needle pointer lands directly on ground coordinate
     popupAnchor: [0, -48],
-  });
-}
-
-/**
- * Declutter proximate markers:
- * When markers share close coordinates (< 2.5 miles), disperse them into a radial arc
- * with needle stems so each point is visible and never stacked on top of each other.
- */
-function declutterMarkers(items, zoomScale = 1, pinPx = 32) {
-  if (!items || items.length <= 1) {
-    return (items || []).map((item) => ({
-      ...item,
-      displayCoords: item.coords,
-      rawCoords: item.coords,
-      isDispersed: false,
-    }));
-  }
-
-  const clusters = [];
-  items.forEach((item) => {
-    if (!item.coords) return;
-    let placed = false;
-    for (const cl of clusters) {
-      const [cLat, cLon] = cl.center;
-      const dLat = Math.abs(item.coords[0] - cLat);
-      const dLon = Math.abs(item.coords[1] - cLon);
-      if (dLat < 0.035 * zoomScale && dLon < 0.045 * zoomScale) {
-        cl.items.push(item);
-        placed = true;
-        break;
-      }
-    }
-    if (!placed) {
-      clusters.push({ center: [...item.coords], items: [item] });
-    }
-  });
-
-  const result = [];
-  clusters.forEach((cl) => {
-    const count = cl.items.length;
-    if (count === 1) {
-      result.push({
-        ...cl.items[0],
-        displayCoords: cl.items[0].coords,
-        rawCoords: cl.items[0].coords,
-        isDispersed: false,
-      });
-    } else {
-      const [cLat, cLon] = cl.center;
-      // Ring sized from the pin's REAL rendered width. With `count` pins evenly
-      // spaced the chord between neighbours is 2R·sin(π/count), and that has to
-      // clear a whole pin or they overlap. Pins are 32px but shrink to 0.6×
-      // under .pins-compact below z8.5 — a ring tuned for the small ones
-      // collapses the instant that class drops and the pins jump 67% wider.
-      // zoomScale/1351 converts the pixel target to degrees at the current zoom.
-      const ringPx = Math.max(
-        pinPx * 0.75,
-        (pinPx * 1.18) / (2 * Math.sin(Math.PI / count)),
-      );
-      cl.items.forEach((item, i) => {
-        const angle = (2 * Math.PI * i) / count - Math.PI / 2;
-        const radiusLat = (ringPx * zoomScale) / 1351;
-        const radiusLon = radiusLat * 1.41;
-        const dispLat = cLat + Math.sin(angle) * radiusLat;
-        const dispLon = cLon + Math.cos(angle) * radiusLon;
-        result.push({
-          ...item,
-          displayCoords: [dispLat, dispLon],
-          rawCoords: item.coords,
-          isDispersed: true,
-        });
-      });
-    }
-  });
-  return result;
-}
-
-/**
- * Place Town Scout pins away from every already-placed pin.
- * Scout towns sit at town centres — exactly where day stops, hotels, and fuel
- * pins cluster — so instead of dispersing only against each other, each scout
- * pin is repelled from ALL visible markers: it tries eight bearings (starting
- * away from the local crowd) at a wider radius than the trip pins use, and the
- * standard needle stem ties it back to the true coordinate.
- */
-function placeScoutPins(items, obstacles, zoomScale = 1, pinPx = 32) {
-  // Stand-off and personal-space box both scale with the pin's rendered width,
-  // so they stay proportional when .pins-compact drops at z8.5.
-  const rLat = (pinPx * 1.25 * zoomScale) / 1351;
-  const rLon = rLat * 1.41;
-  const NEAR_LAT = (pinPx * 0.95 * zoomScale) / 1351;
-  const NEAR_LON = NEAR_LAT * 1.41;
-  const all = obstacles.filter(Boolean).map((c) => [...c]);
-  return items.map((item) => {
-    const near = all.filter(
-      (o) =>
-        Math.abs(o[0] - item.coords[0]) < NEAR_LAT * 2 &&
-        Math.abs(o[1] - item.coords[1]) < NEAR_LON * 2,
-    );
-    if (!near.length) {
-      all.push([...item.coords]);
-      return { ...item, displayCoords: item.coords, rawCoords: item.coords, isDispersed: false };
-    }
-    const cy = near.reduce((n, o) => n + o[0], 0) / near.length;
-    const cx = near.reduce((n, o) => n + o[1], 0) / near.length;
-    let away = Math.atan2(item.coords[0] - cy, item.coords[1] - cx);
-    if (!Number.isFinite(away) || (cy === item.coords[0] && cx === item.coords[1])) {
-      away = (3 * Math.PI) / 4; // default: stand off to the northwest
-    }
-    for (let k = 0; k < 8; k += 1) {
-      const a = away + k * (Math.PI / 4);
-      const lat = item.coords[0] + Math.sin(a) * rLat;
-      const lon = item.coords[1] + Math.cos(a) * rLon;
-      const clash = all.some(
-        (o) => Math.abs(o[0] - lat) < NEAR_LAT * 1.2 && Math.abs(o[1] - lon) < NEAR_LON * 1.2,
-      );
-      if (!clash) {
-        all.push([lat, lon]);
-        return { ...item, displayCoords: [lat, lon], rawCoords: item.coords, isDispersed: true };
-      }
-    }
-    const fallback = [item.coords[0] + rLat, item.coords[1] - rLon];
-    all.push(fallback);
-    return { ...item, displayCoords: fallback, rawCoords: item.coords, isDispersed: true };
   });
 }
 
@@ -287,7 +165,7 @@ function FitBounds({ bounds, deps }) {
   return null;
 }
 
-/** Report the live zoom level so marker dispersal can scale with it. */
+/** At closer zoom levels, labels switch from area names to full place names. */
 function ZoomTracker({ onZoom }) {
   const map = useMap();
   useEffect(() => {
@@ -344,26 +222,14 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     stops: true,
     gas: true,
     hotels: true,
-    flight: true,
-    shields: true,
+    flight: focusDayId === "d0" || focusDayId === "d7",
+    shields: false,
     borders: true,
-    climate: true,
+    climate: false,
     scout: false,
   });
 
-  // Dispersal offsets are geographic degrees derived from a pixel target, so
-  // this factor MUST keep shrinking as you zoom in — one zoom level in halves
-  // the degrees a pixel is worth. Flooring it at 1 (as an earlier version did)
-  // froze the conversion past z10.4, so by z14 offsets were ~12x too wide and
-  // clusters were flung miles from the coordinates their stems pointed at.
-  // Ceiling 22 stops whole-continent zoom from fanning absurdly; the small
-  // floor just avoids degenerate values at extreme street zoom.
   const [zoomLevel, setZoomLevel] = useState(6);
-  const dispersalScale = Math.min(22, Math.max(0.02, 2 ** (10.4 - zoomLevel)));
-  // Keep full-size symbols on touch screens. Space their 44px touch targets
-  // apart; desktop overview symbols can still shrink to reduce visual clutter.
-  const pinsCompact = zoomLevel <= 8.5 && !window.matchMedia("(pointer: coarse), (max-width: 700px)").matches;
-  const pinPx = pinsCompact ? 32 * 0.6 : 44;
 
   // Playback Simulator State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -377,6 +243,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   const [pointQuery, setPointQuery] = useState("");
   const [fitVersion, setFitVersion] = useState(0);
   const expandButtonRef = useRef(null);
+  const selectionRef = useRef(0);
 
   useEffect(() => {
     if (!isExpanded) return;
@@ -397,14 +264,19 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     setIsPlaying(false);
     setShowElevation(false);
     setShowSunTracker(false);
-    // Focus first, then open after React has repositioned dispersed markers at
-    // the closer zoom. Read the live layer position again, never a stale copy.
-    map.setView(point.layer.getLatLng(), Math.max(map.getZoom(), 13), { animate: false });
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (!map.hasLayer(point.layer)) return;
-      map.panTo(point.layer.getLatLng(), { animate: false });
-      point.layer.openPopup();
-    }));
+    const selection = ++selectionRef.current;
+    map.closePopup();
+    map.stop();
+    point.group.zoomToShowLayer(point.layer, () => {
+      // Non-animated zooms finish by collapsing spiderfied clusters. Reveal a
+      // shared-location pin after that zoom event has completely finished.
+      requestAnimationFrame(() => {
+        if (selectionRef.current !== selection || mapRef.current !== map || !point.group.hasLayer(point.layer)) return;
+        const parent = point.group.getVisibleParent(point.layer);
+        if (parent instanceof L.MarkerCluster) parent.spiderfy();
+        point.layer.openPopup();
+      });
+    });
     wrapRef.current?.querySelector(".map-canvas-frame")?.scrollIntoView({ block: "start", behavior: "instant" });
   }, []);
 
@@ -503,23 +375,18 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   }, [visible, playProgress, allPathPoints]);
 
   /** Mappable stops on visible days */
-  // One dispersal pass across ALL pin groups. The old per-group passes left
-  // cross-group stacks — a bed pin and the day's final stop share exact
-  // coordinates every night — so stops, hotels, and fuel now declutter
-  // together and split back out for rendering.
+  // Preserve exact coordinates; the cluster layer groups crowded markers.
   const { markers, beds, fuelPins } = useMemo(() => {
     const raw = [];
     if (layerFilter.stops) {
       shownDays.forEach((day) => {
-        let n = 0;
         (day.stops || []).forEach((stop) => {
           if (!stop.coords) return;
-          n += 1;
           raw.push({
             kind: "stop",
             key: `${day.id}-${stop.id}`,
             coords: stop.coords,
-            label: String(n),
+            label: stop.kind === "food" ? "🍴" : stop.kind === "sleep" ? "🛏" : stop.kind === "admin" ? "🚗" : "●",
             color: colors[day.index] || "#1f7a8c",
             title: stop.name,
             where: stop.where,
@@ -562,11 +429,10 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         });
       });
     }
-    const placed = declutterMarkers(raw, dispersalScale, pinPx);
     return {
-      markers: placed.filter((x) => x.kind === "stop"),
-      beds: placed.filter((x) => x.kind === "bed"),
-      fuelPins: placed.filter((x) => x.kind === "fuel"),
+      markers: raw.filter((x) => x.kind === "stop"),
+      beds: raw.filter((x) => x.kind === "bed"),
+      fuelPins: raw.filter((x) => x.kind === "fuel"),
     };
   }, [
     shownDays,
@@ -575,8 +441,6 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     layerFilter.stops,
     layerFilter.hotels,
     layerFilter.gas,
-    dispersalScale,
-    pinPx,
   ]);
 
   // Town Scout pin colouring: by tier, or by what the median house does to the
@@ -589,18 +453,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   );
   const scoutDream = useMemo(() => Object.fromEntries(RELOCATION_TOWNS.map((t) => [t.id, moneyFor(t, DREAM_INCOME)])), []);
 
-  const scoutPins = useMemo(() => {
-    if (!layerFilter.scout) return [];
-    const obstacles = [
-      ...markers.map((m) => m.displayCoords || m.coords),
-      ...beds.map((b) => b.displayCoords || b.coords),
-      ...fuelPins.map((f) => f.displayCoords || f.coords),
-      ...BORDER_PORTALS.map((b) => b.coords),
-      ...MICROCLIMATES.map((c) => c.coords),
-      HOME.coords,
-    ];
-    return placeScoutPins(RELOCATION_TOWNS, obstacles, dispersalScale, pinPx);
-  }, [layerFilter.scout, markers, beds, fuelPins, dispersalScale, pinPx]);
+  const scoutPins = layerFilter.scout ? RELOCATION_TOWNS : [];
 
   const lines = useMemo(
     () =>
@@ -621,11 +474,11 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       ...beds.map((b) => b.coords),
       ...fuelPins.map((f) => f.coords),
     ];
-    if (visible.has("d0") && (visible.size === 1 || showFlight)) {
+    if (visible.has("d0") && layerFilter.flight && (visible.size === 1 || showFlight)) {
       pts.push(SFO_COORDS, ...SFO_TO_ORD_ARC, ORD_COORDS, ORD_MMF_COORDS, HOME.coords);
     }
     return pts.length ? pts : [HOME.coords];
-  }, [lines, markers, beds, fuelPins, visible, showFlight]);
+  }, [lines, markers, beds, fuelPins, visible, showFlight, layerFilter.flight]);
 
   const toggle = useCallback((id) => {
     setVisible(new Set([id]));
@@ -719,7 +572,14 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         </div>
       </div>
 
-      <div className={`map-canvas-frame${pinsCompact ? " pins-compact" : ""}`}>
+      {!compact && <label className="map-day-picker">Show on map
+        <select aria-label="Map day" value={visible.size === 1 ? [...visible][0] : "all"} onChange={(e) => setVisible(new Set(e.target.value === "all" ? DAYS.map((d) => d.id) : [e.target.value]))}>
+          <option value="all">Whole trip</option>
+          {DAYS.map((d) => <option key={d.id} value={d.id}>{shortDate(d.date)} · {d.title}</option>)}
+        </select>
+      </label>}
+      <div className="map-reading-key"><span>● Stop</span><span>🍴 Food</span><span>🛏 Hotel</span><span>⛽ Fuel</span><span>Tap a named group to explore →</span></div>
+      <div className="map-canvas-frame">
       <MapContainer
         center={HOME.coords}
         zoom={6}
@@ -729,7 +589,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         style={height && !isExpanded ? { height } : undefined}
       >
         <ZoomTracker onZoom={setZoomLevel} />
-        <MapAccess onPoints={setPoints} mapRef={mapRef} />
+
         {mapStyle === "streets" ? (
           <TileLayer
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -746,11 +606,13 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
         <FitBounds
           bounds={bounds}
-          deps={[shownDays.map((d) => d.id).join(","), focusDayId, showFlight, fitVersion]}
+          deps={[shownDays.map((d) => d.id).join(","), focusDayId, showFlight, fitVersion, layerFilter.flight]}
         />
         <InvalidateMapSize isExpanded={isExpanded} />
         <VehicleTracker currentCoord={currentVehicleCoord} isPlaying={isPlaying} />
 
+        <MapClusters zoom={zoomLevel}>
+        <MapAccess onPoints={setPoints} mapRef={mapRef} />
         {/* Golden Hour Ambient Overlay along Shorelines */}
         {showSunTracker && solarData.isGoldenHour && (
           <Circle
@@ -882,19 +744,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
         {beds.map((b) => (
           <div key={b.key}>
-            {b.isDispersed && (
-              <Polyline
-                positions={[b.rawCoords, b.displayCoords]}
-                pathOptions={{
-                  color: "#38bdf8",
-                  weight: 1.5,
-                  dashArray: "2 4",
-                  opacity: 0.45,
-                }}
-              />
-            )}
             <Marker
-              position={b.displayCoords || b.coords}
+              position={b.coords}
               icon={pinIcon({ label: "🛏", color: b.color, variant: "pin--bed", title: b.name })}
             >
               <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
@@ -910,19 +761,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
         {fuelPins.map((f) => (
           <div key={f.key}>
-            {f.isDispersed && (
-              <Polyline
-                positions={[f.rawCoords, f.displayCoords]}
-                pathOptions={{
-                  color: "#f59e0b",
-                  weight: 1.5,
-                  dashArray: "2 4",
-                  opacity: 0.45,
-                }}
-              />
-            )}
             <Marker
-              position={f.displayCoords || f.coords}
+              position={f.coords}
               icon={pinIcon({ label: "⛽", color: "#d97706", variant: "pin--fuel", title: f.stopName })}
             >
               <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
@@ -1007,19 +847,13 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               <div key={t.id}>
                 {ringTone && (
                   <Circle
-                    center={t.rawCoords || t.coords}
+                    center={t.coords}
                     radius={19000}
                     pathOptions={{ color: VERDICT_COLOR[ringTone], weight: 1.2, dashArray: "5 5", opacity: 0.7, fillColor: VERDICT_COLOR[ringTone], fillOpacity: 0.07 }}
                   />
                 )}
-                {t.isDispersed && (
-                  <Polyline
-                    positions={[t.rawCoords, t.displayCoords]}
-                    pathOptions={{ color, weight: 1.5, dashArray: "2 4", opacity: 0.45 }}
-                  />
-                )}
                 <Marker
-                  position={t.displayCoords || t.coords}
+                  position={t.coords}
                   icon={pinIcon({ label: "⌂", color, variant: "pin--scout", title: t.name })}
                 >
                   <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
@@ -1110,6 +944,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         {/* Animated Moving Vehicle during Playback */}
         {isPlaying && (
           <Marker
+            clustered={false}
             position={currentVehicleCoord}
             icon={pinIcon({
               label: isVehicleFlying ? "✈" : "🚗",
@@ -1127,18 +962,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
         {markers.map((m) => (
           <div key={m.key}>
-            {m.isDispersed && (
-              <Polyline
-                positions={[m.rawCoords, m.displayCoords]}
-                pathOptions={{
-                  color: m.color,
-                  weight: 1.5,
-                  dashArray: "2 4",
-                  opacity: 0.45,
-                }}
-              />
-            )}
-            <Marker position={m.displayCoords || m.coords} icon={pinIcon(m)}>
+            <Marker position={m.coords} icon={pinIcon(m)}>
               <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{m.title}</b>
                 <br />
@@ -1194,6 +1018,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         {/* Hover Elevation Milestone Marker */}
         {hoverElevationPoint && hoverElevationPoint.coords && (
           <Marker
+            clustered={false}
             position={hoverElevationPoint.coords}
             icon={L.divIcon({
               className: "elevation-hover-marker",
@@ -1203,6 +1028,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             })}
           />
         )}
+        </MapClusters>
       </MapContainer>
 
       {/* Floating Interactive Drawer for Elevation & Sun Tracker Over Map */}
@@ -1421,6 +1247,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               if (!visible.has("d0")) {
                 setVisible(new Set(["d0"]));
               }
+              setLayerFilter((layers) => ({ ...layers, flight: true }));
               setShowFlight((p) => !p);
             }}
             title="Zoom between Midwest road trip view and full SFO flight path"
@@ -1430,7 +1257,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         </div>
       )}
       <PointFinder points={points} query={pointQuery} onQuery={setPointQuery} onSelect={selectPoint} />
-      <p className="map-access-note">Drag to pan · pinch or use + / − to zoom. Routes and points work offline once the guide is saved; street and satellite detail needs a connection or previously viewed tiles.</p>
+      <p className="map-access-note">Named groups show how many points are nearby. Tap to zoom in; tap a pin for its full details. Pins stay at their real locations. Routes and points work offline once the guide is saved; street and satellite detail needs a connection or previously viewed tiles.</p>
     </div>
 
     {/* When a day is isolated on the map, show that day's featured infographics below the map */}

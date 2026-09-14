@@ -198,7 +198,7 @@ export default function App() {
               <h1>{totalMiles.toLocaleString()} miles, drawn to the road</h1>
               <p>
                 Every segment below is the actual driving route, not a straight line
-                between towns. Tap a date in the key to isolate one day.
+                between towns. Tap a named group to explore its places, or choose a day.
               </p>
             </div>
             <RouteMap />

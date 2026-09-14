@@ -122,9 +122,14 @@ The guide supports portrait and landscape, including the iPhone 16 Pro Max's
 440 × 956 CSS-pixel layout. All sections are available through the phone's
 native section picker. The map toolbar sits outside the canvas, map points and
 zoom/close controls have 44-pixel touch targets, and the expanded map respects
-safe areas and restores page scrolling when closed. Tap a date to isolate a day;
-Show all restores the trip. Find a map point searches every marker in the active
-layers and opens its popup at a closer zoom. The SkyBridge comparison has tappable
+safe areas and restores page scrolling when closed. A named group shows the
+number of nearby map points; tapping zooms into smaller groups and labeled places.
+Markers use their source coordinates, with shared-location pins temporarily
+fanned out at the closest zoom. Stop symbols indicate category, not repeated day
+numbers. The Map day picker isolates a day; Whole trip restores the route.
+Stops, hotels, fuel and borders appear by default. Highway, weather, Scout and
+flight overlays remain available in Map layers. Find a map point searches every
+marker in the active layers, including clustered points, and opens its popup. The SkyBridge comparison has tappable
 points with directions, and elevation details also have a native select control.
 
 In Safari, use Share → Add to Home Screen (Open as Web App if shown). Open that
