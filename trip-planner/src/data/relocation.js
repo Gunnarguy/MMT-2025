@@ -27,7 +27,7 @@ export const SCOUT_META = {
   confirmed: 55,
   correctedFigures: 26,
   refreshed: "2026-09-14",
-  refreshMethod: "Housing and bills re-sourced 2026-09-14: Redfin median sold for the latest month with a second source, Census ACS 2020-2024 values, HUD Fair Market Rents FY2027 (effective 2026-10-01), Michigan Treasury 2025 millage with the first-year uncapped tax computed on the median, MIT Living Wage 2026 food lines, 2026 insurance and utility figures; every row in \"Buying here, realistically\" carries its period and source. Comfortable income is now one formula for every modelled town: the gross household income at which a 30-year mortgage at 6.76% with 20% down, the first-year uncapped tax and the non-housing basket equal 65% of take-home (two equal earners, federal, FICA, state and city tax). Every figure was fetched with its period and URL on 2026-09-14; an independent re-sourcing pass was still running when this went live, and anything it flags will be corrected in a follow-up. Car insurance keeps the 2026-08-28 Bankrate figures because Bankrate could not be fetched this round.",
+  refreshMethod: "Housing and bills re-sourced 2026-09-14: Redfin median sold for the latest month with a second source, Census ACS 2020-2024 values, HUD Fair Market Rents FY2027 (effective 2026-10-01), Michigan Treasury 2025 millage with the first-year uncapped tax computed on the median, MIT Living Wage 2026 food lines, 2026 insurance and utility figures; every row in \"Buying here, realistically\" carries its period and source. Comfortable income is now one formula for every modelled town: the gross household income at which a 30-year mortgage at 6.76% with 20% down, the first-year uncapped tax and the non-housing basket equal 65% of take-home (two equal earners, federal, FICA, state and city tax). Every figure was fetched with its period and URL on 2026-09-14, then independently re-sourced by a second agent per batch: no fabricated or mislabelled figure was found, and the verifiers' representativeness calls (Charlevoix, Mackinaw City and Traverse City headlines, geography labels, which insurance pages were actually fetched) are applied with the reasoning in each town's rows. Car insurance keeps the 2026-08-28 Bankrate figures because Bankrate could not be fetched this round.",
 };
 
 /**
@@ -219,14 +219,14 @@ export const SCOUT_CAMPBELL = { ...{
     "rentActualNote": "renting from family — well under market",
     "rent1br": 3245,
     "acsRent": 2737,
-    "priceNote": "redfin.com median sold, Aug 2026",
+    "priceNote": "Redfin median sold, Aug 2026, Campbell area (wider than the city); SCCAOR city single-family median $1,995,000 on 20 sales",
     "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1 2026"
   },
   "workup": {
     "housing": [
       [
         "Median sold price",
-        "$1,827,401 · Aug 2026 · redfin.com · City of Campbell proper (Redfin city page id 2673), all home types (single-family plus condo/townhome). Redfin median SALE price, all home types, -0.95% YoY; 79 homes sold in Aug 2026 vs 99 in Aug 2025; Compete Score 84 'very competitive' (2 offers on average). Fetched 2026-09-14 in the Browser pane."
+        "$1,827,401 · Aug 2026 · redfin.com · Redfin 'Campbell, CA' page: the Campbell area, wider than the city (79 August sales against 28 MLS city closings in the SCCAOR report; the sold list includes San Jose 95124), all home types. Redfin median SALE price, all home types, -0.95% YoY; 79 homes sold in Aug 2026 vs 99 in Aug 2025; Compete Score 84 'very competitive' (2 offers on average). Fetched 2026-09-14 in the Browser pane."
       ],
       [
         "Second source",
@@ -4414,7 +4414,7 @@ export const RELOCATION_TOWNS = [
       ]
     },
     median: "$334,778 sold (Aug 2026) · $201,100 ACS value",
-    comfort: "$100k in town · $81k in county",
+    comfort: "$99k in town · $80k in county",
     crime: "2.1–2.6 / 9.4–10.6",
     snow: '86"',
     fiber: "55% fiber · 75% cable",
@@ -7662,6 +7662,14 @@ export const RELOCATION_TOWNS = [
           "$247/mo · 2026 (as of March 2026; page updated Jun 9, 2026) · rates.ca. Rates.ca average car insurance premium in Sarnia CA$2,055/yr per car (22.56% below the Ontario average CA$2,653). Two cars = CA$4,110/yr. Note Ontario made several accident benefits optional on Jul 1, 2026."
         ],
         [
+          "CMHC rent",
+          "2BR average CA$1,502 (≈US$1,083) · Oct 2025 · CMHC Housing Market Information Portal, Ontario table 2.1.11.2; supports Zumper's CA$1,550 asking, Apartments.com shows CA$1,751"
+        ],
+        [
+          "Tax example at the adopted rate",
+          "CA$3,949/yr on the city's example detached home (assessed CA$219,737) at the adopted 2026 rate 1.797234%; the budget document's CA$3,917 was the proposed figure"
+        ],
+        [
           "What the median buys",
           "NOT FOUND from a fetched listing source (realtor.ca not fetchable; Zolo's Sarnia trends page is stale, last updated 2016-2017). What the figures say: the Q2 2026 single-detached median is CA$495,000 and the HPI single-family benchmark CA$489,900, so a typical detached house in the SLAR area trades just under CA$500k (~US$355k)."
         ],
@@ -8098,7 +8106,7 @@ export const RELOCATION_TOWNS = [
         ],
         [
           "Active listings",
-          "1,127 listings (WECAR area, Aug 2026); 1,390 active in Windsor/LaSalle/Tecumseh · Aug 2026 · jpcorrent.com. WECAR Aug 2026 listings 1,127 (-3.34% YoY). Sub-area: 825 new, 1,390 active, 4.9 months of inventory (mattbiggley.ca). CREA July: 2,307 active, 4.4 months."
+          "2,307 active listings (CREA, July 2026); 1,390 active in Windsor/LaSalle/Tecumseh (Aug 2026) · Jul/Aug 2026 · mattbiggley.ca. WECAR's 1,127 for August is NEW listings (-3.34% YoY), not active inventory; months of inventory 4.4-4.9"
         ],
         [
           "Year over year",
