@@ -1,0 +1,51 @@
+.trip-options, .trip-forecast {
+  margin-block: var(--s-6);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  min-width: 0;
+}
+.trip-options h2, .trip-forecast h2 { font-size: var(--t-2xl); margin: var(--s-2) 0 var(--s-3); }
+.trip-options h3 { font-size: var(--t-xl); margin-bottom: var(--s-3); }
+.trip-options h4 { margin-top: var(--s-5); }
+.trip-options p, .trip-forecast p { margin-bottom: var(--s-3); }
+.trip-options-note { color: var(--ink-3); font-size: var(--t-sm); line-height: 1.6; }
+.trip-table-scroll { overflow-x: auto; margin: var(--s-4) 0; max-width: 100%; }
+.trip-comparison { border-collapse: collapse; width: 100%; min-width: 620px; text-align: left; font-size: var(--t-sm); }
+.trip-comparison caption { text-align: left; color: var(--ink-3); font-size: var(--t-xs); padding-bottom: var(--s-3); }
+.trip-comparison th, .trip-comparison td { padding: var(--s-3); border-bottom: 1px solid var(--line); vertical-align: top; }
+.trip-comparison thead { background: var(--surface-2); }
+.trip-comparison tbody th { min-width: 180px; }
+.trip-comparison small { display: block; margin-top: var(--s-1); font-size: var(--t-xs); color: var(--ink-3); font-weight: 400; }
+.trip-comparison .is-selected { background: var(--info-bg); }
+.trip-comparison button { display: flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: var(--s-2); border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+.trip-comparison button[aria-pressed="true"] { border: 2px solid var(--brand); }
+.trip-route-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.trip-option-map { height: clamp(350px, 55vh, 500px); overflow: hidden; border-radius: var(--radius); margin-block: var(--s-4); isolation: isolate; }
+.trip-map-label { color: #16242c; background: #fffdfa; border-color: #ddd3c4; font-size: 11px; font-weight: 600; }
+.trip-option-detail, .trip-option-advice { padding-top: var(--s-4); margin-top: var(--s-4); border-top: 1px solid var(--line); }
+.trip-option-schedule { list-style: none; padding: 0; margin: var(--s-4) 0; }
+.trip-option-schedule li { display: grid; grid-template-columns: minmax(145px, 1fr) 3fr; gap: var(--s-3); padding: var(--s-3) 0; border-bottom: 1px solid var(--line); font-size: var(--t-sm); }
+.trip-forecast-stale { padding: var(--s-3); background: var(--warn-bg); color: var(--ink); border-left: 3px solid var(--warn); }
+.trip-forecast--compact h2 { font-size: var(--t-lg); }
+.weather-heading { display: flex; justify-content: space-between; align-items: start; gap: var(--s-3); flex-wrap: wrap; }
+.weather-heading button { min-height: 44px; cursor: pointer; }
+.weather-heading button:disabled { opacity: 0.6; cursor: wait; }
+.weather-hourly { margin-top: var(--s-3); }
+.weather-hourly summary { cursor: pointer; color: var(--brand); padding-block: var(--s-2); }
+.weather-hourly[open] { min-width: 240px; }
+.weather-hourly .trip-table-scroll { max-width: 520px; }
+.weather-hour-past { opacity: 0.65; }
+.weather-past-toggle { display: flex; gap: var(--s-2); align-items: center; }
+.location-weather { font-size: var(--t-sm); }
+.location-weather p { margin-block: var(--s-2); }
+.location-weather small { display: block; color: var(--ink-3); }
+.trip-forecast--compact .trip-comparison { min-width: 420px; }
+.trip-option-link { display: block; margin-block: var(--s-4); padding: var(--s-4); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: var(--radius); background: var(--surface); }
+@media (max-width: 600px) {
+  .trip-option-schedule li { grid-template-columns: 1fr; gap: var(--s-1); }
+  .trip-option-map { height: 420px; }
+  .trip-map-label { font-size: 10px; padding: 3px 4px; }
+  .trip-table-scroll::after { content: "Scroll sideways for the full comparison →"; display: block; padding-top: var(--s-2); color: var(--ink-3); font-size: var(--t-xs); }
+}

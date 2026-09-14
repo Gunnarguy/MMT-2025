@@ -16,6 +16,8 @@ import FuelPlanner from "./visuals/FuelPlanner";
 import MorningDispatch from "./visuals/MorningDispatch";
 import OntarioToolkit from "./visuals/OntarioToolkit";
 import { CALENDAR_EVENTS, downloadIcsFile } from "../lib/calendarExport";
+import ThursdayOptions from "./ThursdayOptions";
+import TripForecast from "./TripForecast";
 
 /**
  * Interleave drive legs and stops into one chronological rail.
@@ -119,6 +121,9 @@ export default function DayPanel({ day }) {
         </div>
       </header>
 
+      <TripForecast dayId={day.id} compact />
+      {day.id === "d3" && <ThursdayOptions />}
+      {day.id === "d3" && <h3>Original Thursday itinerary</h3>}
       <DaylightRibbon dayId={day.id} />
       <MorningDispatch day={day} />
 

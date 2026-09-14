@@ -2,6 +2,7 @@ import { PACK, PREP, WEATHER } from "../data/pack";
 import { useChecklist } from "../hooks/useLocalState";
 import { Flag, Source } from "./bits";
 import Checklist from "./Checklist";
+import TripForecast from "./TripForecast";
 
 export default function PackView() {
   const prep = useChecklist("mi26.prep");
@@ -19,10 +20,13 @@ export default function PackView() {
         </p>
       </div>
 
+      <TripForecast />
+
       <section>
         <h2 style={{ fontSize: "var(--t-lg)", marginBottom: "var(--s-3)" }}>
           Mid-September normals along the route
         </h2>
+        <p className="trip-options-note">Historical averages below describe the season. Use the automatically updating forecast above for this trip.</p>
         <div className="weather-strip">
           {WEATHER.places.map((w) => (
             <div className="wcell" key={w.place}>

@@ -14,6 +14,7 @@ import {
 import { DAYS, HOME } from "../data/trip";
 import geometry from "../data/routeGeometry.json";
 import { FUEL_STOPS } from "../data/fuel";
+import { LocationWeather } from "./TripForecast";
 import {
   BORDER_PORTALS,
   HIGHWAY_SHIELDS,
@@ -1055,10 +1056,10 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               <Popup>
                 <b>{c.title}</b>
                 <br />
-                <span style={{ color: "#0284c7", fontWeight: 700 }}>{c.badge}</span>
+                <LocationWeather locationId={c.locationId} />
                 <br />
                 <span className="muted" style={{ fontSize: "11px" }}>
-                  {c.detail}
+                  General location note: {c.detail}
                 </span>
               </Popup>
             </Marker>
@@ -1296,7 +1297,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             className={`layer-filter-btn${layerFilter.climate ? " is-active" : ""}`}
             onClick={() => toggleLayer("climate")}
           >
-            💨 Microclimates
+            💨 Weather
           </button>
           <button
             type="button"

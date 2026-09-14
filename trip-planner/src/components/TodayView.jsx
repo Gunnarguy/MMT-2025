@@ -5,6 +5,9 @@ import { LOOSE_ENDS } from "../data/looseEnds";
 import { duration, longDate, daysUntil, parseDay } from "../lib/format";
 import { Chip, Flag, ActionRow } from "./bits";
 import { timeline } from "./DayPanel";
+import TripForecast from "./TripForecast";
+import { useTripWeather } from "../hooks/useTripWeather";
+import { dateAt } from "../lib/tripWeather";
 
 /**
  * The road view. Every other tab answers "should we?"; this one answers
@@ -22,11 +25,6 @@ import { timeline } from "./DayPanel";
  */
 
 /** Local calendar date as YYYY-MM-DD. Never an instant: the trip crosses zones. */
-function todayIso() {
-  const n = new Date();
-  return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`;
-}
-
 const lodgingFor = (day) => (day?.sleep ? LODGING.find((l) => l.name === day.sleep.name) : null);
 
 /**
@@ -150,6 +148,9 @@ function DayBody({ day }) {
         {day.sunset && <div><b>{day.sunset}</b><span>sunset</span></div>}
       </div>
 
+      <TripForecast dayId={day.id} compact />
+      {day.id === "d3" && <a className="trip-option-link" href="#/day/d3">Explore Thursday: SkyBridge instead of Charlevoix, with an option to keep Petoskey →</a>}
+
       {(day.flags || []).map((f) => (
         <Flag key={f.title} level={f.level} title={f.title}>{f.body}</Flag>
       ))}
@@ -217,6 +218,9 @@ function Countdown({ out }) {
         </p>
       </header>
 
+      <TripForecast compact />
+      <a className="trip-option-link" href="#/day/d3">Explore Thursday: Traverse City → SkyBridge → Mackinaw City →</a>
+
       <section>
         <h2 className="tv-h2">
           Do before you fly <Chip tone="stop">{before.length}</Chip>
@@ -251,7 +255,8 @@ function Countdown({ out }) {
 }
 
 export default function TodayView({ forcedDayId }) {
-  const iso = todayIso();
+  const { now } = useTripWeather();
+  const iso = dateAt(now, "America/Detroit");
   const live = DAYS.find((d) => d.date === iso);
   const day = forcedDayId ? DAYS.find((d) => d.id === forcedDayId) : live;
   const out = daysUntil(TRIP.start);

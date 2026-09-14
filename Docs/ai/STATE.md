@@ -1,5 +1,10 @@
 # Current State
 
+Latest work, 2026-09-13: Thursday's SkyBridge comparison and automatically updating
+weather for 19 US/Ontario locations. See [ROUTE-OPTIONS.md](ROUTE-OPTIONS.md)
+for scope, research and validation. The deployment record below describes the
+prior release; use GitHub Actions and the served asset hash for publication status.
+
 Updated: 2026-09-09
 Branch/worktree: main (no worktrees)
 Last verified commit: 45b116c (docs-only on top of 9ededf3, the commit that was built and deployed)

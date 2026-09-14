@@ -40,6 +40,8 @@ export default function ItineraryView({ onGo }) {
         </p>
       </div>
 
+      <a className="trip-option-link" href="#/day/d3">Thursday route comparison: coastal towns, SkyBridge, or SkyBridge + Petoskey →</a>
+
       <div className="stack" style={{ gap: "var(--s-4)" }}>
         {DAYS.map((day) => {
           const flags = flagCounts(day);

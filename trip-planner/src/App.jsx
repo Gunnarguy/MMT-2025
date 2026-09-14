@@ -28,6 +28,7 @@ import EmergencyDrawer from "./components/visuals/EmergencyDrawer";
 import { DAYS, TRIP } from "./data/trip";
 import { useLocalState } from "./hooks/useLocalState";
 import { daysUntil } from "./lib/format";
+import { WeatherRefresh } from "./hooks/useTripWeather";
 
 const TABS = [
   { id: "today", label: "Today", icon: "☀" },
@@ -126,6 +127,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <WeatherRefresh />
       {/* Top bar, section tabs and (in the Days section) the date strip travel
           together as one sticky unit, so navigation never scrolls out of
           reach on a long day page. */}

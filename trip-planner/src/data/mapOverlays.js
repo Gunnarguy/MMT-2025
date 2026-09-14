@@ -107,40 +107,40 @@ export const MICROCLIMATES = [
     name: "Straits of Mackinac",
     coords: [45.78, -84.7278],
     icon: "💨",
-    badge: "58°F · 16 mph NNE",
+    locationId: "mackinaw",
     title: "Straits Marine Wind & Wave Corridor",
     detail:
-      "Cold water exchange between Lake Michigan and Lake Huron creates brisk, localized gusts (14–19 mph) and 2–3 ft chop. Windbreaker/fleece required on Shepler's ferry open deck.",
+      "The open ferry deck is exposed to wind and spray. Bring a windproof layer and check ferry service directly; these weather models do not report current waves or cancellations.",
   },
   {
     id: "clim-dunes",
     name: "Sleeping Bear Dunes",
     coords: [44.8731, -86.0427],
     icon: "☀️",
-    badge: "68°F · High Glare · UV 5.8",
+    locationId: "dunes",
     title: "Quartz Dune Thermal & Glare Zone",
     detail:
-      "0% shade across open sand dunes. White quartz sand reflects 85% of solar radiation off Lake Michigan. Bring polarized sunglasses, sunscreen, and refillable water.",
+      "Open dunes offer little shade. Bring sunglasses, sunscreen and water; check visibility and storms before walking out to exposed overlooks.",
   },
   {
     id: "clim-gr",
     name: "Grand Rapids & Heritage Hill",
     coords: [42.9632, -85.6678],
     icon: "🍂",
-    badge: "72°F / 52°F · Mild Autumn",
+    locationId: "grand-rapids",
     title: "Inland Valley Shielded Microclimate",
     detail:
-      "Sheltered from lake breezes by inland ridge. Crisp, pleasant walking temperatures for Meyer May Wright House and ArtPrize installations.",
+      "Use the indoor Meyer May tour as an anchor and fit outdoor gardens and neighborhood walks around the hourly forecast.",
   },
   {
     id: "clim-sarnia",
     name: "Point Edward / Sarnia Shore",
     coords: [42.998, -82.404],
     icon: "🌊",
-    badge: "62°F · Evening Chill",
+    locationId: "sarnia",
     title: "Lake Huron Cold Water Down-Draft",
     detail:
-      "Rapid post-sunset temperature drop along the St. Clair River outlet. Evening waterfront walk at Point Edward requires an extra layer.",
+      "The waterfront is exposed to breeze. Check Sarnia's own forecast for the evening walk after crossing into Ontario.",
   },
 ];
 
