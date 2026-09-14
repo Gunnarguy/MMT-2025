@@ -2,8 +2,8 @@
 
 Updated: 2026-09-14 (trip day 0, arrival night)
 Branch/worktree: main (no worktrees)
-Last verified commit: c13d99d (built, deployed; served hash `assets/index-B3qYH0F0.js`, bundle contains
-"no fabricated or mislabelled figure was found"). Working tree clean at the time of writing.
+Last verified commit: b85ea0f (built, deployed; served hash `assets/index-OqnadDSl.js`, bundle contains
+"Flight deck", "N164NN", "Tap for hours"). Working tree clean at the time of writing.
 
 Older notes: [MOBILE.md](MOBILE.md) (offline saving, map access) and [ROUTE-OPTIONS.md](ROUTE-OPTIONS.md)
 (SkyBridge comparison, live weather).
@@ -17,13 +17,17 @@ of the field guide, shipped in 80fe470 and is live.
 
 ## Status
 
-Both objectives are complete and live. The Scout refresh shipped in dc05708 and was corrected in
-8a9ccf6, 11888b1 and c13d99d as the four adversarial verifiers returned: no fabricated or
-mislabelled figure was found in any batch; their representativeness calls (Charlevoix $450,055 and
-Mackinaw City $275,000 twelve-month public-records medians, Traverse City's city-proper $453,375,
-Ludington's and Traverse City's own millage sheets, city-level insurance, Windsor's active
-inventory, Campbell labelled as the Campbell area) are applied and explained in each town's
-"Buying here, realistically" rows. There is no active objective.
+Three objectives complete and live: the design unification (80fe470), the verified Scout refresh
+(dc05708 to c13d99d), and, on 2026-09-14 afternoon, the flight deck (fd31417) and the weather
+board (b85ea0f). No active objective.
+
+Flight deck facts a fresh session must not undo: every open ADS-B feed (adsb.lol, adsb.fi,
+airplanes.live, OpenSky, FAA nasstatus) refuses cross-origin browser requests, so the deck's plane
+position is scheduled progress and says so; only hexdb.io answers from the browser. Today's
+aircraft (N164NN, A321) was read off adsb.lol at 12:52 PM PDT and lives in
+`logistics.js` `AIRCRAFT_SEEN`; `FLIGHT_RUNWAYS` carries every milestone with its own zone.
+`src/components/visuals/FlightRunway.jsx` now exports `FlightDeck` (the file name is kept for
+its four callers). Antigravity's 48ba62d changes to trip.js stop text were kept.
 
 ## Completed
 
