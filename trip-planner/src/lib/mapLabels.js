@@ -3,6 +3,7 @@ import { WEATHER_LOCATIONS } from "../data/weatherLocations.js";
 const areas = [
   ...WEATHER_LOCATIONS.map((p) => ({ name: p.name.replace("Point Edward / Sarnia, ON", "Sarnia").replace("SkyBridge / Boyne Mountain", "Boyne Mountain").replace("Kalamazoo / I-94", "Kalamazoo"), lat: p.latitude, lng: p.longitude })),
   { name: "San Francisco", lat: 37.6213, lng: -122.379 },
+  { name: "Sawyer", lat: 41.8845, lng: -86.6001 },
   { name: "South Bay", lat: 37.4, lng: -121.94 },
 ];
 export function escapeMapHtml(text) {
@@ -28,4 +29,17 @@ export function clusterLabel(names) {
   const counts = new Map();
   for (const name of names) counts.set(name, (counts.get(name) || 0) + 1);
   return [...counts].sort((a,b) => b[1]-a[1])[0][0] + " & nearby";
+}
+
+const shortNames = {
+  "Historic White Pine Village": "White Pine Village",
+  "Port of Ludington Maritime Museum": "Maritime Museum",
+  "Ludington North Breakwater walk": "North Breakwater",
+  "Earl Young's Mushroom Houses": "Mushroom Houses",
+  "Magnus Park — Petoskey stone hunting": "Magnus Park",
+  "Shepler's Ferry — Mackinaw City to Island": "Shepler's Ferry",
+  "M-185 — the perimeter loop": "Island bike loop",
+};
+export function shortMapLabel(name) {
+  return shortNames[name] || name.split(/ — | · /)[0].replace(/ Check-in$/i, "");
 }

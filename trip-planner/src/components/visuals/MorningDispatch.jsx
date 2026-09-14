@@ -26,7 +26,7 @@ export default function MorningDispatch({ day }) {
     // full-tank receipt for Budget. `find` silently dropped the second one.
     const fuelStops = FUEL_STOPS.filter((f) => f.dayId === day.id);
     fuelStops.forEach((fuel) => {
-      lines.push(`⛽ Fuel Stop: ${fuel.brand} (${fuel.stopName}) · Mile ${fuel.mileMarker}`);
+      lines.push(`⛽ Suggested fuel: ${fuel.stopName} · ${fuel.routeContext}`);
       lines.push(`  ${fuel.action} — ${fuel.why}`);
       lines.push("");
     });

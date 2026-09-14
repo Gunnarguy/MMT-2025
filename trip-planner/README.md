@@ -153,3 +153,19 @@ Verification: `npm run build` then
 The latter verifies complete first-install coverage, requests without network,
 missing-file detection, failed installation, cache isolation, weather bypass,
 and Origin-varying module requests. See `Docs/ai/MOBILE.md` for browser evidence.
+
+Map display: **Nearby groups** uses compact area badges; **Every spot** removes
+clustering and renders every active marker. **Fit all spots** includes all active
+layers in its bounds. Single-line labels appear at closer zoom and use a placement
+pass to reduce collisions, with leader lines for displaced labels. Geographic pins
+are unchanged. Coincident points remain individually reachable through search.
+
+Fuel locations have dated sources; the map, dispatch, border notes and calendar
+now treat them as suggested stops. The guide does not know the rental's actual
+fuel level or live pump prices. See `Docs/ai/MOBILE.md` for corrections and sources.
+
+Map popups now expose the full saved visit and lodging records, with booking
+caveats, phone/directions links and research sources. Optional scout points have
+expandable town workups; flight, rental, border and island points include their
+relevant guide context. Popup content scrolls within the phone viewport. Saved
+guide facts are distinguished from current availability and live tracking.

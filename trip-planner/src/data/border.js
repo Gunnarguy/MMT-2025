@@ -157,7 +157,7 @@ export const BORDER = {
     {
       label: "Fuel pricing",
       value: "Per litre",
-      note: "Port Huron gas (~$3.55/gal) is cheaper than Ontario (~$4.40/gal)",
+      note: "Check fuel before crossing; compare current pump prices rather than assuming a fixed saving",
     },
     {
       label: "Right turn on red",

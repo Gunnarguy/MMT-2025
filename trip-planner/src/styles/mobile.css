@@ -101,14 +101,37 @@ input[type="checkbox"], input[type="radio"] { min-width: 20px; min-height: 20px;
 .crossing > div { min-width: 0; }
 
 /* Geographic groups replace scattered numbered pins. */
-.map-place-cluster { display: flex !important; flex-direction: column; justify-content: center; align-items: center; padding: 5px 8px; background: #123e4e; color: #fff; border: 2px solid #fff; border-radius: 12px; box-shadow: 0 2px 9px #102c3c55; text-align: center; font: 600 12px/1.2 var(--font-ui); }
+.map-place-cluster { display: flex !important; flex-direction: column; justify-content: center; align-items: center; padding: 5px 8px; background: #123e4e; color: #fff; border: 2px solid #fff; border-radius: 12px; box-shadow: 0 2px 9px #102c3c55; text-align: center; font: 600 10px/1.15 var(--font-ui); }
 .map-cluster-title { display: block; width: 100%; overflow-wrap: anywhere; }
-.map-cluster-count { display: flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 500; margin-top: 4px; color: #d9edf1; }
+.map-cluster-count { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 500; margin-top: 2px; color: #d9edf1; }
 .map-cluster-count span { font-weight: 700; color: #fff; }
-.map-place-label { max-width: 160px; white-space: normal; text-align: center; background: #fff; color: #142d37; border: 1px solid #b2c3c9; border-radius: 6px; font: 600 12px/1.25 var(--font-ui); box-shadow: 0 2px 5px #102c3c30; padding: 5px 7px; }
+.map-place-label { width: max-content; max-width: 132px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; background: #fffffff2; color: #142d37; border: 1px solid #b2c3c9; border-radius: 4px; font: 600 10px/1.2 var(--font-ui); box-shadow: 0 1px 3px #102c3c20; padding: 3px 5px; }
 .map-day-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); border-block: 1px solid var(--line); font-size: 14px; font-weight: 600; }
 .map-day-picker select { flex: 1; min-width: 0; max-width: 100%; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
 .map-reading-key { display: flex; flex-wrap: wrap; gap: 8px 14px; padding: 10px 14px; background: var(--surface); color: var(--ink-2); font-size: 13px; }
 .map-reading-key span:last-child { color: var(--brand); }
 .map-point-finder li small { display: block; font-size: 12px; color: var(--ink-3); font-weight: 400; }
 .mapwrap.is-expanded .map-day-picker { padding-block: 5px; }
+
+.map-view-picker { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 14px; background: var(--surface); }
+.map-view-picker button { flex: 1; padding: 5px 8px; font-size: 12px; border: 1px solid var(--line); border-radius: 7px; }
+.map-view-picker button[aria-pressed="true"] { background: #123e4e; color: white; border-color: #123e4e; }
+.mapwrap .map-pointer-pin { transform: scale(.7); transform-origin: bottom center; }
+.mapwrap.every-spot.map-overview .map-pointer-pin { transform: scale(.42); }
+
+/* Compact labels outside; complete, readable detail inside each selected point. */
+.leaflet-popup-content { font-size: 13px; line-height: 1.5; max-height: min(360px, 48dvh); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.leaflet-popup-scrolled { max-height: min(360px, 48dvh) !important; }
+.point-details p { margin: 9px 0; }
+.point-details h4 { font: inherit; font-weight: 750; margin: 12px 0 5px; }
+.point-context { color: var(--ink-3); font-size: 12px; }
+.point-facts { margin: 8px 0; }
+.point-facts > div { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.point-facts dt { font-size: 11px; color: var(--ink-3); }
+.point-facts dd { margin: 1px 0 0; }
+.point-actions { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+.point-details ul { padding-left: 18px; margin: 5px 0; }
+.point-details li + li { margin-top: 6px; }
+.point-caution { border-left: 3px solid #d49d46; padding-left: 10px; }
+.point-details details { border-top: 1px solid var(--line); padding: 4px 0; }
+.point-details summary { padding: 10px 0; font-size: 12px; font-weight: 650; cursor: pointer; }

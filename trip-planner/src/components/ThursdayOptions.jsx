@@ -5,6 +5,9 @@ import { MapContainer, Polyline, Popup, TileLayer, Tooltip, useMap } from "react
 import { SKYBRIDGE, THURSDAY_OPTIONS, THURSDAY_PLACES, thursdayDirections } from "../data/thursdayOptions";
 import geometry from "../data/thursdayGeometry.json";
 import { duration } from "../lib/format";
+import { DAYS } from "../data/trip";
+import { LODGING } from "../data/lodging";
+import { PointActions, PointFacts, StayDetails, StopDetails } from "./MapPointDetails";
 import "../styles/trip-options.css";
 
 const bounds = [[44.69, -85.87], [45.86, -84.52]];
@@ -64,7 +67,9 @@ export default function ThursdayOptions() {
           {selected !== "coast" && <Polyline key={selected} positions={route.line} pathOptions={{ color: option.color, weight: 5 }} />}
           {Object.entries(THURSDAY_PLACES).map(([id, p]) => <NamedMarker key={id} position={p.coords} title={p.name} icon={L.divIcon({ className: "comparison-map-point", html: `<span style="border-color:${option.places.includes(id) ? option.color : "#68787c"}"></span>`, iconSize: [44,44], iconAnchor: [22,22] })}>
             <Tooltip permanent direction={id === "charlevoix" || id === "traverse" ? "left" : "right"} className="trip-map-label">{id === "skybridge" ? "SkyBridge" : p.name}</Tooltip>
-            <Popup maxWidth={240} autoPanPadding={[24, 24]}><b>{p.name}</b><br /><a href={`https://www.google.com/maps/dir/?api=1&destination=${p.coords.join(",")}`} target="_blank" rel="noreferrer">Directions to this point ↗</a></Popup>
+            <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}><b>{p.name}</b>
+              <ComparisonPointDetails id={id} place={p} />
+            </Popup>
           </NamedMarker>)}
         </MapContainer>
       </div>
@@ -97,4 +102,24 @@ export default function ThursdayOptions() {
       </div>
     </section>
   );
+}
+
+function ComparisonPointDetails({ id, place }) {
+  const day = DAYS.find(d => d.id === "d3");
+  const townStops = day.stops.filter(s => `${s.name} ${s.where} ${s.address}`.toLowerCase().includes(place.name.toLowerCase()));
+  const stay = LODGING.find(s => s.id === (id === "traverse" ? "traverse-city" : id === "mackinaw" ? "mackinaw-city" : ""));
+  return <div className="point-details">
+    <p>Thursday 9/17 · route comparison</p>
+    <PointActions address={place.coords.join(",")} phone={id === "skybridge" ? SKYBRIDGE.phone : undefined} url={id === "skybridge" ? SKYBRIDGE.url : undefined} />
+    {id === "skybridge" ? <>
+      <PointFacts rows={[["Hours", SKYBRIDGE.hours], ["Time needed", "Allow 1½–2 hours including the chairlift"], ["Admission", "Three tickets required; date-specific price not yet recorded in the budget"], ["Source checked", SKYBRIDGE.checked]]} />
+      <p>Chairlift access and a suspension bridge above Boyne Valley. Both inland routes skip Charlevoix; the Petoskey variation keeps lunch and the stone hunt.</p>
+      <section className="point-caution"><h4>Weather matters</h4><p>Rain alone may not close it, but poor visibility, high winds or nearby lightning can. Boyne lists a 35 mph wind limit and a 15-mile thunder/lightning radius. Check operation before the inland drive.</p></section>
+      <PointActions url={SKYBRIDGE.tickets} urlLabel="Check dated tickets" />
+    </> : <>
+      {townStops.map(stop => <details key={stop.id} open><summary>{stop.name}</summary><StopDetails stop={stop} day={day} /></details>)}
+      {stay && <StayDetails stay={stay} />}
+    </>}
+    <a href="#/day/d3">Thursday’s full itinerary →</a>
+  </div>;
 }

@@ -72,7 +72,7 @@ export default function OntarioToolkit() {
             </div>
           </div>
           <small className="muted" style={{ display: "block", marginTop: "4px", fontSize: "11px" }}>
-            US Michigan gas is ~$3.55/gal &mdash; filling in Port Huron before crossing saves ~$18.
+            Example input, not a live pump price. Enter the price you see; conversion uses the guide’s fixed planning exchange rate. Compare with the current US price.
           </small>
         </div>
 

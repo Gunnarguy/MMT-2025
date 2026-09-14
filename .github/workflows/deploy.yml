@@ -50,7 +50,7 @@ jobs:
         run: npm run build
 
       - name: Verify weather and offline guide
-        run: node --test scripts/trip-weather.test.mjs scripts/offline-guide.test.mjs
+        run: node --test scripts/trip-weather.test.mjs scripts/offline-guide.test.mjs scripts/map-label-layout.test.mjs scripts/map-point-details.test.mjs
 
       # GitHub Pages serves 404.html for unknown routes. Routing here is
       # hash-based, but the fallback keeps a stray deep link from 404-ing.

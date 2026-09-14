@@ -97,7 +97,7 @@ export const CALENDAR_EVENTS = [
     start: "13:00",
     end: "13:30",
     location: "10255 W Zemke Blvd, Chicago, IL 60666",
-    description: "Return car with 100% full gas receipt (refueled at Rosemont BP on Higgins Rd) to avoid $9.99/gal fee.",
+    description: "Follow the fuel option on your rental agreement. For self-refueling, return full and keep the receipt. Suggested station: Shell, 600 E Touhy Ave, Des Plaines. Fees depend on your agreement.",
   },
   {
     title: "Flight AA 1253 Departure to SFO",

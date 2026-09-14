@@ -10,11 +10,13 @@ import {
 } from "react-leaflet";
 
 import MapClusters from "./MapClusters";
+import { LODGING } from "../data/lodging";
+import { StopDetails, StayDetails, DayPointDetails, FlightPointDetails, RentalPointDetails, ScoutPointDetails, PointActions } from "./MapPointDetails";
 import { escapeMapHtml } from "../lib/mapLabels";
 import { MapAccess, NamedMarker as Marker, PointFinder } from "./MapAccess";
 import { DAYS, HOME } from "../data/trip";
 import geometry from "../data/routeGeometry.json";
-import { FUEL_STOPS } from "../data/fuel";
+import { FUEL_STOPS, FUEL_PLAN_NOTE } from "../data/fuel";
 import { LocationWeather } from "./TripForecast";
 import {
   BORDER_PORTALS,
@@ -230,6 +232,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   });
 
   const [zoomLevel, setZoomLevel] = useState(6);
+  const [everySpot, setEverySpot] = useState(false);
 
   // Playback Simulator State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -267,7 +270,10 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     const selection = ++selectionRef.current;
     map.closePopup();
     map.stop();
-    point.group.zoomToShowLayer(point.layer, () => {
+    if (everySpot) {
+      map.setView(point.layer.getLatLng(), Math.max(map.getZoom(), 13), { animate: false });
+      point.layer.openPopup();
+    } else point.group.zoomToShowLayer(point.layer, () => {
       // Non-animated zooms finish by collapsing spiderfied clusters. Reveal a
       // shared-location pin after that zoom event has completely finished.
       requestAnimationFrame(() => {
@@ -278,7 +284,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       });
     });
     wrapRef.current?.querySelector(".map-canvas-frame")?.scrollIntoView({ block: "start", behavior: "instant" });
-  }, []);
+  }, [everySpot]);
 
   // Close expanded map on Escape key
   useEffect(() => {
@@ -389,6 +395,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             label: stop.kind === "food" ? "🍴" : stop.kind === "sleep" ? "🛏" : stop.kind === "admin" ? "🚗" : "●",
             color: colors[day.index] || "#1f7a8c",
             title: stop.name,
+            stop, day,
             where: stop.where,
             dayTitle: `${shortDate(day.date)} · ${day.title}`,
             address: stop.address,
@@ -409,6 +416,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             city: d.sleep.city,
             address: d.sleep.address,
             date: d.date,
+            stay: LODGING.find(s => s.name === d.sleep.name),
           });
         });
     }
@@ -425,7 +433,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           action: f.action,
           why: f.why,
           date: f.date,
-          mileMarker: f.mileMarker,
+          routeContext: f.routeContext,
+          sourceUrl: f.sourceUrl,
+          checkedOn: f.checkedOn,
         });
       });
     }
@@ -514,7 +524,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
   return (
     <>
-      <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef} role={isExpanded ? "dialog" : undefined} aria-modal={isExpanded || undefined} aria-label="Trip route map">
+      <div className={`mapwrap${everySpot ? " every-spot" : ""}${zoomLevel < 10 ? " map-overview" : ""}${isExpanded ? " is-expanded" : ""}`} ref={wrapRef} role={isExpanded ? "dialog" : undefined} aria-modal={isExpanded || undefined} aria-label="Trip route map">
           {/* Floating HUD & Map Controls Overlay */}
           <div className="map-hud-bar">
         {hudStats && (
@@ -578,7 +588,15 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           {DAYS.map((d) => <option key={d.id} value={d.id}>{shortDate(d.date)} · {d.title}</option>)}
         </select>
       </label>}
-      <div className="map-reading-key"><span>● Stop</span><span>🍴 Food</span><span>🛏 Hotel</span><span>⛽ Fuel</span><span>Tap a named group to explore →</span></div>
+      <div className="map-view-picker" role="group" aria-label="Map display">
+        <button type="button" aria-pressed={!everySpot} onClick={() => setEverySpot(false)}>Nearby groups</button>
+        <button type="button" aria-pressed={everySpot} onClick={() => setEverySpot(true)}>Every spot</button>
+        <button type="button" onClick={() => {
+          const map = mapRef.current;
+          if (map && points.length) map.fitBounds(points.map(p => p.layer.getLatLng()), { padding: [65, 75], maxZoom: 14, animate: false });
+        }}>Fit all spots</button>
+      </div>
+      <div className="map-reading-key"><span>● Stop</span><span>🍴 Food</span><span>🛏 Hotel</span><span>⛽ Fuel</span><span>{everySpot ? "Every point is shown. Zoom for names; search for overlapping spots." : "Tap a group to see its spots →"}</span></div>
       <div className="map-canvas-frame">
       <MapContainer
         center={HOME.coords}
@@ -611,7 +629,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         <InvalidateMapSize isExpanded={isExpanded} />
         <VehicleTracker currentCoord={currentVehicleCoord} isPlaying={isPlaying} />
 
-        <MapClusters zoom={zoomLevel}>
+        <MapClusters zoom={zoomLevel} everySpot={everySpot}>
         <MapAccess onPoints={setPoints} mapRef={mapRef} />
         {/* Golden Hour Ambient Overlay along Shorelines */}
         {showSunTracker && solarData.isGoldenHour && (
@@ -642,46 +660,36 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={SFO_COORDS}
               icon={pinIcon({ label: "🛫", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>SFO — San Francisco International</b>
-                <br />
-                <span className="muted">Flight AA 2358 Departure (1:29 PM PDT)</span>
-                <br />
-                Nonstop to Chicago O&rsquo;Hare · 1,846 miles
+                <FlightPointDetails slot="arrive" />
               </Popup>
             </Marker>
             <Marker
               position={[40.5962, -109.1675]}
               icon={pinIcon({ label: "✈", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>Flight AA 2358 in Flight</b>
-                <br />
-                <span className="muted">SFO → ORD · 4h 52m flight time</span>
+                <FlightPointDetails slot="arrive" />
               </Popup>
             </Marker>
             <Marker
               position={ORD_COORDS}
               icon={pinIcon({ label: "🛬", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>ORD — Chicago O&rsquo;Hare International</b>
-                <br />
-                <span className="muted">Flight AA 2358 Arrival (8:21 PM CDT)</span>
-                <br />
-                Terminal 3 · Take ATS people-mover to Rental Car Facility
+                <FlightPointDetails slot="arrive" airport />
               </Popup>
             </Marker>
             <Marker
               position={ORD_MMF_COORDS}
               icon={pinIcon({ label: "🚗", color: "#2563eb", variant: "pin--car" })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>Budget Rental Pickup</b>
-                <br />
-                <span className="muted">9:00 PM CDT · 10255 W Zemke Blvd</span>
-                <br />
-                Mazda CX-50 · Remember Canadian Insurance Card
+                <RentalPointDetails />
               </Popup>
             </Marker>
           </>
@@ -703,12 +711,9 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={ORD_COORDS}
               icon={pinIcon({ label: "✈", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>Flight AA 1253 Departure</b>
-                <br />
-                <span className="muted">ORD 3:20 PM CDT → SFO 6:09 PM PDT</span>
-                <br />
-                Terminal 3 · Gate closes 3:05 PM CDT
+                <FlightPointDetails slot="depart" airport />
               </Popup>
             </Marker>
           </>
@@ -733,12 +738,15 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           position={HOME.coords}
           icon={pinIcon({ label: "⌂", color: "#16242c", variant: "pin--home" })}
         >
-          <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+          <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
             <b>Home</b>
             <br />
             {HOME.address}
             <br />
             <span className="muted">Start 9/15 · Finish 9/21</span>
+            <p>Home base in Palatine. Arrive here after the airport pickup on Monday evening; return to drop Mom off before O’Hare on the last day.</p>
+            <PointActions address={HOME.address} />
+            <a href="#/day/d7">Return-day schedule →</a>
           </Popup>
         </Marker>
 
@@ -748,12 +756,10 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={b.coords}
               icon={pinIcon({ label: "🛏", color: b.color, variant: "pin--bed", title: b.name })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>{b.name}</b>
-                <br />
-                {b.city}
-                <br />
-                <span className="muted">Night of {shortDate(b.date)}</span>
+
+                <StayDetails stay={b.stay} />
               </Popup>
             </Marker>
           </div>
@@ -763,18 +769,20 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <div key={f.key}>
             <Marker
               position={f.coords}
+              mapLabel={`${f.brand} ⛽`}
               icon={pinIcon({ label: "⛽", color: "#d97706", variant: "pin--fuel", title: f.stopName })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>{f.stopName}</b>
                 <br />
                 <span className="muted">{f.brand}</span>
                 <br />
-                <b>Trip Milepost:</b> Mile {f.mileMarker} · {f.action}
+                <p>{f.address}</p><b>{f.action}</b><br />{f.routeContext}
                 <br />
                 <span className="muted" style={{ fontSize: "11px" }}>
                   {f.why}
-                </span>
+                </span><p>{FUEL_PLAN_NOTE}</p>
+                <a href={f.sourceUrl} target="_blank" rel="noreferrer">Location source · checked {f.checkedOn}</a>
                 {f.address && (
                   <>
                     <br />
@@ -796,10 +804,12 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         {layerFilter.shields &&
           HIGHWAY_SHIELDS.map((s) => (
             <Marker key={s.id} position={s.coords} icon={shieldIcon(s)}>
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>{s.name}</b>
                 <br />
                 <span className="muted">{s.desc}</span>
+                <p>Route reference marker · {s.route}. This pin identifies the road, not a recommended parking or stopping location.</p>
+                <a href="#/days">Browse the route by day →</a>
               </Popup>
             </Marker>
           ))}
@@ -812,7 +822,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={b.coords}
               icon={pinIcon({ label: "🇨🇦", color: "#dc2626", variant: "pin--border-portal" })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>{b.name}</b>
                 <br />
                 <span style={{ color: "#dc2626", fontWeight: 700 }}>{b.direction}</span>
@@ -830,6 +840,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                     ))}
                   </ul>
                 </div>
+                <a href="#/border">Full border guide & documents →</a>
+                <DayPointDetails dayId={b.dayId} />
               </Popup>
             </Marker>
           ))}
@@ -856,7 +868,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                   position={t.coords}
                   icon={pinIcon({ label: "⌂", color, variant: "pin--scout", title: t.name })}
                 >
-                  <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+                  <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                     <b>{t.name}</b> <span className="muted">{t.county}</span>
                     <br />
                     <span style={{ color: tier.color, fontWeight: 700 }}>{tier.label}</span>
@@ -899,6 +911,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                     <div className="muted" style={{ marginTop: "4px", fontSize: "11px" }}>
                       Dashed ring ≈ 15 minutes out, coloured by what the county median does to your budget. Full workup on the Scout tab.
                     </div>
+                    <ScoutPointDetails town={t} />
                   </Popup>
                 </Marker>
               </div>
@@ -911,12 +924,15 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={site.coords}
               icon={pinIcon({ label: "S", color: "#f2a900", variant: "pin--stryker", title: site.name })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>{site.name}</b>
                 <br />
                 <span className="muted">{site.what}</span>
                 <br />
                 <span className="muted">{site.address}</span>
+                <p>Employer location reference for comparing nearby towns and commute options; no visit or appointment is scheduled here.</p>
+                <PointActions address={site.address} />
+                <a href="#/scout">Nearby towns, housing & commute research →</a>
               </Popup>
             </Marker>
           ))}
@@ -929,7 +945,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={c.coords}
               icon={pinIcon({ label: c.icon, color: "#0284c7", variant: "pin--climate" })}
             >
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>{c.title}</b>
                 <br />
                 <LocationWeather locationId={c.locationId} />
@@ -952,10 +968,11 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               variant: "pin--vehicle-moving",
             })}
           >
-            <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+            <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
               <b>{isVehicleFlying ? "AA 2358 in Flight" : "Mazda CX-50 Cruising"}</b>
               <br />
               Trip Progress: {Math.round(playProgress)}%
+              <p>Route playback preview · not your GPS location or live vehicle tracking.</p>
             </Popup>
           </Marker>
         )}
@@ -963,28 +980,10 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         {markers.map((m) => (
           <div key={m.key}>
             <Marker position={m.coords} icon={pinIcon(m)}>
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>{m.title}</b>
-                <br />
-                {m.where && (
-                  <>
-                    <span className="muted">{m.where}</span>
-                    <br />
-                  </>
-                )}
-                <span className="muted">{m.dayTitle}</span>
-                {m.address && (
-                  <>
-                    <br />
-                    <a
-                      href={directionsHref(null, m.address)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Directions
-                    </a>
-                  </>
-                )}
+
+                <StopDetails stop={m.stop} day={m.day} />
               </Popup>
             </Marker>
           </div>
@@ -1006,10 +1005,11 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               }}
             />
             <Marker position={[45.8492, -84.6189]} icon={pinIcon({ label: "⛴", color: colors[4], title: "Mackinac Island ferry landing" })}>
-              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
+              <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
                 <b>Mackinac Island</b>
                 <br />
                 <span className="muted">Friday 9/18 · Shepler&rsquo;s ferry</span>
+                <DayPointDetails dayId="d4" />
               </Popup>
             </Marker>
           </>
@@ -1257,7 +1257,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         </div>
       )}
       <PointFinder points={points} query={pointQuery} onQuery={setPointQuery} onSelect={selectPoint} />
-      <p className="map-access-note">Named groups show how many points are nearby. Tap to zoom in; tap a pin for its full details. Pins stay at their real locations. Routes and points work offline once the guide is saved; street and satellite detail needs a connection or previously viewed tiles.</p>
+      <p className="map-access-note">Switch to Every spot to remove groups. Fit all spots brings every active point into view. Tap a pin for full details. Nearby pins may overlap at a wide zoom; Find a map point reaches each one. Routes and points work offline once the guide is saved; street and satellite detail needs a connection or previously viewed tiles.</p>
     </div>
 
     {/* When a day is isolated on the map, show that day's featured infographics below the map */}

@@ -94,3 +94,83 @@ Border and returned to Map, and opened a shared-location Lighthouse View Motel
 popup. All eight day selections also had no document overflow at 440×956.
 Third-party internet remained available; worker tests independently reject all
 network requests for app assets.
+
+## Compact labels and every-spot mode — September 13, 2026
+
+The next user screenshot showed multi-line labels cropped by the map edges in
+Ludington. Labels now use intrinsic single-line widths, 10px type, short display
+names and a screen-space placement pass. Full names remain in accessible marker
+names, search and popups. Labels avoid each other and zoom controls when space
+permits; longer offsets have leader lines to unchanged geographic pin positions.
+ResizeObserver reruns placement after React renders tooltip text or fonts resize.
+Groups are 112×44 instead of 140×54, open with padded bounds, and retain 44px
+minimum targets. Every spot removes clustering; at regional zoom every marker is
+rendered and names appear on closer zoom. Fit all spots includes every point in
+the active layers, including optional flight and Scout overlays. Coincident pins
+can still overlap; the searchable list exposes each individually.
+
+Browser checks: all 91 points opened from search in both modes (182 selections).
+Every spot plus Fit all spots produced 91 marker icons, zero groups, and 91 list
+entries. Ludington's five compact labels were measured without overlap after
+font/content sizing. Two pure layout tests cover nearby pins, canvas edges and
+zoom-control obstacles; they run with the existing 13 weather/offline tests in CI.
+
+### Fuel corrections
+
+Fuel is a planning aid, not vehicle telemetry. Removed exact projected tank
+percentages, mandatory-stop/stranding claims, guaranteed savings and the fixed
+$9.99 Budget fee from the map, fuel planner, dispatch, border guidance and calendar
+export. The rental agreement governs the chosen fuel option. The Ontario
+calculator now labels its initial value and exchange rate as planning examples.
+
+- Ludington: retained Meijer Express at 3960 W US-10; corrected the approximate
+  pin to 43.9569,-86.37854. Store campus uses 3900; the gas forecourt uses 3960.
+  https://www.meijer.com/shopping/store-locator/193.html
+  https://mapcarta.com/N7914889369
+  https://www.loc8nearme.com/michigan/ludington/meijer-gas-station/2267104/
+- Mackinaw City: Marathon, 308 S Nicolet, supported by the highway-logo listing.
+  https://michigan.view.interstatelogos.com/I-75-N/8297/48757/
+- Port Huron: corrected the mixed Speedway/Mobil entry and 2607 address to
+  Speedway, 2621 Pine Grove Ave; pin 43.0018822,-82.4396813 from Maps.
+  https://careers.7-eleven.com/location/port-huron-jobs/7/6252001-5001836-5006233/4
+- Southwest Michigan: could not substantiate the New Buffalo Pilot/address.
+  Replaced it with TA/BP Sawyer, 6100 Sawyer Rd, I-94 Exit 12. Official map link
+  gives 41.8845,-86.6001. This is a suggested stop on the existing return route.
+  https://www.ta-petro.com/location/mi/ta-sawyer/
+- O'Hare: could not substantiate the BP/Shell at 10250 W Higgins. Replaced it
+  with Shell, 600 E Touhy Ave, Des Plaines; official page gives 42.009182,-87.908429.
+  https://find.shell.com/us/fuel/10008894-600-e-touhy-ave/en_US
+- Rental policy: https://www.budget.com/en/offers/us-offers/fuel-plans
+
+Listings were checked September 13; no guarantee of live hours, fuel availability
+or prices. Route geometry and author-authored itinerary text remain unchanged.
+
+### Complete map point details (September 13, 2026)
+
+- Route markers keep the full stop record, including time/duration, hours, prices,
+  address, contact/actions, description, tips, and research source. Hotel markers
+  join LODGING by property name and expose check-in/out, total recorded rate,
+  missing confirmation status, property notes, and occupancy/breakfast caveats.
+- The two older sleep-stop entries explicitly refer to the lodging record:
+  Bayshore differs from Brio; Belleville is a provisional backup. The authored
+  itinerary is preserved and the discrepancy is visible.
+- Airport/rental markers reuse logistics data; flights read the same device-saved
+  flight records as Car & flights. Scout markers include expandable town workups.
+  Border/island points expose their day stops; the comparison map includes full
+  SkyBridge visiting/weather information and coastal town stops/stays.
+- Popup bodies scroll independently, capped at 360px or 48dvh, including nested
+  content that mounts after Leaflet first measures the popup. Main map labels
+  stay small; detail text stays readable. Independent markers in Every spot use
+  a plain feature group, avoiding cluster-tree state when changing display modes.
+- Checked all 91 active-layer point selections in Nearby groups and Every spot;
+  all 91 marker elements fit inside the all-points canvas. Production preview
+  tested at phone widths (440 and 348 CSS pixels), plus 956×440 landscape with
+  no page overflow. Production Summer's Inn popup exposes all saved notes inside
+  a 360px scroll region. SkyBridge and Charlevoix comparison details verified.
+- ESLint passes for changed JS/JSX; production build and 18 tests pass, including
+  rendering every stop, every lodging record and every town workup against its
+  source data, plus weather refresh and complete offline asset-cache checks.
+- These are saved guide details, not a claim that every venue's current hours,
+  prices, or booking status was freshly reverified. The Summer's Inn official
+  website fetch timed out during this pass; its policy notes remain labeled as
+  saved research, with a call link for current confirmation.
