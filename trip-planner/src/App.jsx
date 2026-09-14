@@ -177,11 +177,6 @@ export default function App() {
           </div>
         </nav>
 
-        <label className="mobile-section-picker">Go to
-          <select aria-label="Trip section" value={route.tab} onChange={(e) => go(e.target.value)}>
-            {TABS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-          </select>
-        </label>
         {route.tab === "days" && <DayRail activeId={route.dayId} onGo={go} />}
       </div>
 

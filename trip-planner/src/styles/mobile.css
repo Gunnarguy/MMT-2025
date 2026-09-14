@@ -3,7 +3,6 @@
 .topbar-inner, .page, .footer-inner, .tabrail-inner { padding-left: var(--safe-left); padding-right: var(--safe-right); }
 .page, .page > *, .card, .stop { min-width: 0; }
 .icon-btn { width: 44px; height: 44px; }
-.mobile-section-picker { display: none; }
 .tabrail-inner { position: relative; }
 button, summary, .action { min-height: 44px; }
 summary { cursor: pointer; align-content: center; }
@@ -58,10 +57,7 @@ input[type="checkbox"], input[type="radio"] { min-width: 20px; min-height: 20px;
 .offline-access[data-offline="true"] { border-color: var(--accent); }
 
 @media (max-width: 700px), (hover: none) and (pointer: coarse) {
-  .mobile-section-picker { display: flex; align-items: center; gap: 8px; padding: 4px var(--safe-left) 8px var(--safe-right); font-size: 13px; }
-  .mobile-section-picker select { flex: 1; width: 0; min-height: 44px; padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
   .topbar-inner { padding-block: 6px; }
-  .tabrail-inner { display: none; }
   .page { padding-top: 20px; }
   .page-head h1 { font-size: clamp(26px, 7vw, 36px); }
   .page-head p { font-size: 16px; }
@@ -88,7 +84,7 @@ input[type="checkbox"], input[type="radio"] { min-width: 20px; min-height: 20px;
   .mapwrap.is-expanded .map-hud-bar { padding-block: 4px; }
   .mapwrap.is-expanded .leaflet-container { height: 70dvh !important; }
 }
-@media print { .offline-access, .mobile-section-picker { display: none; } }
+@media print { .offline-access { display: none; } }
 
 .dayrail-track { padding-left: var(--safe-left); padding-right: var(--safe-right); }
 .elevation-point-picker { display: grid; gap: 6px; font-size: 13px; margin-block: 10px; }

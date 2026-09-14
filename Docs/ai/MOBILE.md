@@ -6,7 +6,7 @@ road geometry. No backend or accounts were added.
 
 ## Result
 
-- Phone section picker exposes all 11 sections without hidden horizontal tabs.
+- All 11 sections remain in a horizontally scrollable tab row on phones and tablets.
 - Shared 44px controls, 16px form text, landscape safe-area padding and no zoom lock.
 - Map toolbar outside the canvas; 44px marker targets; accessible marker names;
   popup scroll/close controls; Fit route; every day isolates correctly.
@@ -72,8 +72,7 @@ geographic dispersal with Leaflet.markercluster groups labeled by nearby area.
 The whole-trip phone overview starts with seven groups covering 54 default points.
 Category symbols replace repeating stop numbers, and closer zooms show place
 names. All optional layers remain available (91 points with everything enabled).
-The native Map day selector sits above the map. Touch-device navigation also uses
-the section picker when Safari reports a wide layout viewport.
+The native Map day selector sits above the map. Touch-device navigation retains the same tab row even when Safari reports a wide layout viewport.
 
 Search indexes the cluster group's full marker collection, sorts by place name,
 and opens the selected popup even for co-located points. Non-animated cluster
@@ -174,3 +173,7 @@ or prices. Route geometry and author-authored itinerary text remain unchanged.
   prices, or booking status was freshly reverified. The Summer's Inn official
   website fetch timed out during this pass; its policy notes remain labeled as
   saved research, with a call link for current confirmation.
+
+September 13: removed the section dropdown and touch-device rule that hid the
+tab row. iPhone, iPad, and Home Screen installs use the same scrollable tabs,
+with 44px touch targets and automatic centering of the selected tab.

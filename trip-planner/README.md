@@ -120,7 +120,7 @@ whether a thing is open.
 
 The guide supports portrait and landscape, including the iPhone 16 Pro Max's
 440 × 956 CSS-pixel layout. All sections are available through the phone's
-native section picker. The map toolbar sits outside the canvas, map points and
+horizontally scrollable section tabs. The map toolbar sits outside the canvas, map points and
 zoom/close controls have 44-pixel touch targets, and the expanded map respects
 safe areas and restores page scrolling when closed. A named group shows the
 number of nearby map points; tapping zooms into smaller groups and labeled places.
