@@ -86,19 +86,49 @@ export function LocationWeather({ locationId }) {
   </div>;
 }
 
-function Hourly({ saved, date, place, now }) {
-  const hours = saved?.hourly?.filter((hour) => hour.date === date) || [];
-  const today = dateAt(now, place.timezone);
-  return <details className="weather-hourly">
-    <summary>Hourly rain &amp; wind</summary>
-    <p className="trip-options-note">{today === date ? "Earlier hours today are retained model values. " : ""}Times local to {place.name}. Amounts are inches per hour; a daily rain symbol can come from a short or overnight shower.</p>
-    {hours.length ? <div className="trip-table-scroll" tabIndex={0} role="region" aria-label={`Hourly weather for ${place.name}`}>
-      <table className="trip-comparison"><thead><tr><th>Time</th><th>Conditions</th><th>Temp</th><th>Rain chance</th><th>Amount</th><th>Wind / gusts</th></tr></thead>
-        <tbody>{hours.map((h) => <tr key={h.time} className={h.time + 3600000 < now ? "weather-hour-past" : ""}>
-          <th scope="row">{clock(h.time, place.timezone)}</th><td>{h.summary}</td><td>{number(h.temperature, "°F")}</td><td>{number(h.rainChance, "%")}</td><td>{number(h.precipitation, "″", 2)}</td><td>{number(h.wind)} / {number(h.gusts)} mph</td>
-        </tr>)}</tbody></table>
-    </div> : <p>Hourly detail is outside the returned forecast window or unavailable. It will appear when the provider supplies it.</p>}
-  </details>;
+/** Hourly rain, temperature and wind for one place and date, as a bar strip. */
+function HourStrip({ saved, date, place, now }) {
+  const hours = (saved?.hourly || []).filter((h) => h.date === date);
+  if (!hours.length) return <p className="wx-foot">Hourly detail for {place.name} arrives once the provider publishes this date.</p>;
+  return (
+    <div className="wxh" role="img" aria-label={`Hourly rain chance and temperature for ${place.name}`}>
+      <div className="wxh-bars">
+        {hours.map((h) => {
+          const past = h.time + 3600000 < now;
+          const pct = Number.isFinite(h.rainChance) ? h.rainChance : 0;
+          const hour = new Date(h.time).toLocaleTimeString("en-US", { timeZone: place.timezone, hour: "numeric" }).replace(" ", "").toLowerCase();
+          return (
+            <div className={`wxh-col${past ? " is-past" : ""}`} key={h.time} title={`${clock(h.time, place.timezone)} · ${h.summary} · ${number(h.temperature, "°")} · ${pct}% rain · ${number(h.wind)} mph`}>
+              <span className="wxh-temp">{number(h.temperature, "°")}</span>
+              <span className="wxh-bar"><i style={{ height: `${Math.max(4, pct)}%` }} data-heavy={pct >= 60 ? "true" : undefined} /></span>
+              <span className="wxh-pct">{pct}%</span>
+              <span className="wxh-hour">{hour}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="wxh-key"><span>Bars are the hourly rain chance, numbers are temperature, times are local to {place.name}. Dimmed hours have passed.</span></div>
+    </div>
+  );
+}
+
+/** Live conditions tile for one place. */
+function NowTile({ locationId }) {
+  const { data, now, error, offline } = useTripWeather();
+  const place = WEATHER_LOCATIONS.find((p) => p.id === locationId);
+  const saved = data.locations[locationId];
+  if (!saved) return null;
+  const c = saved.current;
+  const stale = offline || error || now - saved.fetchedAt > WEATHER_STALE_MS || Math.abs(now - c.time) > WEATHER_STALE_MS;
+  return (
+    <div className="wxn-tile">
+      <div className="wx-place">{place.name}</div>
+      <div className="wxn-main"><span className="wx-glyph" aria-hidden="true">{weatherGlyph(c.summary)}</span><b>{number(c.temperature, "°")}</b></div>
+      <div className="wx-summary">{c.summary}</div>
+      <div className="wx-rain">💨 {number(c.wind)} mph · gusts {number(c.gusts)}</div>
+      <small className="wxn-stamp">{stale ? "Saved" : "Model estimate"} · valid {shortClock(c.time, place.timezone)}</small>
+    </div>
+  );
 }
 
 export default function TripForecast({ dayId, compact = false }) {
@@ -109,48 +139,68 @@ export default function TripForecast({ dayId, compact = false }) {
 function ForecastTable({ dayId }) {
   const { data, now, refreshing, error, offline, refresh } = useTripWeather();
   const [includePast, setIncludePast] = useState(false);
+  const [picked, setPicked] = useState(null);
+  const today = dateAt(now, "America/Detroit");
   const matching = WEATHER_STOPS.filter((stop) => !dayId || stop.dayId === dayId);
-  const pastCount = matching.filter((stop) => stop.date < dateAt(now, WEATHER_LOCATIONS.find((p) => p.id === stop.locationId).timezone)).length;
-  const rows = matching.filter((stop) => dayId || includePast || stop.date >= dateAt(now, WEATHER_LOCATIONS.find((p) => p.id === stop.locationId).timezone));
+  const pastCount = matching.filter((stop) => stop.date < today).length;
+  const rows = matching.filter((stop) => dayId || includePast || stop.date >= today);
   const stale = !data.checkedAt || now - data.checkedAt > WEATHER_STALE_MS;
+  const days = [...new Set(rows.map((r) => r.date))].sort();
+  const nowIds = [...new Set(matching.filter((s) => s.date === today || (!matching.some((x) => x.date === today) && s.date === days[0])).map((s) => s.locationId))];
+  const dayLabel = (date) => new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
   return (
-    <section className="trip-forecast" aria-label="Automatically updating trip weather">
+    <section className="trip-forecast wxb" aria-label="Automatically updating trip weather">
       <div className="weather-heading">
-        <div><div className="eyebrow">{offline ? "Offline · saved weather" : refreshing ? "Refreshing weather…" : error ? "Refresh incomplete · check timestamps" : stale ? "Saved weather · refresh needed" : "Weather updates automatically"}</div>
-          <h2>{dayId ? "Weather for this day's route" : "Weather for the whole trip"}</h2></div>
-        <button type="button" className="action" disabled={refreshing || offline} onClick={() => refresh(true)}>{refreshing ? "Refreshing…" : "Refresh weather"}</button>
+        <div><div className="eyebrow">{offline ? "Offline · saved weather" : refreshing ? "Refreshing…" : error ? "Refresh incomplete · check timestamps" : stale ? "Saved weather · refresh when you have signal" : `Updates automatically · last ${shortClock(data.checkedAt, "America/Detroit")}`}</div>
+          <h2>{dayId ? "Weather along this day" : "Weather, the whole trip"}</h2></div>
+        <button type="button" className="action wx-refresh" disabled={refreshing || offline} onClick={() => refresh(true)} aria-label="Refresh weather" title="Refresh weather"><span aria-hidden="true">↻</span></button>
       </div>
-      <p className="trip-options-note">Last successful fetch: {stamp(data.checkedAt, "America/Detroit")}. Refreshes every 15 minutes while open, when you return, and when service comes back. Conditions below are weather-model estimates, not a live radar or station reading.</p>
-      {(offline || error || stale) && <p className="trip-forecast-stale" role="status">{offline ? "You're offline. Saved weather remains available; check the timestamps before using it." : error || "The saved forecast is over an hour old or unavailable. Try refreshing before making weather-sensitive plans."}</p>}
-      {!dayId && <p>U.S. and Ontario stops, including both Thursday routes and the drive back to O&rsquo;Hare. Forecasts change as each trip day approaches; longer-range days are less certain.</p>}
-      <>
-        {!dayId && pastCount > 0 && <label className="weather-past-toggle"><input type="checkbox" checked={includePast} onChange={(e) => setIncludePast(e.target.checked)} /> Show completed trip days (saved forecasts)</label>}
-        {!rows.length && <p>All trip days have passed. Show completed days to review saved forecasts.</p>}
-        <div className="trip-table-scroll" role="region" aria-label="Forecast by trip stop" tabIndex={0}>
-          <table className="trip-comparison trip-weather-table">
-            <caption>Daily summaries cover the full local calendar day. “Peak rain chance” is the highest hourly precipitation probability, not a percentage of the day spent raining.</caption>
-            <thead><tr><th scope="col">Trip day / location</th><th scope="col">Trip-day forecast</th><th scope="col">High / low · rain</th><th scope="col">Wind / gusts</th></tr></thead>
-            <tbody>{rows.map((row) => {
-              const place = WEATHER_LOCATIONS.find((p) => p.id === row.locationId);
-              const saved = data.locations[row.locationId];
-              const day = saved?.daily[row.date];
-              const past = row.date < dateAt(now, place.timezone);
-              const old = !day || now - day.fetchedAt > WEATHER_STALE_MS;
-              return <tr key={`${row.dayId}-${row.locationId}`}>
-                <th scope="row"><small>{new Date(`${row.date}T12:00:00`).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}{row.locationId === "skybridge" ? " · route option" : ""}</small>{place.name}
-                  <small>{past ? "Past trip day · saved forecast" : old ? "Saved / unavailable" : "Updated"} · {stamp(day?.fetchedAt, place.timezone)}</small></th>
-                <td>{day?.summary || (past ? "No saved forecast for this past day" : "Not yet available from the provider")}
-                  {day && !past && <Hourly saved={saved} date={row.date} place={place} now={now} />}
-                  <details className="weather-hourly"><summary>Conditions now in {place.name}</summary><LocationWeather locationId={place.id} /></details>
-                </td>
-                <td>{number(day?.high, "°")} / {number(day?.low, "°F")}<small>{number(day?.peakRainChance, "%")} peak rain chance</small><small>{number(day?.precipitation, "″", 2)} total precipitation</small></td>
-                <td>{number(day?.wind)} / {number(day?.gusts)} mph<small>Daily maximum</small></td>
-              </tr>;
-            })}</tbody>
-          </table>
+      {(offline || error) && <p className="trip-forecast-stale" role="status">{offline ? "You're offline. Saved weather remains available; check the timestamps before using it." : error}</p>}
+
+      {nowIds.length > 0 && (
+        <div className="wxb-now">
+          <div className="eyebrow">Right now</div>
+          <div className="wxn-strip scroll-x">{nowIds.map((id) => <NowTile key={id} locationId={id} />)}</div>
         </div>
-      </>
-      <p className="trip-options-note">Source: <a href="https://open-meteo.com/en/docs" target="_blank" rel="noreferrer">Open-Meteo forecast models</a>. The fetch time is when this device received data, not the model&rsquo;s issue time. No forecast guarantees ferry or SkyBridge operation.</p>
+      )}
+
+      {!dayId && pastCount > 0 && <label className="weather-past-toggle"><input type="checkbox" checked={includePast} onChange={(e) => setIncludePast(e.target.checked)} /> Show days already driven (saved forecasts)</label>}
+      {!rows.length && <p className="wx-foot">All trip days have passed. Show completed days to review saved forecasts.</p>}
+
+      {days.map((date) => {
+        const stops = rows.filter((r) => r.date === date);
+        const past = date < today;
+        const sel = picked && picked.date === date ? picked : null;
+        const selPlace = sel ? WEATHER_LOCATIONS.find((p) => p.id === sel.locationId) : null;
+        return (
+          <div className={`wxb-day${past ? " is-past" : ""}${date === today ? " is-today" : ""}`} key={date}>
+            <div className="wxb-day-head">
+              <h3>{dayLabel(date)}</h3>
+              <span>{date === today ? "Today" : past ? "Driven · saved forecast" : `Day ${Number(date.slice(-2)) - 14}`}</span>
+            </div>
+            <div className="wx-strip scroll-x">
+              {stops.map((row) => {
+                const place = WEATHER_LOCATIONS.find((p) => p.id === row.locationId);
+                const day = data.locations[row.locationId]?.daily?.[row.date];
+                const on = sel && sel.locationId === row.locationId;
+                return (
+                  <button type="button" className={`wx-tile wx-tile--btn${on ? " is-on" : ""}`} key={row.locationId} aria-pressed={!!on} onClick={() => setPicked(on ? null : { date, locationId: row.locationId })}>
+                    <div className="wx-place">{place.name}{row.locationId === "skybridge" && <small>route option</small>}</div>
+                    <div className="wx-glyph" aria-hidden="true">{day ? weatherGlyph(day.summary) : "…"}</div>
+                    <div className="wx-summary">{day?.summary || (past ? "No saved forecast" : "Not yet published")}</div>
+                    <div className="wx-temps"><b>{number(day?.high, "°")}</b> / {number(day?.low, "°")}</div>
+                    <div className="wx-rain">☔ {number(day?.peakRainChance, "%")} · {number(day?.precipitation, "″", 2)} · 💨 {number(day?.wind)} mph</div>
+                    <small className="wx-tap">{on ? "Hide hours" : "Tap for hours"}</small>
+                  </button>
+                );
+              })}
+            </div>
+            {sel && <HourStrip saved={data.locations[sel.locationId]} date={date} place={selPlace} now={now} />}
+          </div>
+        );
+      })}
+
+      <p className="trip-options-note">Peak rain chance is the highest hourly probability, not the share of the day spent raining. Source: <a href="https://open-meteo.com/en/docs" target="_blank" rel="noreferrer">Open-Meteo forecast models</a>; the fetch time is when this device received data. No forecast guarantees ferry or SkyBridge operation.</p>
     </section>
   );
 }
