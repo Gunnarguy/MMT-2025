@@ -2,8 +2,8 @@
 
 Updated: 2026-09-14 (trip day 0, arrival night)
 Branch/worktree: main (no worktrees)
-Last verified commit: 80fe470 (built, deployed; served hash `assets/index-4e5R1wwj.js`). Six files are
-uncommitted on top of it (see Working Set); they lint and build but are not yet pushed.
+Last verified commit: dc05708 (built, deployed; served hash `assets/index-ByVHghW0.js`, bundle contains
+"Buying here, realistically" and "HUD FMR FY2027"). Working tree clean at the time of writing.
 
 Older notes: [MOBILE.md](MOBILE.md) (offline saving, map access) and [ROUTE-OPTIONS.md](ROUTE-OPTIONS.md)
 (SkyBridge comparison, live weather).
@@ -17,10 +17,11 @@ of the field guide, shipped in 80fe470 and is live.
 
 ## Status
 
-Research is in flight, nothing from it has landed in the data file. Four background research agents
-(batches A-D, four places each) write `scout-research-{A,B,C,D}.json` to the session scratchpad;
-none had finished when this was written. The code that will display the new fields is edited and
-uncommitted. A verification brief and a tested patch script are ready in the scratchpad.
+Objective 2 is LIVE as of commit dc05708: every town's housing and bills refreshed from September
+2026 sources, a "Buying here, realistically" workup section per town, HUD FMR FY2027 rents on one
+scale, one documented comfort formula, mortgage rate 6.76%. The four adversarial verifiers
+(`scout-verify-{A,B,C,D}.json` in the scratchpad) had NOT finished when it shipped; the Scout
+footer says so. Their findings are the one open follow-up.
 
 ## Completed
 
@@ -86,13 +87,14 @@ From `trip-planner/`, every line observed this session:
 
 ## Exact Next Action
 
-When `scout-research-{A,B,C,D}.json` exist: launch two verification agents with
-`scout-verify-brief.md` (V1 on A+B -> `scout-verify-1.json`, V2 on C+D -> `scout-verify-2.json`).
-Then curate `scout-final.json` per town: accept a research value only when it has a period and a
-URL and verification did not mark it fabricated/mislabelled/implausible; write `money.medianPrice`,
-`money.priceNote`, `money.countyPrice`, `money.rent2br`, `money.rentNote`, the `median` string,
-`costs.*` where a newer dated figure exists, and `workup.housing` rows each ending "· <period> ·
-<source domain>", plus `{"id":"META","refreshed":"2026-09-14","refreshMethod":"..."}`. Run
-`python3 <scratchpad>/scout-patch.py <scratchpad>/scout-final.json`, then from `trip-planner/`:
-`npx --no-install eslint src && npm run build && node --test scripts/*.test.mjs`, commit, push,
-`gh run watch ... --exit-status`, and confirm the served hash moved off `assets/index-4e5R1wwj.js`.
+When `<scratchpad>/scout-verify-{A,B,C,D}.json` exist (a Monitor was watching for them): read each
+issue with severity fabricated/mislabelled/implausible, decide per field, then re-run
+`node <scratchpad>/scout-curate.mjs` (it reads the verify files and falls back to the prior for
+flagged fields, adding a "Verification notes" row) and
+`python3 <scratchpad>/scout-patch.py <scratchpad>/scout-final.json` (idempotent), then from
+`trip-planner/`: `npx --no-install eslint src && npm run build && node --test scripts/*.test.mjs`,
+commit, push, `gh run watch ... --exit-status`, confirm the served hash moves off
+`assets/index-ByVHghW0.js`, and change the footer sentence "an independent re-sourcing pass was
+still running when this went live" in the META `refreshMethod` (set in scout-curate.mjs) to state
+what the pass found. If the scratchpad is gone, the research must be redone from the brief in the
+memory note `scout-refresh-method`.
