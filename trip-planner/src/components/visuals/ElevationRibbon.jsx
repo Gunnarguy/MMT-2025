@@ -54,6 +54,16 @@ export default function ElevationRibbon({ onHoverPoint, activeDayId = null, onCl
         </div>
       </div>
 
+      <label className="elevation-point-picker">Inspect an elevation point
+        <select value={hoverIdx ?? ""} onChange={(e) => {
+          const index = e.target.value === "" ? null : Number(e.target.value);
+          setHoverIdx(index);
+          onHoverPoint?.(index === null ? null : filtered[index]);
+        }}>
+          <option value="">Choose a stop…</option>
+          {filtered.map((point, index) => <option key={point.mile} value={index}>{point.label} · {point.elev} ft · mile {point.mile}</option>)}
+        </select>
+      </label>
       <div className="elevation-svg-wrap">
         <svg viewBox={`0 0 ${width} ${height}`} className="elevation-svg" preserveAspectRatio="none">
           {/* Subtle grid lines */}

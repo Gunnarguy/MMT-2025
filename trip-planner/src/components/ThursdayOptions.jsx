@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { CircleMarker, MapContainer, Polyline, TileLayer, Tooltip, useMap } from "react-leaflet";
+import L from "leaflet";
+import { NamedMarker } from "./MapAccess";
+import { MapContainer, Polyline, Popup, TileLayer, Tooltip, useMap } from "react-leaflet";
 import { SKYBRIDGE, THURSDAY_OPTIONS, THURSDAY_PLACES, thursdayDirections } from "../data/thursdayOptions";
 import geometry from "../data/thursdayGeometry.json";
 import { duration } from "../lib/format";
@@ -55,14 +57,15 @@ export default function ThursdayOptions() {
       </div>
 
       <div className="trip-option-map" aria-label="Road map comparing the original coastal route and the selected alternative">
-        <MapContainer bounds={bounds} boundsOptions={{ padding: [30, 30] }} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+        <MapContainer zoomAnimation={false} bounds={bounds} boundsOptions={{ padding: [30, 30] }} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
           <FitComparison />
           <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
           <Polyline positions={coast.line} pathOptions={{ color: "#267044", weight: 4, dashArray: "7 8", opacity: 0.8 }} />
           {selected !== "coast" && <Polyline key={selected} positions={route.line} pathOptions={{ color: option.color, weight: 5 }} />}
-          {Object.entries(THURSDAY_PLACES).map(([id, p]) => <CircleMarker key={id} center={p.coords} radius={6} pathOptions={{ color: option.places.includes(id) ? option.color : "#68787c", fillColor: "white", fillOpacity: 1, weight: 3 }}>
+          {Object.entries(THURSDAY_PLACES).map(([id, p]) => <NamedMarker key={id} position={p.coords} title={p.name} icon={L.divIcon({ className: "comparison-map-point", html: `<span style="border-color:${option.places.includes(id) ? option.color : "#68787c"}"></span>`, iconSize: [44,44], iconAnchor: [22,22] })}>
             <Tooltip permanent direction={id === "charlevoix" || id === "traverse" ? "left" : "right"} className="trip-map-label">{id === "skybridge" ? "SkyBridge" : p.name}</Tooltip>
-          </CircleMarker>)}
+            <Popup maxWidth={240} autoPanPadding={[24, 24]}><b>{p.name}</b><br /><a href={`https://www.google.com/maps/dir/?api=1&destination=${p.coords.join(",")}`} target="_blank" rel="noreferrer">Directions to this point ↗</a></Popup>
+          </NamedMarker>)}
         </MapContainer>
       </div>
       <p className="trip-options-note">Dashed green: original coastal towns route. Solid line: selected alternative.

@@ -271,6 +271,8 @@ export default function DaylightRibbon({ dayId }) {
               onMouseLeave={() => setHoveredIdx(null)}
               onClick={() => setSelectedIdx((prev) => (prev === i ? null : i))}
               role="button"
+              aria-pressed={isSelected}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedIdx((prev) => prev === i ? null : i); } }}
               tabIndex={0}
             >
               <div className="ribbon-milestone-top">

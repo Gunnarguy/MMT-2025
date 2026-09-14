@@ -8,9 +8,11 @@ import "./styles/views.css";
 import "./styles/looseends.css";
 import "./styles/ride.css";
 import "./styles/visuals.css";
+import "./styles/mobile.css";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import OfflineAccess from "./components/OfflineAccess";
 import BorderView from "./components/BorderView";
 import DayPanel from "./components/DayPanel";
 import DayRail from "./components/DayRail";
@@ -110,6 +112,12 @@ function ThemeToggle() {
 
 export default function App() {
   const [route, go] = useHashRoute();
+  const tabrailRef = useRef(null);
+  useEffect(() => {
+    const rail = tabrailRef.current;
+    const active = rail?.querySelector('[aria-selected="true"]');
+    if (active) rail.scrollTo({ left: active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2 });
+  }, [route.tab]);
   const out = useMemo(() => daysUntil(TRIP.start), []);
   const home = useMemo(() => daysUntil(TRIP.end), []);
   const activeDay = route.dayId ? DAYS.find((d) => d.id === route.dayId) : null;
@@ -150,7 +158,7 @@ export default function App() {
         </header>
 
         <nav className="tabrail" aria-label="Sections">
-          <div className="tabrail-inner" role="tablist">
+          <div className="tabrail-inner" role="tablist" ref={tabrailRef}>
             {TABS.map((t) => (
               <button
                 key={t.id}
@@ -169,9 +177,15 @@ export default function App() {
           </div>
         </nav>
 
+        <label className="mobile-section-picker">Go to
+          <select aria-label="Trip section" value={route.tab} onChange={(e) => go(e.target.value)}>
+            {TABS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+          </select>
+        </label>
         {route.tab === "days" && <DayRail activeId={route.dayId} onGo={go} />}
       </div>
 
+      <OfflineAccess />
       <main className="page">
         {route.tab === "overview" && <OverviewView onGo={go} />}
         {route.tab === "loose" && <LooseEndsView />}
@@ -214,7 +228,7 @@ export default function App() {
           <div>
             <h3>Guide</h3>
             <p>
-              Complete offline field guide, maps, confirmed reservations, and border info for our 2026 Michigan road trip.
+              Save the guide on this device for offline trip details, routes, and map points. Live weather and new map imagery need a connection.
             </p>
           </div>
           <div>

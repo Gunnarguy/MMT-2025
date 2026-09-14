@@ -1,11 +1,12 @@
+import offlinePlugin from "./build/offlinePlugin.mjs";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
-export default defineConfig(({ command }) => ({
-  plugins: [react()],
+export default defineConfig(({ command, isPreview }) => ({
+  plugins: [react(), offlinePlugin()],
   // Root during `vite dev`; the repo path once it's on GitHub Pages.
-  base: command === "serve" ? "/" : "/MMT-2025/",
+  base: command === "serve" && !isPreview ? "/" : "/MMT-2025/",
   server: {
     port: 5174,
   },

@@ -115,3 +115,36 @@ date-specific official checkout before buying.
 `Trip to Michigan (2026 source).docx` in the repo root is Mom's original document
 and is the authority on intent. This app is the authority on hours, prices, and
 whether a thing is open.
+
+## iPhone and offline access
+
+The guide supports portrait and landscape, including the iPhone 16 Pro Max's
+440 × 956 CSS-pixel layout. All sections are available through the phone's
+native section picker. The map toolbar sits outside the canvas, map points and
+zoom/close controls have 44-pixel touch targets, and the expanded map respects
+safe areas and restores page scrolling when closed. Tap a date to isolate a day;
+Show all restores the trip. Find a map point searches every marker in the active
+layers and opens its popup at a closer zoom. The SkyBridge comparison has tappable
+points with directions, and elevation details also have a native select control.
+
+In Safari, use Share → Add to Home Screen (Open as Web App if shown). Open that
+new icon while connected and wait for **Saved for offline**. The status disclosure
+checks the actual cached files and offers a retry and an update/reload action.
+
+`build/offlinePlugin.mjs` generates a content-versioned worker with the complete
+production asset list, including all JS chunks, CSS, images and app icons. The
+first installation succeeds only after all files are saved. All itinerary data,
+route geometry and map point details are bundled locally. The guide is about
+2.7 MB unpacked. `npm run preview` uses the same `/MMT-2025/` base as Pages.
+
+Live weather, external sites, navigation apps and new street/satellite tiles
+require connectivity. The weather store retains dated fallbacks. The worker
+caches only tiles actually viewed, up to 256 runtime assets, without bulk area
+prefetching. Do not describe this as offline street navigation. iOS can evict
+site storage; check the readiness status before losing signal.
+
+Verification: `npm run build` then
+`node --test scripts/trip-weather.test.mjs scripts/offline-guide.test.mjs`.
+The latter verifies complete first-install coverage, requests without network,
+missing-file detection, failed installation, cache isolation, weather bypass,
+and Origin-varying module requests. See `Docs/ai/MOBILE.md` for browser evidence.

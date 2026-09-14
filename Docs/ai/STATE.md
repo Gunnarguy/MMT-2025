@@ -1,5 +1,9 @@
 # Current State
 
+Latest work, 2026-09-14: full mobile navigation/map access and verified offline
+app saving. See [MOBILE.md](MOBILE.md) for scope, limits and browser/test evidence.
+This supersedes the older partial-offline note below.
+
 Latest work, 2026-09-13: Thursday's SkyBridge comparison and automatically updating
 weather for 19 US/Ontario locations. See [ROUTE-OPTIONS.md](ROUTE-OPTIONS.md)
 for scope, research and validation. The deployment record below describes the

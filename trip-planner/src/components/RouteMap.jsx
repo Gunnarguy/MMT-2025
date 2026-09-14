@@ -2,15 +2,14 @@ import L from "leaflet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Circle,
-  CircleMarker,
   MapContainer,
-  Marker,
   Polyline,
   Popup,
   TileLayer,
   useMap,
 } from "react-leaflet";
 
+import { MapAccess, NamedMarker as Marker, PointFinder } from "./MapAccess";
 import { DAYS, HOME } from "../data/trip";
 import geometry from "../data/routeGeometry.json";
 import { FUEL_STOPS } from "../data/fuel";
@@ -137,9 +136,9 @@ function pinIcon({ label, color, variant = "", title = "" }) {
   return L.divIcon({
     className: "map-pointer-wrapper",
     html: html,
-    iconSize: [32, 42],
-    iconAnchor: [16, 42], // Downward needle pointer lands directly on ground coordinate
-    popupAnchor: [0, -42],
+    iconSize: [44, 48],
+    iconAnchor: [22, 48], // Downward needle pointer lands directly on ground coordinate
+    popupAnchor: [0, -48],
   });
 }
 
@@ -269,10 +268,10 @@ function placeScoutPins(items, obstacles, zoomScale = 1, pinPx = 32) {
 
 function shieldIcon(shield) {
   return L.divIcon({
-    className: "",
+    className: "map-shield-wrapper",
     html: `<div class="shield-badge shield--${shield.type}"><span>${shield.route}</span></div>`,
-    iconSize: [40, 22],
-    iconAnchor: [20, 11],
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
     popupAnchor: [0, -12],
   });
 }
@@ -282,7 +281,7 @@ function FitBounds({ bounds, deps }) {
   const map = useMap();
   useEffect(() => {
     if (!bounds?.length) return;
-    map.fitBounds(bounds, { padding: [42, 42], maxZoom: 11 });
+    map.fitBounds(bounds, { padding: [42, 42], maxZoom: 11, animate: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
   return null;
@@ -361,10 +360,10 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   // floor just avoids degenerate values at extreme street zoom.
   const [zoomLevel, setZoomLevel] = useState(6);
   const dispersalScale = Math.min(22, Math.max(0.02, 2 ** (10.4 - zoomLevel)));
-  // Pins render at 32px, or 0.6x that under .pins-compact. One source of
-  // truth so the CSS class and the dispersal geometry can never disagree.
-  const pinsCompact = zoomLevel <= 8.5;
-  const pinPx = pinsCompact ? 32 * 0.6 : 32;
+  // Keep full-size symbols on touch screens. Space their 44px touch targets
+  // apart; desktop overview symbols can still shrink to reduce visual clutter.
+  const pinsCompact = zoomLevel <= 8.5 && !window.matchMedia("(pointer: coarse), (max-width: 700px)").matches;
+  const pinPx = pinsCompact ? 32 * 0.6 : 44;
 
   // Playback Simulator State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -373,10 +372,52 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
   const [colors, setColors] = useState(() => DAYS.map((_, i) => dayColor(i)));
   const wrapRef = useRef(null);
+  const mapRef = useRef(null);
+  const [points, setPoints] = useState([]);
+  const [pointQuery, setPointQuery] = useState("");
+  const [fitVersion, setFitVersion] = useState(0);
+  const expandButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!isExpanded) return;
+    const scrollY = window.scrollY;
+    const expandButton = expandButtonRef.current;
+    const previous = { position: document.body.style.position, top: document.body.style.top, width: document.body.style.width };
+    Object.assign(document.body.style, { position: "fixed", top: `-${scrollY}px`, width: "100%" });
+    return () => {
+      Object.assign(document.body.style, previous);
+      window.scrollTo(0, scrollY);
+      expandButton?.focus({ preventScroll: true });
+    };
+  }, [isExpanded]);
+
+  const selectPoint = useCallback((point) => {
+    const map = mapRef.current;
+    if (!map) return;
+    setIsPlaying(false);
+    setShowElevation(false);
+    setShowSunTracker(false);
+    // Focus first, then open after React has repositioned dispersed markers at
+    // the closer zoom. Read the live layer position again, never a stale copy.
+    map.setView(point.layer.getLatLng(), Math.max(map.getZoom(), 13), { animate: false });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!map.hasLayer(point.layer)) return;
+      map.panTo(point.layer.getLatLng(), { animate: false });
+      point.layer.openPopup();
+    }));
+    wrapRef.current?.querySelector(".map-canvas-frame")?.scrollIntoView({ block: "start", behavior: "instant" });
+  }, []);
 
   // Close expanded map on Escape key
   useEffect(() => {
     const onKey = (e) => {
+      if (e.key === "Tab" && isExpanded) {
+        const controls = [...wrapRef.current.querySelectorAll('button, a[href], input, select, summary, [tabindex="0"]')].filter((el) => el.getClientRects().length && !el.disabled);
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
       if (e.key === "Escape" && isExpanded) {
         setIsExpanded(false);
       }
@@ -587,12 +628,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   }, [lines, markers, beds, fuelPins, visible, showFlight]);
 
   const toggle = useCallback((id) => {
-    setVisible((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next.size ? next : new Set(DAYS.map((d) => d.id));
-    });
+    setVisible(new Set([id]));
   }, []);
 
   const toggleLayer = useCallback((layer) => {
@@ -625,8 +661,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
   return (
     <>
-      <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef}>
-        <div className={`map-canvas-frame${pinsCompact ? " pins-compact" : ""}`}>
+      <div className={`mapwrap${isExpanded ? " is-expanded" : ""}`} ref={wrapRef} role={isExpanded ? "dialog" : undefined} aria-modal={isExpanded || undefined} aria-label="Trip route map">
           {/* Floating HUD & Map Controls Overlay */}
           <div className="map-hud-bar">
         {hudStats && (
@@ -642,9 +677,11 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
 
         <div className="map-top-actions">
+          <button type="button" className="map-action-pill" onClick={() => setFitVersion((n) => n + 1)}>◎ Fit route</button>
           <button
             type="button"
             className={`map-action-pill${showSunTracker ? " is-active" : ""}`}
+            aria-pressed={showSunTracker}
             onClick={() => setShowSunTracker((s) => !s)}
             title="Toggle Solar Position & Golden Hour Simulator"
           >
@@ -653,6 +690,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`map-action-pill${showElevation ? " is-active" : ""}`}
+            aria-pressed={showElevation}
             onClick={() => setShowElevation((e) => !e)}
             title="Toggle Topographic Elevation Profile"
           >
@@ -666,11 +704,13 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           >
             {mapStyle === "streets" ? "🛰️ Satellite" : "🗺️ Streets"}
           </button>
-          {!compact && (
+          {(
             <button
               type="button"
               className="map-action-pill"
               onClick={() => setIsExpanded((e) => !e)}
+              ref={expandButtonRef}
+              aria-expanded={isExpanded}
               title={isExpanded ? "Exit Expanded View (Esc)" : "Expand Map Full View"}
             >
               {isExpanded ? "✕ Minimize" : "⛶ Expand"}
@@ -679,15 +719,17 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         </div>
       </div>
 
+      <div className={`map-canvas-frame${pinsCompact ? " pins-compact" : ""}`}>
       <MapContainer
         center={HOME.coords}
         zoom={6}
         scrollWheelZoom={false}
-        tap={false}
         touchZoom={true}
+        zoomAnimation={false}
         style={height && !isExpanded ? { height } : undefined}
       >
         <ZoomTracker onZoom={setZoomLevel} />
+        <MapAccess onPoints={setPoints} mapRef={mapRef} />
         {mapStyle === "streets" ? (
           <TileLayer
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -704,7 +746,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
 
         <FitBounds
           bounds={bounds}
-          deps={[shownDays.length, focusDayId, showFlight, isExpanded]}
+          deps={[shownDays.map((d) => d.id).join(","), focusDayId, showFlight, fitVersion]}
         />
         <InvalidateMapSize isExpanded={isExpanded} />
         <VehicleTracker currentCoord={currentVehicleCoord} isPlaying={isPlaying} />
@@ -738,7 +780,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={SFO_COORDS}
               icon={pinIcon({ label: "🛫", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>SFO — San Francisco International</b>
                 <br />
                 <span className="muted">Flight AA 2358 Departure (1:29 PM PDT)</span>
@@ -750,7 +792,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={[40.5962, -109.1675]}
               icon={pinIcon({ label: "✈", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>Flight AA 2358 in Flight</b>
                 <br />
                 <span className="muted">SFO → ORD · 4h 52m flight time</span>
@@ -760,7 +802,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={ORD_COORDS}
               icon={pinIcon({ label: "🛬", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>ORD — Chicago O&rsquo;Hare International</b>
                 <br />
                 <span className="muted">Flight AA 2358 Arrival (8:21 PM CDT)</span>
@@ -772,7 +814,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={ORD_MMF_COORDS}
               icon={pinIcon({ label: "🚗", color: "#2563eb", variant: "pin--car" })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>Budget Rental Pickup</b>
                 <br />
                 <span className="muted">9:00 PM CDT · 10255 W Zemke Blvd</span>
@@ -799,7 +841,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={ORD_COORDS}
               icon={pinIcon({ label: "✈", color: "#7c3aed", variant: "pin--flight" })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>Flight AA 1253 Departure</b>
                 <br />
                 <span className="muted">ORD 3:20 PM CDT → SFO 6:09 PM PDT</span>
@@ -829,7 +871,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           position={HOME.coords}
           icon={pinIcon({ label: "⌂", color: "#16242c", variant: "pin--home" })}
         >
-          <Popup>
+          <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
             <b>Home</b>
             <br />
             {HOME.address}
@@ -855,7 +897,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={b.displayCoords || b.coords}
               icon={pinIcon({ label: "🛏", color: b.color, variant: "pin--bed", title: b.name })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{b.name}</b>
                 <br />
                 {b.city}
@@ -883,7 +925,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={f.displayCoords || f.coords}
               icon={pinIcon({ label: "⛽", color: "#d97706", variant: "pin--fuel", title: f.stopName })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{f.stopName}</b>
                 <br />
                 <span className="muted">{f.brand}</span>
@@ -914,7 +956,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         {layerFilter.shields &&
           HIGHWAY_SHIELDS.map((s) => (
             <Marker key={s.id} position={s.coords} icon={shieldIcon(s)}>
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{s.name}</b>
                 <br />
                 <span className="muted">{s.desc}</span>
@@ -930,7 +972,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={b.coords}
               icon={pinIcon({ label: "🇨🇦", color: "#dc2626", variant: "pin--border-portal" })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{b.name}</b>
                 <br />
                 <span style={{ color: "#dc2626", fontWeight: 700 }}>{b.direction}</span>
@@ -980,7 +1022,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                   position={t.displayCoords || t.coords}
                   icon={pinIcon({ label: "⌂", color, variant: "pin--scout", title: t.name })}
                 >
-                  <Popup maxWidth={320}>
+                  <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                     <b>{t.name}</b> <span className="muted">{t.county}</span>
                     <br />
                     <span style={{ color: tier.color, fontWeight: 700 }}>{tier.label}</span>
@@ -1035,7 +1077,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={site.coords}
               icon={pinIcon({ label: "S", color: "#f2a900", variant: "pin--stryker", title: site.name })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{site.name}</b>
                 <br />
                 <span className="muted">{site.what}</span>
@@ -1053,7 +1095,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               position={c.coords}
               icon={pinIcon({ label: c.icon, color: "#0284c7", variant: "pin--climate" })}
             >
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{c.title}</b>
                 <br />
                 <LocationWeather locationId={c.locationId} />
@@ -1075,7 +1117,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               variant: "pin--vehicle-moving",
             })}
           >
-            <Popup>
+            <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
               <b>{isVehicleFlying ? "AA 2358 in Flight" : "Mazda CX-50 Cruising"}</b>
               <br />
               Trip Progress: {Math.round(playProgress)}%
@@ -1097,7 +1139,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
               />
             )}
             <Marker position={m.displayCoords || m.coords} icon={pinIcon(m)}>
-              <Popup>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>{m.title}</b>
                 <br />
                 {m.where && (
@@ -1139,22 +1181,13 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
                 dashArray: "3 7",
               }}
             />
-            <CircleMarker
-              center={[45.8492, -84.6189]}
-              radius={7}
-              pathOptions={{
-                color: "#fff",
-                weight: 2,
-                fillColor: colors[4],
-                fillOpacity: 1,
-              }}
-            >
-              <Popup>
+            <Marker position={[45.8492, -84.6189]} icon={pinIcon({ label: "⛴", color: colors[4], title: "Mackinac Island ferry landing" })}>
+              <Popup maxWidth={280} maxHeight={260} autoPanPadding={[24, 24]}>
                 <b>Mackinac Island</b>
                 <br />
                 <span className="muted">Friday 9/18 · Shepler&rsquo;s ferry</span>
               </Popup>
-            </CircleMarker>
+            </Marker>
           </>
         )}
 
@@ -1173,7 +1206,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       </MapContainer>
 
       {/* Floating Interactive Drawer for Elevation & Sun Tracker Over Map */}
-      {!compact && (showElevation || showSunTracker) && (
+      {(showElevation || showSunTracker) && (
         <div className="map-floating-drawer">
           {showElevation && (
             <ElevationRibbon
@@ -1196,7 +1229,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       )}
       </div>
 
-      {/* Dedicated Interactive Route Playback Deck */}
+      <details className="map-playback"><summary>Route playback</summary>
       <div className="playback-deck">
         <div className="playback-deck-controls">
           <button
@@ -1249,17 +1282,18 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             {Math.round(playProgress)}% · {Math.round((playProgress / 100) * 1430)} mi
           </span>
         </div>
-      </div>
+      </div></details>
 
       {/* Layer Filter Pills */}
       {!compact && (
-        <div className="map-layer-pills">
+        <details className="map-layer-control"><summary>Map layers</summary><div className="map-layer-pills">
           <span style={{ color: "var(--fg-muted)", fontWeight: 600, marginRight: "4px" }}>
             Layers:
           </span>
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.stops ? " is-active" : ""}`}
+            aria-pressed={layerFilter.stops}
             onClick={() => toggleLayer("stops")}
           >
             🏷️ Stops
@@ -1267,6 +1301,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.gas ? " is-active" : ""}`}
+            aria-pressed={layerFilter.gas}
             onClick={() => toggleLayer("gas")}
           >
             ⛽ Gas Stations
@@ -1274,6 +1309,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.hotels ? " is-active" : ""}`}
+            aria-pressed={layerFilter.hotels}
             onClick={() => toggleLayer("hotels")}
           >
             🛏️ Hotels
@@ -1281,6 +1317,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.shields ? " is-active" : ""}`}
+            aria-pressed={layerFilter.shields}
             onClick={() => toggleLayer("shields")}
           >
             🛣️ Highway Shields
@@ -1288,6 +1325,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.borders ? " is-active" : ""}`}
+            aria-pressed={layerFilter.borders}
             onClick={() => toggleLayer("borders")}
           >
             🇨🇦 Border Portals
@@ -1295,6 +1333,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.climate ? " is-active" : ""}`}
+            aria-pressed={layerFilter.climate}
             onClick={() => toggleLayer("climate")}
           >
             💨 Weather
@@ -1302,6 +1341,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.scout ? " is-active" : ""}`}
+            aria-pressed={layerFilter.scout}
             onClick={() => toggleLayer("scout")}
           >
             ⌂ Town Scout
@@ -1325,11 +1365,12 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           <button
             type="button"
             className={`layer-filter-btn${layerFilter.flight ? " is-active" : ""}`}
+            aria-pressed={layerFilter.flight}
             onClick={() => toggleLayer("flight")}
           >
             ✈️ SFO Flight Arc
           </button>
-        </div>
+        </div></details>
       )}
 
       {/* Day Selector Legend */}
@@ -1388,6 +1429,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           </button>
         </div>
       )}
+      <PointFinder points={points} query={pointQuery} onQuery={setPointQuery} onSelect={selectPoint} />
+      <p className="map-access-note">Drag to pan · pinch or use + / − to zoom. Routes and points work offline once the guide is saved; street and satellite detail needs a connection or previously viewed tiles.</p>
     </div>
 
     {/* When a day is isolated on the map, show that day's featured infographics below the map */}

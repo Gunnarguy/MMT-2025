@@ -8,12 +8,17 @@ import App from "./App.jsx";
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("./sw.js")
+      .register(`${import.meta.env.BASE_URL}sw.js`, { updateViaCache: "none" })
       .then((reg) => {
-        console.log("Offline Service Worker active:", reg.scope);
+        const checkForUpdate = () => {
+          if (navigator.onLine && document.visibilityState === "visible") reg.update().catch(() => {});
+        };
+        window.addEventListener("online", checkForUpdate);
+        document.addEventListener("visibilitychange", checkForUpdate);
       })
       .catch((err) => {
-        console.log("Service Worker registration skipped:", err);
+        console.warn("Offline saving unavailable:", err.name);
+        window.dispatchEvent(new Event("guide-offline-error"));
       });
   });
 }
