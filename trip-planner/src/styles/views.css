@@ -1139,3 +1139,5 @@
 .daytools { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--line); }
 .daytools > h3 { font-size: var(--t-xl); margin-bottom: var(--s-1); }
 .daytools > .section-lede { max-width: var(--measure); color: var(--ink-2); font-size: var(--t-sm); margin-bottom: var(--s-3); }
+.tv-tips { margin: 0.25rem 0 0.4rem 1.1rem; padding: 0; font-size: var(--t-sm); color: var(--ink-3); line-height: 1.5; display: grid; gap: 0.2rem; }
+.tv-tips li::marker { color: var(--day, var(--accent)); }

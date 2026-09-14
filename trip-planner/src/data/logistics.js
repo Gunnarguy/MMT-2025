@@ -251,6 +251,55 @@ export const RUN_HOME = [
   { at: "3:20 PM CT", what: "AA 1253 pushes back." },
 ];
 
+/**
+ * The aircraft actually flying AA 2358 today, read off ADS-B (adsb.lol) at
+ * 12:52 PM PDT on 2026-09-14 while it sat at the SFO gate. The return
+ * aircraft is not assigned until the day; FlightAware's tail link fills it in.
+ */
+export const AIRCRAFT_SEEN = {
+  out: {
+    tail: "N164NN",
+    hex: "a101c3",
+    type: "Airbus A321 (2016)",
+    seen: "2026-09-14 12:52 PM PDT, on the ground at SFO gate area",
+    source: "https://api.adsb.lol/v2/callsign/AAL2358",
+    note: "The booking said 737; the metal is an A321-200, 3-3 layout, so 18D and 19D are still the starboard aisle.",
+  },
+  back: null,
+};
+
+/**
+ * Structured runways for the flight deck: every milestone carries a date, a
+ * local time and its zone, so the deck can place "now" on the line and count
+ * down to the next one. `key` marks the milestones the phase logic keys on.
+ */
+export const FLIGHT_RUNWAYS = {
+  out: [
+    { key: "board", date: "2026-09-14", time: "12:45", tz: "America/Los_Angeles", zone: "PDT", what: "Boarding, SFO Terminal 1 (Harvey Milk)", detail: "B gates. Groups 1–4; claim the bins above rows 18 and 19.", type: "warn" },
+    { key: "door", date: "2026-09-14", time: "13:14", tz: "America/Los_Angeles", zone: "PDT", what: "Door closes", detail: "Strict T-15 cutoff. Passes scanned, 18D and 19D settled." },
+    { key: "dep", date: "2026-09-14", time: "13:29", tz: "America/Los_Angeles", zone: "PDT", what: "AA 2358 pushes back, wheels up", detail: "1,846 miles, about 4h 52m. Clocks jump two hours into Central.", type: "flight" },
+    { key: "arr", date: "2026-09-14", time: "20:21", tz: "America/Chicago", zone: "CDT", what: "Wheels down, Chicago O'Hare Terminal 3", detail: "Concourse H/K. Phones on, bags on the lower level, carousels 1–6.", type: "flight" },
+    { date: "2026-09-14", time: "20:35", tz: "America/Chicago", zone: "CDT", what: "Deplane, bridge to the ATS station", detail: "Skip baggage claim if it is carry-on only; follow the ATS signs from T3 arrivals." },
+    { date: "2026-09-14", time: "20:45", tz: "America/Chicago", zone: "CDT", what: "ATS train to the Multi-Modal Facility", detail: "Automated, free, every 3–5 minutes; 9–11 minutes to the MMF." },
+    { key: "counter", date: "2026-09-14", time: "21:00", tz: "America/Chicago", zone: "CDT", what: "Budget counter, MMF level 1", detail: "Say it verbatim: 'Please issue the free Canadian Non-Resident Insurance Card for Ontario driving.'", type: "warn" },
+    { date: "2026-09-14", time: "21:25", tz: "America/Chicago", zone: "CDT", what: "Garage inspection, then roll", detail: "Photograph every panel, the wheels, the odometer and the fuel gauge. Zemke Blvd to I-90 West, IL-53 North." },
+    { date: "2026-09-14", time: "22:00", tz: "America/Chicago", zone: "CDT", what: "Palatine, 2020 Crestwood Lane", detail: "Drop bags and sleep: Tuesday leaves at 6:45 AM for Grand Rapids." },
+  ],
+  back: [
+    { date: "2026-09-21", time: "07:30", tz: "America/Detroit", zone: "EDT", what: "Leave Belleville on I-94 West", detail: "Earlier is better than later; this is the hardest deadline of the trip." },
+    { date: "2026-09-21", time: "08:00", tz: "America/Detroit", zone: "EDT", what: "Ann Arbor coffee, only if you are on time", detail: "25 minutes off the line and the one stop that survives the day." },
+    { date: "2026-09-21", time: "11:00", tz: "America/Chicago", zone: "CDT", what: "Illinois line: clocks go back an hour", detail: "Noon Eastern becomes 11:00 Central." },
+    { date: "2026-09-21", time: "12:00", tz: "America/Chicago", zone: "CDT", what: "Palatine: drop Mom and the luggage", detail: "Allow fifteen minutes, then IL-53 south to O'Hare." },
+    { key: "counter", date: "2026-09-21", time: "12:45", tz: "America/Chicago", zone: "CDT", what: "Return the car, O'Hare MMF", detail: "10255 W Zemke Blvd, due by 1:00 PM. Top off at Shell, 600 E Touhy Ave first.", type: "warn" },
+    { date: "2026-09-21", time: "13:15", tz: "America/Chicago", zone: "CDT", what: "ATS train, MMF to Terminal 3", detail: "Every 3–5 minutes, 10–12 minutes to T3." },
+    { date: "2026-09-21", time: "13:45", tz: "America/Chicago", zone: "CDT", what: "Bags checked, through TSA", detail: "Terminal 3. Then walk to the H/K gate." },
+    { key: "board", date: "2026-09-21", time: "14:45", tz: "America/Chicago", zone: "CDT", what: "Boarding, AA 1253", detail: "Seats 22D and 22E, starboard side behind the overwing exit.", type: "warn" },
+    { key: "door", date: "2026-09-21", time: "15:05", tz: "America/Chicago", zone: "CDT", what: "Door closes", detail: "Strict T-15 cutoff." },
+    { key: "dep", date: "2026-09-21", time: "15:20", tz: "America/Chicago", zone: "CDT", what: "AA 1253 pushes back, wheels up", detail: "1,846 miles, about 4h 49m. Clocks go back two hours.", type: "flight" },
+    { key: "arr", date: "2026-09-21", time: "18:09", tz: "America/Los_Angeles", zone: "PDT", what: "Wheels down, SFO Terminal 1", detail: "Bags on the lower level, carousels 1–4. Home.", type: "flight" },
+  ],
+};
+
 export const SWEATY_FLIGHT_TIPS = [
   {
     title: "Dual-Aisle Tandem Seating (18D & 19D)",

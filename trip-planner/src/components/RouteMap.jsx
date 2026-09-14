@@ -1285,7 +1285,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
         )}
         {visible.has("d7") && (
           <>
-            <FlightRunway />
+            <FlightRunway initialMode="return" />
             <FuelPlanner dayId="d7" />
           </>
         )}

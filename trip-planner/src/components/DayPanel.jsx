@@ -200,7 +200,8 @@ export default function DayPanel({ day }) {
           <SundayComparator />
         </>
       )}
-      {day.id === "d7" && <FlightRunway />}
+      {day.id === "d0" && <FlightRunway initialMode="inbound" />}
+      {day.id === "d7" && <FlightRunway initialMode="return" />}
 
       {["d2", "d5", "d7"].includes(day.id) && <FuelPlanner dayId={day.id} />}
 

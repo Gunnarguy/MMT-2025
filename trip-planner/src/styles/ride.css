@@ -429,3 +429,40 @@
     gap: 0.15rem;
   }
 }
+
+/* Flight deck on this page, with the edit drawer under it ---------------- */
+
+.ride-flight {
+  margin-bottom: var(--s-5);
+}
+
+.ride-flight .fd {
+  margin-block: 0 var(--s-3);
+}
+
+.ride-edit {
+  border: 1px dashed var(--line-2);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.ride-edit > summary {
+  padding: var(--s-3) var(--s-4);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.ride-edit-body {
+  padding: 0 var(--s-4) var(--s-4);
+}
+
+.ride-playbook-title {
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}

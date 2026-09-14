@@ -9,6 +9,7 @@ import "./styles/looseends.css";
 import "./styles/ride.css";
 import "./styles/visuals.css";
 import "./styles/mobile.css";
+import "./styles/flight.css";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
