@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { SCOUT_DIMENSIONS, SCOUT_TIERS } from "../data/relocation";
 import { useLocalState } from "../hooks/useLocalState";
 import { CAMPBELL, daylightFor, fmtHours } from "../lib/daylight";
-import { money, takeHome } from "../lib/money";
+import { money, MORTGAGE_RATE_ASOF, MORTGAGE_RATE_LABEL, takeHome } from "../lib/money";
 import { SCENARIOS } from "./YourMoney";
 import { BUDGET_LINES, DEFAULT_BUDGET } from "./YourMonth";
 
@@ -85,6 +85,9 @@ export function rowFor(t, { r, est, match, isHome, budgetTotal }) {
     countyPrice: t.money?.countyPrice ?? null,
     countyOwn: r?.countyMonthly ?? null,
     countyShare: r?.countyShare ?? null,
+    rent2br: t.money?.rent2br ?? null,
+    rentShare: r?.rentShare ?? null,
+    rentNote: t.money?.rentNote || null,
     net: r?.net ?? null,
     effTax: t.money?.effTax ?? null,
     comfort: comfortK ? comfortK * 1000 : null,
@@ -161,8 +164,10 @@ export const GROUPS = [
 export const COLUMNS = [
   // Money
   { key: "price", group: "money", label: "Median home", unit: "sold / ACS", good: "low", get: (r) => r.price, fmt: usdK, title: "Median sold price, or ACS home value where sales are thin" },
-  { key: "own", group: "money", label: "Own it", unit: "per month", good: "low", get: (r) => r.own, fmt: usd, sub: (r) => (r.isHome && r.r?.rentActual ? `you rent for ${usd(r.r.rentActual)}` : r.own == null ? "Canada · not modeled" : null), title: "30-yr at 6.66%, 20% down, plus property tax and insurance", win: "🏠 Cheapest to own" },
+  { key: "own", group: "money", label: "Own it", unit: "per month", good: "low", get: (r) => r.own, fmt: usd, sub: (r) => (r.isHome && r.r?.rentActual ? `you rent for ${usd(r.r.rentActual)}` : r.own == null ? "Canada · not modeled" : null), title: `30-yr at ${MORTGAGE_RATE_LABEL}, 20% down, plus property tax and insurance`, win: "🏠 Cheapest to own" },
   { key: "share", group: "money", label: "Of take-home", unit: "in town", good: "low", get: (r) => r.share, fmt: pct, verdict: "verdict", title: "Owning the town median as a share of your monthly take-home. ≤30% comfortable, ≤40% a stretch" },
+  { key: "rent", group: "money", label: "Rent a 2BR", unit: "HUD FMR FY2027", good: "low", get: (r) => r.rent2br, fmt: usd, sub: (r) => (r.rentNote && !/HUD/.test(r.rentNote) ? r.rentNote : null), title: "HUD Fair Market Rent for a two-bedroom, fiscal 2027 (effective Oct 1, 2026): the 40th-percentile rent for the county or metro, one scale for every US town. Ontario rows are Zumper asking rents converted at the Bank of Canada rate. Asking rents from listings sit in each town's housing rows", win: "🔑 Cheapest 2BR" },
+  { key: "rentShare", group: "money", label: "Of take-home", unit: "renting", good: "low", get: (r) => r.rentShare, fmt: pct, verdict: "rentVerdict", title: "Renting a two-bedroom as a share of monthly take-home. ≤30% comfortable, ≤40% a stretch" },
   { key: "countyPrice", group: "money", label: "County median", unit: "ACS value", good: "low", get: (r) => r.countyPrice, fmt: usdK, title: "The county's median home value — the 15-minutes-out lever" },
   { key: "countyShare", group: "money", label: "Of take-home", unit: "in county", good: "low", get: (r) => r.countyShare, fmt: pct, verdict: "countyVerdict", title: "Owning the county median as a share of take-home" },
   { key: "net", group: "money", label: "Take-home", unit: "per year", good: "high", get: (r) => r.net, fmt: usd, title: "After federal, FICA, state and any city income tax" },
@@ -623,7 +628,7 @@ export default function ScoutMatrix({
         </table>
       </div>
       <p className="mx-foot">
-        Housing: median sold or ACS value, county ACS value; owning = 30-yr at 6.66% with 20% down plus tax and insurance.
+        Housing: median sold or ACS value, county ACS value; owning = 30-yr at {MORTGAGE_RATE_LABEL} ({MORTGAGE_RATE_ASOF}) with 20% down plus tax and insurance.
         Bills: utility rate pages, Bankrate, AAA, MIT's Feb-2026 food lines, municipal schedules — matched to the same
         sources for Campbell. Climate: NOAA station data 2010–2024. Crime, fiber, distances and airports from each
         town's workup, parsed from the researched text; a dash means the figure did not survive research. Sorted by{" "}

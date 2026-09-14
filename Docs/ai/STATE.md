@@ -1,122 +1,98 @@
 # Current State
 
-Latest work, 2026-09-14: full mobile navigation/map access and verified offline
-app saving. See [MOBILE.md](MOBILE.md) for scope, limits and browser/test evidence.
-This supersedes the older partial-offline note below.
-
-Latest work, 2026-09-13: Thursday's SkyBridge comparison and automatically updating
-weather for 19 US/Ontario locations. See [ROUTE-OPTIONS.md](ROUTE-OPTIONS.md)
-for scope, research and validation. The deployment record below describes the
-prior release; use GitHub Actions and the served asset hash for publication status.
-
-Updated: 2026-09-09
+Updated: 2026-09-14 (trip day 0, arrival night)
 Branch/worktree: main (no worktrees)
-Last verified commit: 45b116c (docs-only on top of 9ededf3, the commit that was built and deployed)
+Last verified commit: 80fe470 (built, deployed; served hash `assets/index-4e5R1wwj.js`). Six files are
+uncommitted on top of it (see Working Set); they lint and build but are not yet pushed.
+
+Older notes: [MOBILE.md](MOBILE.md) (offline saving, map access) and [ROUTE-OPTIONS.md](ROUTE-OPTIONS.md)
+(SkyBridge comparison, live weather).
 
 ## Objective
 
-Make the Michigan '26 field guide usable *on the road*, not just for planning. The trip runs
-2026-09-14 to 2026-09-21, so the app's job changed from "should we?" to "what now?".
+Refresh the Town Scout housing and cost-of-living figures in `trip-planner/src/data/relocation.js`
+to the most recent, best-sourced data (user request 2026-09-14: "realistic numbers rooted in
+absolute realism and real estate"), then push. Objective 1 of the session, the design unification
+of the field guide, shipped in 80fe470 and is live.
 
 ## Status
 
-Complete and verified live. The app had ten tabs, all of them planning surfaces, and no view that
-answered what to do today. It now has a `Today` tab, which is also the default landing route.
+Research is in flight, nothing from it has landed in the data file. Four background research agents
+(batches A-D, four places each) write `scout-research-{A,B,C,D}.json` to the session scratchpad;
+none had finished when this was written. The code that will display the new fields is edited and
+uncommitted. A verification brief and a tested patch script are ready in the scratchpad.
 
 ## Completed
 
-- `trip-planner/src/components/TodayView.jsx` (new). Reads the local calendar date and picks the
-  matching day out of `DAYS` itself. Three modes:
-  - **Before 2026-09-14**: countdown plus a punch list of everything still waiting on a human,
-    split into "Do before you fly" (9) and "Do on the day" (3).
-  - **During the trip**: one screen per day. Drive legs with durations, stops in order, fuel stops,
-    tonight's bed with address / phone / confirmation number, and tomorrow's first drive.
-  - **After 2026-09-21**: a short wrap.
-- `trip-planner/src/App.jsx`: `today` added as the first tab; `#/today/<dayId>` forces a specific
-  day for preview; bare `#/` resolves to `today` while `daysUntil(TRIP.end) >= 0`, else `overview`.
-- `trip-planner/src/components/DayPanel.jsx`: `timeline()` changed from module-private to exported
-  so TodayView interleaves legs and stops by the identical rule. No behaviour change to DayPanel.
-- `trip-planner/src/styles/views.css`: `.tv-*` block appended at the end.
+- 80fe470 (live): token aliases in `tokens.css`, hexes replaced by tokens, tabs reordered as pills,
+  `TripPill`/`HeroLive` leaf clock components, `WeatherStrip` compact forecast, day-page reorder,
+  quiet offline status line, 44px targets. Docs/ai/STATE.md history in git if needed.
+- Uncommitted prep (all lint-clean, `npm run build` -> `✓ built in 1.30s`):
+  - `src/lib/money.js`: `MORTGAGE_RATE` 0.0666 -> 0.0676 (Freddie Mac PMMS 30-yr, week of
+    2026-09-10, fetched from freddiemac.com/pmms this session), plus `MORTGAGE_RATE_LABEL` and
+    `MORTGAGE_RATE_ASOF`; the rate text in `YourMoney.jsx`, `ScoutMatrix.jsx`,
+    `scripts/matrix-artifact.jsx` and the `relocation.js` header comment now say 6.76%.
+  - `ScoutView.jsx`: `["housing", "🏠 Buying here, realistically"]` added first in
+    `WORKUP_SECTIONS`; footer prints `SCOUT_META.refreshed` when present.
+  - `ScoutMatrix.jsx`: money columns `rent` (`t.money.rent2br`, sub `t.money.rentNote`) and
+    `rentShare` (verdict key `rentVerdict`); `rowFor` exposes `rent2br`, `rentShare`, `rentNote`.
+  - `YourMoney.jsx` `moneyFor`: returns `rentNote`, `rentShare`, `rentVerdict`.
 
 ## Active Constraints
 
-- **The punch-list split is driven by a string format, not a field.** `punchList()` in
-  TodayView.jsx classifies a `LOOSE_ENDS` entry as "do on the day" only when `e.kind === "action"`
-  **and** its `when` string starts with a weekday abbreviation (`/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/`,
-  the `DATED` constant). Everything else, and every `kind: "book"`, is "do before you fly". If
-  someone rewrites a `when` value in `src/data/looseEnds.js` to not lead with a weekday, that item
-  silently migrates to the wrong list. Adding an explicit `doOnTheDay: true` field to the data and
-  deleting `DATED` would remove the coupling.
-- **Why the split exists at all** (2026-09-09): the first version sorted one flat list by the day
-  each item is needed, which put the Saturday Frankenmuth dinner reservation ninth. A table booked
-  the day before it is eaten is not a table. Bookings are always due now. This note should move to
-  a decisions log once the repo has one; it has no `Docs/ai/DECISIONS.md` today.
-- Repo rules in `CLAUDE.md` still apply, in particular: comparisons are one sortable matrix and
-  never cards, and no figure lands in `src/data/relocation.js` without a source and a date.
+- `CLAUDE.md`: no figure in `relocation.js` without a source and a date; comparisons stay one
+  matrix with Campbell pinned. The research brief enforces: every figure has a period and a fetched
+  URL or is "NOT FOUND"; geography named; sold vs list vs ACS never blended.
+- `comfort` strings (e.g. "$106k in town") come from a fuller basket the repo does not reproduce;
+  `ScoutMatrix` parses them with `/\$(\d+)k/`. Do not recompute from `costs.basketTotal` (it gives
+  ~$94k for Grand Rapids, not $106k). If a median moves more than 5%, adjust marginally:
+  Δcomfort ≈ 12 × ΔownMonthly / 0.65 / 0.70, rounded to $1k, and say so in the housing rows.
+- Leaf clock rule from 80fe470 still holds: only `TripPill`, `HeroLive`, `TodayView` and the
+  weather components call `useTripWeather()`.
 
 ## Working Set
 
 | File | Why it matters |
 |---|---|
-| `trip-planner/src/components/TodayView.jsx` | The whole feature; `punchList()` is exported for reuse |
-| `trip-planner/src/App.jsx` | Tab list, hash routing, and the date-dependent default route |
-| `trip-planner/src/components/DayPanel.jsx` | Exports `timeline(day)`, shared with TodayView |
-| `trip-planner/src/data/lodging.js` | **Five records still have `conf: null`.** See Blockers |
-| `trip-planner/src/data/looseEnds.js` | Feeds the punch list; see the `when`-format coupling above |
-| `trip-planner/src/styles/views.css` | `.tv-*` rules live at the end of the file |
+| `trip-planner/src/data/relocation.js` | Target of the refresh; only the header comment (6.76%) changed so far |
+| `<scratchpad>/scout-brief.md`, `scout-priors.json` | The research contract and the 2026-08-28 figures per town |
+| `<scratchpad>/scout-verify-brief.md` | The adversarial verification contract (severity vocabulary, fills) |
+| `<scratchpad>/scout-patch.py` | Patches `relocation.js` from a curated `scout-final.json`; dry-run passed twice on a copy (idempotent, node-importable) |
+| `trip-planner/src/components/ScoutView.jsx`, `ScoutMatrix.jsx`, `YourMoney.jsx` | Display the new `workup.housing` rows and `money.rent2br` |
+| `trip-planner/src/lib/money.js` | Mortgage rate constant and labels |
+
+`<scratchpad>` = `/private/tmp/claude-501/-Users-gunnarhostetler-Documents-GitHub-MMT-2025/a0523a14-7822-488e-aacb-6ab39ee85b4b/scratchpad`
+(session-scoped; if it is gone, the brief's rules above are the contract and research must be rerun).
 
 ## Verification
 
-All commands run from `trip-planner/` unless noted. Every line below was observed, not assumed.
-
-- `npx --no-install eslint src` -> clean, no output.
-- `npm run build` -> `✓ built in 960ms`.
-- `git push origin main` then
-  `gh run watch "$(gh run list --limit 1 --json databaseId --jq '.[0].databaseId')" --exit-status`
-  -> `success 9ededf3`.
-- Asset hash changed, which is this repo's definition of live:
-  before `assets/index-DnJj2ZKi.js`, after `assets/index-DyEj_TAD.js`.
-- `curl -s https://gunnarguy.github.io/MMT-2025/assets/index-DyEj_TAD.js | grep -o ...`
-  -> `Do before you fly`, `Do on the day`, `No confirmation number`. The feature is in the
-  served bundle, not only in the local build.
-- Browser DOM checks against the dev server on port 5174 (`.claude/launch.json` target
-  `michigan-26`), not screenshots, because the Browser pane renders 0x0 while hidden:
-  - `#/today` -> h1 `5 days until wheels up`; two sections, `Do before you fly 9` and
-    `Do on the day 3`; the three counter/clock tasks are the only ones in the second list.
-  - `#/today/d5` -> `298 miles`, `5h 30m driving`, `7:45 PM sunset`, 9 rail items (3 legs +
-    6 stops), 2 fuel stops, tonight = Four Points by Sheraton Sarnia showing
-    `No confirmation number`, tomorrow = `You have to pick one`.
-  - 375px viewport -> `document.documentElement.scrollWidth > innerWidth` is false, so no
-    horizontal overflow on a phone.
-
-Not verified: the during-trip mode has never run against a real system clock, only via the
-`#/today/<dayId>` override. The date branch itself is one `DAYS.find` on `todayIso()`, so the risk
-is low, but it is untested until 2026-09-14.
+From `trip-planner/`, every line observed this session:
+- `npx --no-install eslint src` -> clean (after each edit, last run after the money.js change).
+- `npm run build` -> `✓ built in 1.30s` (uncommitted tree).
+- `node --test scripts/trip-weather.test.mjs scripts/offline-guide.test.mjs
+  scripts/map-label-layout.test.mjs scripts/map-point-details.test.mjs` -> `# pass 18 # fail 0`
+  (run against the 80fe470 tree; not rerun since the Scout code edits).
+- 80fe470 deploy: `gh run watch 34867068042 --exit-status` -> success; served hash changed from
+  `assets/index-B2imaOJM.js` to `assets/index-4e5R1wwj.js`.
+- Patch script dry run: two consecutive runs on a scratch copy produced one `housing` section per
+  patched town and the copy imported under node with the merged values.
 
 ## Blockers / Unknowns
 
-- **Five hotel confirmation numbers are still `conf: null`** in `src/data/lodging.js`: `ludington`,
-  `traverse-city`, `mackinaw-city`, `sarnia`, `belleville`. This is the one open data gap and it
-  needs the user, who has to read them off the reservation emails. CBSA asks where you are staying
-  at the Blue Water Bridge on 2026-09-19. TodayView, StaysView and MorningDispatch all already
-  render a loud fallback when the field is null, so nothing is broken, it is just unanswered.
-- **Frankenmuth Oktoberfest 2026 dates are unverified.** `frankenmuthfestivals.com` was fetched
-  2026-09-09 and publishes no 2026 dates. The claim in `src/data/trip.js` that Sat 2026-09-19 is
-  peak Oktoberfest weekend comes from the August research round and was not reconfirmed. Verify by
-  phone: Bavarian Inn, 989-652-9941.
-- Offline behaviour is partial by design. `public/sw.js` precaches only `./`, `index.html` and
-  `manifest.json`, then stale-while-revalidates every other GET, so the app and its data cache
-  after one full load but Leaflet tiles cache only for areas actually panned over.
+- Research results are not in yet. Check `ls <scratchpad>/scout-research-*.json`. Partial batches
+  are usable on their own; a missing batch means those towns keep the 2026-08-28 figures and the
+  footer must not claim a full refresh for them.
+- Five hotel confirmation numbers are still `conf: null` in `src/data/lodging.js` (needs the user).
 
 ## Exact Next Action
 
-Ask the user for the five confirmation numbers, then set the `conf` field on each of the five
-records in `trip-planner/src/data/lodging.js` (currently `conf: null` on ids `ludington`,
-`traverse-city`, `mackinaw-city`, `sarnia`, `belleville`). It is a data-only edit: no component
-changes are needed, because `TodayView`'s `Tonight` section, `StaysView` and
-`visuals/MorningDispatch` all read `LODGING[].conf` and already branch on null. Then run
-`cd trip-planner && npx --no-install eslint src && npm run build`, push, and confirm the served
-asset hash changed away from `assets/index-DyEj_TAD.js`.
-
-If the user does not have the numbers to hand, there is no other active objective. Do not invent
-one; the Today tab objective is finished and verified.
+When `scout-research-{A,B,C,D}.json` exist: launch two verification agents with
+`scout-verify-brief.md` (V1 on A+B -> `scout-verify-1.json`, V2 on C+D -> `scout-verify-2.json`).
+Then curate `scout-final.json` per town: accept a research value only when it has a period and a
+URL and verification did not mark it fabricated/mislabelled/implausible; write `money.medianPrice`,
+`money.priceNote`, `money.countyPrice`, `money.rent2br`, `money.rentNote`, the `median` string,
+`costs.*` where a newer dated figure exists, and `workup.housing` rows each ending "· <period> ·
+<source domain>", plus `{"id":"META","refreshed":"2026-09-14","refreshMethod":"..."}`. Run
+`python3 <scratchpad>/scout-patch.py <scratchpad>/scout-final.json`, then from `trip-planner/`:
+`npx --no-install eslint src && npm run build && node --test scripts/*.test.mjs`, commit, push,
+`gh run watch ... --exit-status`, and confirm the served hash moved off `assets/index-4e5R1wwj.js`.

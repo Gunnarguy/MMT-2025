@@ -49,7 +49,9 @@ export function takeHome(inc1, inc2, state, cityRate = 0) {
   return { gross, federal, fica, state: stateTax, net };
 }
 
-export const MORTGAGE_RATE = 0.0666; // Freddie Mac PMMS, late Aug 2026
+export const MORTGAGE_RATE = 0.0676; // Freddie Mac PMMS 30-yr fixed, week of 2026-09-10 (prior week 6.71%)
+export const MORTGAGE_RATE_LABEL = `${(MORTGAGE_RATE * 100).toFixed(2)}%`;
+export const MORTGAGE_RATE_ASOF = "Freddie Mac PMMS, Sep 10, 2026";
 export function mortgagePI(price, rate = MORTGAGE_RATE, down = 0.2, years = 30) {
   const L = price * (1 - down);
   const r = rate / 12;

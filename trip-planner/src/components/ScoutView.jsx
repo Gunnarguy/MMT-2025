@@ -27,6 +27,7 @@ import { money } from "../lib/money";
  * researched figures; the raw numbers sit in each card's full workup.
  */
 const WORKUP_SECTIONS = [
+  ["housing", "🏠 Buying here, realistically"],
   ["bills", "🧾 Monthly bills, local averages"],
   ["demographics", "👥 Who lives here"],
   ["errands", "🛒 Groceries & errands"],
@@ -316,7 +317,9 @@ export default function ScoutView() {
       </section>
 
       <p className="muted" style={{ fontSize: "var(--t-xs)" }}>
-        Researched {SCOUT_META.researched}, housing rebuilt {SCOUT_META.corrected}.{" "}
+        Researched {SCOUT_META.researched}, housing rebuilt {SCOUT_META.corrected}
+        {SCOUT_META.refreshed ? `, housing and bills refreshed ${SCOUT_META.refreshed}` : ""}.{" "}
+        {SCOUT_META.refreshMethod ? `${SCOUT_META.refreshMethod} ` : ""}
         {SCOUT_META.method} Scores are ours: 0–10 per priority, derived from the researched
         figures and stated in each card. Daylight is computed from coordinates. What no dataset
         holds — how February feels, whether downtown is alive at 7pm — is what the drive itself
@@ -457,7 +460,7 @@ function TownCard({ t, tier, weights, matchOf, moneyOf, monthOf = {}, useCounty 
 
           {workup && (
             <details className="scout-workup">
-              <summary>Full workup — monthly bills, errands, shipping, healthcare, schools, jobs, airports, lifestyle, climate, demographics</summary>
+              <summary>Full workup — buying here, monthly bills, errands, shipping, healthcare, schools, jobs, airports, lifestyle, climate, demographics</summary>
               {WORKUP_SECTIONS.map(([key, label]) =>
                 workup[key]?.length ? (
                   <div key={key} className="scout-workup-section">

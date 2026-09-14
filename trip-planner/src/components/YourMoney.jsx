@@ -1,5 +1,5 @@
 import { Chip } from "./bits";
-import { money, ownMonthly, takeHome, verdictFor } from "../lib/money";
+import { money, MORTGAGE_RATE_ASOF, MORTGAGE_RATE_LABEL, ownMonthly, takeHome, verdictFor } from "../lib/money";
 
 /**
  * The couple's actual income, run through every town: take-home after that
@@ -16,6 +16,7 @@ export function moneyFor(town, income) {
   const share = net ? monthly / (net / 12) : null;
   const countyMonthly = m.countyPrice ? ownMonthly(m.countyPrice, m.effTax) : null;
   const countyShare = countyMonthly && net ? countyMonthly / (net / 12) : null;
+  const rentShare = m.rent2br && net ? m.rent2br / (net / 12) : null;
   return {
     net,
     stateTax: th.state,
@@ -31,7 +32,9 @@ export function moneyFor(town, income) {
     price: m.medianPrice,
     priceNote: m.priceNote,
     rent2br: m.rent2br || null,
-    rentShare: m.rent2br && net ? m.rent2br / (net / 12) : null,
+    rentNote: m.rentNote || null,
+    rentShare,
+    rentVerdict: verdictFor(rentShare),
     rentActual: m.rentActual || null,
     rentActualShare: m.rentActual && net ? m.rentActual / (net / 12) : null,
     rentActualNote: m.rentActualNote || null,
@@ -117,13 +120,13 @@ export function MoneyPanel({ income, setIncome, rows, campbell }) {
             {actual ? (
               <>
                 You pay <b>{money(actual)}</b> a month in Campbell ({campbell.rentActualNote}) — <b>{Math.round(actualShare * 100)}%</b> of take-home.
-                A median two-bedroom there rents for {money(campbell.rent2br)} ({Math.round(rentShare * 100)}%), so the family discount is worth about{" "}
+                HUD&rsquo;s fair-market rent for a two-bedroom there is {money(campbell.rent2br)} ({Math.round(rentShare * 100)}%), so the family discount is worth about{" "}
                 <b>{money(discount)} a year</b> — the price of admission for any move. Buying the {money(campbell.medianPrice)} median would run{" "}
                 {money(buyCampbell)} a month ({Math.round(buyShare * 100)}%).
               </>
             ) : (
               <>
-                In Campbell a median two-bedroom rents for <b>{money(campbell.rent2br)}</b> a month — <b>{Math.round(rentShare * 100)}%</b> of take-home —
+                In Campbell a two-bedroom at HUD&rsquo;s fair-market rent is <b>{money(campbell.rent2br)}</b> a month — <b>{Math.round(rentShare * 100)}%</b> of take-home —
                 and buying the {money(campbell.medianPrice)} median would run <b>{money(buyCampbell)}</b> a month ({Math.round(buyShare * 100)}%).
               </>
             )}
@@ -165,7 +168,7 @@ export function MoneyPanel({ income, setIncome, rows, campbell }) {
       </div>
       <p className="muted" style={{ fontSize: "var(--t-xs)" }}>
         "The dream" is one remote, asynchronous job at ~$95k with Mikaela not working: married filing jointly
-        still, one FICA earner, and every verdict recomputed. Owning = 30-year mortgage at 6.66% with 20% down on the median sold price, plus that municipality's
+        still, one FICA earner, and every verdict recomputed. Owning = 30-year mortgage at {MORTGAGE_RATE_LABEL} ({MORTGAGE_RATE_ASOF}) with 20% down on the median sold price, plus that municipality's
         year-one uncapped property tax and $187/mo insurance. Comfortable ≤30% of take-home, a stretch ≤40%,
         out of reach above. 2025 married-filing-jointly rules, standard deduction, no other credits — built to
         compare places, not to file taxes. * county or blended figure. Ontario towns are not modeled: different
