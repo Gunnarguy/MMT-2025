@@ -2778,7 +2778,7 @@ export const RELOCATION_TOWNS = [
     tier: "viable",
     verified: "yes",
     stryker: {"site": "Portage, MI (HQ)", "mi": 235.2, "hrs": "4:33"},
-    costs: {"utility": "City of Petoskey Electric Department / DTE Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 188.5, "utilitiesNote": "City of Petoskey Electric $61/mo; DTE Energy winter gas $225, summer $30", "internet": 35.0, "internetNote": "AT&T Internet 300 / Verizon 5G Home Internet (300 Mbps)", "cell": "Strong inside city limits, spotty/dead zones in wooded/hilly rural areas outside town", "carIns2": 440.0, "carInsNote": "The Zebra avg $2,640/yr per car due to MI no-fault PIP", "gasPrice": 4.17, "groceries": 683.67, "groceryNote": "MIT Living Wage Calculator for Emmet County (2 adults)", "groceryBasis": "MIT", "waterTrash": 80.0, "homeIns": 118.5, "extras": "Private road snow removal in rural areas, condo HOAs ($100-$1,000/mo), property tax uncapping upon purchase", "basketTotal": 1893.37, "sources": "petoskey.us, att.com, verizon.com, thezebra.com, gasprices.aaa.com, livingwage.mit.edu, policygenius.com, emmetcounty.org"},
+    costs: {"utility": "City of Petoskey Electric Department / DTE Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 188.5, "utilitiesNote": "City of Petoskey Electric $61/mo; DTE Energy winter gas $225, summer $30", "internet": 35.0, "internetNote": "AT&T Internet 300 / Verizon 5G Home Internet (300 Mbps)", "cell": "Strong inside city limits, spotty/dead zones in wooded/hilly rural areas outside town", "carIns2": 440.0, "carInsNote": "The Zebra avg $2,640/yr per car due to MI no-fault PIP", "gasPrice": 4.17, "groceries": 683.67, "groceryNote": "MIT Living Wage Calculator for Emmet County (2 adults)", "groceryBasis": "MIT", "waterTrash": 80.0, "homeIns": 241.33, "extras": "Private road snow removal in rural areas, condo HOAs ($100-$1,000/mo), property tax uncapping upon purchase", "basketTotal": 2016.2, "sources": "petoskey.us, att.com, verizon.com, thezebra.com, gasprices.aaa.com, livingwage.mit.edu, policygenius.com, emmetcounty.org"},
     money: {"medianPrice": 480000, "effTax": 0.0168, "cityTax": 0, "taxState": "MI", "countyPrice": 315700, "priceNote": "redfin.com median sold, 3 months ending Aug 2026 (Redfin rolling window)", "rent2br": 1336, "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1, 2026"},
     oneLiner:
       "Hemingway's summer country with the lowest violent crime on the list, the best fiber, and a hospital a mile away; the bill is 124 inches of snow and a 65-mile Costco run.",
@@ -2809,7 +2809,7 @@ export const RELOCATION_TOWNS = [
       ]
     },
     median: "$480,000 sold (3 months ending Aug 2026 (Redfin rolling window)) · $364,100 ACS value",
-    comfort: "$116k in town · $90k in county",
+    comfort: "$119k in town · $93k in county",
     crime: "1.2–1.5 / 5.7–6.4",
     snow: '123.6"',
     fiber: "44% fiber · 69% cable",
@@ -2859,7 +2859,7 @@ export const RELOCATION_TOWNS = [
         ],
         [
           "Two-bedroom rent",
-          "$1,336 · HUD FMR FY2027 · FY2027, effective Oct 1, 2026 · huduser.gov. Emmet County nonmetro FMR: 0BR $1,015, 1BR $1,021, 2BR $1,336, 3BR $1,503, 4BR $1,495. FY2026 2BR was $1,235 (+8.2%) (https://www.huduser.gov/portal/datasets/fmr/fmr2026/FY2026_FMR_Schedule.pdf). HUD FY2027 Schedule of Metropolitan & Non-Metropolitan FMRs (PDF dated Aug 26, 2026; FY2027 published in the Federal Register Sept 1, 2026, effective Oct 1, 2026 per https://www.nahro.org/news/hud-publishes-fy-2027-fair-market-rents/). HUD's server refused direct fetches (Akamai 202/404), so both schedule PDFs were read through the r.jina.ai text proxy; FY2026 values match MSHDA's schedule 'Effective October 1, 2025' https://www.michigan.gov/mshda/-/media/Project/Websites/mshda/rental/assets/Shared-HCV---PBV/Fair-Market-Rent-Schedule-2025.pdf. FMR is a county 40th-percentile gross rent, not a town asking rent. Asking rents: Zumper Petoskey 2BR $1,500 (last updated Sept 14, 2026; 14 listings; all-beds average $1,405, +25% YoY) https://www.zumper.com/rent-research/petoskey-mi; Zillow Rental Manager Petoskey all beds/all types average $2,000, range $850 to $3,300, 16 rentals, last updated Sept 12, 2026 https://www.zillow.com/rental-manager/market-trends/petoskey-mi/."
+          "$1,336 · HUD FMR FY2027 · FY2027, effective Oct 1, 2026 · huduser.gov. Emmet County nonmetro FMR FY2027: 0BR $1,015, 1BR $1,021, 2BR $1,336, 3BR $1,592, 4BR $1,756 (FY2026 2BR $1,235), verified against the HUD schedule PDF; Zumper 2BR asking $1,500 (Sept 14, 2026, 14 listings)"
         ],
         [
           "Homestead millage",
@@ -2874,20 +2874,20 @@ export const RELOCATION_TOWNS = [
           "1.027 · michigan.gov. STC Bulletin 14 of 2025, issued November 18, 2025: 'The inflation rate, expressed as a multiplier, to be used in the 2026 Capped Value Formula is 1.027.' Fetched as PDF and read."
         ],
         [
-          "Home insurance",
-          "$197/mo · 2026 · bankrate.com. Bankrate Michigan average $2,368/yr for $300K dwelling, $1,000 deductible, $100K liability (statewide). CAVEAT: on 2026-09-14 this URL returned Bankrate's homepage to WebFetch, the Browser pane, curl and a text proxy; the $2,368 figure was read from the search-engine snippet of that URL, not the rendered page. Fetched cross-check: insure.com Michigan average $2,896/yr ($241.33/mo), same $300K/$1,000/$100K profile, Quadrant data, page updated Aug 4, 2026: https://www.insure.com/home-insurance/average-cost-of-homeowners-insurance-in-michigan/ (aggregator, last resort)."
-        ],
-        [
-          "Car insurance, two cars",
-          "$535/mo · 2026 · bankrate.com. Bankrate Michigan full coverage $3,207/yr per car ($267/mo); two cars = $6,414/yr = $534.50/mo (statewide, no town rating). Same CAVEAT as homeIns: page unreachable on 2026-09-14, figure from the search snippet of that URL. Fetched cross-check: MoneyGeek Michigan full coverage $1,652/yr ($138/mo) per car for a 40-year-old with clean record, good credit, 2012 Camry, updated Aug 29, 2026 (two cars $276/mo): https://www.moneygeek.com/insurance/auto/average-cost-car-insurance-michigan/ (aggregator, last resort)."
-        ],
-        [
           "Power and heat",
           "$191/mo · EIA 2024 statewide averages · eia.gov. City of Petoskey municipal electric + DTE Gas (natural gas). EIA Table 5.A 2024: Michigan average residential bill $119.31/mo (618 kWh/mo at 19.30 c/kWh) https://www.eia.gov/electricity/sales_revenue_price/pdf/table_5a.pdf. Gas, EIA Michigan 2024 (all statewide, release date 8/31/2026): residential consumption 273,737 MMcf (https://www.eia.gov/dnav/ng/hist/n3010mi2a.htm) / 3,441,467 residential customers (https://www.eia.gov/dnav/ng/hist/na1501_smi_8a.htm) = 79.54 Mcf/customer/yr x $10.76/Mcf 2024 average residential price (https://www.eia.gov/dnav/ng/hist/n3010mi3a.htm) = $856/yr = $71.32/mo. Total $190.63/mo is a Michigan statewide average, not a town figure. Local tariff found: City of Petoskey Schedule RE (rate sheet dated January 2024, still the one posted on https://www.petoskey.us/services/finance_treasury/utility_documents.php): energy charge $0.08229/kWh winter, $0.11079/kWh summer, Ready to Serve $12.45/mo, plus a monthly power cost adjustment that the sheet does not quantify (https://cms3.revize.com/revize/petoskey/Departments/Finance/Utility%20Documents/Utility%20Rates%20-%20%20January%202024.pdf). At EIA's 618 kWh that is $63.31 (winter) to $80.92 (summer) before the PCA, so Petoskey electric likely runs below the $119.31 state average. DTE Gas Residential Rate A rate card, September 2026 cycle: $14.50 monthly customer charge + $2.26 IRM surcharge + $0.92153 per Ccf all-in (GCR customers) https://www.dteenergy.com/content/dam/dteenergy/deg/website/common/about-us/company-information/dte-gas-company/notices/rateCard.pdf. Prior $188.50."
         ],
         [
           "Groceries (MIT food line)",
           "$684/mo · MIT 2026 (page last updated Feb 15, 2026) · livingwage.mit.edu. Emmet County, food, 2 adults 0 children: $8,204/yr = $683.67/mo. Unchanged from prior."
+        ],
+        [
+          "Home insurance (fetched)",
+          "$241.33/mo · 2026 · insure.com, Michigan statewide, $300K dwelling, updated Aug 4, 2026; Bankrate's figure exists only in a search snippet"
+        ],
+        [
+          "12-month public-records median",
+          "$489,477 · 12 months to Jul 2026 · realtytrac.com (ATTOM, 396 transactions, wider than the city); within 2% of Redfin's $480,000"
         ],
         [
           "What the median buys",
@@ -2900,6 +2900,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "At the Redfin median ($480,000) with 20% down at 6.76% (6.76% 30-yr fixed, Freddie Mac PMMS week of Sept 10, 2026 (15-yr 6.09%)): $2,493/mo P&I on a $384,000 loan + first-year uncapped tax $673/mo (33.6331 mills, city, homestead) + Bankrate statewide home insurance $197.33/mo = about $3,363/mo before utilities. At the ZIP median ($509,779): $2,648 + $714 + $197.33 = $3,560/mo. The advertised seller tax bill will be lower than yours: taxable value uncaps to 50% of price the year after closing and then grows by the 2026 IRM 1.027. Heat is DTE natural gas; electric is the city utility at $0.082 to $0.111/kWh plus PCA. Michigan transfer tax, seller-paid: state $3.75 per $500 (0.75%) + county $0.55 per $500 (0.11%) = 0.86% (Van Buren County Register of Deeds page https://vanburencountymi.gov/departments/departments-offices/register-of-deeds/michigan-real-estate-transfer-tax/)."
+        ],
+        [
+          "Verification notes",
+          "rent2br (minor): The headline 2BR $1,336 (FY2027) and $1,235 (FY2026) are correct, but the note's Emmet 3BR $1,503 and 4BR $1,495 are contradicted by the HUD PDF (page 25, Emmet: 1015 / 1021 / 1336 / 1592 / 1756); the proxy read bled columns from neighbouring counties. The Zillow Rental Manager '$2,000 average' could not be verified (Zillow blocks automated reads). · homeIns (uncited): Bankrate URL resolves to the homepage; $2,368/yr is snippet-only (researcher flagged). insure.com, fetched, page updated Aug 4, 2026: $2,896/yr ($241.33/mo). · carIns2 (uncited): Bankrate $3,207/yr per car is snippet-only. MoneyGeek, fetched, updated Aug 29, 2026: $1,652/yr per car full coverage, $276/mo for two cars."
         ],
         [
           "Not found this round",
@@ -4848,8 +4852,8 @@ export const RELOCATION_TOWNS = [
     tier: "seasonal",
     verified: "split",
     stryker: {"site": "Portage, MI (HQ)", "mi": 226.6, "hrs": "4:29"},
-    costs: {"utility": "City of Charlevoix Electric Department / DTE Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 211.5, "utilitiesNote": "City of Charlevoix Electric ~$84/mo; DTE Energy winter gas avg ~$225/mo, summer gas ~$30/mo", "internet": 40.0, "internetNote": "Spectrum Internet Premier up to 500 Mbps", "cell": "Verizon provides reliable 4G LTE/5G in town, but coverage can be spotty with dead zones in rural wooded areas outside town.", "carIns2": 455.16, "carInsNote": "Insurify full-coverage avg $2,731/yr per vehicle in MI ($455.16/mo for 2 cars)", "gasPrice": 4.17, "groceries": 742.58, "groceryNote": "MIT Living Wage Calculator for 2 adults in Charlevoix County ($8,911/yr)", "groceryBasis": "MIT", "waterTrash": 100.84, "homeIns": 183.33, "extras": "Property tax uncapping to SEV upon sale, rural road maintenance/snow plowing agreements, and special village infrastructure assessments.", "basketTotal": 1956.11, "sources": "charlevoixmi.gov, dteenergy.com, spectrum.com, broadbandmap.fcc.gov, insurify.com, gasprices.aaa.com, livingwage.mit.edu, terrysmithagency.com, michigan.gov"},
-    money: {"medianPrice": 531000, "effTax": 0.0167, "cityTax": 0, "taxState": "MI", "countyPrice": 276800, "priceNote": "Charlevoix County median sold, 3 months to Aug 2026; the town's August sales were three new condos", "rent2br": 1119, "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1, 2026"},
+    costs: {"utility": "City of Charlevoix Electric Department / DTE Energy", "heatFuel": "natural gas", "winterHeat": 225.0, "summerBill": 30.0, "utilities": 211.5, "utilitiesNote": "City of Charlevoix Electric ~$84/mo; DTE Energy winter gas avg ~$225/mo, summer gas ~$30/mo", "internet": 40.0, "internetNote": "Spectrum Internet Premier up to 500 Mbps", "cell": "Verizon provides reliable 4G LTE/5G in town, but coverage can be spotty with dead zones in rural wooded areas outside town.", "carIns2": 455.16, "carInsNote": "Insurify full-coverage avg $2,731/yr per vehicle in MI ($455.16/mo for 2 cars)", "gasPrice": 4.17, "groceries": 742.58, "groceryNote": "MIT Living Wage Calculator for 2 adults in Charlevoix County ($8,911/yr)", "groceryBasis": "MIT", "waterTrash": 100.84, "homeIns": 241.33, "extras": "Property tax uncapping to SEV upon sale, rural road maintenance/snow plowing agreements, and special village infrastructure assessments.", "basketTotal": 2014.11, "sources": "charlevoixmi.gov, dteenergy.com, spectrum.com, broadbandmap.fcc.gov, insurify.com, gasprices.aaa.com, livingwage.mit.edu, terrysmithagency.com, michigan.gov"},
+    money: {"medianPrice": 450055, "effTax": 0.0167, "cityTax": 0, "taxState": "MI", "countyPrice": 276800, "priceNote": "12-month public-records median (RealtyTrac/ATTOM, to Jul 2026); Redfin's August figure is three new condos", "rent2br": 1119, "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1, 2026"},
     oneLiner:
       "The picture-book harbor between two lakes, quiet and safe, 39% of its houses empty in winter, and a PFAS site at the municipal well field to ask about first.",
     scores: {
@@ -4878,8 +4882,8 @@ export const RELOCATION_TOWNS = [
         "Costco 50 mi"
       ]
     },
-    median: "$531,000 sold (3 months to Aug 2026) · $331,500 ACS value",
-    comfort: "$126k in town · $85k in county",
+    median: "$450,055 sold (12 months to Jul 2026) · $331,500 ACS value",
+    comfort: "$115k in town · $87k in county",
     crime: "1.7–2.1 / 14.9–15.0",
     snow: '103"',
     fiber: "43% fiber · 63% cable",
@@ -4889,7 +4893,7 @@ export const RELOCATION_TOWNS = [
       "housing": [
         [
           "Median sold price",
-          "$531,000 · 3 months to Aug 2026 · redfin.com · Redfin 'Charlevoix, MI' city page, which in practice is the 49720 postal area (the recent sales it lists on Oyster Bay Dr, Stolt and Hilary Dr are in Charlevoix/Hayes/Marion townships, outside the 2. Charlevoix County median sold (11 August sales, +41.5% YoY); the town's own August closings were three new Uptown Ln condos at $736,000 and the ZIP 49720 3-month median is $732,183 on 14 sales, both condo/lakefront-driven; Realtor.com ZIP list median $523,900 on 105 listings"
+          "$450,055 · 12 months to Jul 2026 · realtytrac.com · Redfin 'Charlevoix, MI' city page, which in practice is the 49720 postal area (the recent sales it lists on Oyster Bay Dr, Stolt and Hilary Dr are in Charlevoix/Hayes/Marion townships, outside the 2. Median of public-record residential transactions over the previous year (RealtyTrac/ATTOM, 6 captured transactions). Corroborated by Zillow's ZHVI $448,398 (Aug 31, 2026). Wider measures run higher: Charlevoix County 3-month median sold $531,000 on 11 August sales, Realtor.com ZIP 49720 list median $523,900 on 105 listings. The town's own August closings were three new Uptown Ln condos at $736,000 to $949,000 (Redfin), which is why Redfin's 3-month 'median' reads $736,000"
         ],
         [
           "Second source",
@@ -4944,20 +4948,16 @@ export const RELOCATION_TOWNS = [
           "1.027 · michigan.gov. STC Bulletin 14 of 2025, issued November 18, 2025: 'The inflation rate, expressed as a multiplier, to be used in the 2026 Capped Value Formula is 1.027.' Fetched as PDF and read."
         ],
         [
-          "Home insurance",
-          "$197/mo · 2026 · bankrate.com. Bankrate Michigan average $2,368/yr for $300K dwelling, $1,000 deductible, $100K liability (statewide). CAVEAT: on 2026-09-14 this URL returned Bankrate's homepage to WebFetch, the Browser pane, curl and a text proxy; the $2,368 figure was read from the search-engine snippet of that URL, not the rendered page. Fetched cross-check: insure.com Michigan average $2,896/yr ($241.33/mo), same $300K/$1,000/$100K profile, Quadrant data, page updated Aug 4, 2026: https://www.insure.com/home-insurance/average-cost-of-homeowners-insurance-in-michigan/ (aggregator, last resort)."
-        ],
-        [
-          "Car insurance, two cars",
-          "$535/mo · 2026 · bankrate.com. Bankrate Michigan full coverage $3,207/yr per car ($267/mo); two cars = $6,414/yr = $534.50/mo (statewide, no town rating). Same CAVEAT as homeIns: page unreachable on 2026-09-14, figure from the search snippet of that URL. Fetched cross-check: MoneyGeek Michigan full coverage $1,652/yr ($138/mo) per car for a 40-year-old with clean record, good credit, 2012 Camry, updated Aug 29, 2026 (two cars $276/mo): https://www.moneygeek.com/insurance/auto/average-cost-car-insurance-michigan/ (aggregator, last resort)."
-        ],
-        [
           "Power and heat",
           "$191/mo · EIA 2024 statewide averages · eia.gov. City of Charlevoix municipal electric + DTE Gas (natural gas). EIA Table 5.A 2024: Michigan average residential bill $119.31/mo (618 kWh/mo at 19.30 c/kWh) https://www.eia.gov/electricity/sales_revenue_price/pdf/table_5a.pdf. Gas, EIA Michigan 2024 (all statewide, release date 8/31/2026): residential consumption 273,737 MMcf (https://www.eia.gov/dnav/ng/hist/n3010mi2a.htm) / 3,441,467 residential customers (https://www.eia.gov/dnav/ng/hist/na1501_smi_8a.htm) = 79.54 Mcf/customer/yr x $10.76/Mcf 2024 average residential price (https://www.eia.gov/dnav/ng/hist/n3010mi3a.htm) = $856/yr = $71.32/mo. Total $190.63/mo is a Michigan statewide average, not a town figure. The City's posted electric rate sheet (https://www.charlevoixmi.gov/DocumentCenter/View/1593/Electric-Rates-PDF) is a scanned image with no extractable text, so the local tariff is NOT FOUND. DTE Gas Residential Rate A rate card, September 2026 cycle: $14.50 monthly customer charge + $2.26 IRM surcharge + $0.92153 per Ccf all-in (GCR customers) https://www.dteenergy.com/content/dam/dteenergy/deg/website/common/about-us/company-information/dte-gas-company/notices/rateCard.pdf. Prior $211.50 was town-specific by method unknown; this refresh could only source statewide averages, so keep the prior if a town figure is preferred."
         ],
         [
           "Groceries (MIT food line)",
           "$743/mo · MIT 2026 (page last updated Feb 15, 2026) · livingwage.mit.edu. Charlevoix County, food, 2 adults 0 children: $8,911/yr = $742.58/mo. Unchanged from prior."
+        ],
+        [
+          "Home insurance (fetched)",
+          "$241.33/mo · 2026 · insure.com, Michigan statewide, $300K dwelling, updated Aug 4, 2026; Bankrate's $197.33 exists only in a search snippet"
         ],
         [
           "What the median buys",
@@ -4970,6 +4970,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "Buying at the Redfin median ($736,000) with 20% down at 6.76% (6.76% 30-yr fixed, Freddie Mac PMMS week of Sept 10, 2026 (15-yr 6.09%)) is $3,823/mo P&I on a $588,800 loan; add first-year uncapped tax $1,027/mo (33.4802 mills, city, homestead) and Bankrate's statewide home insurance $197.33/mo for about $5,047/mo before utilities. At the ACS value ($331,500) the same math is $1,722 + $462 + $197.33 = $2,382/mo. Heat is DTE natural gas (Rate A: $14.50 + $2.26 fixed, $0.92153/Ccf in Sept 2026); electric is the city's own utility. Taxable value uncaps to 50% of the sale price the year after purchase, and the 2026 cap is 1.027 thereafter. Michigan transfer tax, seller-paid: state $3.75 per $500 (0.75%) + county $0.55 per $500 (0.11%) = 0.86% (Van Buren County Register of Deeds page https://vanburencountymi.gov/departments/departments-offices/register-of-deeds/michigan-real-estate-transfer-tax/). Buyer closing costs are title, recording and lender fees only."
+        ],
+        [
+          "Verification notes",
+          "soldMedian (implausible): Transcribed correctly (Redfin city page read live in the browser pane 2026-09-14, title 'as of August': $736K over the 3 months ending Aug 2026, +83.9%; Aug card $737K, $480/sq ft, 3 homes sold, 81 DOM; the three August closings are 11, 12 and 14 Uptown Ln new condos at $736,000, $737,000 and $949,000), but it is not what a house costs in Charlevoix. The window is one condo release plus a $4,575,000 Oyster Bay waterfront sale among about eight closings. Every broader measure sits at $420K to $530K: Zillow ZHVI for Charlevoix city $448,398 (+4.4%, updated 8/31/2026, read live); RealtyTrac/ATTOM public records $450,055 median for the prior 12 months (only 6 transactions captured) and $423.3K for Jul 2026 (5 sales); Redfin Charlevoix County $531K (11 sales in Aug); Realtor.com ZIP 49720 list median $523,900; the prior Redfin Jul 2026 figure $378,000; ACS $331,500. Redfin ZIP 49720 $732,183 (n=14) carries the same condo skew and is not a cure. The $736K should not be the headline; use the ZHVI or a 12-month figure with n stated and show the $736K only as 'Aug 2026 closings, n=3, one development'. · homeIns (uncited): Both Bankrate URLs still resolve to Bankrate's homepage (browser pane and curl with a browser UA, 2026-09-14), so $2,368/yr ($197.33/mo) exists only in a search snippet; the researcher flagged this. The fetched cross-check disagrees: insure.com $2,896/yr ($241.33/mo), same $300K/$1,000/$100K profile, page updated Aug 4, 2026. · carIns2 (uncited): Same Bankrate problem: $3,207/yr per car is snippet-only. MoneyGeek (fetched, updated Aug 29, 2026) gives $1,652/yr ($138/mo) per car full coverage for a 40-year-old clean-record driver, i.e. $276/mo for two cars, about half the Bankrate figure. Profiles differ, so $534.50 is an upper bound, not a cited figure."
         ],
         [
           "Not found this round",
@@ -5897,8 +5901,8 @@ export const RELOCATION_TOWNS = [
     tier: "seasonal",
     verified: "split",
     stryker: {"site": "Portage, MI (HQ)", "mi": 287.6, "hrs": "5:10"},
-    costs: {"heatFuel": "propane", "utilities": 119.31, "utilitiesNote": "EIA MI average electric $119.31; propane $2.37/gal; heating bills NOT FOUND", "internet": 40.0, "internetNote": "Spectrum 500 Mbps", "cell": "100% area coverage on map, but users report spotty service due to terrain and distance from towers", "carIns2": 616.0, "carInsNote": "Bankrate Detroit-Warren-Dearborn avg $3,696/yr per car ($616/mo for 2 cars)", "gasPrice": 4.03, "groceries": 624.75, "groceryNote": "MIT Living Wage Calculator Cheboygan County ($7,497/yr for 2 adults)", "groceryBasis": "MIT", "homeIns": 119.0, "extras": "No village-wide HOA fees (depends on subdivision); seasonal/household fees NOT FOUND", "basketTotal": 1760.86, "sources": "eia.gov, spectrum.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, policygenius.com, mackinawcity.org"},
-    money: {"medianPrice": 293019, "effTax": 0.0186, "cityTax": 0, "taxState": "MI", "countyPrice": 192500, "priceNote": "Cheboygan County median sold, Aug 2026; the village's own sales are too thin (1 in August)", "rent2br": 1104, "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1, 2026"},
+    costs: {"heatFuel": "propane", "utilities": 119.31, "utilitiesNote": "EIA MI average electric $119.31; propane $2.37/gal; heating bills NOT FOUND", "internet": 40.0, "internetNote": "Spectrum 500 Mbps", "cell": "100% area coverage on map, but users report spotty service due to terrain and distance from towers", "carIns2": 616.0, "carInsNote": "Bankrate Detroit-Warren-Dearborn avg $3,696/yr per car ($616/mo for 2 cars)", "gasPrice": 4.03, "groceries": 624.75, "groceryNote": "MIT Living Wage Calculator Cheboygan County ($7,497/yr for 2 adults)", "groceryBasis": "MIT", "homeIns": 241.33, "extras": "No village-wide HOA fees (depends on subdivision); seasonal/household fees NOT FOUND", "basketTotal": 1883.19, "sources": "eia.gov, spectrum.com, verizon.com, bankrate.com, gasprices.aaa.com, livingwage.mit.edu, policygenius.com, mackinawcity.org"},
+    money: {"medianPrice": 275000, "effTax": 0.0186, "cityTax": 0, "taxState": "MI", "countyPrice": 192500, "priceNote": "12-month public-records median for the village (RealtyTrac/ATTOM, to Jul 2026)", "rent2br": 1104, "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1, 2026"},
     oneLiner:
       "A bridgehead village of 704 people that runs on summer — 24% winter unemployment, Amazon in three to five days, the ER across the bridge in St. Ignace.",
     scores: {
@@ -5925,8 +5929,8 @@ export const RELOCATION_TOWNS = [
         "Costco 110 mi · Amazon 3–5 days"
       ]
     },
-    median: "$293,019 sold (Aug 2026 (3-month rolling)) · $224,300 ACS value",
-    comfort: "$84k in town · $68k in county",
+    median: "$275,000 sold (12 months to Jul 2026) · $224,300 ACS value",
+    comfort: "$84k in town · $71k in county",
     crime: "5.9 / 35.4",
     snow: '93"',
     fiber: "6% fiber · 59% cable",
@@ -5936,7 +5940,7 @@ export const RELOCATION_TOWNS = [
       "housing": [
         [
           "Median sold price",
-          "$293,019 · Aug 2026 (3-month rolling) · redfin.com · Redfin 'Mackinaw City, MI' city page and Redfin ZIP 49701 (identical statistics; the ZIP is the village plus Mackinaw and Wawatam townships). Cheboygan County median sold on 35 sales; the village itself closed 1 sale in August (Redfin village 3-month $359,000 on 3-4 sales)"
+          "$275,000 · 12 months to Jul 2026 · realtytrac.com · Redfin 'Mackinaw City, MI' city page and Redfin ZIP 49701 (identical statistics; the ZIP is the village plus Mackinaw and Wawatam townships). Median of public-record residential transactions in the village over the previous year (RealtyTrac/ATTOM, 29 transactions); July 2026 alone $295,800 on 14 sales. Zillow ZHVI $320,250 (Aug 31, 2026). Cheboygan County 3-month median sold $293,019 on 35 sales. Redfin's village window shows $359,000 but rests on four closings ($289,000, $350,000, $368,500, $469,000)"
         ],
         [
           "Second source",
@@ -5976,7 +5980,7 @@ export const RELOCATION_TOWNS = [
         ],
         [
           "Two-bedroom rent",
-          "$1,104 · HUD FMR FY2027 · FY2027, effective Oct 1, 2026 · huduser.gov. Cheboygan County nonmetro FMR: 0BR $788, 1BR $844, 2BR $1,104, 3BR $1,351, 4BR $1,592 (FY2026 2BR $1,054). Units on the Emmet County side of the village fall under Emmet's FMR: 2BR $1,336 FY2027 ($1,235 FY2026). HUD FY2027 Schedule of Metropolitan & Non-Metropolitan FMRs (PDF dated Aug 26, 2026; FY2027 published in the Federal Register Sept 1, 2026, effective Oct 1, 2026 per https://www.nahro.org/news/hud-publishes-fy-2027-fair-market-rents/). HUD's server refused direct fetches (Akamai 202/404), so both schedule PDFs were read through the r.jina.ai text proxy; FY2026 values match MSHDA's schedule 'Effective October 1, 2025' https://www.michigan.gov/mshda/-/media/Project/Websites/mshda/rental/assets/Shared-HCV---PBV/Fair-Market-Rent-Schedule-2025.pdf. FMR is a county 40th-percentile gross rent, not a town asking rent. No asking-rent source exists for the village."
+          "$1,104 · HUD FMR FY2027 · FY2027, effective Oct 1, 2026 · huduser.gov. Cheboygan County nonmetro FMR FY2027: 0BR $788, 1BR $844, 2BR $1,104, 3BR $1,315, 4BR $1,490 (FY2026 2BR $1,054); Emmet side 2BR $1,336. Verified against the HUD schedule PDF"
         ],
         [
           "Homestead millage",
@@ -5991,20 +5995,16 @@ export const RELOCATION_TOWNS = [
           "1.027 · michigan.gov. STC Bulletin 14 of 2025, issued November 18, 2025: 'The inflation rate, expressed as a multiplier, to be used in the 2026 Capped Value Formula is 1.027.' Fetched as PDF and read."
         ],
         [
-          "Home insurance",
-          "$197/mo · 2026 · bankrate.com. Bankrate Michigan average $2,368/yr for $300K dwelling, $1,000 deductible, $100K liability (statewide). CAVEAT: on 2026-09-14 this URL returned Bankrate's homepage to WebFetch, the Browser pane, curl and a text proxy; the $2,368 figure was read from the search-engine snippet of that URL, not the rendered page. Fetched cross-check: insure.com Michigan average $2,896/yr ($241.33/mo), same $300K/$1,000/$100K profile, Quadrant data, page updated Aug 4, 2026: https://www.insure.com/home-insurance/average-cost-of-homeowners-insurance-in-michigan/ (aggregator, last resort)."
-        ],
-        [
-          "Car insurance, two cars",
-          "$535/mo · 2026 · bankrate.com. Bankrate Michigan full coverage $3,207/yr per car ($267/mo); two cars = $6,414/yr = $534.50/mo (statewide, no town rating). Same CAVEAT as homeIns: page unreachable on 2026-09-14, figure from the search snippet of that URL. Fetched cross-check: MoneyGeek Michigan full coverage $1,652/yr ($138/mo) per car for a 40-year-old with clean record, good credit, 2012 Camry, updated Aug 29, 2026 (two cars $276/mo): https://www.moneygeek.com/insurance/auto/average-cost-car-insurance-michigan/ (aggregator, last resort)."
-        ],
-        [
           "Power and heat",
           "$119/mo · EIA 2024 statewide average, electric only · eia.gov. Electric: Consumers Energy (its residential tariff was not fetched); EIA Michigan average bill $119.31/mo (618 kWh at 19.30 c/kWh, 2024). Heat: the prior recorded propane; two supplier-marketing sites (justenergy.com, energyplansnearme.com) claim Consumers Energy natural-gas delivery in Mackinaw City, but no utility page confirmed a gas main in the village, so heat fuel stays 'propane, unverified' and the heat cost is NOT FOUND. If natural gas is present, the EIA statewide gas average adds $71.32/mo for $190.63 total. Prior $119.31 stands (it was the same EIA electric-only figure)."
         ],
         [
           "Groceries (MIT food line)",
           "$625/mo · MIT 2026 (page last updated Feb 15, 2026) · livingwage.mit.edu. Cheboygan County, food, 2 adults 0 children: $7,497/yr = $624.75/mo. Unchanged. Emmet County would be $683.67."
+        ],
+        [
+          "Home insurance (fetched)",
+          "$241.33/mo · 2026 · insure.com, Michigan statewide, $300K dwelling, updated Aug 4, 2026; Bankrate's figure exists only in a search snippet"
         ],
         [
           "What the median buys",
@@ -6017,6 +6017,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "At the Redfin median ($359,000) with 20% down at 6.76% (6.76% 30-yr fixed, Freddie Mac PMMS week of Sept 10, 2026 (15-yr 6.09%)): $1,865/mo P&I on a $287,200 loan + first-year uncapped tax $550/mo (36.7369 mills, Cheboygan side; $562/mo at 37.5470 on the Emmet side) + Bankrate statewide home insurance $197.33/mo = about $2,612/mo before utilities. The village has the highest homestead millage of the four (36.7 to 37.5 vs 25.4 to 33.6) because village services stack on township and county levies. Heat: budget for propane unless a gas main is confirmed at the address (two supplier sites claim Consumers gas service; unverified). Electric is Consumers Energy. Which county the parcel sits in also decides the HUD rent area and the treasurer you pay. Michigan transfer tax, seller-paid: state $3.75 per $500 (0.75%) + county $0.55 per $500 (0.11%) = 0.86% (Van Buren County Register of Deeds page https://vanburencountymi.gov/departments/departments-offices/register-of-deeds/michigan-real-estate-transfer-tax/)."
+        ],
+        [
+          "Verification notes",
+          "soldMedian (implausible): Transcribed correctly (Redfin city and ZIP 49701 pages read live: $359K over the 3 months ending Aug 2026; the window holds four home closings, $289,000 Jamet St, $350,000 Northern Lights, $368,500 Wenniway, $469,000 Lakeside Dr, whose median is $359,250; August n=1). Every broader measure is 18% to 30% lower: RealtyTrac/ATTOM public records Jul 2026 median sold $295.8K on 14 sales and $275,000 median over the prior 12 months on 29 transactions; Zillow ZHVI Mackinaw City $320,250 (+7.0%, updated 8/31/2026, read live; the researcher's snippet $274,349 is stale); Redfin Cheboygan County $293,019 (35 Aug sales); prior Redfin Jul 2026 $289,000; ACS $224,300. On the proxy question: Cheboygan County's $293,019 is within 1% of the village's own July public-records median and 7% above its 12-month median, so it is an acceptable proxy, but a village-level public-records figure exists and should be the headline instead of a county number or an n=4 window. · rent2br (minor): 2BR $1,104 (FY2027) and $1,054 (FY2026) are correct, and the Emmet 2BR $1,336 is correct, but the note's Cheboygan 3BR $1,351 and 4BR $1,592 are contradicted by the HUD PDF (page 25, Cheboygan: 788 / 844 / 1104 / 1315 / 1490); column bleed from the text proxy. The PDF's own metadata is dated Aug 4-5, 2026, not Aug 26. · homeIns (uncited): Bankrate URL resolves to the homepage; $2,368/yr is snippet-only. insure.com, fetched: $2,896/yr ($241.33/mo), updated Aug 4, 2026. · carIns2 (uncited): Bankrate $3,207/yr per car is snippet-only. MoneyGeek, fetched, updated Aug 29, 2026: $1,652/yr per car, $276/mo for two cars."
         ],
         [
           "Not found this round",
@@ -6448,8 +6452,8 @@ export const RELOCATION_TOWNS = [
     tier: "no",
     verified: "yes",
     stryker: {"site": "Portage, MI (HQ)", "mi": 287.6, "hrs": "5:10 + ferry", "note": "Mackinaw City's drive, then the Star Line / Shepler's ferry"},
-    costs: {"utility": "Cloverland Electric Cooperative", "heatFuel": "mixed", "winterHeat": 213.33, "summerBill": 105.71, "utilities": 105.71, "utilitiesNote": "Cloverland Electric Cooperative; avg bill $105.71/mo, winter electric heat $213.33/mo, summer $105.71/mo", "internet": 40.0, "internetNote": "Spectrum Internet Premier (500 Mbps)", "cell": "Verizon: Excellent in downtown and populated areas, minor dead zones in remote wooded interior trails", "carIns2": 521.83, "carInsNote": "Bankrate Michigan avg $3,131/yr per car ($521.83/mo for 2 cars)", "gasPrice": 4.38, "groceries": 624.75, "groceryNote": "MIT Living Wage estimate for 2 adults in Mackinac County ($7,497/yr); excludes local island premium", "groceryBasis": "MIT", "homeIns": 191.67, "extras": "Mainland winter parking (Arnold Transit commuter lot $40/mo) and local freight/drayage fees", "basketTotal": 1746.76, "sources": "cloverland.com, eia.gov, spectrum.com, reddit.com, bankrate.com, gasbuddy.com, livingwage.mit.edu, cityofmi.org, moneygeek.com, arnoldtransitcompany.com"},
-    money: {"medianPrice": 733300, "effTax": 0.0127, "cityTax": 0, "taxState": "MI", "rent2br": 1057, "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1, 2026", "priceNote": "ACS 2020-2024 median value of owner-occupied homes; no 2026 sold median exists (one closing, price withheld); list median $1.45M on 8 active"},
+    costs: {"utility": "Cloverland Electric Cooperative", "heatFuel": "mixed", "winterHeat": 213.33, "summerBill": 105.71, "utilities": 105.71, "utilitiesNote": "Cloverland Electric Cooperative; avg bill $105.71/mo, winter electric heat $213.33/mo, summer $105.71/mo", "internet": 40.0, "internetNote": "Spectrum Internet Premier (500 Mbps)", "cell": "Verizon: Excellent in downtown and populated areas, minor dead zones in remote wooded interior trails", "carIns2": 521.83, "carInsNote": "Bankrate Michigan avg $3,131/yr per car ($521.83/mo for 2 cars)", "gasPrice": 4.38, "groceries": 624.75, "groceryNote": "MIT Living Wage estimate for 2 adults in Mackinac County ($7,497/yr); excludes local island premium", "groceryBasis": "MIT", "homeIns": 241.33, "extras": "Mainland winter parking (Arnold Transit commuter lot $40/mo) and local freight/drayage fees", "basketTotal": 1796.42, "sources": "cloverland.com, eia.gov, spectrum.com, reddit.com, bankrate.com, gasbuddy.com, livingwage.mit.edu, cityofmi.org, moneygeek.com, arnoldtransitcompany.com"},
+    money: {"medianPrice": 733300, "effTax": 0.0127, "cityTax": 0, "taxState": "MI", "rent2br": 1057, "rentNote": "HUD FMR FY2027 · FY2027, effective Oct 1, 2026", "priceNote": "ACS 2020-2024 median value of owner-occupied homes; no 2026 sold median exists; list median $1.45M on 8 active"},
     oneLiner:
       "No cars, 992 year-round residents, a medical center but no hospital, and a $1.3M median. Go for the fudge; do not move there.",
     scores: {
@@ -6477,7 +6481,7 @@ export const RELOCATION_TOWNS = [
       ]
     },
     median: "$1.07–1.3M sold · ACS value NOT IN DATA",
-    comfort: "$150k in town",
+    comfort: "$152k in town",
     crime: "1.7–3.2 / 74–86",
     snow: '87–94"',
     fiber: "0% fiber · 34% cable",
@@ -6487,7 +6491,7 @@ export const RELOCATION_TOWNS = [
       "housing": [
         [
           "Median home value used",
-          "$733,300 · ACS 2020-2024 median value of owner-occupied homes; no 2026 sold median exists (one closing, price withheld); list median $1.45M on 8 active"
+          "$733,300 · ACS 2020-2024 median value of owner-occupied homes; no 2026 sold median exists; list median $1.45M on 8 active"
         ],
         [
           "Second source",
@@ -6534,20 +6538,20 @@ export const RELOCATION_TOWNS = [
           "1.027 · michigan.gov. STC Bulletin 14 of 2025, issued November 18, 2025: 'The inflation rate, expressed as a multiplier, to be used in the 2026 Capped Value Formula is 1.027.' Fetched as PDF and read."
         ],
         [
-          "Home insurance",
-          "$197/mo · 2026 · bankrate.com. Bankrate Michigan average $2,368/yr for $300K dwelling, $1,000 deductible, $100K liability (statewide). CAVEAT: on 2026-09-14 this URL returned Bankrate's homepage to WebFetch, the Browser pane, curl and a text proxy; the $2,368 figure was read from the search-engine snippet of that URL, not the rendered page. Fetched cross-check: insure.com Michigan average $2,896/yr ($241.33/mo), same $300K/$1,000/$100K profile, Quadrant data, page updated Aug 4, 2026: https://www.insure.com/home-insurance/average-cost-of-homeowners-insurance-in-michigan/ (aggregator, last resort)."
-        ],
-        [
-          "Car insurance, two cars",
-          "$535/mo · 2026 · bankrate.com. Statewide Bankrate figure carried for comparability only: private cars are banned on the island, so a resident's real cost is a mainland-parked car (St. Ignace or Mackinaw City) plus ferry passes. Bankrate Michigan full coverage $3,207/yr per car ($267/mo); two cars = $6,414/yr = $534.50/mo (statewide, no town rating). Same CAVEAT as homeIns: page unreachable on 2026-09-14, figure from the search snippet of that URL. Fetched cross-check: MoneyGeek Michigan full coverage $1,652/yr ($138/mo) per car for a 40-year-old with clean record, good credit, 2012 Camry, updated Aug 29, 2026 (two cars $276/mo): https://www.moneygeek.com/insurance/auto/average-cost-car-insurance-michigan/ (aggregator, last resort)."
-        ],
-        [
           "Power and heat",
           "$68/mo · Cloverland 2026 tariff x EIA 2024 average use, electric only · cloverland.com. Cloverland Electric Cooperative residential rate effective April 15, 2026: $25.00/mo service charge + $0.04530/kWh energy + PSCR $0.0250/kWh (August 2026) = $0.0703/kWh. At EIA's Michigan average 618 kWh/mo: $25.00 + 618 x 0.0703 = $68.45/mo. Heat is propane, fuel oil, wood or electric (no gas main on the island); heat cost NOT FOUND. Prior $105.71 (method unknown) may be kept if a heat allowance is wanted."
         ],
         [
           "Groceries (MIT food line)",
           "$625/mo · MIT 2026 (page last updated Feb 15, 2026) · livingwage.mit.edu. Mackinac County, food, 2 adults 0 children: $7,497/yr = $624.75/mo. Unchanged. Island grocery prices (one Doud's Market, everything barged and drayed) are above the county line; no source quantifies the premium."
+        ],
+        [
+          "Home insurance (fetched)",
+          "$241.33/mo · 2026 · insure.com, Michigan statewide; does not price an 1880s wood cottage on an island with a volunteer fire department"
+        ],
+        [
+          "2026 sales on record",
+          "One disclosed closing: 7896 W Bluff Rd, 7 bd / 5.5 ba / 4,025 sq ft plus carriage house, built 1889, $3,200,000 on Jun 24, 2026 (bhhsmichiganrealestate.com). One undisclosed: 2731 Park Dr, Jul 23, 2026. 3667 Ridge Rd sold $1,250,000 in Nov 2025 and is pending again at $1,450,000 (Redfin)"
         ],
         [
           "What the median buys",
@@ -6560,6 +6564,10 @@ export const RELOCATION_TOWNS = [
         [
           "Owning it, all in",
           "No 2026 sold median, so use the ACS value as the floor and the list median as the ceiling: at $733,300 with 20% down at 6.76% (6.76% 30-yr fixed, Freddie Mac PMMS week of Sept 10, 2026 (15-yr 6.09%)) that is $3,809/mo P&I + $776/mo first-year uncapped tax (25.3948 mills, the lowest of the four) + $197.33/mo statewide insurance = about $4,782/mo; at the $1.45M list median $7,531 + $1,534 + $197.33 = $9,263/mo. Leasehold cottages on state-park land carry a lease, not a deed, and the 234 'other vacant' units are employer housing not on the market. Electric is Cloverland at about $0.07/kWh plus $25; heat is propane or fuel oil delivered by barge and dray, unpriced here. No cars: a mainland car costs Michigan's statewide premium plus winter storage and ferry passes. Insurance on 1880s wood cottages served by a small volunteer department is not covered by the statewide average. Michigan transfer tax, seller-paid: state $3.75 per $500 (0.75%) + county $0.55 per $500 (0.11%) = 0.86% (Van Buren County Register of Deeds page https://vanburencountymi.gov/departments/departments-offices/register-of-deeds/michigan-real-estate-transfer-tax/)."
+        ],
+        [
+          "Verification notes",
+          "soldMedian (minor): NOT FOUND is the right answer (Redfin's city and ZIP 49757 recently-sold pages list one 2026 island closing, 2731 Park Dr on Jul 23, 2026, price withheld; RealtyTrac shows zero transactions; Zillow and homes.com block automated reads; Redfin's '$1.3M' text is still the 'three months ending January 2026', n=1). But the note attributes the $3.2M Jun 24, 2026 sale to 3667 Ridge Rd. That sale is 7896 W Bluff Rd (7 bd / 5.5 ba / 4,025 sq ft Victorian, built 1889, renovated 2013): the listing broker's BHHS page states 'Sold on 06/24/2026', $3,200,000, MLS 478697, and the Alpine Realty IDX gallery shows it Sold at $3,200,000. 3667 Ridge Rd is a different house (6 bd / 4.5 ba / 5,110 sq ft, built 2007): Redfin's property page, read live, shows its sale history as Sold $1,250,000 on Nov 26, 2025 ($245/sq ft, pending Oct 24, 2025 from a $1,699,500 list, i.e. 26.4% under), relisted Jul 28, 2026, price set to $1,450,000 on Aug 1, 2026 and PENDING again since Aug 17, 2026 (MLS 26-762). That Nov-2025 closing is what Redfin's stale 'three months ending January 2026' card ($1.25M, 26.4% under list) is showing. So there is one verified 2026 closing with a disclosed price, $3.2M, and it is a West Bluff cottage, not a median. · homeIns (uncited): Bankrate URL resolves to the homepage; $2,368/yr is snippet-only. insure.com, fetched: $2,896/yr ($241.33/mo), updated Aug 4, 2026. The researcher rightly warns the statewide figure does not cover 1880s wood cottages on an island with a volunteer department. · carIns2 (uncited): Bankrate $3,207/yr per car is snippet-only (and irrelevant on a car-free island, as the note says). MoneyGeek, fetched: $1,652/yr per car, $276/mo for two."
         ],
         [
           "Not found this round",
