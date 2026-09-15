@@ -4,4 +4,4 @@
  * and position. Empty until `relay/deploy.sh` has run; the flight deck falls
  * back to scheduled progress while it is.
  */
-export const FLIGHT_RELAY = "";
+export const FLIGHT_RELAY = "https://mmt-flight-relay.gunnarguy.workers.dev";
