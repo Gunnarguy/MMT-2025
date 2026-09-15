@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MapContainer, Marker, Polyline, TileLayer, useMap } from "react-leaflet";
 
 import { AIRCRAFT_SEEN, DEFAULT_FLIGHTS, FLIGHT_RUNWAYS } from "../../data/logistics";
+import { FLIGHT_RELAY } from "../../data/relay";
 import { useLocalState } from "../../hooks/useLocalState";
 
 /**
@@ -82,6 +83,35 @@ function FitArc({ line }) {
   return null;
 }
 
+/**
+ * Live status from the relay (FlightAware AeroAPI behind a Cloudflare Worker),
+ * polled once a minute while the flight is within its day. Null when the
+ * relay is not configured, unreachable, or the day is not today.
+ */
+function useLiveFlight(ident, date, active) {
+  const [live, setLive] = useState(null);
+  useEffect(() => {
+    if (!FLIGHT_RELAY || !active) return undefined;
+    let stop = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`${FLIGHT_RELAY}/flight/${ident}?date=${date}`, { cache: "no-store" });
+        if (!r.ok) throw new Error(String(r.status));
+        const j = await r.json();
+        if (!stop) setLive({ ...j, receivedAt: Date.now() });
+      } catch {
+        if (!stop) setLive((prev) => (prev ? { ...prev, stale: true } : null));
+      }
+    };
+    load();
+    const t = window.setInterval(load, 60000);
+    const onVis = () => { if (document.visibilityState === "visible") load(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => { stop = true; window.clearInterval(t); document.removeEventListener("visibilitychange", onVis); };
+  }, [ident, date, active]);
+  return live;
+}
+
 function useNow() {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -120,15 +150,39 @@ export default function FlightDeck({ flightId, initialMode, flight: given }) {
   const f = given || stored.find((x) => x.id === id) || DEFAULT_FLIGHTS.find((x) => x.id === id);
   const steps = FLIGHT_RUNWAYS[id];
   const now = useNow();
-  const ph = phaseOf(now, f, steps);
+  const scheduled = phaseOf(now, f, steps);
   const from = AIRPORTS[f.from], to = AIRPORTS[f.to];
+  const ident = `AAL${(f.number || "").replace(/\D/g, "")}`;
+  const activeDay = Math.abs(now - scheduled.dep) < 14 * 3600000;
+  const live = useLiveFlight(ident, f.date, activeDay);
+  // Live data overrides the schedule where it has something to say.
+  const ph = useMemo(() => {
+    if (!live || live.stale || !live.times) return scheduled;
+    const t = live.times;
+    const parse = (x) => (x ? Date.parse(x) : null);
+    const dep = parse(t.actualOff) || parse(t.actualOut) || parse(t.estimatedOut) || scheduled.dep;
+    const arr = parse(t.actualIn) || parse(t.actualOn) || parse(t.estimatedIn) || scheduled.arr;
+    const landed = !!(t.actualOn || t.actualIn);
+    const airborne = !!t.actualOff && !landed;
+    const progress = airborne ? (Number.isFinite(live.progress) ? live.progress / 100 : Math.min(1, Math.max(0, (now - dep) / (arr - dep)))) : landed ? 1 : 0;
+    const delay = t.departureDelaySec ? Math.round(t.departureDelaySec / 60) : 0;
+    let out = { ...scheduled, dep, arr, progress };
+    if (live.cancelled) out = { ...out, id: "cancelled", label: "Cancelled", tone: "stop", next: null };
+    else if (landed && now < scheduled.next) out = { ...out, id: "landed", label: `Landed${t.actualIn ? ", at the gate" : ""}`, tone: "ok" };
+    else if (airborne) out = { ...out, id: "air", label: live.status?.replace(/^en route/i, "In the air") || "In the air", tone: "locked", next: arr, nextLabel: `Wheels down ${f.to}` };
+    else if (now < dep && delay > 10) out = { ...out, label: `Delayed ${delay} min`, tone: "warn", next: dep, nextLabel: "New departure" };
+    return out;
+  }, [live, scheduled, now, f.to]);
   const line = useMemo(() => arc(from.coords, to.coords), [from, to]);
-  const plane = line[Math.round(ph.progress * (line.length - 1))];
+  const livePos = live && !live.stale && live.position && ph.id === "air" ? [live.position.lat, live.position.lon] : null;
+  const plane = livePos || line[Math.round(ph.progress * (line.length - 1))];
   const ahead = line[Math.min(line.length - 1, Math.round(ph.progress * (line.length - 1)) + 1)];
-  const heading = bearing(plane, ahead);
+  const heading = livePos && Number.isFinite(live.position.heading) ? live.position.heading : bearing(plane, ahead);
+  const gates = live && !live.stale ? live.gates : null;
+  const liveAge = live?.position?.ageSeconds != null ? Math.round(live.position.ageSeconds + (now - live.receivedAt) / 1000) : null;
   const icon = useMemo(() => L.divIcon({ className: "fd-plane-wrap", html: `<span class="fd-plane" style="transform:rotate(${Math.round(heading - 45)}deg)">✈</span>`, iconSize: [30, 30], iconAnchor: [15, 15] }), [heading]);
   const num = (f.number || "").replace(/\D/g, "");
-  const craft = AIRCRAFT_SEEN[id];
+  const craft = AIRCRAFT_SEEN[id] || (live?.aircraft?.tail ? { tail: live.aircraft.tail, type: live.aircraft.type, seen: `live from ${live.source}`, note: "" } : null);
   const stepEpochs = steps.map((s) => zonedEpoch(s.date, s.time, s.tz));
   const currentIdx = stepEpochs.findLastIndex((t) => t <= now);
   const edited = f.depTime !== DEFAULT_FLIGHTS.find((x) => x.id === id).depTime || f.arrTime !== DEFAULT_FLIGHTS.find((x) => x.id === id).arrTime;
@@ -139,7 +193,7 @@ export default function FlightDeck({ flightId, initialMode, flight: given }) {
     <section className={`fd fd--${ph.tone}`} aria-label={`Flight deck for ${f.number}`}>
       <header className="fd-head">
         <div>
-          <div className="eyebrow">Flight deck · {new Date(ph.dep).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: from.tz })}{edited ? " · using your edited times" : ""}</div>
+          <div className="eyebrow">Flight deck · {new Date(ph.dep).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: from.tz })}{live && !live.stale ? ` · live via ${live.source}` : edited ? " · using your edited times" : ""}</div>
           <h3 className="fd-title">{f.number} <span>{from.name} to {to.name}</span></h3>
         </div>
         <div className={`fd-phase fd-phase--${ph.tone}`}>
@@ -153,7 +207,7 @@ export default function FlightDeck({ flightId, initialMode, flight: given }) {
         <div className="fd-end">
           <b>{f.from}</b>
           <span className="fd-time">{clock(ph.dep, from.tz)}</span>
-          <small>{f.depTerminal || from.name} · {f.depGate || ""}</small>
+          <small>{gates?.originTerminal ? `Terminal ${gates.originTerminal}` : f.depTerminal || from.name} · {gates?.originGate ? `Gate ${gates.originGate}` : f.depGate || ""}</small>
         </div>
         <div className="fd-track" aria-hidden="true">
           <div className="fd-track-line"><i style={{ width: `${Math.round(ph.progress * 100)}%` }} /></div>
@@ -163,7 +217,7 @@ export default function FlightDeck({ flightId, initialMode, flight: given }) {
         <div className="fd-end fd-end--to">
           <b>{f.to}</b>
           <span className="fd-time">{clock(ph.arr, to.tz)}</span>
-          <small>{f.arrTerminal || to.name} · {f.arrGate || ""}</small>
+          <small>{gates?.destinationTerminal ? `Terminal ${gates.destinationTerminal}` : f.arrTerminal || to.name} · {gates?.destinationGate ? `Gate ${gates.destinationGate}` : f.arrGate || ""}{gates?.baggage ? ` · bags ${gates.baggage}` : ""}</small>
         </div>
       </div>
 
@@ -183,7 +237,7 @@ export default function FlightDeck({ flightId, initialMode, flight: given }) {
             <Polyline positions={line.slice(0, Math.round(ph.progress * (line.length - 1)) + 1)} pathOptions={{ color: "var(--accent)", weight: 3, opacity: 0.95 }} />
             <Marker position={plane} icon={icon} interactive={false} />
           </MapContainer>
-          <span className="fd-map-note">{ph.id === "air" ? "Scheduled position, not radar" : ph.id === "done" || ph.id === "landed" || ph.id === "ground" ? "Landed" : "Waiting at the gate"}</span>
+          <span className="fd-map-note">{livePos ? `Live · ${live.position.source} · ${liveAge != null ? `${liveAge}s ago` : ""}${live.position.altitudeFt != null ? ` · ${Math.round(live.position.altitudeFt).toLocaleString()} ft` : ""}${live.position.groundspeedKts != null ? ` · ${Math.round(live.position.groundspeedKts * 1.15078)} mph` : ""}` : ph.id === "air" ? "Scheduled position, not radar" : ph.id === "done" || ph.id === "landed" || ph.id === "ground" ? "Landed" : "Waiting at the gate"}</span>
         </div>
 
         <div className="fd-side">
@@ -237,7 +291,9 @@ export default function FlightDeck({ flightId, initialMode, flight: given }) {
         })}
       </ol>
       <p className="fd-foot">
-        Times are the booking, or the times you edit on Car &amp; flights once American announces a change. The plane on the map is scheduled progress along the great circle: the open radar feeds refuse requests from a website, so the radar links are the live view.
+        {FLIGHT_RELAY
+          ? "Status, gates, estimated times and position come from FlightAware through the trip's relay, refreshed every minute while the flight is within its day; the booking times are the fallback when the relay is unreachable."
+          : "Times are the booking, or the times you edit on Car & flights once American announces a change. The plane on the map is scheduled progress along the great circle until the relay is deployed; the radar links are the live view."}
       </p>
     </section>
   );

@@ -1,3 +1,8 @@
 
 # Claude Code hook checkpoints (kit, 2026-09-08)
 **/.claude/.state/
+
+# Flight relay secrets and Wrangler state stay local
+relay/.dev.vars
+relay/.wrangler/
+relay/node_modules/

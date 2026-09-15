@@ -1,0 +1,6 @@
+name = "mmt-flight-relay"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+# The AeroAPI key is a secret, never in this file:
+#   npx wrangler secret put AEROAPI_KEY
