@@ -92,7 +92,7 @@ export const BORDER_PORTALS = [
     direction: "Re-entering USA 🇨🇦 ➔ 🇺🇸",
     crossing: "Under Detroit River (Windsor, ON ➔ Downtown Detroit, MI)",
     toll: "CA$8.25 (~$6.05 USD) via card or Tunnel Toll app",
-    clearance: "12 ft 8 in vertical clearance (Mazda CX-50 is 5 ft 8 in)",
+    clearance: "12 ft 8 in vertical clearance (the Sienna is 5 ft 9 in)",
     checklist: [
       "Passports ready for CBP primary inspection booth",
       "Declare Canadian purchases (under $800 USD exemption per person)",

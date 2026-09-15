@@ -104,7 +104,7 @@ function Field({ def, value, onChange }) {
 }
 
 export default function RideView() {
-  const [vehicle, setVehicle] = useLocalState("mi26.vehicle", {});
+  const [vehicle, setVehicle] = useLocalState("mi26.vehicle.v2", { year: "2024+", make: "Toyota", model: "Sienna Hybrid", mpg: "35", plate: "FL" });
   // Key is versioned: the defaults changed from blanks to the real bookings,
   // and a stored v1 would otherwise shadow them forever.
   const [flights, setFlights] = useLocalState("mi26.flights.v2", DEFAULT_FLIGHTS);
@@ -253,21 +253,21 @@ export default function RideView() {
                 At the {mpg} mpg you entered, across {FUEL_BASIS.miles.toLocaleString()}{" "}
                 miles at ${FUEL_BASIS.pricePerGallon.toFixed(2)} a gallon &mdash;{" "}
                 {delta === 0 ? (
-                  "exactly what the CX-50's EPA figure predicted"
+                  "exactly what the Sienna's EPA figure predicted"
                 ) : (
                   <>
                     <b>
                       {delta > 0 ? "+" : "−"}
                       {money(Math.abs(delta))}
                     </b>{" "}
-                    against the CX-50&rsquo;s {FUEL_BASIS.assumedMpg} mpg
+                    against the Sienna&rsquo;s {FUEL_BASIS.assumedMpg} mpg
                   </>
                 )}
                 . The Money page is using this number.
               </>
             ) : (
               <>
-                Using the CX-50&rsquo;s EPA-combined {FUEL_BASIS.assumedMpg} mpg across{" "}
+                Using the Sienna Hybrid&rsquo;s EPA-combined {FUEL_BASIS.assumedMpg} mpg across{" "}
                 {FUEL_BASIS.miles.toLocaleString()} miles at $
                 {FUEL_BASIS.pricePerGallon.toFixed(2)} a gallon. If they hand you
                 something else at the counter, put its mpg above and both this and the

@@ -19,7 +19,7 @@ const SUN_DATA = {
     endHour: 22.5,   // 10:30 PM
     blocks: [
       { start: 13.5, end: 20.35, icon: "✈️", short: "AA 2358 Flight", title: "Flight AA 2358 (SFO → ORD)", detail: "Nonstop from SFO Terminal 2 to Chicago O'Hare Terminal 3", timeStr: "1:29 PM – 8:21 PM CT", duration: "4h 52m", type: "flight" },
-      { start: 20.35, end: 21.25, icon: "🚙", short: "Car Pickup", title: "Budget Rental Pickup", detail: "ATS train out to Multi-Modal Facility; collect Mazda CX-50", timeStr: "8:21 PM – 9:15 PM CT", duration: "54m", type: "anchor" },
+      { start: 20.35, end: 21.25, icon: "🚙", short: "Car Pickup", title: "Budget Rental Pickup", detail: "ATS train out to Multi-Modal Facility; collect the rental (a Toyota Sienna Hybrid)", timeStr: "8:21 PM – 9:15 PM CT", duration: "54m", type: "anchor" },
       { start: 21.25, end: 22.0, icon: "🚗", short: "To Palatine", title: "Drive O'Hare → Palatine", detail: "IL-53 North to Crestwood Lane (15 miles)", timeStr: "9:15 PM – 10:00 PM CT", duration: "45m", type: "drive" },
       { start: 22.0, end: 22.5, icon: "🏠", short: "Palatine Base", title: "Palatine Base", detail: "Drop bags, unpack, and rest up for Tuesday morning", timeStr: "10:00 PM CT onward", duration: "Overnight", type: "stay" },
     ],
@@ -28,10 +28,11 @@ const SUN_DATA = {
     sunrise: "7:20 AM ET",
     sunset: "7:57 PM ET",
     tz: "CT → ET (+1 hr)",
-    startHour: 6.75, // 6:45 AM CT
+    startHour: 6.0, // 6:00 AM CT
     endHour: 21.5,  // 9:30 PM ET
     blocks: [
-      { start: 6.75, end: 11.0, icon: "🚗", short: "To Grand Rapids", title: "Drive to Grand Rapids", detail: "Palatine → I-94 / I-196 (Lose 1 hr at Michigan state line)", timeStr: "6:45 AM CT – 11:00 AM ET", duration: "3h 15m", type: "drive" },
+      { start: 6.0, end: 10.35, icon: "🚗", short: "To Grand Rapids", title: "Drive to Grand Rapids", detail: "Palatine → I-90 / I-94 / I-196 (lose an hour at the Michigan line)", timeStr: "6:00 AM CT – 10:20 AM ET", duration: "3h 20m", type: "drive" },
+      { start: 10.35, end: 11.0, icon: "☕", short: "Buffer", title: "Coffee and a breather in Heritage Hill", detail: "The hour the 6:00 start buys before the 11:00 tour", timeStr: "10:20 – 11:00 AM ET", duration: "40m", type: "food" },
       { start: 11.0, end: 12.5, icon: "🏛️", short: "Meyer May House", title: "Meyer May House Tour", detail: "Free 90-minute Frank Lloyd Wright guided tour in Heritage Hill", timeStr: "11:00 AM – 12:30 PM ET", duration: "1h 30m", type: "anchor" },
       { start: 12.5, end: 13.5, icon: "☕", short: "Schnitz Deli", title: "Schnitz Deli & Heritage Hill", detail: "Classic deli lunch in Eastown & historic architecture walk", timeStr: "12:30 PM – 1:30 PM ET", duration: "1h", type: "food" },
       { start: 13.5, end: 16.5, icon: "🌸", short: "Meijer Gardens", title: "Meijer Gardens & Chihuly", detail: "158-acre sculpture park and indoor tropical conservatories", timeStr: "1:30 PM – 4:30 PM ET", duration: "3h", type: "anchor" },

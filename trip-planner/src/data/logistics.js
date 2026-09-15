@@ -60,9 +60,9 @@ export const AIRPORTS = [
 /** The rental, as booked through Costco Travel. */
 export const RENTAL = {
   company: "Budget",
-  vehicle: "Mazda CX-50 or similar",
-  vehicleClass: "Compact SUV",
-  epaMpg: 26,
+  vehicle: "Toyota Sienna Hybrid (booked as CX-50 or similar; handed over 2026-09-14)",
+  vehicleClass: "Hybrid minivan, 2024 or newer, ~24,000 miles, Florida plates",
+  epaMpg: 35,
   cost: 332.92,
   // money() rounds, and this page is quoting a receipt. Exact string here.
   costExact: "$332.92",
@@ -82,9 +82,9 @@ export const RENTAL = {
  * isn't, and won't be until someone hands over a key at 9pm on the 14th.
  */
 export const VEHICLE_FIELDS = [
-  { key: "year", label: "Year", placeholder: "2026", width: "sm" },
-  { key: "make", label: "Make", placeholder: "Mazda" },
-  { key: "model", label: "Model", placeholder: "CX-50" },
+  { key: "year", label: "Year", placeholder: "2024 or newer", width: "sm" },
+  { key: "make", label: "Make", placeholder: "Toyota" },
+  { key: "model", label: "Model", placeholder: "Sienna Hybrid" },
   {
     key: "colour",
     label: "Colour",
@@ -94,16 +94,16 @@ export const VEHICLE_FIELDS = [
   {
     key: "plate",
     label: "Plate",
-    placeholder: "IL · ABC 1234",
-    why: "Illinois plates are also what makes Belle Isle the $12 non-resident rate rather than free.",
+    placeholder: "FL · ABC 1234",
+    why: "Florida plates: Belle Isle charges the $12 non-Michigan rate either way, and Ontario's border booth will read the plate, so have the rental agreement handy.",
   },
   {
     key: "mpg",
     label: "Combined MPG",
-    placeholder: "26",
+    placeholder: "35",
     width: "sm",
     numeric: true,
-    why: "The CX-50 2.5 S is EPA-rated 26 combined, which is what the Money page is already using. Change it if they hand you something else.",
+    why: "A Sienna Hybrid is EPA-rated 35 combined with AWD, 36 with front drive (EPA, 2025 model year). The Money page uses this figure; change it if the window sticker says otherwise.",
   },
   {
     key: "confirmation",
@@ -122,9 +122,9 @@ export const VEHICLE_FIELDS = [
 
 export const VEHICLE_NOTES = [
   {
-    title: "A CX-50 is the right size for this",
+    title: "A Sienna Hybrid is more car than you booked, and it helps",
     body:
-      "Compact SUV, 26 mpg combined, 15.9-gallon tank — about 410 miles a fill, so the two 300-mile days need one fuel stop each and neither is awkward. Three adults and seven nights of luggage fit without anyone negotiating.",
+      "Hybrid minivan, 35 mpg combined, 18-gallon tank: about 630 miles a fill, so no 300-mile day needs a fuel stop at all and the whole trip is roughly 41 gallons. Three adults and seven nights of luggage vanish behind the third row. It is 68.5 inches tall and 17 feet long: fine for every garage and the tunnel, mind the Mackinaw City motel lot.",
   },
   {
     title: "Nine at night, at an airport counter, after six hours in the air",
@@ -134,7 +134,7 @@ export const VEHICLE_NOTES = [
   {
     title: "The tunnel is not a constraint",
     body:
-      "An earlier version of this app told you to check the car's height against the Detroit–Windsor Tunnel. Clearance there is 12 feet 8 inches. A CX-50 is under six.",
+      "An earlier version of this app told you to check the car's height against the Detroit–Windsor Tunnel. Clearance there is 12 feet 8 inches. A Sienna is 5 feet 9.",
   },
   {
     title: "Photograph it in the garage before you drive off",
@@ -232,7 +232,7 @@ export const RUN_INBOUND = [
   { at: "8:45 PM CDT", what: "Board Automated ATS Train to MMF", detail: "Free 24/7 automated train. 9–11 minute direct ride to the Multi-Modal Facility (MMF)." },
   { at: "9:00 PM CDT", what: "Budget Rental Counter (Level 1 MMF)", detail: "Fastbreak desk. Key request: 'Please issue the free Canadian Non-Resident Insurance Card for Ontario.'" },
   { at: "9:25 PM CDT", what: "Vehicle Inspection & Departure", detail: "Photograph all panels, odometer, and full tank in garage. Exit Zemke Blvd to I-90 West." },
-  { at: "10:00 PM CDT", what: "Arrive Palatine (2020 Crestwood Ln)", detail: "Drop bags, decompress, and rest for Tuesday morning's 6:45 AM departure to Grand Rapids." },
+  { at: "10:00 PM CDT", what: "Arrive Palatine (2020 Crestwood Ln)", detail: "Drop bags, decompress, and rest for Tuesday morning's 6:00 AM departure to Grand Rapids." },
 ];
 
 /**
@@ -283,7 +283,7 @@ export const FLIGHT_RUNWAYS = {
     { date: "2026-09-14", time: "20:45", tz: "America/Chicago", zone: "CDT", what: "ATS train to the Multi-Modal Facility", detail: "Automated, free, every 3–5 minutes; 9–11 minutes to the MMF." },
     { key: "counter", date: "2026-09-14", time: "21:00", tz: "America/Chicago", zone: "CDT", what: "Budget counter, MMF level 1", detail: "Say it verbatim: 'Please issue the free Canadian Non-Resident Insurance Card for Ontario driving.'", type: "warn" },
     { date: "2026-09-14", time: "21:25", tz: "America/Chicago", zone: "CDT", what: "Garage inspection, then roll", detail: "Photograph every panel, the wheels, the odometer and the fuel gauge. Zemke Blvd to I-90 West, IL-53 North." },
-    { date: "2026-09-14", time: "22:00", tz: "America/Chicago", zone: "CDT", what: "Palatine, 2020 Crestwood Lane", detail: "Drop bags and sleep: Tuesday leaves at 6:45 AM for Grand Rapids." },
+    { date: "2026-09-14", time: "22:00", tz: "America/Chicago", zone: "CDT", what: "Palatine, 2020 Crestwood Lane", detail: "Drop bags and sleep: Tuesday leaves by 6:00 AM for Grand Rapids." },
   ],
   back: [
     { date: "2026-09-21", time: "07:30", tz: "America/Detroit", zone: "EDT", what: "Leave Belleville on I-94 West", detail: "Earlier is better than later; this is the hardest deadline of the trip." },

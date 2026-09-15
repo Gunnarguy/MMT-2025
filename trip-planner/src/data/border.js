@@ -113,7 +113,7 @@ export const BORDER = {
       status: "At pickup",
       statusTone: "ok",
       body:
-        "When picking up the Mazda CX-50 at O'Hare MMF, let the Budget agent know you will drive into Ontario for one night. They will issue the standard Canadian Non-Resident Insurance Card.",
+        "When picking up the rental (the Sienna Hybrid) at O'Hare MMF, let the Budget agent know you will drive into Ontario for one night. They will issue the standard Canadian Non-Resident Insurance Card.",
       source: "Budget — Travel Into Other Countries terms",
       sourceUrl: "https://www.budget.com/en/help/usa-faqs/cross-into-canada",
     },

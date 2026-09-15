@@ -4,7 +4,7 @@ import { directionsHref } from "../../lib/format";
 /**
  * Fuel & Mileage Planner Component.
  *
- * Planning example using a Mazda CX-50's 15.9-gallon tank and 26 MPG fuel economy,
+ * Planning example using the Sienna Hybrid's 18-gallon tank and 35 MPG fuel economy,
  * detailing the strategic gas stations across the road trip.
  */
 export default function FuelPlanner({ dayId = null }) {

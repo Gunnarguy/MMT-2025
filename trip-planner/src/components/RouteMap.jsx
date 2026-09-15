@@ -969,7 +969,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             })}
           >
             <Popup maxWidth={320} maxHeight={360} autoPanPadding={[24, 24]}>
-              <b>{isVehicleFlying ? "AA 2358 in Flight" : "Mazda CX-50 Cruising"}</b>
+              <b>{isVehicleFlying ? "AA 2358 in Flight" : "Sienna Hybrid cruising"}</b>
               <br />
               Trip Progress: {Math.round(playProgress)}%
               <p>Route playback preview · not your GPS location or live vehicle tracking.</p>

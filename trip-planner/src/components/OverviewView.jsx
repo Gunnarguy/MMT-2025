@@ -364,7 +364,7 @@ export default function OverviewView({ onGo }) {
               ⛽ Fuel &amp; Cruising Range Planner
             </h3>
             <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)" }}>
-              Mazda CX-50 15.9-gallon fuel tank, 26 MPG combined, and the 4 strategic refueling stops across the 1,430 miles.
+              Toyota Sienna Hybrid: 18-gallon tank, 35 MPG combined, about 630 miles a fill, and the suggested refueling stops across the 1,430 miles.
             </p>
           </button>
         </div>

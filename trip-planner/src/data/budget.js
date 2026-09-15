@@ -58,7 +58,7 @@ export const BUDGET = {
     // ── Transport ──────────────────────────────────────────────────────────
     {
       label: "Budget rental car, 8 days",
-      note: "Reserved through Costco Travel — Mazda CX-50 or similar, $10 off plus member savings. Pick-up Monday 9/14 9pm at O'Hare, return Monday 9/21 at O'Hare.",
+      note: "Reserved through Costco Travel as a CX-50 or similar; a Toyota Sienna Hybrid was handed over. $10 off plus member savings. Pick-up Monday 9/14 9pm at O'Hare, return Monday 9/21 at O'Hare.",
       category: "Transport",
       total: 332.92,
       payer: "mom",
@@ -67,7 +67,7 @@ export const BUDGET = {
       // `id` so budgetTotals can recompute this line once the car is known.
       id: "fuel",
       label: "Fuel",
-      note: "≈1,430 miles at the CX-50's EPA-combined 26 mpg and a blended $4.10/gal.",
+      note: "≈1,430 miles at the Sienna Hybrid's EPA-combined 35 mpg and a blended $4.10/gal.",
       category: "Transport",
       // Always overwritten by budgetTotals(); kept in sync for anyone reading
       // this file directly.
@@ -220,9 +220,9 @@ export const BUDGET = {
 export const FUEL_BASIS = {
   miles: 1430,
   pricePerGallon: 4.1,
-  // The booked class is a Mazda CX-50 or similar: EPA 24 city / 30 highway /
-  // 26 combined. Overridden the moment a real car is entered on the Car page.
-  assumedMpg: 26,
+  // The car handed over on 2026-09-14 is a Toyota Sienna Hybrid: EPA 35 combined
+  // (AWD; 36 FWD). Overridden the moment a different mpg is entered on the Car page.
+  assumedMpg: 35,
 };
 
 export function fuelEstimate(mpg) {

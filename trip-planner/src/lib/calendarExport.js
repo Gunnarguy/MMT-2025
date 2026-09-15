@@ -20,7 +20,7 @@ export const CALENDAR_EVENTS = [
     description: "Wheels down 8:21 PM CDT. Take ATS people-mover train out to Multi-Modal Facility for rental car.",
   },
   {
-    title: "Budget Rental Car Pickup (Mazda CX-50)",
+    title: "Budget Rental Car Pickup (Toyota Sienna Hybrid)",
     date: "2026-09-14",
     start: "21:00",
     end: "21:45",

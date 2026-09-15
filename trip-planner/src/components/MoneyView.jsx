@@ -18,7 +18,7 @@ export default function MoneyView() {
   const [includeProvisional, setIncludeProvisional] = useState(false);
   // The car isn't assigned yet. If its mpg has been entered on the Car &
   // flights page, the Fuel line below is computed from it rather than guessed.
-  const [vehicle] = useLocalState("mi26.vehicle", {});
+  const [vehicle] = useLocalState("mi26.vehicle.v2", { mpg: "35" });
   const mpg = vehicle?.mpg;
 
   const {

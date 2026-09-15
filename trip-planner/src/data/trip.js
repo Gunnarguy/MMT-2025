@@ -66,8 +66,8 @@ export const DAYS = [
       },
       {
         level: "info",
-        title: "Tuesday 6:45 AM departure",
-        body: "Leaving Palatine at 6:45 AM Central provides a full night's rest after Monday night's flight and puts you in Grand Rapids for the 11:30 AM Meyer May tour.",
+        title: "Tuesday 6:00 AM departure",
+        body: "Leaving Palatine by 6:00 AM Central (Gunnar's call, 2026-09-14) puts you in Grand Rapids around 10:20 Eastern, an hour ahead of the 11:30 AM Meyer May tour.",
       },
     ],
     legs: [
@@ -114,7 +114,7 @@ export const DAYS = [
         cost: "$332.92 total",
         phone: "773-825-4600",
         blurb:
-          "Mazda CX-50 AWD reserved through Costco Travel. Multi-Modal Facility Level 1 counter is open 24 hours.",
+          "Booked as a Mazda CX-50 or similar; handed over as a Toyota Sienna Hybrid (2024 or newer, ~24k miles, Florida plates). Multi-Modal Facility Level 1 counter is open 24 hours.",
         tips: [
           "ATS Transit: Board ATS people-mover at Terminal 3; ride 9–11 mins to MMF station. Free 24/7.",
           "Verbatim Canada request: 'Please issue the free Canadian Non-Resident Insurance Card for Ontario driving.'",
@@ -165,7 +165,7 @@ export const DAYS = [
         at: 0,
         minutes: 200,
         miles: 210,
-        note: "I-90 to I-94 around the bottom of the lake, then I-196. You lose an hour to Eastern time — leave 6:45am CT after a 10pm Monday arrival, in Grand Rapids just after 11:00am ET",
+        note: "I-90 to I-94 around the bottom of the lake, then I-196. You lose an hour to Eastern time — leave by 6:00am CT after a late Monday arrival, in Grand Rapids just after 11:00am ET",
       },
       {
         label: "Grand Rapids → Ludington",
@@ -1091,7 +1091,7 @@ SLEEP HERE: Sheraton Four Points 1498 Venetian Boulevard Pt Edward, Ph 519.336.4
         status: "booked",
         duration: "Return car by 1:00 PM Central",
         blurb:
-          "Return Budget CX-50 at O'Hare MMF by 1:00 PM, take ATS train to Terminal 3, check bags, and clear TSA for the 3:20 PM flight to SFO (AA 1253). Gunnar in 22E (QPJBXO) & Mikaela in 22D (YBEEOU).",
+          "Return the Budget Sienna at O'Hare MMF by 1:00 PM, take ATS train to Terminal 3, check bags, and clear TSA for the 3:20 PM flight to SFO (AA 1253). Gunnar in 22E (QPJBXO) & Mikaela in 22D (YBEEOU).",
         tips: [
           "1:00 PM Car Return: Budget MMF return at 10255 W. Zemke Blvd. Top off at Shell Touhy Ave prior.",
           "ATS People-Mover: MMF station to Terminal 3 runs every 3–5 min, 10 min transit time directly to T3.",

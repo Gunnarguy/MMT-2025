@@ -60,11 +60,11 @@ export default function PackView() {
       <section className="section">
         <div className="trunk-fit-card">
           <div className="trunk-fit-head">
-            <b>🚙 Mazda CX-50 Trunk Cargo &amp; Fit Guide</b>
-            <span className="trunk-stat">31.4 cu ft flat load space</span>
+            <b>🚐 Sienna Hybrid cargo</b>
+            <span className="trunk-stat">33.5 cu ft behind the third row</span>
           </div>
           <p style={{ fontSize: "var(--t-xs)", color: "var(--ink-2)", margin: 0 }}>
-            Optimized for 3 passengers: The wide cargo floor accommodates <b>3 standard 22&Prime; carry-on rollaboards</b> side-by-side on their sides, plus <b>3 daypacks and a warm fleece tote</b> on top. All gear stays below the rear seatback line, keeping luggage out of view at public trailhead parking lots.
+            Three people in a seven-seat van: the deep well behind the third row swallows <b>three 22&Prime; carry-ons standing up</b> plus the daypacks, out of sight at trailhead lots. Drop one third-row seat into the floor if the fudge boxes get out of hand.
           </p>
         </div>
 

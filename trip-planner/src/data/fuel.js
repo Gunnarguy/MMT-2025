@@ -3,15 +3,15 @@
 // Station sources were checked September 13, 2026. Pins are approximate forecourt locations.
 export const FUEL_PLAN_NOTE = "Suggested fuel stops, not live fuel tracking. Your actual rental, starting fuel, detours and driving change the range. Check the dashboard and current station hours; prices and pump availability are not monitored.";
 export const FUEL_SPECS = {
-  "vehicle": "Mazda CX-50 (or similar booked midsize AWD crossover)",
-  "tankCapacityGallons": 15.9,
-  "epaCombinedMpg": 26,
-  "epaCityMpg": 24,
-  "epaHighwayMpg": 30,
-  "maxRangeMiles": 413,
-  "safeRefuelRangeMiles": 340,
+  "vehicle": "Toyota Sienna Hybrid (the car actually handed over 2026-09-14; EPA 35 combined AWD / 36 FWD, 18 gal, 2025 model-year rating)",
+  "tankCapacityGallons": 18,
+  "epaCombinedMpg": 35,
+  "epaCityMpg": 35,
+  "epaHighwayMpg": 36,
+  "maxRangeMiles": 630,
+  "safeRefuelRangeMiles": 500,
   "totalTripMiles": 1430,
-  "estimatedGallonsTotal": 55,
+  "estimatedGallonsTotal": 41,
   "blendedUsdPerGallon": 3.65,
   "ontarioCadPerLiter": 1.62
 };
