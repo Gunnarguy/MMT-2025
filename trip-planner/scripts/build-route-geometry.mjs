@@ -34,6 +34,7 @@ const P = {
   traverseCity: [-85.6206, 44.7631],
   charlevoix: [-85.2584, 45.3178],
   petoskey: [-84.9553, 45.3733],
+  skybridge: [-84.9292, 45.1616],
   harborSprings: [-84.9917, 45.4314],
   crossVillage: [-85.0331, 45.6392],
   mackinawCity: [-84.7278, 45.7775],
@@ -61,7 +62,7 @@ const DAYS = [
     // as of August 2026 that road is closed in two segments with no announced
     // reopening, so routing the map through it would draw a line nobody can
     // drive. The alternate below is kept so the app can show both if it reopens.
-    waypoints: [P.traverseCity, P.charlevoix, P.petoskey, P.mackinawCity],
+    waypoints: [P.traverseCity, P.charlevoix, P.skybridge, P.petoskey, P.mackinawCity],
   },
   {
     id: "d3-alt-tunnel",

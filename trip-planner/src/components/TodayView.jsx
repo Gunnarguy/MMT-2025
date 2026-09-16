@@ -240,7 +240,6 @@ function DayBody({ day }) {
 
       {(day.id === "d0" || day.id === "d7") && <FlightRunway initialMode={day.id === "d0" ? "inbound" : "return"} />}
       <TripForecast dayId={day.id} compact />
-      {day.id === "d3" && <a className="trip-option-link" href="#/day/d3">Thinking about SkyBridge instead of Charlevoix? Compare the three Thursday routes &rarr;</a>}
 
       {(day.flags || []).map((f) => (
         <Flag key={f.title} level={f.level} title={f.title}>{f.body}</Flag>
@@ -306,7 +305,6 @@ function Countdown({ out }) {
       </header>
 
       <TripForecast compact />
-      <a className="trip-option-link" href="#/day/d3">Explore Thursday: Traverse City → SkyBridge → Mackinaw City →</a>
 
       <section>
         <h2 className="tv-h2">
