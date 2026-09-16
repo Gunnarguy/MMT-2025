@@ -66,16 +66,19 @@ const SUN_DATA = {
     sunrise: "7:21 AM ET",
     sunset: "7:48 PM ET",
     tz: "ET",
-    startHour: 8.5, // 8:30 AM ET
-    endHour: 21.5, // 9:30 PM ET
+    startHour: 8.5,
+    endHour: 21.0,
     blocks: [
-      { start: 8.5, end: 10.0, icon: "🚗", short: "To Charlevoix", title: "Drive to Charlevoix", detail: "US-31 North along East Grand Traverse Bay (50 miles)", timeStr: "8:30 AM – 10:00 AM ET", duration: "1h 30m", type: "drive" },
-      { start: 10.0, end: 11.5, icon: "🍄", short: "Mushroom Houses", title: "Mushroom Houses & Channel", detail: "Earl Young boulder stone houses and Pine River drawbridge", timeStr: "10:00 AM – 11:30 AM ET", duration: "1h 30m", type: "anchor" },
-      { start: 11.5, end: 12.25, icon: "🚗", short: "To Petoskey", title: "Drive to Petoskey", detail: "US-31 along Little Traverse Bay (18 miles)", timeStr: "11:30 AM – 12:15 PM ET", duration: "45m", type: "drive" },
-      { start: 12.25, end: 14.5, icon: "🪨", short: "Gaslight District", title: "Gaslight Lunch & Magnus Beach", detail: "Victorian downtown dining & Petoskey stone shoreline hunt", timeStr: "12:15 PM – 2:30 PM ET", duration: "2h 15m", type: "anchor" },
-      { start: 14.5, end: 16.5, icon: "🚗", short: "To Mackinaw City", title: "Drive to Mackinaw City", detail: "North to the Straits of Mackinac (37 miles)", timeStr: "2:30 PM – 4:30 PM ET", duration: "2h", type: "drive" },
-      { start: 16.5, end: 19.5, icon: "🌅", short: "Bridge Sunset", title: "Dinner & Bridge Sunset", detail: "Lakeside Park sunset view behind Mackinac Bridge (7:48 PM)", timeStr: "4:30 PM – 7:30 PM ET", duration: "3h", type: "sunset" },
-      { start: 19.5, end: 21.5, icon: "🏨", short: "Lighthouse View", title: "Lighthouse View Motel", detail: "Check into Straits waterfront motel overlooking the bridge", timeStr: "7:30 PM ET onward", duration: "Overnight", type: "stay" },
+      { start: 8.5, end: 9.75, icon: "🚗", short: "To Charlevoix", title: "Traverse City to Charlevoix", detail: "US-31 north along the bay, 50 miles", timeStr: "8:30 – 9:45 AM", duration: "1h 15m", type: "drive" },
+      { start: 9.75, end: 11.25, icon: "🍄", short: "Charlevoix", title: "Mushroom Houses, Bridge Street, the channel", detail: "Boulder Park, then the drawbridge lift at :00 or :30 and the pier", timeStr: "9:45 – 11:15 AM", duration: "1h 30m", type: "anchor" },
+      { start: 11.25, end: 11.75, icon: "🚗", short: "To Petoskey", title: "Charlevoix to Petoskey", detail: "US-31 around Little Traverse Bay, 17 miles", timeStr: "11:15 – 11:45 AM", duration: "30m", type: "drive" },
+      { start: 11.75, end: 12.75, icon: "🍽️", short: "Gaslight lunch", title: "Lunch in the Gaslight District", detail: "Victorian downtown on the bluff", timeStr: "11:45 AM – 12:45 PM", duration: "1h", type: "food" },
+      { start: 12.75, end: 13.5, icon: "🪨", short: "Magnus Park", title: "Petoskey stones at Magnus Park", detail: "Wet stones show the pattern; spray bottle", timeStr: "12:45 – 1:30 PM", duration: "45m", type: "anchor" },
+      { start: 13.5, end: 14.5, icon: "🚗", short: "To Mackinaw City", title: "Petoskey to Mackinaw City", detail: "US-31 to I-75 north, 36 miles", timeStr: "1:30 – 2:30 PM", duration: "1h", type: "drive" },
+      { start: 14.5, end: 17.75, icon: "🏨", short: "Lighthouse View", title: "Check in, the bridge, the water", detail: "Two nights; nothing scheduled this afternoon", timeStr: "2:30 – 5:45 PM", duration: "3h 15m", type: "stay" },
+      { start: 17.75, end: 19.25, icon: "🍽️", short: "Dinner", title: "Dinner in town", detail: "Audie's or the Dixie Saloon; call the day of", timeStr: "5:45 – 7:15 PM", duration: "1h 30m", type: "food" },
+      { start: 19.25, end: 20.25, icon: "🌅", short: "Bridge sunset", title: "Sunset behind the bridge", detail: "Lakeside Park, 7:48 PM", timeStr: "7:15 – 8:15 PM", duration: "1h", type: "sunset" },
+      { start: 20.25, end: 21.0, icon: "🛏️", short: "Motel", title: "Early night", detail: "Ferry tomorrow morning", timeStr: "8:15 PM onward", duration: "Overnight", type: "stay" },
     ],
   },
   d4: {
