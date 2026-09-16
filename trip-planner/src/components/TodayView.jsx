@@ -292,7 +292,7 @@ export default function TodayView({ forcedDayId }) {
     <div className="tv" style={style}>
       <header className="tv-head">
         <div className="eyebrow">
-          {forcedDayId && !live ? "Preview · not today" : "Today"} · {day.index === 0 ? "Arrival night" : `Day ${day.index} of 7`}
+          {forcedDayId && forcedDayId !== live?.id ? "Preview · not today" : "Today"} · {day.index === 0 ? "Arrival night" : `Day ${day.index} of 7`}
         </div>
         <h1>{day.title}</h1>
         <div className="tv-date">{longDate(day.date)}</div>
