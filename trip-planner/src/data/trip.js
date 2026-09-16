@@ -1174,7 +1174,7 @@ export const HIGHLIGHTS = [
     when: "Wednesday",
     title: "A 450-foot wall of sand",
     body:
-      "The Lake Michigan Overlook at Sleeping Bear drops straight into the water. Climb the first dune, then have the sense to turn around.",
+      "The Lake Michigan Overlook at Sleeping Bear drops straight into the water. You drive to it; nobody is climbing anything.",
     tag: "$25 per car",
   },
   {
