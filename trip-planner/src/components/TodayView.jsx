@@ -6,6 +6,7 @@ import { outstandingLooseEnds } from "../data/looseEnds";
 import { duration, longDate, daysUntil, parseDay } from "../lib/format";
 import { Chip, Flag, ActionRow } from "./bits";
 import { timeline } from "./DayPanel";
+import RouteMap from "./RouteMap";
 import TripForecast from "./TripForecast";
 import FlightRunway from "./visuals/FlightRunway";
 import { useTripWeather } from "../hooks/useTripWeather";
@@ -75,39 +76,118 @@ export function punchList(checked = {}) {
   return { before: all.filter((i) => i.now), onDay: all.filter((i) => !i.now) };
 }
 
-function Leg({ leg }) {
+/** The first " · " segment of a stop's `where` is its clock time or its condition. */
+const timeOf = (stop) => (stop.where || "").split(" · ")[0];
+
+const KIND_WORD = {
+  anchor: "Main event",
+  food: "Food",
+  sight: "Worth a look",
+  optional: "Optional",
+  lodging: "Tonight",
+};
+
+/**
+ * One row per stop, closed by default. The summary line is the whole plan
+ * (time, name, one chip); everything research added lives behind the tap.
+ * Mom's own items carry a star so she can see her list is the spine of the day.
+ */
+function GlanceStop({ stop, open }) {
+  const optional = stop.kind === "optional";
   return (
-    <li className="tv-leg">
-      <span className="tv-leg-time">{duration(leg.minutes)}</span>
-      <div>
-        <b>{leg.label}</b>
-        {leg.miles ? <span className="tv-leg-mi"> · {leg.miles} mi</span> : null}
-        {leg.note && <div className="tv-note">{leg.note}</div>}
-      </div>
+    <li className={`tvg${optional ? " tvg--optional" : ""}`}>
+      <details open={open || undefined}>
+        <summary>
+          <span className="tvg-time">{timeOf(stop)}</span>
+          <span className="tvg-main">
+            <span className="tvg-name">{stop.name}</span>
+            <span className="tvg-meta">
+              {stop.fromMom && <span className="tvg-mom">★ Mom&rsquo;s list</span>}
+              {KIND_WORD[stop.kind] && <span className="tvg-kind">{KIND_WORD[stop.kind]}</span>}
+              {stop.status === "check" && <Chip tone="warn">Call ahead</Chip>}
+              {stop.status === "booked" && <Chip tone="locked">Booked</Chip>}
+            </span>
+          </span>
+          <span className="tvg-caret" aria-hidden="true">›</span>
+        </summary>
+        <div className="tvg-body">
+          {stop.where && <div className="tv-where">{stop.where}</div>}
+          {stop.blurb && <div className="tv-note">{stop.blurb}</div>}
+          {stop.hours && <div className="tv-note"><b>Hours:</b> {stop.hours}</div>}
+          {stop.cost && <div className="tv-note"><b>Cost:</b> {stop.cost}</div>}
+          {stop.tips && stop.tips.length > 0 && (
+            <ul className="tv-tips">
+              {stop.tips.map((t, idx) => <li key={idx}>{t}</li>)}
+            </ul>
+          )}
+          <ActionRow phone={stop.phone} mapQuery={stop.address} url={stop.url} urlLabel={stop.urlLabel} />
+        </div>
+      </details>
     </li>
   );
 }
 
-function Stop({ stop }) {
+function GlanceLeg({ leg }) {
   return (
-    <li className="tv-stop">
-      <span className="tv-dot" aria-hidden="true" />
-      <div>
-        <div className="tv-stop-head">
-          <b>{stop.name}</b>
-          {stop.status && <Chip tone={stop.status === "booked" || stop.status === "confirmed" ? "locked" : "ghost"}>{stop.status}</Chip>}
-        </div>
-        {stop.where && <div className="tv-where">{stop.where}</div>}
-        {stop.hours && <div className="tv-note">Hours: {stop.hours}</div>}
-        {stop.blurb && <div className="tv-note">{stop.blurb}</div>}
-        {stop.tips && stop.tips.length > 0 && (
-          <ul className="tv-tips">
-            {stop.tips.map((t, idx) => <li key={idx}>{t}</li>)}
-          </ul>
-        )}
-        <ActionRow phone={stop.phone} mapQuery={stop.address} url={stop.url} />
-      </div>
+    <li className="tvg-leg">
+      <span className="tvg-time">{duration(leg.minutes)}</span>
+      <span className="tvg-legtext">
+        🚗 {leg.label}{leg.miles ? ` · ${leg.miles} mi` : ""}
+      </span>
     </li>
+  );
+}
+
+/** The whole day as one Google Maps route: origin, every routed stop, tonight's bed. */
+function wholeDayHref(day) {
+  const routed = (day.stops || []).filter(
+    (s) => s.address && !["optional", "admin", "lodging"].includes(s.kind) && s.id !== "d2-sunset",
+  );
+  const bed = day.sleep?.address || day.sleep?.city || HOME.address;
+  if (!day.legFrom || routed.length === 0) return null;
+  const wp = routed.slice(0, 9).map((s) => encodeURIComponent(s.address)).join("|");
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(day.legFrom)}&destination=${encodeURIComponent(bed)}&waypoints=${wp}&travelmode=driving`;
+}
+
+function shareText(day) {
+  const lines = (day.stops || [])
+    .filter((s) => s.kind !== "admin")
+    .map((s) => `${timeOf(s)} · ${s.name}${s.kind === "optional" ? " (optional)" : ""}`);
+  return `${longDate(day.date)} · ${day.title}\n${day.route}\n\n${lines.join("\n")}\n\n${window.location.href}`;
+}
+
+function DayGlance({ day }) {
+  const items = timeline(day).filter((it) => it.type === "leg" || it.stop.kind !== "admin");
+  const nav = wholeDayHref(day);
+  const share = () => {
+    const text = shareText(day);
+    if (navigator.share) navigator.share({ title: day.title, text }).catch(() => {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
+  };
+  return (
+    <section className="tv-glance">
+      <div className="tv-glance-head">
+        <div>
+          <div className="eyebrow">The day, in order</div>
+          <div className="tv-note">Tap any stop for hours, tips and directions. ★ marks what came straight off Mom&rsquo;s list.</div>
+        </div>
+      </div>
+      <ol className="tvg-list">
+        {items.map((it) =>
+          it.type === "leg" ? <GlanceLeg key={it.key} leg={it.leg} /> : <GlanceStop key={it.key} stop={it.stop} />,
+        )}
+      </ol>
+      <div className="actions tv-glance-actions">
+        {nav && (
+          <a className="action action--nav" href={nav} target="_blank" rel="noreferrer">
+            <span aria-hidden="true">🧭</span> Navigate the whole day
+          </a>
+        )}
+        <button type="button" className="action action--web" onClick={share}>
+          <span aria-hidden="true">📤</span> Share this day
+        </button>
+      </div>
+    </section>
   );
 }
 
@@ -143,7 +223,6 @@ function Tonight({ day }) {
 }
 
 function DayBody({ day }) {
-  const items = timeline(day);
   const fuel = FUEL_STOPS.filter((f) => f.dayId === day.id);
   const next = DAYS[DAYS.indexOf(day) + 1];
   const nextLeg = next?.legs?.[0];
@@ -156,6 +235,14 @@ function DayBody({ day }) {
         {day.sunset && <div><b>{day.sunset}</b><span>sunset</span></div>}
       </div>
 
+      {day.mapped !== false && (
+        <div className="tv-map">
+          <RouteMap focusDayId={day.id} height="clamp(240px, 40vh, 400px)" compact minimal />
+        </div>
+      )}
+
+      <DayGlance day={day} />
+
       {(day.id === "d0" || day.id === "d7") && <FlightRunway initialMode={day.id === "d0" ? "inbound" : "return"} />}
       <TripForecast dayId={day.id} compact />
       {day.id === "d3" && <a className="trip-option-link" href="#/day/d3">Thinking about SkyBridge instead of Charlevoix? Compare the three Thursday routes &rarr;</a>}
@@ -164,11 +251,6 @@ function DayBody({ day }) {
         <Flag key={f.title} level={f.level} title={f.title}>{f.body}</Flag>
       ))}
 
-      <ol className="tv-rail">
-        {items.map((it) =>
-          it.type === "leg" ? <Leg key={it.key} leg={it.leg} /> : <Stop key={it.key} stop={it.stop} />,
-        )}
-      </ol>
 
       {fuel.map((f) => (
         <div key={f.id} className="tv-fuel">

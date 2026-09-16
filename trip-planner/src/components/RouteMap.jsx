@@ -207,7 +207,7 @@ function defaultVisible(focusDayId) {
   return focusDayId ? new Set([focusDayId]) : new Set(DAYS.map((d) => d.id));
 }
 
-export default function RouteMap({ focusDayId = null, height, compact = false }) {
+export default function RouteMap({ focusDayId = null, height, compact = false, minimal = false }) {
   const [visible, setVisible] = useState(() => defaultVisible(focusDayId));
   const [showFlight, setShowFlight] = useState(focusDayId === "d0");
   const [isExpanded, setIsExpanded] = useState(false);
@@ -232,7 +232,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
   });
 
   const [zoomLevel, setZoomLevel] = useState(6);
-  const [everySpot, setEverySpot] = useState(false);
+  const [everySpot, setEverySpot] = useState(minimal);
 
   // Playback Simulator State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -526,7 +526,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
     <>
       <div className={`mapwrap${everySpot ? " every-spot" : ""}${zoomLevel < 10 ? " map-overview" : ""}${isExpanded ? " is-expanded" : ""}`} ref={wrapRef} role={isExpanded ? "dialog" : undefined} aria-modal={isExpanded || undefined} aria-label="Trip route map">
           {/* Floating HUD & Map Controls Overlay */}
-          <div className="map-hud-bar">
+          {!minimal && <div className="map-hud-bar">
         {hudStats && (
           <div className="map-hud-card">
             <span className="map-hud-title">{hudStats.title}</span>
@@ -580,7 +580,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             </button>
           )}
         </div>
-      </div>
+      </div>}
 
       {!compact && <label className="map-day-picker">Show on map
         <select aria-label="Map day" value={visible.size === 1 ? [...visible][0] : "all"} onChange={(e) => setVisible(new Set(e.target.value === "all" ? DAYS.map((d) => d.id) : [e.target.value]))}>
@@ -588,15 +588,15 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           {DAYS.map((d) => <option key={d.id} value={d.id}>{shortDate(d.date)} · {d.title}</option>)}
         </select>
       </label>}
-      <div className="map-view-picker" role="group" aria-label="Map display">
+      {!minimal && <div className="map-view-picker" role="group" aria-label="Map display">
         <button type="button" aria-pressed={!everySpot} onClick={() => setEverySpot(false)}>Nearby groups</button>
         <button type="button" aria-pressed={everySpot} onClick={() => setEverySpot(true)}>Every spot</button>
         <button type="button" onClick={() => {
           const map = mapRef.current;
           if (map && points.length) map.fitBounds(points.map(p => p.layer.getLatLng()), { padding: [65, 75], maxZoom: 14, animate: false });
         }}>Fit all spots</button>
-      </div>
-      <div className="map-reading-key"><span>● Stop</span><span>🍴 Food</span><span>🛏 Hotel</span><span>⛽ Fuel</span><span>{everySpot ? "Every point is shown. Zoom for names; search for overlapping spots." : "Tap a group to see its spots →"}</span></div>
+      </div>}
+      {!minimal && <div className="map-reading-key"><span>● Stop</span><span>🍴 Food</span><span>🛏 Hotel</span><span>⛽ Fuel</span><span>{everySpot ? "Every point is shown. Zoom for names; search for overlapping spots." : "Tap a group to see its spots →"}</span></div>}
       <div className="map-canvas-frame">
       <MapContainer
         center={HOME.coords}
@@ -1055,7 +1055,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
       )}
       </div>
 
-      <details className="map-playback"><summary>Route playback</summary>
+      {!minimal && <details className="map-playback"><summary>Route playback</summary>
       <div className="playback-deck">
         <div className="playback-deck-controls">
           <button
@@ -1108,7 +1108,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
             {Math.round(playProgress)}% · {Math.round((playProgress / 100) * 1430)} mi
           </span>
         </div>
-      </div></details>
+      </div></details>}
 
       {/* Layer Filter Pills */}
       {!compact && (
@@ -1256,8 +1256,8 @@ export default function RouteMap({ focusDayId = null, height, compact = false })
           </button>
         </div>
       )}
-      <PointFinder points={points} query={pointQuery} onQuery={setPointQuery} onSelect={selectPoint} />
-      <p className="map-access-note">Switch to Every spot to remove groups. Fit all spots brings every active point into view. Tap a pin for full details. Nearby pins may overlap at a wide zoom; Find a map point reaches each one. Routes and points work offline once the guide is saved; street and satellite detail needs a connection or previously viewed tiles.</p>
+      {!minimal && <PointFinder points={points} query={pointQuery} onQuery={setPointQuery} onSelect={selectPoint} />}
+      {!minimal && <p className="map-access-note">Switch to Every spot to remove groups. Fit all spots brings every active point into view. Tap a pin for full details. Nearby pins may overlap at a wide zoom; Find a map point reaches each one. Routes and points work offline once the guide is saved; street and satellite detail needs a connection or previously viewed tiles.</p>}
     </div>
 
     {/* When a day is isolated on the map, show that day's featured infographics below the map */}

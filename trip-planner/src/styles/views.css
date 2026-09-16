@@ -1141,3 +1141,34 @@
 .daytools > .section-lede { max-width: var(--measure); color: var(--ink-2); font-size: var(--t-sm); margin-bottom: var(--s-3); }
 .tv-tips { margin: 0.25rem 0 0.4rem 1.1rem; padding: 0; font-size: var(--t-sm); color: var(--ink-3); line-height: 1.5; display: grid; gap: 0.2rem; }
 .tv-tips li::marker { color: var(--day, var(--accent)); }
+
+/* ── Today: map first, then the day as one tappable list ─────────────── */
+.tv-map { margin: 0 0 var(--s-4); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+.tv-glance { margin: var(--s-4) 0; }
+.tv-glance-head { margin-bottom: var(--s-3); }
+.tvg-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.tvg details { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-sm); }
+.tvg details[open] { border-color: var(--day, var(--accent)); }
+.tvg summary { list-style: none; display: grid; grid-template-columns: 4.6rem 1fr 1.2rem; align-items: center; gap: var(--s-3); min-height: 44px; padding: 0.55rem var(--s-3); cursor: pointer; }
+.tvg summary::-webkit-details-marker { display: none; }
+.tvg-time, .tvg-leg .tvg-time { font-family: var(--font-mono); font-size: var(--t-sm); font-weight: 700; color: var(--day, var(--accent)); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.tvg-main { min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.tvg-name { font-weight: 700; font-size: var(--t-base); line-height: 1.25; }
+.tvg-meta { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; font-size: var(--t-xs); color: var(--ink-3); }
+.tvg-mom { color: var(--sun); font-weight: 700; letter-spacing: 0.02em; }
+.tvg-kind { text-transform: uppercase; letter-spacing: 0.08em; }
+.tvg-caret { color: var(--ink-3); font-size: 1.3rem; line-height: 1; transition: transform var(--t-fast, 150ms) ease; justify-self: end; }
+.tvg details[open] .tvg-caret { transform: rotate(90deg); }
+.tvg-body { padding: 0 var(--s-3) var(--s-3) calc(4.6rem + var(--s-3) + var(--s-3)); display: grid; gap: 0.35rem; }
+.tvg-body .actions { margin-top: 0.3rem; }
+.tvg--optional summary { opacity: 0.78; }
+.tvg--optional .tvg-name { font-weight: 600; }
+.tvg-leg { display: grid; grid-template-columns: 4.6rem 1fr; gap: var(--s-3); align-items: center; padding: 0.15rem var(--s-3); font-size: var(--t-sm); color: var(--ink-3); }
+.tvg-leg .tvg-time { color: var(--ink-3); font-weight: 600; }
+.tv-glance-actions { margin-top: var(--s-3); }
+.tv-glance-actions button.action { font: inherit; }
+@media (max-width: 480px) {
+  .tvg summary { grid-template-columns: 3.9rem 1fr 1rem; }
+  .tvg-leg { grid-template-columns: 3.9rem 1fr; }
+  .tvg-body { padding-left: var(--s-3); }
+}
