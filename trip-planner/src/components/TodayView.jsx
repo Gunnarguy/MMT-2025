@@ -79,14 +79,6 @@ export function punchList(checked = {}) {
 /** The first " · " segment of a stop's `where` is its clock time or its condition. */
 const timeOf = (stop) => (stop.where || "").split(" · ")[0];
 
-const KIND_WORD = {
-  anchor: "Main event",
-  food: "Food",
-  sight: "Worth a look",
-  optional: "Optional",
-  lodging: "Tonight",
-};
-
 /**
  * One row per stop, closed by default. The summary line is the whole plan
  * (time, name, one chip); everything research added lives behind the tap.
@@ -103,7 +95,6 @@ function GlanceStop({ stop, open }) {
             <span className="tvg-name">{stop.name}</span>
             <span className="tvg-meta">
               {stop.fromMom && <span className="tvg-mom">★ Mom&rsquo;s list</span>}
-              {KIND_WORD[stop.kind] && <span className="tvg-kind">{KIND_WORD[stop.kind]}</span>}
               {stop.status === "check" && <Chip tone="warn">Call ahead</Chip>}
               {stop.status === "booked" && <Chip tone="locked">Booked</Chip>}
             </span>
@@ -141,7 +132,7 @@ function GlanceLeg({ leg }) {
 /** The whole day as one Google Maps route: origin, every routed stop, tonight's bed. */
 function wholeDayHref(day) {
   const routed = (day.stops || []).filter(
-    (s) => s.address && !["optional", "admin", "lodging"].includes(s.kind) && s.id !== "d2-sunset",
+    (s) => s.address && !["optional", "admin", "lodging"].includes(s.kind),
   );
   const bed = day.sleep?.address || day.sleep?.city || HOME.address;
   if (!day.legFrom || routed.length === 0) return null;
