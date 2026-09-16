@@ -734,7 +734,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false, m
         ))}
 
         {/* Home: start and finish, same pin. */}
-        <Marker
+        {!minimal && <Marker
           position={HOME.coords}
           icon={pinIcon({ label: "⌂", color: "#16242c", variant: "pin--home" })}
         >
@@ -748,7 +748,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false, m
             <PointActions address={HOME.address} />
             <a href="#/day/d7">Return-day schedule →</a>
           </Popup>
-        </Marker>
+        </Marker>}
 
         {beds.map((b) => (
           <div key={b.key}>
@@ -815,7 +815,7 @@ export default function RouteMap({ focusDayId = null, height, compact = false, m
           ))}
 
         {/* International Border Portals Layer */}
-        {layerFilter.borders &&
+        {layerFilter.borders && !minimal &&
           BORDER_PORTALS.map((b) => (
             <Marker
               key={b.id}

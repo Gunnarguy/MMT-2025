@@ -48,7 +48,8 @@ const SUN_DATA = {
     startHour: 8.0,
     endHour: 21.0,
     blocks: [
-      { start: 8.0, end: 9.95, icon: "🚗", short: "To the dunes", title: "Ludington to Sleeping Bear", detail: "US-31 and M-22 up the shore, 80 miles", timeStr: "8:00 – 9:55 AM", duration: "1h 55m", type: "drive" },
+      { start: 8.0, end: 9.75, icon: "🚗", short: "To the dunes", title: "Ludington to Sleeping Bear", detail: "US-31 and M-22 up the shore, 80 miles", timeStr: "8:00 – 9:45 AM", duration: "1h 45m", type: "drive" },
+      { start: 9.75, end: 9.95, icon: "🅿️", short: "Arrive", title: "Into the park", detail: "M-109 north of Empire to the scenic drive entrance", timeStr: "9:45 – 10:00 AM", duration: "15m", type: "drive" },
       { start: 9.95, end: 10.9, icon: "🌲", short: "Scenic Drive", title: "Pierce Stocking Scenic Drive", detail: "The 7.4-mile loop to Overlook 9, 450 feet over the lake", timeStr: "10:00 – 10:55 AM", duration: "55m", type: "anchor" },
       { start: 10.9, end: 11.75, icon: "🏔️", short: "Dune Climb", title: "The Dune Climb", detail: "Climb it, or the bench and the show", timeStr: "11:00 – 11:45 AM", duration: "45m", type: "anchor" },
       { start: 11.75, end: 12.35, icon: "🌊", short: "Glen Haven", title: "Glen Haven village and beach", detail: "Toes in Lake Michigan; Maritime Museum 1.5 mi west", timeStr: "11:50 AM – 12:20 PM", duration: "30m", type: "anchor" },
