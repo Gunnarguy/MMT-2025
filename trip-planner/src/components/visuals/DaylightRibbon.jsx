@@ -45,15 +45,19 @@ const SUN_DATA = {
     sunrise: "7:24 AM ET",
     sunset: "7:53 PM ET",
     tz: "ET",
-    startHour: 7.5, // 7:30 AM ET
-    endHour: 21.5, // 9:30 PM ET
+    startHour: 8.0,
+    endHour: 21.0,
     blocks: [
-      { start: 7.5, end: 9.5, icon: "🚗", short: "To Sleeping Bear", title: "Drive to Sleeping Bear Dunes", detail: "M-22 / US-31 North through Manistee & Frankfort (78 miles)", timeStr: "7:30 AM – 9:30 AM ET", duration: "2h", type: "drive" },
-      { start: 9.5, end: 13.5, icon: "🏖️", short: "Sleeping Bear Dunes", title: "Sleeping Bear Dunes Exploration", detail: "Dune Climb, Pierce Stocking Scenic Drive & Overlook #9", timeStr: "9:30 AM – 1:30 PM ET", duration: "4h", type: "anchor" },
-      { start: 13.5, end: 14.5, icon: "🚗", short: "To Traverse City", title: "Drive to Traverse City", detail: "M-72 East to Grand Traverse Bay (28 miles)", timeStr: "1:30 PM – 2:30 PM ET", duration: "1h", type: "drive" },
-      { start: 14.5, end: 17.0, icon: "🏨", short: "Brio Beach Inn", title: "Brio Beach Inn Check-in", detail: "Private beach on West Grand Traverse Bay & relaxation", timeStr: "2:30 PM – 5:00 PM ET", duration: "2h 30m", type: "stay" },
-      { start: 17.0, end: 19.5, icon: "🍽️", short: "Downtown Dinner", title: "Front Street Dining & Wine", detail: "Walkable downtown dinner and Left Foot Charley tasting", timeStr: "5:00 PM – 7:30 PM ET", duration: "2h 30m", type: "food" },
-      { start: 19.5, end: 21.5, icon: "🌅", short: "Bay Sunset", title: "Grand Traverse Bay Sunset", detail: "Sunset watch across the bay shoreline (7:53 PM)", timeStr: "7:30 PM – 9:30 PM ET", duration: "2h", type: "sunset" },
+      { start: 8.0, end: 9.9, icon: "🚗", short: "To the dunes", title: "Ludington to the Dune Climb", detail: "US-31 and M-22 up the shore, 80 miles", timeStr: "8:00 – 9:55 AM", duration: "1h 55m", type: "drive" },
+      { start: 9.9, end: 10.65, icon: "🏖️", short: "Dune Climb", title: "Dune Climb", detail: "First crest and the view over Little Glen Lake", timeStr: "9:55 – 10:40 AM", duration: "45m", type: "anchor" },
+      { start: 10.65, end: 11.5, icon: "🌲", short: "Scenic Drive", title: "Pierce Stocking Scenic Drive", detail: "The loop to Overlook 9", timeStr: "10:40 – 11:30 AM", duration: "50m", type: "anchor" },
+      { start: 11.5, end: 12.0, icon: "🌊", short: "Glen Haven", title: "Glen Haven beach (optional)", detail: "Toes in the lake, the Cannery boathouse", timeStr: "11:30 AM – 12:00 PM", duration: "30m", type: "anchor" },
+      { start: 12.0, end: 12.65, icon: "🚗", short: "To Leland", title: "M-22 to Leland", detail: "19 miles through Glen Arbor", timeStr: "12:00 – 12:40 PM", duration: "35m", type: "drive" },
+      { start: 12.65, end: 14.25, icon: "🐟", short: "Fishtown", title: "Fishtown lunch and Van's Beach", detail: "Cheese Shanty, Carlson's, Petoskey stones", timeStr: "12:40 – 2:15 PM", duration: "1h 35m", type: "food" },
+      { start: 14.25, end: 15.0, icon: "🚗", short: "To Traverse City", title: "Leland to Brio Beach Inn", detail: "M-204, M-72, US-31 along East Bay, 30 miles", timeStr: "2:15 – 3:00 PM", duration: "45m", type: "drive" },
+      { start: 15.0, end: 17.0, icon: "🏨", short: "Brio Beach Inn", title: "Check in, beach, nothing", detail: "150 feet of private sand on the bay", timeStr: "3:00 – 5:00 PM", duration: "2h", type: "stay" },
+      { start: 17.0, end: 19.5, icon: "🍽️", short: "Front Street", title: "Dinner downtown", detail: "Front Street, ten minutes away", timeStr: "5:00 – 7:30 PM", duration: "2h 30m", type: "food" },
+      { start: 19.5, end: 21.0, icon: "🌅", short: "Bay sunset", title: "Sunset from the inn's beach", detail: "7:53 PM, straight across the bay", timeStr: "7:30 – 9:00 PM", duration: "1h 30m", type: "sunset" },
     ],
   },
   d3: {

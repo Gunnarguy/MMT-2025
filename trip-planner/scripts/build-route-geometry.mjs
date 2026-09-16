@@ -26,6 +26,8 @@ const P = {
   grandRapids: [-85.6681, 42.9634],
   ludington: [-86.4526, 43.9553],
   sleepingBear: [-86.0271, 44.8858],
+  glenHaven: [-85.9908, 44.9042],
+  leland: [-85.7583, 45.0212],
   traverseCity: [-85.6206, 44.7631],
   charlevoix: [-85.2584, 45.3178],
   petoskey: [-84.9553, 45.3733],
@@ -47,7 +49,9 @@ const P = {
 const DAYS = [
   { id: "d0", waypoints: [P.ohare, P.palatine] },
   { id: "d1", waypoints: [P.palatine, P.grandRapids, P.ludington] },
-  { id: "d2", waypoints: [P.ludington, P.sleepingBear, P.traverseCity] },
+  // Wednesday, revised 2026-09-15: Dune Climb, the scenic drive, Glen Haven,
+  // then M-22 north to Fishtown in Leland for lunch before Traverse City.
+  { id: "d2", waypoints: [P.ludington, P.sleepingBear, P.glenHaven, P.leland, P.traverseCity] },
   {
     id: "d3",
     // US-31 to Petoskey then I-75 north. NOT via M-119 (the Tunnel of Trees):

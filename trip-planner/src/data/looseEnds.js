@@ -85,20 +85,6 @@ export const LOOSE_ENDS = [
     phone: "616-246-4821",
   },
   {
-    id: "sleeping-bear-pass",
-    kind: "book",
-    dayId: "d2",
-    when: "Wed 9/16",
-    title: "Sleeping Bear Dunes 7-day vehicle pass ($25)",
-    problem: "National Park Service 7-day vehicle pass for Sleeping Bear Dunes.",
-    answer:
-      "Purchase the $25 digital vehicle pass on recreation.gov ahead of time for quick entry onto the Pierce Stocking Scenic Drive.",
-    deadline: "Before Wednesday",
-    cost: "$25 / vehicle",
-    url: "https://www.recreation.gov/sitepass/74294",
-    urlLabel: "Buy pass on recreation.gov",
-  },
-  {
     id: "bavarian-inn",
     kind: "book",
     dayId: "d5",
