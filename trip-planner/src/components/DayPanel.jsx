@@ -16,7 +16,6 @@ import FuelPlanner from "./visuals/FuelPlanner";
 import MorningDispatch from "./visuals/MorningDispatch";
 import OntarioToolkit from "./visuals/OntarioToolkit";
 import { CALENDAR_EVENTS, downloadIcsFile } from "../lib/calendarExport";
-import ThursdayOptions from "./ThursdayOptions";
 import TripForecast from "./TripForecast";
 
 /**
@@ -151,18 +150,6 @@ export default function DayPanel({ day }) {
         </div>
       )}
 
-      {day.id === "d3" && (
-        <button
-          type="button"
-          className="trip-option-link"
-          onClick={() =>
-            document.getElementById("thursday-options")?.scrollIntoView({ behavior: "smooth", block: "start" })
-          }
-        >
-          Thinking about SkyBridge instead of Charlevoix? Compare the three Thursday routes &darr;
-        </button>
-      )}
-
       <DaylightRibbon dayId={day.id} />
 
       <section className="timeline">
@@ -190,7 +177,6 @@ export default function DayPanel({ day }) {
 
       {["d5", "d6"].includes(day.id) && <OntarioToolkit />}
 
-      {day.id === "d3" && <ThursdayOptions />}
       {day.id === "d2" && <DuneCrossSection />}
       {day.id === "d4" && <MackinacTrack />}
       {day.id === "d5" && <BlueWaterBridgeSteps />}

@@ -51,7 +51,7 @@ export function WeatherStrip({ dayId }) {
             const day = data.locations[row.locationId]?.daily?.[row.date];
             return (
               <div className="wx-tile" key={row.locationId}>
-                <div className="wx-place">{place.name}{row.locationId === "skybridge" && <small>route option</small>}</div>
+                <div className="wx-place">{place.name}</div>
                 <div className="wx-glyph" aria-hidden="true">{day ? weatherGlyph(day.summary) : "…"}</div>
                 <div className="wx-summary">{day?.summary || "No forecast yet"}</div>
                 <div className="wx-temps"><b>{number(day?.high, "°")}</b> / {number(day?.low, "°")}</div>
@@ -185,7 +185,7 @@ function ForecastTable({ dayId }) {
                 const on = sel && sel.locationId === row.locationId;
                 return (
                   <button type="button" className={`wx-tile wx-tile--btn${on ? " is-on" : ""}`} key={row.locationId} aria-pressed={!!on} onClick={() => setPicked(on ? null : { date, locationId: row.locationId })}>
-                    <div className="wx-place">{place.name}{row.locationId === "skybridge" && <small>route option</small>}</div>
+                    <div className="wx-place">{place.name}</div>
                     <div className="wx-glyph" aria-hidden="true">{day ? weatherGlyph(day.summary) : "…"}</div>
                     <div className="wx-summary">{day?.summary || (past ? "No saved forecast" : "Not yet published")}</div>
                     <div className="wx-temps"><b>{number(day?.high, "°")}</b> / {number(day?.low, "°")}</div>
