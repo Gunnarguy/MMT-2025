@@ -77,7 +77,7 @@ export function punchList(checked = {}) {
 }
 
 /** The first " · " segment of a stop's `where` is its clock time or its condition. */
-const TIMEISH = /^(about |~)?\d{1,2}(:\d{2})?( ?[ap]m)?$|^(extra|arrive|evening|morning|afternoon)/i;
+const TIMEISH = /^(about |~)?\d{1,2}(:\d{2})?( ?[ap]m)?$|^(extra|arrive|evening|morning|afternoon|maybe|optional|pick one|all day)/i;
 const timeOf = (stop) => {
   const head = (stop.where || "").split(" · ")[0].trim();
   return TIMEISH.test(head) ? head : "";

@@ -87,16 +87,19 @@ const SUN_DATA = {
     sunrise: "7:20 AM ET",
     sunset: "7:46 PM ET",
     tz: "ET",
-    startHour: 6.75, // 6:45 AM ET
-    endHour: 20.5,  // 8:30 PM ET
+    startHour: 6.75,
+    endHour: 20.5,
     blocks: [
-      { start: 6.75, end: 7.75, icon: "⛴️", short: "Shepler's Ferry", title: "Shepler's Ferry to Island", detail: "16-minute morning ferry ride across Straits of Mackinac", timeStr: "6:45 AM – 7:45 AM ET", duration: "1h", type: "drive" },
-      { start: 7.75, end: 8.25, icon: "☕", short: "Lucky Bean", title: "Lucky Bean Coffee", detail: "Fresh morning coffee on the harbor before biking", timeStr: "7:45 AM – 8:15 AM ET", duration: "30m", type: "food" },
-      { start: 8.25, end: 10.5, icon: "🚲", short: "M-185 Loop", title: "M-185 Perimeter Island Loop", detail: "8.2-mile paved car-free loop around Mackinac Island", timeStr: "8:15 AM – 10:30 AM ET", duration: "2h 15m", type: "anchor" },
-      { start: 10.5, end: 13.5, icon: "🏰", short: "Fort Mackinac", title: "Fort Mackinac & Tea Room Lunch", detail: "1780 stone fort exploration and cliffside lunch terrace", timeStr: "10:30 AM – 1:30 PM ET", duration: "3h", type: "anchor" },
-      { start: 13.5, end: 16.5, icon: "🏛️", short: "Grand Hotel", title: "Grand Hotel Porch", detail: "World's longest front porch & afternoon tea relaxation", timeStr: "1:30 PM – 4:30 PM ET", duration: "3h", type: "anchor" },
-      { start: 16.5, end: 18.75, icon: "🍬", short: "Fudge Shops", title: "Fudge Shops & Evening Ferry", detail: "Main Street fudge shopping and return ferry to Mackinaw City", timeStr: "4:30 PM – 6:45 PM ET", duration: "2h 15m", type: "food" },
-      { start: 18.75, end: 20.5, icon: "🌅", short: "Straits Sunset", title: "Straits Sunset", detail: "Sunset over Lake Huron & Straits of Mackinac (7:46 PM)", timeStr: "6:45 PM – 8:30 PM ET", duration: "1h 45m", type: "sunset" },
+      { start: 6.9, end: 7.5, icon: "🚶", short: "To the dock", title: "Motel to Shepler's dock", detail: "Half a mile down Huron Ave; dock by 7:10", timeStr: "6:55 – 7:30 AM", duration: "35m", type: "drive" },
+      { start: 7.5, end: 7.85, icon: "⛴️", short: "7:30 boat", title: "Shepler's 7:30 crossing", detail: "Sixteen minutes past the bridge", timeStr: "7:30 – 7:50 AM", duration: "16m", type: "drive" },
+      { start: 7.85, end: 9.0, icon: "🍳", short: "Breakfast", title: "Breakfast on Main Street", detail: "Chuckwagon opens at 7, across from the dock", timeStr: "7:50 – 9:00 AM", duration: "1h 10m", type: "food" },
+      { start: 9.0, end: 12.5, icon: "🛍️", short: "The town", title: "Shops, fudge, the harbor", detail: "Shops open 9 to 10; Market Street behind Main", timeStr: "9:00 AM – 12:30 PM", duration: "3h 30m", type: "anchor" },
+      { start: 12.5, end: 13.5, icon: "🍽️", short: "Lunch", title: "Lunch in town", detail: "Or the Fort Tea Room terrace, 11 to 3", timeStr: "12:30 – 1:30 PM", duration: "1h", type: "food" },
+      { start: 13.5, end: 16.0, icon: "🚲", short: "Bikes or fort", title: "Bikes, the fort, or neither", detail: "M-185 is 8.2 flat miles; the fort closes at 5", timeStr: "1:30 – 4:00 PM", duration: "2h 30m", type: "anchor" },
+      { start: 16.0, end: 17.75, icon: "🍬", short: "Fudge", title: "Fudge and the harbor", detail: "Buy it last so it isn't riding around all day", timeStr: "4:00 – 5:45 PM", duration: "1h 45m", type: "food" },
+      { start: 17.75, end: 18.3, icon: "⛴️", short: "Boat back", title: "6:00 boat back", detail: "Hourly to 7:00; 8:00 runs Fridays only", timeStr: "6:00 – 6:20 PM", duration: "16m", type: "drive" },
+      { start: 18.3, end: 19.5, icon: "🍽️", short: "Dinner", title: "Dinner in Mackinaw City", detail: "Audie's or the Dixie Saloon", timeStr: "6:30 – 7:30 PM", duration: "1h", type: "food" },
+      { start: 19.5, end: 20.5, icon: "🌅", short: "Sunset", title: "Sunset over the Straits", detail: "7:46 PM behind the bridge", timeStr: "7:30 – 8:30 PM", duration: "1h", type: "sunset" },
     ],
   },
   d5: {
