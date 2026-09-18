@@ -126,10 +126,9 @@ export const BUDGET = {
     },
     {
       label: "Grand Hotel admission",
-      note: "3 × ~$14, only if you go up. Add $9 each cash for the horse taxi if nobody wants the uphill walk",
+      note: "3 × $14, going. Porch, public rooms and gardens; add $9 each cash for the horse taxi if nobody wants the uphill walk",
       category: "Tickets & entry",
       total: 42,
-      estimate: true,
     },
     {
       label: "Michigan Recreation Passport, non-resident",
