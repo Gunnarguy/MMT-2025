@@ -89,12 +89,12 @@ export const LOOSE_ENDS = [
     kind: "book",
     dayId: "d5",
     when: "Sat 9/19",
-    title: "Reserve Frankenmuth family-style chicken dinner",
+    title: "Call the Bavarian Inn if you want the schnitzel",
     problem:
-      "Saturday is peak Oktoberfest weekend in Frankenmuth.",
+      "Oktoberfest has no schnitzel on its menu, and Saturday is the busiest of its four days. The Bavarian Inn does have it, indoors, but walk-in waits that afternoon can be long.",
     answer:
-      "Reserve a table in advance at Bavarian Inn or Zehnder's for family-style dining.",
-    deadline: "Reserve in advance",
+      "Call 989-652-9941 or book on OpenTable from the car on the way down I-75. Open 11 AM to 9 PM.",
+    deadline: "Call from the road Saturday morning",
     url: "https://www.bavarianinn.com/dine/",
     urlLabel: "Bavarian Inn reservations",
     phone: "989-652-9941",

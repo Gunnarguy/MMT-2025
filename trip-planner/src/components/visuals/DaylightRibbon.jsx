@@ -105,19 +105,20 @@ const SUN_DATA = {
   },
   d5: {
     sunrise: "7:17 AM ET",
-    sunset: "7:33 PM ET",
+    sunset: "7:45 PM ET",
     tz: "ET",
-    startHour: 9.0, // 9:00 AM ET
-    endHour: 21.5, // 9:30 PM ET
+    startHour: 8.0,
+    endHour: 21.0,
     blocks: [
-      { start: 9.0, end: 10.75, icon: "🏰", short: "Michilimackinac", title: "Colonial Michilimackinac", detail: "18th-century French fur-trade fort on the Straits", timeStr: "9:00 AM – 10:45 AM ET", duration: "1h 45m", type: "anchor" },
-      { start: 10.75, end: 12.25, icon: "🍗", short: "Bavarian Inn", title: "Bavarian Inn Chicken Dinner", detail: "World-famous family-style chicken dinner in Frankenmuth", timeStr: "10:45 AM – 12:15 PM ET", duration: "1h 30m", type: "food" },
-      { start: 12.25, end: 15.5, icon: "🥨", short: "Oktoberfest", title: "Oktoberfest & Bronner's", detail: "Heritage Park Bavarian festival and world's largest Christmas store", timeStr: "12:15 PM – 3:30 PM ET", duration: "3h 15m", type: "anchor" },
-      { start: 15.5, end: 17.5, icon: "🚗", short: "To Port Huron", title: "Drive to Port Huron", detail: "I-75 South to I-69 East to the Canadian border (118 miles)", timeStr: "3:30 PM – 5:30 PM ET", duration: "2h", type: "drive" },
-      { start: 17.5, end: 18.25, icon: "⛽", short: "US Fuel & Light", title: "Fort Gratiot Light & US Fuel", detail: "Michigan's oldest lighthouse & top off tank before bridge", timeStr: "5:30 PM – 6:15 PM ET", duration: "45m", type: "anchor" },
-      { start: 18.25, end: 19.25, icon: "🇨🇦", short: "Blue Water Bridge", title: "Blue Water Bridge Crossing", detail: "Cashless $5 USD toll into Sarnia, Ontario & CBSA inspection", timeStr: "6:15 PM – 7:15 PM ET", duration: "1h", type: "drive" },
-      { start: 19.25, end: 20.0, icon: "🌅", short: "Point Edward Sunset", title: "Point Edward Sunset", detail: "Sunset along the St. Clair River waterfront (7:33 PM)", timeStr: "7:15 PM – 8:00 PM ET", duration: "45m", type: "sunset" },
-      { start: 20.0, end: 21.5, icon: "🏨", short: "Four Points", title: "Four Points Sarnia Check-in", detail: "Check into Point Edward / Sarnia hotel in Ontario", timeStr: "8:00 PM ET onward", duration: "Overnight", type: "stay" },
+      { start: 8.0, end: 11.35, icon: "🚗", short: "I-75 south", title: "Mackinaw City to Frankenmuth", detail: "203 miles on one road; gas at Grayling or West Branch", timeStr: "8:00 – 11:20 AM", duration: "3h 20m", type: "drive" },
+      { start: 11.35, end: 12.2, icon: "🐐", short: "Petting farm", title: "Grandpa Tiny's Farm", detail: "Optional; about $8 each, call for hours", timeStr: "11:30 AM – 12:10 PM", duration: "40m", type: "anchor" },
+      { start: 12.2, end: 14.2, icon: "🍺", short: "Oktoberfest", title: "Oktoberfest in the pavilion", detail: "Gates at noon; $10 each, under a roof", timeStr: "12:15 – 2:10 PM", duration: "1h 55m", type: "anchor" },
+      { start: 14.2, end: 15.0, icon: "🎄", short: "Bronner's", title: "Bronner's CHRISTmas Wonderland", detail: "Free, indoors, open until 9", timeStr: "2:15 – 3:00 PM", duration: "45m", type: "anchor" },
+      { start: 15.0, end: 16.7, icon: "🚗", short: "To Port Huron", title: "Frankenmuth to Port Huron", detail: "I-69 east, 89 miles", timeStr: "3:00 – 4:40 PM", duration: "1h 40m", type: "drive" },
+      { start: 16.7, end: 17.2, icon: "🗼", short: "Fort Gratiot", title: "Fort Gratiot Light and fuel", detail: "1829 lighthouse at the bridge approach; fill up here", timeStr: "4:40 – 5:10 PM", duration: "30m", type: "anchor" },
+      { start: 17.2, end: 17.8, icon: "🇨🇦", short: "The bridge", title: "Blue Water Bridge into Canada", detail: "$5 cashless, then Canadian customs", timeStr: "5:10 – 5:45 PM", duration: "35m", type: "drive" },
+      { start: 17.8, end: 19.4, icon: "🏨", short: "Four Points", title: "Check in, Point Edward", detail: "Waterfront trail starts at the door", timeStr: "5:45 – 7:20 PM", duration: "1h 35m", type: "stay" },
+      { start: 19.4, end: 21.0, icon: "🌅", short: "Sunset", title: "Sunset under the bridge", detail: "7:45 PM over the St. Clair River", timeStr: "7:20 – 9:00 PM", duration: "1h 40m", type: "sunset" },
     ],
   },
   d6: {
