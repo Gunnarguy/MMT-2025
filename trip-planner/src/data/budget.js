@@ -11,8 +11,8 @@
  *   - `payer: "mom"` marks the lines Mom wrote "MINE!" beside. Those are
  *     excluded from the three-way split rather than quietly folded in.
  *
- * Lodging figures match `lodging.js`. The Belleville night is `provisional`
- * because it only happens if they don't stay at Julia's.
+ * Lodging figures match `lodging.js`. Sunday 9/20 now ends at Mom's house in
+ * Palatine, so there is no seventh hotel night to budget.
  */
 
 export const BUDGET = {
@@ -45,14 +45,6 @@ export const BUDGET = {
       category: "Lodging",
       total: 148,
       estimate: true,
-    },
-    {
-      label: "Hampton Inn Detroit / Belleville",
-      note: "1 night, 9/20 — only if you don't stay at Julia's. High for a Belleville Sunday; worth re-shopping",
-      category: "Lodging",
-      total: 267,
-      estimate: true,
-      provisional: true,
     },
 
     // ── Transport ──────────────────────────────────────────────────────────
@@ -264,7 +256,7 @@ export function budgetTotals({ includeProvisional = false, mpg } = {}) {
 }
 
 export const SPLIT_NOTE =
-  "Shared costs divide three ways across the crew. Costs covered directly by Mom (the rental car, fuel, and park pass) are excluded from the split. The Belleville hotel is excluded by default since Sunday stay is with Julia; the toggle adds it back.";
+  "Shared costs divide three ways across the crew. Costs covered directly by Mom (the rental car, fuel, and park pass) are excluded from the split. Sunday night is at Mom's house in Palatine, so there is no hotel that night.";
 
 export const FX = {
   usdPerCad: 0.72,

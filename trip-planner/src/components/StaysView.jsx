@@ -25,7 +25,7 @@ export default function StaysView() {
       </div>
 
       <div className="stat-grid" style={{ marginBottom: "var(--s-5)" }}>
-        <Stat3 value={money(usdTotal)} label="Rooms, all in" note="Excludes the provisional Belleville night" />
+        <Stat3 value={money(usdTotal)} label="Rooms, all in" note="Every booked night" />
         <Stat3 value={nights} label="Nights booked" note={`${LODGING.length} properties`} />
         <Stat3 value={money(usdTotal / 3)} label="Per person" note="If rooms split three ways" />
       </div>

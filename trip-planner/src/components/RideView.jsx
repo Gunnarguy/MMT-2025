@@ -196,9 +196,9 @@ export default function RideView() {
         <Flag
           level="info"
           title="Monday Return Schedule (AA 1253 at 3:20 PM)"
-          fix="Depart Belleville by 8:00 AM Eastern to return the rental car at O'Hare MMF by 1:00 PM."
+          fix="You wake up in Palatine. Leave Crestwood Lane by 11:45 AM Central to have the car back at O'Hare MMF by 1:00 PM."
         >
-          Departing the Detroit area by 8:00 AM Eastern gives you an easy morning with time for Ann Arbor coffee/breakfast, dropping bags in Palatine by noon Central, and returning the car at the Multi-Modal Facility by 1:00 PM for the 3:20 PM departure to SFO.
+          Sunday now ends at Mom's house in Palatine, so Monday is fifteen miles of driving. Slow morning, top off at the Shell on Touhy, car back at the Multi-Modal Facility by 1:00 PM, ATS train to Terminal 3 for the 3:20 PM departure to SFO.
         </Flag>
       </section>
 

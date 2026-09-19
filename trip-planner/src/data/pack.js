@@ -82,11 +82,6 @@ export const PREP = [
     note: "You arrive on the Saturday of Oktoberfest. Walking in unreserved on the peak day is a gamble. Zehnder's 989-652-0429, Bavarian Inn 989-652-9941",
   },
   {
-    id: "belleville",
-    text: "Settle Belleville: Julia's, or re-shop the Hampton Inn",
-    note: "$267 is high for a Belleville Sunday. Either way the last night needs a decision before you're driving toward it",
-  },
-  {
     id: "tunnel-of-trees",
     text: "Check the M-119 Tunnel of Trees closure before Thursday",
     note: "Washed-out culverts closed several sections in 2026 with no announced reopening. If it's still shut, Thursday goes straight up US-31 and you gain an hour",

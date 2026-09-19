@@ -127,33 +127,4 @@ export const LODGING = [
     source: "Marriott — Four Points by Sheraton Point Edward / Sarnia",
     sourceUrl: "https://www.marriott.com/en-us/hotels/yqgfs-four-points-point-edward-sarnia/overview/",
   },
-  {
-    id: "belleville",
-    dayIndex: 6,
-    name: "Hampton Inn Detroit / Belleville",
-    city: "Belleville, Michigan",
-    address: "46280 N I-94 Service Dr, Belleville, MI 48111",
-    coords: [42.2338, -83.4844],
-    phone: "734-699-2424",
-    url: "https://www.hilton.com/en/hotels/dtwbehx-hampton-detroit-belleville-airport-area/",
-    checkIn: "2026-09-20",
-    checkOut: "2026-09-21",
-    nights: 1,
-    price: 267,
-    usd: 267,
-    currency: "USD",
-    conf: null,
-    provisional: true,
-    tags: ["Backup for Julia's", "Near DTW"],
-    note:
-      "Convenient stay option on the I-94 service drive, well positioned for Monday's drive home to Palatine and O'Hare.",
-    flag: {
-      level: "info",
-      title: "Provisional stay option",
-      body:
-        "Excluded from budget totals by default since staying with Julia is the primary plan; can be toggled on the Money page.",
-    },
-    source: "Hilton — Hampton Inn Detroit/Belleville-Airport Area",
-    sourceUrl: "https://www.hilton.com/en/hotels/dtwbehx-hampton-detroit-belleville-airport-area/",
-  },
 ];

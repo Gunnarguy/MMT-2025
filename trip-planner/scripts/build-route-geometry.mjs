@@ -45,6 +45,7 @@ const P = {
   detroit: [-83.0458, 42.3314],
   dearborn: [-83.2341, 42.3033],
   belleville: [-83.4855, 42.2042],
+  julias: [-83.4767, 42.2177],
   annArbor: [-83.743, 42.2808],
   kalamazoo: [-85.5872, 42.2917],
   ohare: [-87.8892, 41.9786],
@@ -71,9 +72,9 @@ const DAYS = [
   { id: "d5", waypoints: [P.mackinawCity, P.frankenmuth, P.portHuron, P.pointEdward] },
   {
     id: "d6",
-    waypoints: [P.pointEdward, P.windsor, P.detroit, P.dearborn, P.belleville],
+    waypoints: [P.pointEdward, P.portHuron, P.julias, P.palatine],
   },
-  { id: "d7", waypoints: [P.belleville, P.annArbor, P.kalamazoo, P.palatine] },
+  { id: "d7", waypoints: [P.palatine, P.ohare] },
 ];
 
 /**

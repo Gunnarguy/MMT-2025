@@ -11,7 +11,6 @@ import DuneCrossSection from "./visuals/DuneCrossSection";
 import MackinacTrack from "./visuals/MackinacTrack";
 import { BlueWaterBridgeSteps, DetroitTunnelSteps } from "./visuals/BorderCrossingSteps";
 import FlightRunway from "./visuals/FlightRunway";
-import SundayComparator from "./visuals/SundayComparator";
 import FuelPlanner from "./visuals/FuelPlanner";
 import MorningDispatch from "./visuals/MorningDispatch";
 import OntarioToolkit from "./visuals/OntarioToolkit";
@@ -183,7 +182,6 @@ export default function DayPanel({ day }) {
       {day.id === "d6" && (
         <>
           <DetroitTunnelSteps />
-          <SundayComparator />
         </>
       )}
       {day.id === "d0" && <FlightRunway initialMode="inbound" />}

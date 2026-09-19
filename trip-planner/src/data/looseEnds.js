@@ -59,9 +59,9 @@ export const LOOSE_ENDS = [
     when: "Mon 9/21",
     title: "Return flight & vehicle drop-off timeline",
     problem:
-      "AA 1253 departs O'Hare at 3:20 PM; car drop-off at Multi-Modal Facility by 1:00 PM.",
+      "AA 1253 departs O'Hare at 3:20 PM; the van is due back at the Multi-Modal Facility by 1:00 PM.",
     answer:
-      "Depart Belleville/Detroit area by 8:00 AM Eastern. Drop luggage in Palatine by noon Central, and return vehicle to O'Hare MMF by 1:00 PM for the 3:20 PM departure (AA 1253).",
+      "You sleep in Palatine on Sunday, so Monday is fifteen miles. Leave Crestwood Lane by 11:45 AM Central, top off at the Shell on Touhy, and return the van to O'Hare MMF by 1:00 PM for the 3:20 PM departure (AA 1253).",
     deadline: "Mon 9/21 morning",
     url: "#/ride",
     urlLabel: "Full timetable",

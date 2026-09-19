@@ -240,12 +240,9 @@ export const RUN_INBOUND = [
  * flight actually imposes, and it is not the one on the day page.
  */
 export const RUN_HOME = [
-  { at: "7:30 AM ET", what: "Leave Belleville. Earlier is better than later." },
-  {
-    at: "8:00–8:45 AM ET",
-    what: "Ann Arbor, if you're moving on time. It's 25 minutes off the line and the only stop that survives.",
-  },
-  { at: "≈12:00 PM CT", what: "Palatine. Drop Mom and the luggage — allow fifteen minutes." },
+  { at: "Slow morning", what: "You are already in Palatine. Breakfast, repack, nothing to drive." },
+  { at: "11:15 AM CT", what: "Top off at the Shell, 600 E Touhy Ave. The counter's refuel rate is punitive." },
+  { at: "11:45 AM CT", what: "Leave Crestwood Lane. IL-53 south, 25 minutes to the rental return." },
   { at: "12:45 PM CT", what: "O'Hare, Multi-Modal Facility. Return the car." },
   { at: "1:30 PM CT", what: "Terminal 3, bags checked, through security." },
   { at: "3:20 PM CT", what: "AA 1253 pushes back." },
@@ -286,10 +283,9 @@ export const FLIGHT_RUNWAYS = {
     { date: "2026-09-14", time: "22:00", tz: "America/Chicago", zone: "CDT", what: "Palatine, 2020 Crestwood Lane", detail: "Drop bags and sleep: Tuesday leaves by 6:00 AM for Grand Rapids." },
   ],
   back: [
-    { date: "2026-09-21", time: "07:30", tz: "America/Detroit", zone: "EDT", what: "Leave Belleville on I-94 West", detail: "Earlier is better than later; this is the hardest deadline of the trip." },
-    { date: "2026-09-21", time: "08:00", tz: "America/Detroit", zone: "EDT", what: "Ann Arbor coffee, only if you are on time", detail: "25 minutes off the line and the one stop that survives the day." },
-    { date: "2026-09-21", time: "11:00", tz: "America/Chicago", zone: "CDT", what: "Illinois line: clocks go back an hour", detail: "Noon Eastern becomes 11:00 Central." },
-    { date: "2026-09-21", time: "12:00", tz: "America/Chicago", zone: "CDT", what: "Palatine: drop Mom and the luggage", detail: "Allow fifteen minutes, then IL-53 south to O'Hare." },
+    { date: "2026-09-21", time: "09:00", tz: "America/Chicago", zone: "CDT", what: "Slow morning in Palatine", detail: "You slept here. Fifteen miles is the whole day\u2019s driving." },
+    { date: "2026-09-21", time: "11:15", tz: "America/Chicago", zone: "CDT", what: "Top off at the Shell, 600 E Touhy Ave", detail: "Five minutes here beats the counter\u2019s refuel charge." },
+    { date: "2026-09-21", time: "11:45", tz: "America/Chicago", zone: "CDT", what: "Leave Crestwood Lane", detail: "IL-53 south to I-90 east, 25 minutes to the Multi-Modal Facility." },
     { key: "counter", date: "2026-09-21", time: "12:45", tz: "America/Chicago", zone: "CDT", what: "Return the car, O'Hare MMF", detail: "10255 W Zemke Blvd, due by 1:00 PM. Top off at Shell, 600 E Touhy Ave first.", type: "warn" },
     { date: "2026-09-21", time: "13:15", tz: "America/Chicago", zone: "CDT", what: "ATS train, MMF to Terminal 3", detail: "Every 3–5 minutes, 10–12 minutes to T3." },
     { date: "2026-09-21", time: "13:45", tz: "America/Chicago", zone: "CDT", what: "Bags checked, through TSA", detail: "Terminal 3. Then walk to the H/K gate." },

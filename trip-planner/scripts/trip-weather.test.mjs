@@ -79,9 +79,9 @@ test('service worker never intercepts weather or no-store requests',()=>{
   }
 });
 
-test('bundled seed covers all 19 locations and every trip date, including Canada and return Monday',()=>{
+test('bundled seed covers every location and every trip date, including Canada and Sunday at Julia\'s',()=>{
   const seed=JSON.parse(readFileSync(new URL('../src/data/tripForecast.json',import.meta.url),'utf8'));
-  assert.equal(Object.keys(seed.locations).length,19);
+  assert.equal(Object.keys(seed.locations).length,WEATHER_LOCATIONS.length);
   for(const stop of WEATHER_STOPS)assert(seed.locations[stop.locationId].daily[stop.date],`${stop.locationId} ${stop.date}`);
-  assert(WEATHER_LOCATIONS.some(p=>p.id==='sarnia'));assert(WEATHER_LOCATIONS.some(p=>p.id==='windsor'));
+  assert(WEATHER_LOCATIONS.some(p=>p.id==='sarnia'));assert(WEATHER_LOCATIONS.some(p=>p.id==='julias'));
 });

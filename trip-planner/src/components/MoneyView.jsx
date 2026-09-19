@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { BUDGET, budgetTotals, FX, SPLIT_NOTE } from "../data/budget";
 import { useLocalState } from "../hooks/useLocalState";
@@ -15,7 +15,6 @@ const CATEGORY_COLOR = {
 };
 
 export default function MoneyView() {
-  const [includeProvisional, setIncludeProvisional] = useState(false);
   // The car isn't assigned yet. If its mpg has been entered on the Car &
   // flights page, the Fuel line below is computed from it rather than guessed.
   const [vehicle] = useLocalState("mi26.vehicle.v2", { mpg: "35" });
@@ -27,8 +26,8 @@ export default function MoneyView() {
     momOnly,
     perPerson: perPersonShared,
   } = useMemo(
-    () => budgetTotals({ includeProvisional, mpg }),
-    [includeProvisional, mpg],
+    () => budgetTotals({ mpg }),
+    [mpg],
   );
 
   const byCategory = useMemo(() => {
@@ -89,22 +88,6 @@ export default function MoneyView() {
         ))}
       </div>
 
-      <label
-        className="row"
-        style={{
-          marginBottom: "var(--s-4)",
-          fontSize: "var(--t-sm)",
-          cursor: "pointer",
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={includeProvisional}
-          onChange={(e) => setIncludeProvisional(e.target.checked)}
-        />
-        Include the provisional Belleville hotel (if you don&rsquo;t stay at
-        Julia&rsquo;s)
-      </label>
 
       <div className="table-wrap">
         <table className="data">
